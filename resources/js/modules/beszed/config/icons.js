@@ -1,0 +1,29 @@
+/**
+ * Every UI glyph in one place. They all render through <EmojiArt>, so changing
+ * one here (or turning on an emoji image set in config.emoji) changes it app-wide.
+ * Game content emojis come from the server's content JSON instead.
+ */
+export const ICONS = Object.freeze({
+  home: '🏡',
+  speaker: '🔊',
+  star: '⭐',
+  mic: '🎙️',
+  chart: '📈',
+  print: '🖨️',
+  record: '🔴',
+  stop: '⏹️',
+  busy: '⏳',
+  play: '▶️',
+  trash: '🗑️',
+  folder: '📁',
+  reset: '↺',
+  hint: '💡',
+  done: '✅',
+  thumbsUp: '👍',
+  again: '🔁',
+  turtle: '🐢',
+  drum: '🥁',
+  basket: '🧺',
+  tap: '🟡',
+  parrot: '🦜',
+})

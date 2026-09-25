@@ -1,0 +1,138 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "word": "zsiráf",
+      "emoji": "🦒",
+      "sound": "zs"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "zsemle",
+      "emoji": "🥖",
+      "sound": "zs"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "rózsa",
+      "emoji": "🌹",
+      "sound": "zs"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "zsonglőr",
+      "emoji": "🤹",
+      "sound": "zs"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "hátizsák",
+      "emoji": "🎒",
+      "sound": "zs"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "bazsalikom",
+      "emoji": "🌿",
+      "sound": "zs"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "pizsama",
+      "emoji": "🌙",
+      "sound": "zs"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sajt",
+      "emoji": "🧀",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sapka",
+      "emoji": "🧢",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sün",
+      "emoji": "🦔",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sárkány",
+      "emoji": "🐉",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sas",
+      "emoji": "🦅",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sál",
+      "emoji": "🧣",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sátor",
+      "emoji": "⛺",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "só",
+      "emoji": "🧂",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sárgarépa",
+      "emoji": "🥕",
+      "sound": "s"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "hús",
+      "emoji": "🍖",
+      "sound": "s"
+    }
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "name": "maci",
+      "emoji": "🧸"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "cica",
+      "emoji": "🐱"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "labda",
+      "emoji": "⚽"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "kiscsibe",
+      "emoji": "🐤"
+    }
+  }
+]

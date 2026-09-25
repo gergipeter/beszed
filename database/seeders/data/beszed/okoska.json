@@ -1,0 +1,81 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "kind": "symbols",
+      "emojis": [
+        "🔴",
+        "🔵",
+        "🟡",
+        "🟢",
+        "🟣",
+        "⭐",
+        "🌙",
+        "❤️",
+        "🍄",
+        "🐟"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "kind": "category",
+      "category": "állat",
+      "emojis": [
+        "🐶",
+        "🐱",
+        "🐰",
+        "🐮",
+        "🐷",
+        "🐸",
+        "🐴"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "kind": "category",
+      "category": "gyümölcs",
+      "emojis": [
+        "🍎",
+        "🍌",
+        "🍐",
+        "🍇",
+        "🍓",
+        "🍒"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "kind": "category",
+      "category": "jármű",
+      "emojis": [
+        "🚗",
+        "🚌",
+        "🚲",
+        "🚂",
+        "🚢",
+        "🚜"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "kind": "category",
+      "category": "ruha",
+      "emojis": [
+        "👕",
+        "👖",
+        "🧦",
+        "🧢",
+        "🧣",
+        "👗"
+      ]
+    }
+  }
+]

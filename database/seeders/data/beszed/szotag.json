@@ -1,0 +1,261 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "word": "nap",
+      "emoji": "☀️",
+      "syllables": [
+        "nap"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "hal",
+      "emoji": "🐟",
+      "syllables": [
+        "hal"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "ló",
+      "emoji": "🐴",
+      "syllables": [
+        "ló"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "fa",
+      "emoji": "🌳",
+      "syllables": [
+        "fa"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "ház",
+      "emoji": "🏠",
+      "syllables": [
+        "ház"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "szív",
+      "emoji": "❤️",
+      "syllables": [
+        "szív"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "word": "banán",
+      "emoji": "🍌",
+      "syllables": [
+        "ba",
+        "nán"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "word": "cica",
+      "emoji": "🐱",
+      "syllables": [
+        "ci",
+        "ca"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "word": "kutya",
+      "emoji": "🐶",
+      "syllables": [
+        "ku",
+        "tya"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "word": "eper",
+      "emoji": "🍓",
+      "syllables": [
+        "e",
+        "per"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "word": "csiga",
+      "emoji": "🐌",
+      "syllables": [
+        "csi",
+        "ga"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "word": "vonat",
+      "emoji": "🚂",
+      "syllables": [
+        "vo",
+        "nat"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "word": "labda",
+      "emoji": "⚽",
+      "syllables": [
+        "lab",
+        "da"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "word": "kacsa",
+      "emoji": "🦆",
+      "syllables": [
+        "ka",
+        "csa"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "katica",
+      "emoji": "🐞",
+      "syllables": [
+        "ka",
+        "ti",
+        "ca"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "papagáj",
+      "emoji": "🦜",
+      "syllables": [
+        "pa",
+        "pa",
+        "gáj"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "elefánt",
+      "emoji": "🐘",
+      "syllables": [
+        "e",
+        "le",
+        "fánt"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "repülő",
+      "emoji": "✈️",
+      "syllables": [
+        "re",
+        "pü",
+        "lő"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "krokodil",
+      "emoji": "🐊",
+      "syllables": [
+        "kro",
+        "ko",
+        "dil"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "uborka",
+      "emoji": "🥒",
+      "syllables": [
+        "u",
+        "bor",
+        "ka"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "paradicsom",
+      "emoji": "🍅",
+      "syllables": [
+        "pa",
+        "ra",
+        "di",
+        "csom"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "helikopter",
+      "emoji": "🚁",
+      "syllables": [
+        "he",
+        "li",
+        "kop",
+        "ter"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "word": "teknősbéka",
+      "emoji": "🐢",
+      "syllables": [
+        "tek",
+        "nős",
+        "bé",
+        "ka"
+      ]
+    }
+  }
+]

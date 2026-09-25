@@ -1,0 +1,26 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "path": "wave"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "path": "loops"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "path": "zigzag"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "path": "arches"
+    }
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "word": "alma",
+      "emoji": "🍎"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "ház",
+      "emoji": "🏠"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "kutya",
+      "emoji": "🐶"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "cica",
+      "emoji": "🐱"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "hal",
+      "emoji": "🐟"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "nap",
+      "emoji": "☀️"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "hold",
+      "emoji": "🌙"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "fa",
+      "emoji": "🌳"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "autó",
+      "emoji": "🚗"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "labda",
+      "emoji": "⚽"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "baba",
+      "emoji": "👶"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "béka",
+      "emoji": "🐸"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "kacsa",
+      "emoji": "🦆"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "sapka",
+      "emoji": "🧢"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "virág",
+      "emoji": "🌸"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "csiga",
+      "emoji": "🐌"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "ló",
+      "emoji": "🐴"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "vonat",
+      "emoji": "🚂"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "eper",
+      "emoji": "🍓"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "busz",
+      "emoji": "🚌"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "kulcs",
+      "emoji": "🔑"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "szív",
+      "emoji": "❤️"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "cipő",
+      "emoji": "👟"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "word": "óra",
+      "emoji": "⏰"
+    }
+  }
+]

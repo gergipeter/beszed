@@ -1,0 +1,54 @@
+/*
+ * Design tokens. Components only use these variables, so re-theming the module
+ * (or matching Betűvarázs' palette) happens here.
+ */
+.bz {
+  /* colour */
+  --bz-sky: #d6f0ff;
+  --bz-ink: #3b1f4a;
+  --bz-muted: #6b5a77;
+  --bz-card: #ffffff;
+  --bz-soft: #eaf7ff;
+  --bz-sun: #ffd84d;
+  --bz-leaf: #2f9e5b;
+  --bz-coral: #ff6f61;
+  --bz-guide: #9c8aae;
+  /* text on sun / game colours: dark in both themes */
+  --bz-on-bright: #3b1f4a;
+  /* text on leaf / coral */
+  --bz-on-accent: #ffffff;
+
+  /* depth: flat "sticker" shadows */
+  --bz-shadow-color: rgba(59, 31, 74, 0.15);
+  --bz-shadow-sm: 0 3px 0 var(--bz-shadow-color);
+  --bz-shadow: 0 5px 0 var(--bz-shadow-color);
+  --bz-shadow-lg: 0 7px 0 var(--bz-shadow-color);
+
+  /* shape */
+  --bz-radius-sm: 14px;
+  --bz-radius: 18px;
+  --bz-radius-lg: 28px;
+  --bz-radius-pill: 999px;
+
+  /* type */
+  --bz-font: 'Baloo 2', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+  --bz-text-sm: 16px;
+  --bz-text: 17px;
+  --bz-text-md: 20px;
+  --bz-text-lg: 28px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bz {
+    --bz-sky: #1e2447;
+    --bz-ink: #f6eeff;
+    --bz-muted: #c8bedb;
+    --bz-card: #2d3466;
+    --bz-soft: #262c58;
+    --bz-sun: #ffcf3a;
+    --bz-leaf: #5bd08a;
+    --bz-coral: #ff8a7d;
+    --bz-guide: #8c84b8;
+    --bz-on-accent: #1e2447;
+  }
+}

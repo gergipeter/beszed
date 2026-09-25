@@ -1,0 +1,50 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "name": "alma",
+      "accusative": "almát",
+      "emoji": "🍎"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "eper",
+      "accusative": "epret",
+      "emoji": "🍓"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "körte",
+      "accusative": "körtét",
+      "emoji": "🍐"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "banán",
+      "accusative": "banánt",
+      "emoji": "🍌"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "cseresznye",
+      "accusative": "cseresznyét",
+      "emoji": "🍒"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "narancs",
+      "accusative": "narancsot",
+      "emoji": "🍊"
+    }
+  }
+]

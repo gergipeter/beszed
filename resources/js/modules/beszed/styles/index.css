@@ -1,0 +1,8 @@
+/*
+ * Global styles of the module, imported once by BeszedLayout. Component styles
+ * live in each component's <style scoped>. Already self-host Baloo 2 in the host
+ * app? Drop the fonts import.
+ */
+@import './fonts.css';
+@import './tokens.css';
+@import './base.css';
