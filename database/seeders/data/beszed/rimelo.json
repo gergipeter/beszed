@@ -1,0 +1,21 @@
+[
+  { "level": 1, "payload": { "word": "ló", "emoji": "🐴", "rhyme": "ó" } },
+  { "level": 1, "payload": { "word": "hó", "emoji": "❄️", "rhyme": "ó" } },
+  { "level": 1, "payload": { "word": "tó", "emoji": "🏞️", "rhyme": "ó" } },
+  { "level": 1, "payload": { "word": "só", "emoji": "🧂", "rhyme": "ó" } },
+  { "level": 1, "payload": { "word": "kéz", "emoji": "✋", "rhyme": "éz" } },
+  { "level": 1, "payload": { "word": "méz", "emoji": "🍯", "rhyme": "éz" } },
+  { "level": 1, "payload": { "word": "sál", "emoji": "🧣", "rhyme": "ál" } },
+  { "level": 1, "payload": { "word": "tál", "emoji": "🥣", "rhyme": "ál" } },
+  { "level": 1, "payload": { "word": "kanál", "emoji": "🥄", "rhyme": "ál" } },
+  { "level": 1, "payload": { "word": "vár", "emoji": "🏰", "rhyme": "ár" } },
+  { "level": 1, "payload": { "word": "nyár", "emoji": "☀️", "rhyme": "ár" } },
+  { "level": 1, "payload": { "word": "tű", "emoji": "🪡", "rhyme": "ű" } },
+  { "level": 1, "payload": { "word": "fű", "emoji": "🌿", "rhyme": "ű" } },
+  { "level": 1, "payload": { "word": "egér", "emoji": "🐭", "rhyme": "ér" } },
+  { "level": 1, "payload": { "word": "kenyér", "emoji": "🍞", "rhyme": "ér" } },
+  { "level": 1, "payload": { "word": "szék", "emoji": "🪑", "rhyme": "ék" } },
+  { "level": 1, "payload": { "word": "kék", "emoji": "🔵", "rhyme": "ék" } },
+  { "level": 1, "payload": { "word": "virág", "emoji": "🌸", "rhyme": "ág" } },
+  { "level": 1, "payload": { "word": "világ", "emoji": "🌍", "rhyme": "ág" } }
+]

@@ -26,13 +26,17 @@ class BeszedTtsWarm extends Command
 
         BeszedContentItem::where('active', true)->get()->each(function ($it) use ($texts) {
             $p = $it->payload;
-            foreach (['word', 'text', 'good', 'bad'] as $k) {
+            foreach (['word', 'name', 'text', 'good', 'bad'] as $k) {
                 if (! empty($p[$k])) {
                     $texts->push($p[$k]);
                 }
             }
             foreach ($p['chunks'] ?? [] as $c) {
                 $texts->push($c);
+            }
+            // Válogató: [emoji, name] pairs per category.
+            foreach ($p['items'] ?? [] as [, $name]) {
+                $texts->push($name);
             }
         });
 

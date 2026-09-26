@@ -23,4 +23,8 @@ export const numberWord = n => active.numbers[n] ?? String(n)
 
 export const formatDate = value => (value ? new Date(value).toLocaleDateString(active.dateLocale) : '–')
 
+/** "2026-09-21" → "szept. 21." (a calendar day, no timezone shift). */
+export const formatDay = (isoDay, options = { month: 'short', day: 'numeric' }) =>
+  new Date(`${isoDay}T12:00:00`).toLocaleDateString(active.dateLocale, options)
+
 export const formatPercent = value => (value == null ? '–' : `${Math.round(value * 100)}%`)

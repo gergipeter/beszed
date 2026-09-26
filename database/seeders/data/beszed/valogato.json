@@ -1,0 +1,37 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "key": "allat", "label": "Állatok", "singular": "állat", "icon": "🐾",
+      "items": [["🐶", "kutya"], ["🐱", "cica"], ["🐰", "nyuszi"], ["🐸", "béka"], ["🐴", "ló"], ["🐷", "malac"], ["🐔", "tyúk"], ["🐟", "hal"]]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "key": "etel", "label": "Ételek", "singular": "étel", "icon": "🍽️",
+      "items": [["🍎", "alma"], ["🍌", "banán"], ["🍞", "kenyér"], ["🧀", "sajt"], ["🥕", "répa"], ["🍐", "körte"], ["🍪", "keksz"], ["🥛", "tej"]]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "key": "jarmu", "label": "Járművek", "singular": "jármű", "icon": "🚦",
+      "items": [["🚗", "autó"], ["🚌", "busz"], ["🚲", "bicikli"], ["🚂", "vonat"], ["✈️", "repülő"], ["🚢", "hajó"], ["🚜", "traktor"], ["🛴", "roller"]]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "key": "ruha", "label": "Ruhák", "singular": "ruha", "icon": "👚",
+      "items": [["👕", "póló"], ["👖", "nadrág"], ["🧦", "zokni"], ["🧢", "sapka"], ["👟", "cipő"], ["🧤", "kesztyű"], ["🧣", "sál"], ["👗", "szoknya"]]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "key": "jatek", "label": "Játékok", "singular": "játék", "icon": "🎁",
+      "items": [["🧸", "maci"], ["⚽", "labda"], ["🪁", "sárkány"], ["🎈", "lufi"], ["🪀", "jojó"], ["🎲", "dobókocka"], ["🪆", "baba"], ["🧩", "kirakó"]]
+    }
+  }
+]

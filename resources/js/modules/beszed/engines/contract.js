@@ -8,7 +8,11 @@
  *   const emit = defineEmits(engineEmits)
  *
  * Emits:
- *   answer({ correct, say? })  one try; `say` is the feedback sentence
+ *   answer({ correct, say?, tries? })
+ *                              one try; `say` is the feedback sentence. Engines where
+ *                              mistakes are part of play (puzzle, memory, sort) report
+ *                              only the win and grade it with `tries`: 1 = smooth,
+ *                              2 = some wasted moves, 3 = struggled (drives levels & medals).
  *   skip(say?)                 give up on this round
  *   say(text)                  Csillám says `text` (tapping a picture…)
  *   replay(parts?)             say the prompt again, or `parts` instead

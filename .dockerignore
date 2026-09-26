@@ -3,9 +3,18 @@
 .env
 .env.*
 !.env.example
+!.env.production.example
 node_modules
 vendor
+# Local data must never be baked into an image (a fresh volume is filled from the image on first start).
+storage/app/*
+database/*.sqlite
 storage/logs/*
 storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
+storage/framework/testing
+# Build artefacts and caches from the host; images build their own.
+bootstrap/cache/*.php
+public/build
+public/hot

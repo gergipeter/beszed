@@ -25,9 +25,15 @@ class AttemptController extends Controller
             'correct' => ['required', 'boolean'],
             'tries' => ['required', 'integer', 'min:1', 'max:50'],
             'duration_ms' => ['nullable', 'integer', 'min:0', 'max:3600000'],
+            // Sent when an answer given offline is uploaded later.
+            'played_at' => ['nullable', 'date', 'before_or_equal:now', 'after:-30 days'],
         ]);
 
-        BeszedAttempt::create($data + ['child_id' => $child->id]);
+        $attempt = new BeszedAttempt(collect($data)->except('played_at')->all() + ['child_id' => $child->id]);
+        if (isset($data['played_at'])) {
+            $attempt->created_at = $data['played_at'];
+        }
+        $attempt->save();
         $level = $leveler->record($child, $data['game'], $data['correct'], $data['tries']);
 
         return response()->json([

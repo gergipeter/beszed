@@ -49,6 +49,7 @@ function sayStimulus() {
     :emoji="data.stimulus.emoji"
     :label="data.stimulus.label"
     :highlight="Boolean(data.stimulus.highlight)"
+    :silhouette="Boolean(data.stimulus.silhouette)"
     :pressable="Boolean(data.stimulus.say)"
     @click="sayStimulus"
   />

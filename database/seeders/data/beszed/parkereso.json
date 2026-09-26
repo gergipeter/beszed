@@ -1,0 +1,18 @@
+[
+  { "level": 1, "payload": { "emoji": "🍎", "word": "alma" } },
+  { "level": 1, "payload": { "emoji": "🍌", "word": "banán" } },
+  { "level": 1, "payload": { "emoji": "🐶", "word": "kutya" } },
+  { "level": 1, "payload": { "emoji": "🐱", "word": "cica" } },
+  { "level": 1, "payload": { "emoji": "🐰", "word": "nyuszi" } },
+  { "level": 1, "payload": { "emoji": "🐟", "word": "hal" } },
+  { "level": 1, "payload": { "emoji": "🚗", "word": "autó" } },
+  { "level": 1, "payload": { "emoji": "🚂", "word": "vonat" } },
+  { "level": 1, "payload": { "emoji": "⚽", "word": "labda" } },
+  { "level": 1, "payload": { "emoji": "🎈", "word": "lufi" } },
+  { "level": 1, "payload": { "emoji": "☂️", "word": "esernyő" } },
+  { "level": 1, "payload": { "emoji": "🌙", "word": "hold" } },
+  { "level": 1, "payload": { "emoji": "⭐", "word": "csillag" } },
+  { "level": 1, "payload": { "emoji": "🍦", "word": "fagyi" } },
+  { "level": 1, "payload": { "emoji": "🧸", "word": "maci" } },
+  { "level": 1, "payload": { "emoji": "🌸", "word": "virág" } }
+]

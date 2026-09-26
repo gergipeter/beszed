@@ -1,0 +1,31 @@
+{
+	frankenphp
+}
+
+# SERVER_NAME = your domain (e.g. beszed.example.hu). Caddy gets and renews the
+# HTTPS certificate itself; "localhost" uses its own local CA (for testing).
+{$SERVER_NAME:localhost} {
+	root * /app/public
+	encode zstd br gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		# The recording page needs the microphone; nothing else does.
+		Permissions-Policy "camera=(), geolocation=(), microphone=(self)"
+		X-Frame-Options DENY
+		-Server
+		# Enable once the domain is final (browsers remember it for a year):
+		# Strict-Transport-Security "max-age=31536000"
+	}
+
+	# Fingerprinted Vite output never changes.
+	@hashed path /build/assets/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+	# The service worker must be re-checked on every visit.
+	@sw path /sw.js
+	header @sw Cache-Control "no-cache"
+
+	php_server
+}

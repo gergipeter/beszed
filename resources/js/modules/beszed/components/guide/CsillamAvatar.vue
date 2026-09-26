@@ -3,20 +3,40 @@ import { computed } from 'vue'
 import { config } from '../../config/options'
 import { t } from '../../i18n'
 import { useGuideStore } from '../../stores/guide'
+import { useRewardsStore } from '../../stores/rewards'
+import { ACCESSORY_ART } from './accessories'
 
 /**
- * Csillám the unicorn. Inline SVG on purpose: the mood animations (talking,
- * happy, sad, hop, party) drive the inner groups through the classes below.
+ * Csillám the unicorn. The drawing is inline SVG; the moods (talking, happy,
+ * sad, hop, party) switch its parts through the classes below.
+ *
+ * Smoothness on phones: browsers can't hand SVG-internal animations to the GPU,
+ * so everything that moves continuously lives on HTML layers around the SVG
+ * (whole-body bob/jump on the wrapper, sparkles and the talking mouth as
+ * overlays) and animates only transform/opacity. Inside the SVG only short,
+ * finite motions remain (clapping arms, drooping head).
  */
 const props = defineProps({
   name: { type: String, default: '' },
+  /** What she wears; left out = what the child chose (rewards), null = nothing. */
+  accessory: { type: String, default: undefined },
 })
 
+/** Sparkle positions in % of the drawing (from the original SVG coordinates) and size in % of its width. */
+const SPARKS = [
+  { left: 13, top: 18, size: 11.2, delay: 0 },
+  { left: 88, top: 11.7, size: 8.8, delay: 0.15 },
+  { left: 9, top: 67.6, size: 8, delay: 0.3 },
+  { left: 93, top: 53.2, size: 10.4, delay: 0.45 },
+]
+
 const guide = useGuideStore()
+const rewards = useRewardsStore()
+const worn = computed(() => ACCESSORY_ART[props.accessory === undefined ? rewards.accessory : props.accessory] ?? null)
 // Unique gradient id, in case two unicorns are ever on screen.
 const gradientId = `bz-horn-${Math.random().toString(36).slice(2, 8)}`
 const classes = computed(() => [
-  'uni',
+  'csillam',
   guide.mood !== 'idle' && guide.mood,
   { talking: guide.talking, party: guide.party },
 ])
@@ -24,14 +44,14 @@ const label = computed(() => t('guide.avatarLabel', { name: props.name || config
 </script>
 
 <template>
-  <svg :class="classes" viewBox="0 0 200 222" role="img" :aria-label="label">
-    <defs>
-      <linearGradient :id="gradientId" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#FFF1B8" />
-        <stop offset="1" stop-color="#F5B83D" />
-      </linearGradient>
-    </defs>
-    <g class="u-all">
+  <span :class="classes" role="img" :aria-label="label">
+    <svg class="uni" viewBox="0 0 200 222" aria-hidden="true">
+      <defs>
+        <linearGradient :id="gradientId" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFF1B8" />
+          <stop offset="1" stop-color="#F5B83D" />
+        </linearGradient>
+      </defs>
       <!-- tail -->
       <g>
         <circle cx="158" cy="180" r="14" fill="#FF9EC7" />
@@ -85,38 +105,65 @@ const label = computed(() => t('guide.avatarLabel', { name: props.name || config
           <path d="M69 84 L89 78 M131 84 L111 78" stroke="#3B1F4A" stroke-width="3.5" stroke-linecap="round" />
           <path d="M86 108 Q82 116 86 119 Q90 116 86 108 Z" fill="#7CC7FF" />
         </g>
-        <!-- muzzle + mouths -->
+        <!-- muzzle + mouths (the talking mouth is an HTML overlay, see .mouth) -->
         <ellipse cx="100" cy="124" rx="30" ry="19" fill="#FFD9EA" stroke="#5A3D6E" stroke-width="2.5" />
         <ellipse cx="91" cy="119" rx="3" ry="2.2" fill="#5A3D6E" opacity=".55" />
         <ellipse cx="109" cy="119" rx="3" ry="2.2" fill="#5A3D6E" opacity=".55" />
         <path class="m-smile" d="M90 130 Q100 138 110 130" stroke="#5A3D6E" stroke-width="3" fill="none" stroke-linecap="round" />
-        <ellipse class="m-talk" cx="100" cy="132" rx="6" ry="5" fill="#8A2E4E" />
         <path class="m-happy" d="M86 127 Q100 147 114 127 Z" fill="#8A2E4E" stroke="#5A3D6E" stroke-width="2.5" stroke-linejoin="round" />
         <path class="m-sad" d="M91 136 Q100 129 109 136" stroke="#5A3D6E" stroke-width="3" fill="none" stroke-linecap="round" />
+        <!-- accessory (moves with the head) -->
+        <text
+          v-if="worn"
+          class="u-accessory"
+          :x="worn.x"
+          :y="worn.y"
+          :font-size="worn.size"
+          :transform="`rotate(${worn.rotate} ${worn.x} ${worn.y})`"
+          text-anchor="middle"
+          dominant-baseline="central"
+        >{{ worn.char }}</text>
       </g>
 
-      <!-- arms -->
-      <g class="u-armL">
+    </svg>
+
+    <!-- composited overlays: arms (own layers so clapping runs on the GPU), mouth, sparkles -->
+    <!-- arms are HTML layers (not <g> inside the drawing), so clapping never forces a layout -->
+    <span class="arm arm--l" aria-hidden="true">
+      <svg viewBox="60 144 24 51">
         <rect x="62" y="146" width="20" height="46" rx="10" fill="#FFF7FC" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
         <rect x="62" y="180" width="20" height="13" rx="6" fill="#C9B6FF" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
-      </g>
-      <g class="u-armR">
+      </svg>
+    </span>
+    <span class="arm arm--r" aria-hidden="true">
+      <svg viewBox="116 144 24 51">
         <rect x="118" y="146" width="20" height="46" rx="10" fill="#FFF7FC" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
         <rect x="118" y="180" width="20" height="13" rx="6" fill="#C9B6FF" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
-      </g>
-
-      <!-- sparkles (happy) -->
-      <g class="u-spark" fill="#FFD84D">
-        <path transform="translate(26 40) scale(1.4)" d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" />
-        <path transform="translate(176 26) scale(1.1)" d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" />
-        <path transform="translate(18 150) scale(1)" d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" />
-        <path transform="translate(186 118) scale(1.3)" d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" />
-      </g>
-    </g>
-  </svg>
+      </svg>
+    </span>
+    <span class="mouth" aria-hidden="true" />
+    <span
+      v-for="(s, i) in SPARKS"
+      :key="i"
+      class="spark"
+      :style="{ left: `${s.left}%`, top: `${s.top}%`, width: `${s.size}%`, animationDelay: `${s.delay}s` }"
+      aria-hidden="true"
+    >
+      <svg viewBox="-8 -8 16 16"><path d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" fill="#FFD84D" /></svg>
+    </span>
+  </span>
 </template>
 
 <style scoped>
+.csillam {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* its own GPU layer: bobbing forever costs nothing on the main thread */
+  will-change: transform;
+  transform-origin: 50% 97%;
+  animation: bob 3s ease-in-out infinite;
+}
 .uni {
   display: block;
   width: 100%;
@@ -124,87 +171,113 @@ const label = computed(() => t('guide.avatarLabel', { name: props.name || config
   overflow: visible;
 }
 
-/* which face parts show per mood */
-.uni .e-happy,
-.uni .e-sad,
-.uni .m-talk,
-.uni .m-happy,
-.uni .m-sad,
-.uni .u-spark {
+/* which face parts show per mood (discrete switches, no per-frame cost) */
+.e-happy,
+.e-sad,
+.m-happy,
+.m-sad {
   display: none;
 }
-.uni.talking .m-smile {
+.csillam.talking .m-smile {
   display: none;
 }
-.uni.talking .m-talk {
-  display: inline;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: talk 0.2s infinite alternate;
-}
-.uni.happy .e-open,
-.uni.happy .m-smile,
-.uni.happy .m-talk,
-.uni.sad .e-open,
-.uni.sad .m-smile,
-.uni.sad .m-talk {
+.csillam.happy .e-open,
+.csillam.happy .m-smile,
+.csillam.sad .e-open,
+.csillam.sad .m-smile {
   display: none;
 }
-.uni.happy .e-happy,
-.uni.happy .m-happy,
-.uni.happy .u-spark,
-.uni.sad .e-sad,
-.uni.sad .m-sad {
+.csillam.happy .e-happy,
+.csillam.happy .m-happy,
+.csillam.sad .e-sad,
+.csillam.sad .m-sad {
   display: inline;
 }
 
-/* pivots */
-.u-all {
-  transform-box: view-box;
-  transform-origin: 100px 215px;
-  animation: bob 3s ease-in-out infinite;
+/* talking mouth: an HTML ellipse over the muzzle, scaled on the compositor */
+.mouth {
+  position: absolute;
+  left: 50%;
+  top: 59.5%;
+  display: none;
+  width: 6%;
+  height: 4.5%;
+  border-radius: 50%;
+  background: #8a2e4e;
+  transform: translate(-50%, -50%);
 }
-.u-armL {
-  transform-box: view-box;
-  transform-origin: 72px 150px;
+.csillam.talking:not(.happy):not(.sad) .mouth {
+  display: block;
+  animation: talk 0.2s ease-in-out infinite alternate;
 }
-.u-armR {
-  transform-box: view-box;
-  transform-origin: 128px 150px;
+
+/* sparkles (happy): HTML overlays, transform/opacity only */
+.spark {
+  position: absolute;
+  display: none;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
 }
+.spark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.csillam.happy .spark {
+  display: block;
+  animation: twinkle 0.6s ease-in-out infinite alternate;
+}
+
+/* whole-body moves on the wrapper (compositor) */
+.csillam.happy {
+  animation: jump 0.5s ease-out 3;
+}
+.csillam.hop {
+  animation: jump 0.5s ease-out 1;
+}
+.csillam.party.happy {
+  animation: jump 0.6s ease-out infinite;
+}
+
+/* arms: boxes match their viewBox in the 200×222 drawing; they rotate at the shoulder */
+.arm {
+  position: absolute;
+  top: 64.86%;
+  width: 12%;
+  height: 22.97%;
+  transform-origin: 50% 11.76%;
+}
+.arm svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.arm--l {
+  left: 30%;
+}
+.arm--r {
+  left: 58%;
+}
+.csillam.happy .arm--l {
+  animation: clapL 0.22s ease-in-out 8 alternate;
+}
+.csillam.happy .arm--r {
+  animation: clapR 0.22s ease-in-out 8 alternate;
+}
+
+/* the only motion left inside the drawing: a short head droop when sad */
 .u-head {
   transform-box: view-box;
   transform-origin: 100px 145px;
 }
-.u-spark {
-  animation: twinkle 0.6s ease-in-out infinite alternate;
-}
-
-/* moods */
-.uni.happy .u-all {
-  animation: jump 0.5s ease-out 3;
-}
-.uni.hop .u-all {
-  animation: jump 0.5s ease-out 1;
-}
-.uni.happy .u-armL {
-  animation: clapL 0.22s ease-in-out 8 alternate;
-}
-.uni.happy .u-armR {
-  animation: clapR 0.22s ease-in-out 8 alternate;
-}
-.uni.party.happy .u-all,
-.uni.party.happy .u-armL,
-.uni.party.happy .u-armR {
-  animation-iteration-count: infinite;
-}
-.uni.sad .u-head {
+.csillam.sad .u-head {
   animation: droop 1.3s ease-in-out forwards;
 }
 
 @keyframes bob {
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-1.8%);
   }
 }
 @keyframes jump {
@@ -213,7 +286,7 @@ const label = computed(() => t('guide.avatarLabel', { name: props.name || config
     transform: translateY(0);
   }
   40% {
-    transform: translateY(-20px) scale(1.04);
+    transform: translateY(-9%) scale(1.04);
   }
 }
 @keyframes clapL {
@@ -237,26 +310,26 @@ const label = computed(() => t('guide.avatarLabel', { name: props.name || config
 }
 @keyframes talk {
   from {
-    transform: scaleY(0.4);
+    transform: translate(-50%, -50%) scaleY(0.4);
   }
   to {
-    transform: scaleY(1.2);
+    transform: translate(-50%, -50%) scaleY(1.2);
   }
 }
 @keyframes twinkle {
   from {
     opacity: 0.4;
-    transform: scale(0.8);
+    transform: translate(-50%, -50%) scale(0.8);
   }
   to {
     opacity: 1;
-    transform: scale(1.1);
+    transform: translate(-50%, -50%) scale(1.1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .uni,
-  .uni * {
+  .csillam,
+  .csillam * {
     animation: none !important;
   }
 }

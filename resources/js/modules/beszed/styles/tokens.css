@@ -17,6 +17,11 @@
   --bz-on-bright: #3b1f4a;
   /* text on leaf / coral */
   --bz-on-accent: #ffffff;
+  /* turns a picture into its shadow (Árnyékkereső, locked stickers) */
+  --bz-silhouette: brightness(0) opacity(0.82);
+  /* parent charts: one series hue (validated: L band + ≥3:1 on the card, both themes), recessive grid */
+  --bz-chart: #6a4fc7;
+  --bz-chart-grid: #e6e9f2;
 
   /* depth: flat "sticker" shadows */
   --bz-shadow-color: rgba(59, 31, 74, 0.15);
@@ -50,5 +55,8 @@
     --bz-coral: #ff8a7d;
     --bz-guide: #8c84b8;
     --bz-on-accent: #1e2447;
+    --bz-silhouette: brightness(0) invert(0.9);
+    --bz-chart: #957ded;
+    --bz-chart-grid: #3b4379;
   }
 }

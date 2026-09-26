@@ -2,11 +2,15 @@
 import { t } from '../../i18n'
 import EmojiArt from './EmojiArt.vue'
 
-/** The big picture a round is about. `pressable` makes it a button (e.g. "say the word"). */
+/**
+ * The big picture a round is about. `pressable` makes it a button (e.g. "say the
+ * word"); `silhouette` shows only its shadow.
+ */
 defineProps({
   emoji: { type: String, required: true },
   label: { type: String, default: '' },
   highlight: { type: Boolean, default: false },
+  silhouette: { type: Boolean, default: false },
   pressable: { type: Boolean, default: false },
 })
 </script>
@@ -16,14 +20,14 @@ defineProps({
     v-if="pressable"
     type="button"
     class="picture"
-    :class="{ 'picture--highlight': highlight }"
+    :class="{ 'picture--highlight': highlight, 'picture--silhouette': silhouette }"
     :aria-label="label || t('common.picture')"
   >
-    <EmojiArt :char="emoji" />
+    <EmojiArt class="art" :char="emoji" />
     <small v-if="label" class="label">{{ label }}</small>
   </button>
-  <div v-else class="picture" :class="{ 'picture--highlight': highlight }" aria-hidden="true">
-    <EmojiArt :char="emoji" />
+  <div v-else class="picture" :class="{ 'picture--highlight': highlight, 'picture--silhouette': silhouette }" aria-hidden="true">
+    <EmojiArt class="art" :char="emoji" />
     <small v-if="label" class="label">{{ label }}</small>
   </div>
 </template>
@@ -48,6 +52,13 @@ button.picture:active {
   background: var(--bz-sun);
   color: var(--bz-on-bright);
   font-size: 80px;
+}
+.picture--silhouette {
+  padding: 22px 38px 18px;
+  font-size: 130px;
+}
+.picture--silhouette .art {
+  filter: var(--bz-silhouette);
 }
 .label {
   margin-top: 4px;

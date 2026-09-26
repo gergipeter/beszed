@@ -5,6 +5,13 @@ import { createBeszedRoutes } from './router/routes'
 export { createBeszedRoutes }
 export { registerEngine } from './engines'
 
+// UI kit, so host pages (sign-in, child picker) look like the module. They need
+// the module styles too: import './modules/beszed/styles/index.css' and wrap in .bz.
+export { default as BzButton } from './components/ui/BzButton.vue'
+export { default as BzNotice } from './components/ui/BzNotice.vue'
+export { default as CsillamAvatar } from './components/guide/CsillamAvatar.vue'
+export { default as EmojiArt } from './components/ui/EmojiArt.vue'
+
 /** Default routes, for `createRouter({ routes: [...yourRoutes, ...beszedRoutes] })`. */
 export const beszedRoutes = createBeszedRoutes()
 
@@ -15,6 +22,7 @@ export const beszedRoutes = createBeszedRoutes()
  *     http: myAxios,                   // the host's configured axios instance
  *     router,                          // registers the routes for you
  *     routes: { path: '/beszed', props: route => ({ childName: '…' }) },
+ *     exitTo: { name: 'children' },    // "Gyerekek" button on the hub
  *     guideName: 'Csillám',
  *     emoji: { baseUrl: '/vendor/twemoji/svg/' },
  *   })

@@ -1,0 +1,21 @@
+[
+  { "level": 1, "payload": { "emoji": "🐘", "name": "elefánt" } },
+  { "level": 1, "payload": { "emoji": "🦒", "name": "zsiráf" } },
+  { "level": 1, "payload": { "emoji": "🐢", "name": "teknős" } },
+  { "level": 1, "payload": { "emoji": "🦋", "name": "pillangó" } },
+  { "level": 1, "payload": { "emoji": "🐇", "name": "nyuszi" } },
+  { "level": 1, "payload": { "emoji": "🦆", "name": "kacsa" } },
+  { "level": 1, "payload": { "emoji": "🐌", "name": "csiga" } },
+  { "level": 1, "payload": { "emoji": "🐈", "name": "macska" } },
+  { "level": 1, "payload": { "emoji": "🐕", "name": "kutya" } },
+  { "level": 1, "payload": { "emoji": "🐓", "name": "kakas" } },
+  { "level": 1, "payload": { "emoji": "🦔", "name": "sün" } },
+  { "level": 1, "payload": { "emoji": "🐿️", "name": "mókus" } },
+  { "level": 1, "payload": { "emoji": "🚲", "name": "bicikli" } },
+  { "level": 1, "payload": { "emoji": "✂️", "name": "olló" } },
+  { "level": 1, "payload": { "emoji": "🔑", "name": "kulcs" } },
+  { "level": 1, "payload": { "emoji": "☂️", "name": "esernyő" } },
+  { "level": 1, "payload": { "emoji": "🎸", "name": "gitár" } },
+  { "level": 1, "payload": { "emoji": "🍌", "name": "banán" } },
+  { "level": 1, "payload": { "emoji": "✈️", "name": "repülő" } }
+]

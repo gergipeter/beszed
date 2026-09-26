@@ -10,6 +10,12 @@ const defaults = {
   guideName: 'Csillám',
 
   /**
+   * Where the hub's "Gyerekek" button leads, e.g. the host app's child picker
+   * (`{ name: 'children' }`). null = no button.
+   */
+  exitTo: null,
+
+  /**
    * Optional emoji image set, so pictures look the same on every device.
    * Twemoji-style file names (`1f41d.svg`), e.g. `{ baseUrl: '/vendor/twemoji/svg/' }`.
    * `null` = the device's own emoji font. Missing images fall back to it too.
@@ -18,6 +24,9 @@ const defaults = {
 
   /** Browser Web Speech fallback voice. */
   voice: { lang: 'hu-HU', rate: 0.85, pitch: 1.15 },
+
+  /** Synthesised sound effects (chime, fanfare…); volume 0–1. */
+  sfx: { enabled: true, volume: 0.8 },
 
   timing: {
     /** Csillám offers help when nothing is tapped for this long. */

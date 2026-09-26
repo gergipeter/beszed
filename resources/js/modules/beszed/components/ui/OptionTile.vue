@@ -57,15 +57,16 @@ defineProps({
 .option--scene {
   padding: 6px;
 }
+/* Up to 8 items, 3 per row, inside the circle's inscribed square (~70% of it). */
 .option--plate {
   flex-direction: row;
   flex-wrap: wrap;
   align-content: center;
-  gap: 4px;
+  gap: 2px 4px;
   aspect-ratio: 1;
-  padding: 22%;
+  padding: 15%;
   border-radius: 50%;
-  font-size: 34px;
+  font-size: clamp(20px, 6.2vw, 38px);
 }
 .art {
   font-size: clamp(48px, 11vw, 72px);

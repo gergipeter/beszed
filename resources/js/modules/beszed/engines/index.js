@@ -11,6 +11,9 @@ const loaders = {
   tapcount: () => import('./tapcount/TapCountEngine.vue'),
   trace: () => import('./trace/TraceEngine.vue'),
   judged: () => import('./judged/JudgedEngine.vue'),
+  puzzle: () => import('./puzzle/PuzzleEngine.vue'),
+  memory: () => import('./memory/MemoryEngine.vue'),
+  sort: () => import('./sort/SortEngine.vue'),
 }
 
 /** Engines already downloaded, as plain components (render with no async gap). */

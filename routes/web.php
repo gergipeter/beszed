@@ -1,13 +1,16 @@
 <?php
 
+use App\Http\Controllers\Auth\DemoLoginController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\SpaController;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
-Route::get('/{path?}', function () {
-    if (app()->isLocal()) {
-        Auth::login(User::query()->where('email', 'parent@example.test')->firstOrFail());
-    }
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
+Route::post('/auth/demo', DemoLoginController::class)->middleware('throttle:10,1')->name('auth.demo');
+Route::post('/logout', LogoutController::class)->name('logout');
 
-    return view('app');
-})->where('path', '.*');
+// Every other page URL is the Vue app; it decides between sign-in and the games.
+Route::get('/login', SpaController::class)->name('login');
+Route::get('/{path?}', SpaController::class)->where('path', '^(?!api/|auth/|up$|build/|storage/).*')->name('spa');

@@ -36,6 +36,34 @@
   text-decoration: none;
 }
 
+/* Phones: a long press on a game button must not select text or open the iOS callout menu. */
+:where(.bz) :where(button, a, [role='img']) {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/*
+ * Confetti layer (services/effects/confetti.js). Appended to <body>, so outside
+ * .bz; the pieces are animated with the Web Animations API (compositor).
+ */
+.bz-confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bz-confetti i {
+  position: absolute;
+  top: -4vh;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bz-confetti {
+    display: none;
+  }
+}
+
 .bz :focus-visible {
   outline: 4px solid var(--bz-coral);
   outline-offset: 3px;

@@ -1,0 +1,38 @@
+# Production on a server with a domain name pointing at it (A/AAAA record):
+#
+#   cp .env.production.example .env.production   # fill it in
+#   docker compose -f compose.prod.yaml up -d --build
+#
+# Caddy (inside FrankenPHP) gets the HTTPS certificate for SERVER_NAME automatically;
+# ports 80 and 443 must be reachable from the internet. Data lives in the volumes.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/production/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    env_file: .env.production
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      LOG_CHANNEL: stderr
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /app/storage/app/database.sqlite
+      SESSION_DRIVER: file
+      SESSION_SECURE_COOKIE: "true"
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+      FILESYSTEM_DISK: local
+    volumes:
+      - storage:/app/storage
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  storage:
+  caddy_data:
+  caddy_config:

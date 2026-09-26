@@ -1,0 +1,16 @@
+[
+  { "level": 1, "payload": { "emoji": "🐸", "name": "béka" } },
+  { "level": 1, "payload": { "emoji": "🦁", "name": "oroszlán" } },
+  { "level": 1, "payload": { "emoji": "🐼", "name": "panda" } },
+  { "level": 1, "payload": { "emoji": "🦄", "name": "egyszarvú" } },
+  { "level": 1, "payload": { "emoji": "🐙", "name": "polip" } },
+  { "level": 1, "payload": { "emoji": "🦋", "name": "pillangó" } },
+  { "level": 1, "payload": { "emoji": "🐢", "name": "teknős" } },
+  { "level": 1, "payload": { "emoji": "🍓", "name": "eper" } },
+  { "level": 1, "payload": { "emoji": "🍉", "name": "görögdinnye" } },
+  { "level": 1, "payload": { "emoji": "🌻", "name": "napraforgó" } },
+  { "level": 1, "payload": { "emoji": "🏠", "name": "ház" } },
+  { "level": 1, "payload": { "emoji": "🚗", "name": "autó" } },
+  { "level": 1, "payload": { "emoji": "🚀", "name": "rakéta" } },
+  { "level": 1, "payload": { "emoji": "🌈", "name": "szivárvány" } }
+]

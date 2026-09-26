@@ -26,6 +26,7 @@ const withBase = options => ({ ...options, baseURL: config.apiBase })
 export const http = {
   get: (url, options) => client().get(url, withBase(options)).then(r => r.data),
   post: (url, body, options) => client().post(url, body, withBase(options)).then(r => r.data),
+  put: (url, body, options) => client().put(url, body, withBase(options)).then(r => r.data),
   delete: (url, options) => client().delete(url, withBase(options)).then(r => r.data),
 }
 
