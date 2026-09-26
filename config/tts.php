@@ -17,5 +17,15 @@ return [
         'pitch' => env('TTS_PITCH', '+8%'),
     ],
 
+    // Voices the parent can pick in Settings; each key matches a Hungarian Azure neural voice.
+    'voices' => [
+        'noemi' => ['name' => 'hu-HU-NoemiNeural', 'label' => 'Noémi', 'gender' => 'female'],
+        'tamas' => ['name' => 'hu-HU-TamasNeural', 'label' => 'Tamás', 'gender' => 'male'],
+    ],
+
+    // Rate/pitch range the parent's sliders may pick from (SSML percentages).
+    'rate_range' => ['min' => -40, 'max' => 20],
+    'pitch_range' => ['min' => -20, 'max' => 30],
+
     'max_chars' => 400,
 ];

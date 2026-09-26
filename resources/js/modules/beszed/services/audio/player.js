@@ -10,17 +10,33 @@ let element = null
 /** Settles the playback in progress; set while something is playing. */
 let settle = null
 let unlocked = false
+let volume = 1
 
-const audio = () => (element ??= new Audio())
+function audio() {
+  if (!element) {
+    element = new Audio()
+    element.volume = volume
+  }
+  return element
+}
+
+/** 0–1; applied immediately, including to whatever is playing right now. */
+export function setVolume(v) {
+  volume = Math.min(1, Math.max(0, v))
+  if (element) element.volume = volume
+}
 
 /**
  * Plays `url`. Resolves true when it ends, false on error, when the browser
  * refuses, or when interrupted by another `playAudio()` / `stopAudio()`.
+ * @param {string} url
+ * @param {{ rate?: number }} [options] Playback rate, e.g. 0.7 for a slower replay.
  * @returns {Promise<boolean>}
  */
-export function playAudio(url) {
+export function playAudio(url, { rate = 1 } = {}) {
   settle?.(false)
   const el = audio()
+  el.playbackRate = rate
 
   return new Promise(resolve => {
     const finish = ok => {

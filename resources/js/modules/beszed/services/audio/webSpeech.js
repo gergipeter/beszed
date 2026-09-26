@@ -8,6 +8,12 @@ const QUALITY = /enhanced|premium|továbbfejlesztett|prémium|natural|neural|onl
 /** undefined = not chosen yet; null = no voice for the language (browser default). */
 let cachedVoice
 let primed = false
+let volume = 1
+
+/** 0–1; applied to the next utterance onward (Web Speech has no persistent volume). */
+export function setWebSpeechVolume(v) {
+  volume = Math.min(1, Math.max(0, v))
+}
 
 // Chrome loads its voice list asynchronously; choose again once it arrives.
 synth?.addEventListener?.('voiceschanged', () => (cachedVoice = undefined))
@@ -41,6 +47,7 @@ export function speakWebSpeech(text, { lang, rate, pitch, isCurrent }) {
       utterance.lang = lang
       utterance.rate = rate
       utterance.pitch = pitch
+      utterance.volume = volume
       if (voice) utterance.voice = voice
 
       let done = false

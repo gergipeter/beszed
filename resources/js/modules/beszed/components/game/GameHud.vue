@@ -13,7 +13,7 @@ defineProps({
   showProgress: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['exit', 'replay'])
+const emit = defineEmits(['exit', 'replay', 'replaySlow'])
 </script>
 
 <template>
@@ -34,6 +34,7 @@ const emit = defineEmits(['exit', 'replay'])
       <EmojiArt :char="ICONS.star" /> {{ stars }}
     </span>
     <BzIconButton :icon="ICONS.speaker" :label="t('game.replayLabel')" @click="emit('replay')" />
+    <BzIconButton :icon="ICONS.turtle" :label="t('game.replaySlowLabel')" @click="emit('replaySlow')" />
   </div>
 </template>
 

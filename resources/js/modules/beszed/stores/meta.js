@@ -16,6 +16,7 @@ export const useMetaStore = defineStore('beszed/meta', {
     games: state => state.meta?.games ?? [],
     lines: state => state.meta?.lines ?? [],
     serverTts: state => Boolean(state.meta?.serverTts),
+    serverStt: state => Boolean(state.meta?.serverStt),
     game: state => id => state.meta?.games.find(g => g.id === id) ?? null,
     /** Built-in `praise` / `retry` sentences. */
     phrases: state => kind => state.meta?.[kind] ?? [],

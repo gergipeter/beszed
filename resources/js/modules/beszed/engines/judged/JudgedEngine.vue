@@ -1,14 +1,20 @@
 <script setup>
 import { ref } from 'vue'
+import { assessPronunciation } from '../../api'
 import BzButton from '../../components/ui/BzButton.vue'
 import PictureCard from '../../components/ui/PictureCard.vue'
+import { useRecorder } from '../../composables/useRecorder'
 import { useTimers } from '../../composables/useTimers'
 import { ICONS } from '../../config/icons'
 import { t } from '../../i18n'
+import { useMetaStore } from '../../stores/meta'
+import { errorMessage } from '../../utils/errors'
 import { engineEmits, engineProps } from '../contract'
 
 /**
- * The child repeats a sentence out loud; the parent judges it (Mondd utánam).
+ * The child repeats a sentence out loud. When server pronunciation assessment
+ * is configured it scores the attempt automatically; otherwise (or if it fails,
+ * or the mic isn't available) the parent judges it by ear, as before.
  * "Darabonként" says it chunk by chunk, then all in one go.
  * data: JudgedData
  */
@@ -20,6 +26,40 @@ const CHUNKS_DELAY_MS = 2400
 const chunk = ref(0)
 const showSkip = ref(false)
 const { later } = useTimers()
+
+const meta = useMetaStore()
+const { supported: micSupported, recordingKey, start, stop } = useRecorder()
+const assessing = ref(false)
+const assessError = ref('')
+
+function scoreOf(tries) {
+  return tries <= 1 ? t('judged.approved') : t('judged.together')
+}
+
+async function submitAttempt(blob, ext) {
+  assessing.value = true
+  assessError.value = ''
+  try {
+    const result = await assessPronunciation(props.data.text, blob, `mondd.${ext}`)
+    if (!result.available) {
+      assessError.value = t('judged.micUnavailable', { folder: ICONS.folder })
+      return
+    }
+    emit('answer', { correct: result.correct, say: scoreOf(result.tries), tries: result.tries })
+  } catch (e) {
+    assessError.value = errorMessage(e, t('judged.micUnavailable', { folder: ICONS.folder }))
+  } finally {
+    assessing.value = false
+  }
+}
+
+async function toggleRecording() {
+  if (props.locked || assessing.value) return
+  if (recordingKey.value) return stop()
+  assessError.value = ''
+  const started = await start('mondd', submitAttempt)
+  if (!started) assessError.value = t('judged.micUnavailable', { folder: ICONS.folder })
+}
 
 function sayNextChunk() {
   const chunks = props.data.chunks
@@ -52,6 +92,21 @@ function notYet() {
       {{ chunk ? `${chunk}/${data.chunks.length}` : t('judged.byChunks') }}
     </BzButton>
   </div>
+  <template v-if="meta.serverStt && micSupported">
+    <div class="bz-row">
+      <BzButton
+        variant="primary"
+        :icon="recordingKey ? ICONS.stop : ICONS.mic"
+        :pulse="Boolean(recordingKey)"
+        :disabled="assessing"
+        @click="toggleRecording"
+      >
+        {{ assessing ? t('judged.scoring') : recordingKey ? t('judged.recording') : t('judged.recordAttempt') }}
+      </BzButton>
+    </div>
+    <p v-if="assessError" class="parent-hint">{{ assessError }}</p>
+  </template>
+
   <p class="parent-hint">{{ t('judged.parentHint') }}</p>
   <div class="bz-row">
     <BzButton variant="primary" :icon="ICONS.thumbsUp" @click="approve">{{ t('judged.approve') }}</BzButton>
