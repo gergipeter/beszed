@@ -122,6 +122,10 @@ export default {
 
   memory: {
     card: '{n}. kártya',
+    easy: 'Könnyű',
+    medium: 'Közepesen nehéz',
+    hard: 'Nehéz',
+    difficulty: 'Szint: {level}',
   },
 
   sort: {

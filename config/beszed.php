@@ -93,7 +93,7 @@ return [
         'parkereso' => [
             'name' => 'Párkereső', 'emoji' => '🃏', 'skill' => 'Emlékezet és szókincs', 'color' => '#C7E9FF',
             'factory' => Rounds\ParkeresoRounds::class, 'rounds' => 2,
-            // level = number of pairs
+            // level = number of pairs; can also include difficulty: easy, medium, hard
             'adaptive' => [
                 'min' => 3, 'max' => 6, 'start' => 3, 'up_after' => 2,
                 'starts_by_age' => ['3-4' => 3, '5-6' => 4, '7+' => 5],
@@ -197,6 +197,8 @@ return [
             'speaker' => ['name' => 'Szószóló', 'emoji' => '🎤', 'hint' => 'Játssz ötször a Mondd utánammal!', 'rule' => ['game', 'mondd', 5]],
             'path_1' => ['name' => 'Kalandor', 'emoji' => '🗺️', 'hint' => 'Járd végig Csillám mai kalandját!', 'rule' => ['daily_path', 1]],
             'path_7' => ['name' => 'Kalandmester', 'emoji' => '🏕️', 'hint' => 'Járj végig hét napi kalandot!', 'rule' => ['daily_path', 7], 'email' => true],
+            'memory_easy' => ['name' => 'Memória kezdő', 'emoji' => '🧠', 'hint' => 'Játssz a Párkereső könnyű szintjén!', 'rule' => ['game', 'parkereso', 1]],
+            'memory_hard' => ['name' => 'Memória mester', 'emoji' => '🧠‍💨', 'hint' => 'Játssz a Párkereső nehéz szintjén és nyerj!', 'rule' => ['game', 'parkereso', 3]],
         ],
 
         /*

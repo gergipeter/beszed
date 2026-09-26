@@ -11,12 +11,21 @@ import { engineEmits, engineProps } from '../contract'
  * Memory (Párkereső): flip two cards; a pair stays open. Every flipped card
  * says its word, so the game also builds vocabulary. The win is graded by
  * mismatches relative to the number of pairs.
- * data: MemoryData
+ * data: MemoryData - can include difficulty: 'easy' | 'medium' | 'hard'
  */
 const props = defineProps(engineProps)
 const emit = defineEmits(engineEmits)
 
-const FLIP_BACK_MS = 1100
+// Difficulty settings: affects flip-back timing and grading threshold
+const DIFFICULTY_SETTINGS = {
+  easy: { flipBackMs: 1400, mismatchThresholds: [999, 999] },
+  medium: { flipBackMs: 1100, mismatchThresholds: [1, 2] },
+  hard: { flipBackMs: 800, mismatchThresholds: [0, 1] },
+}
+
+const difficulty = computed(() => props.data.difficulty || 'medium')
+const settings = computed(() => DIFFICULTY_SETTINGS[difficulty.value])
+const FLIP_BACK_MS = computed(() => settings.value.flipBackMs)
 const WIN_DELAY_MS = 700
 
 /** ids of the face-up, not yet matched cards (0–2) */
@@ -29,7 +38,10 @@ const pairs = computed(() => props.data.cards.length / 2)
 const columns = computed(() => (props.data.cards.length <= 6 ? 3 : 4))
 const byId = computed(() => Object.fromEntries(props.data.cards.map(c => [c.id, c])))
 const faceUp = card => matched.has(card.pair) || open.value.includes(card.id)
-const grade = () => (mismatches <= pairs.value ? 1 : mismatches <= 2 * pairs.value ? 2 : 3)
+const grade = () => {
+  const [t1, t2] = settings.value.mismatchThresholds
+  return mismatches <= t1 ? 1 : mismatches <= t2 ? 2 : 3
+}
 
 function flip(card) {
   if (props.locked || open.value.length === 2 || faceUp(card)) return
@@ -48,12 +60,14 @@ function flip(card) {
     return
   }
   mismatches++
-  later(() => (open.value = []), FLIP_BACK_MS)
+  later(() => (open.value = []), FLIP_BACK_MS.value)
 }
 </script>
 
 <template>
-  <div class="cards" :class="`cards--${columns}`">
+  <div class="memory-container">
+    <div class="difficulty-label">{{ t(`memory.${difficulty}`) }}</div>
+    <div class="cards" :class="`cards--${columns}`">
     <button
       v-for="(card, i) in data.cards"
       :key="card.id"
@@ -71,10 +85,27 @@ function flip(card) {
         </span>
       </span>
     </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.memory-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.difficulty-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--bz-muted);
+  opacity: 0.8;
+}
+
 .cards {
   display: grid;
   gap: 10px;
