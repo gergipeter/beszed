@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { fetchDailyPath, fetchSpotlight } from '../api'
 import GuideBubble from '../components/guide/GuideBubble.vue'
@@ -9,7 +9,6 @@ import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import StreakHistory from '../components/rewards/StreakHistory.vue'
 import BzButton from '../components/ui/BzButton.vue'
-import DevPanel from '../components/dev/DevPanel.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
 import { config } from '../config/options'
@@ -23,6 +22,15 @@ const meta = useMetaStore()
 const rewards = useRewardsStore()
 const guide = useGuideStore()
 const router = useRouter()
+
+// DEV MODE
+const showDevMode = ref(false)
+const devDifficulty = ref(localStorage.getItem('dev-difficulty') || 'auto')
+
+// Persist dev difficulty to localStorage
+watch(devDifficulty, (val) => {
+  localStorage.setItem('dev-difficulty', val)
+})
 
 function greet() {
   guide.unlock()
@@ -55,6 +63,29 @@ function play(game) {
 </script>
 
 <template>
+  <!-- DEV MODE BUTTON -->
+  <button
+    class="dev-mode-btn"
+    @click="showDevMode = !showDevMode"
+    title="Toggle dev mode"
+    style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 8px 12px; background: #222; border: 2px solid #0f0; color: #0f0; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;"
+  >
+    ⚙️ DEV {{ showDevMode ? '✓' : '' }}
+  </button>
+
+  <div v-if="showDevMode" class="dev-mode-panel" style="position: fixed; bottom: 70px; right: 20px; width: 300px; background: #1a1a1a; border: 2px solid #0f0; border-radius: 8px; padding: 16px; color: #0f0; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto; z-index: 9999; box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);">
+    <h3 style="margin: 0 0 12px; border-bottom: 1px solid #0f0; padding-bottom: 8px;">🎮 DEV PANEL</h3>
+    <p style="margin: 0 0 8px; font-size: 10px; color: #888;">Memory Game Difficulty Override:</p>
+    <select v-model="devDifficulty" style="width: 100%; padding: 6px; background: #0a0a0a; border: 1px solid #0f0; color: #0f0; border-radius: 4px; margin-bottom: 12px; font-family: monospace;">
+      <option value="auto">Auto (by level)</option>
+      <option value="easy">Easy (Könnyű)</option>
+      <option value="medium">Medium (Közepesen nehéz)</option>
+      <option value="hard">Hard (Nehéz)</option>
+    </select>
+    <p style="margin: 0; font-size: 10px; color: #888;">Current: <strong>{{ devDifficulty }}</strong></p>
+    <p style="margin: 8px 0 0; font-size: 10px; color: #888;">ℹ️ Refresh page after changes</p>
+  </div>
+
   <GuideBubble tag="header" size="lg" :name="guideName" :avatar-label="t('hub.greetLabel', { guide: guideName })" @press="greet">
     <h1 class="hello">{{ childName ? t('hub.helloNamed', { child: childName }) : t('hub.hello') }}</h1>
     <p class="intro">{{ t('hub.intro', { guide: guideName }) }}</p>
@@ -95,8 +126,6 @@ function play(game) {
     </BzButton>
     <BzButton v-if="config.exitTo" :to="config.exitTo" :icon="ICONS.family">{{ t('hub.exit') }}</BzButton>
   </nav>
-
-  <DevPanel />
 </template>
 
 <style scoped>
