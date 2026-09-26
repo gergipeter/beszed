@@ -77,17 +77,13 @@ class ContentController extends Controller
     public function destroy(string $game, BeszedContentItem $item): JsonResponse
     {
         $this->ownItem($game, $item);
-        $before = $item->only('level', 'payload', 'active', 'status');
+        $result = $this->deactivateOrDelete($item, request());
 
-        if ($this->uses($item) === 0 && $item->source === 'admin') {
-            $this->audit($item, 'deleted', $before, null, request());
-            $item->delete();
-
-            return response()->json(['deleted' => true]);
+        if ($result['deleted']) {
+            return response()->json($result);
         }
 
-        $item->update(['active' => false, 'edited_at' => now()]);
-        $this->audit($item, 'deactivated', $before, $item->only('level', 'payload', 'active', 'status'), request());
+        $item->refresh();
 
         return response()->json(['deleted' => false, 'item' => $this->present($item, $this->uses($item))]);
     }
@@ -101,14 +97,8 @@ class ContentController extends Controller
             'payload' => ['required', 'array'],
         ]);
 
-        // Only the schema's fields, trimmed; unknown keys never reach the games.
-        $fields = config("beszed_content.schemas.$game.fields");
-        $payload = collect($fields)->keys()
-            ->filter(fn ($f) => array_key_exists($f, $data['payload']))
-            ->mapWithKeys(fn ($f) => [$f => $this->clean($data['payload'][$f])])
-            ->all();
-
-        $errors = ContentRules::check($game, $payload) ?: $this->duplicate($game, $payload, $except);
+        $payload = $this->buildPayload($game, $data['payload']);
+        $errors = $this->validateAndDuplicate($game, $payload, $except);
         if ($errors) {
             throw ValidationException::withMessages(collect($errors)->mapWithKeys(fn ($m, $f) => ["payload.$f" => $m])->all());
         }
@@ -177,5 +167,164 @@ class ContentController extends Controller
             'before' => $before,
             'after' => $after,
         ]);
+    }
+
+    /** Build and validate payload from raw input; returns cleaned array or throws ValidationException. */
+    private function buildPayload(string $game, array $payloadInput): array
+    {
+        $fields = config("beszed_content.schemas.$game.fields");
+        return collect($fields)->keys()
+            ->filter(fn ($f) => array_key_exists($f, $payloadInput))
+            ->mapWithKeys(fn ($f) => [$f => $this->clean($payloadInput[$f])])
+            ->all();
+    }
+
+    /** Validate payload against rules and duplicates; returns error map or null if valid. */
+    private function validateAndDuplicate(string $game, array $payload, ?int $except = null): ?array
+    {
+        $errors = ContentRules::check($game, $payload);
+        if ($errors) {
+            return $errors;
+        }
+
+        return $this->duplicate($game, $payload, $except) ?: null;
+    }
+
+    /** Hard-delete if unused+admin-sourced, else soft-deactivate; performs audit and returns response array. */
+    private function deactivateOrDelete(BeszedContentItem $item, Request $request): array
+    {
+        $before = $item->only('level', 'payload', 'active', 'status');
+
+        if ($this->uses($item) === 0 && $item->source === 'admin') {
+            $this->audit($item, 'deleted', $before, null, $request);
+            $item->delete();
+
+            return ['id' => $item->id, 'deleted' => true];
+        }
+
+        $item->update(['active' => false, 'edited_at' => now()]);
+        $this->audit($item, 'deactivated', $before, $item->only('level', 'payload', 'active', 'status'), $request);
+
+        return ['id' => $item->id, 'deleted' => false];
+    }
+
+    /** Export items as CSV for a game. */
+    public function export(string $game): \Illuminate\Http\Response
+    {
+        $this->knownGame($game);
+
+        $items = BeszedContentItem::where('game', $game)->orderBy('id')->get();
+        $fields = config("beszed_content.schemas.$game.fields");
+
+        return response()->streamDownload(function () use ($items, $fields) {
+            $out = fopen('php://output', 'w');
+
+            $header = ['id', 'level', 'active', 'status', 'source', ...array_keys($fields)];
+            fputcsv($out, $header);
+
+            foreach ($items as $item) {
+                $row = [$item->id, $item->level, (int) $item->active, $item->status, $item->source];
+
+                foreach ($fields as $key => $spec) {
+                    $value = $item->payload[$key] ?? null;
+                    $row[] = match ($spec['type']) {
+                        'list', 'emoji_list' => implode(';', $value ?? []),
+                        'pairs' => implode(';', array_map(fn ($p) => "{$p[0]}:{$p[1]}", $value ?? [])),
+                        default => $value,
+                    };
+                }
+
+                fputcsv($out, $row);
+            }
+
+            fclose($out);
+        }, "{$game}.csv");
+    }
+
+    /** Import items from CSV for a game; returns per-row result summary. */
+    public function import(Request $request, string $game): JsonResponse
+    {
+        $this->knownGame($game);
+        $data = $request->validate(['file' => ['required', 'file', 'mimes:csv,txt']]);
+
+        $results = ['imported' => 0, 'errors' => []];
+        $fields = config("beszed_content.schemas.$game.fields");
+
+        $handle = fopen($data['file']->getRealPath(), 'r');
+        $header = fgetcsv($handle);
+
+        $rowNum = 2;
+        while (($row = fgetcsv($handle)) !== false) {
+            $mapped = array_combine($header, $row);
+            $payload = [];
+
+            foreach ($fields as $key => $spec) {
+                if (!isset($mapped[$key])) {
+                    continue;
+                }
+
+                $val = $mapped[$key];
+                $payload[$key] = match ($spec['type']) {
+                    'list', 'emoji_list' => $val ? explode(';', $val) : [],
+                    'pairs' => $val ? array_map(fn ($p) => explode(':', $p, 2), explode(';', $val)) : [],
+                    default => $val,
+                };
+            }
+
+            $errs = $this->validateAndDuplicate($game, $payload);
+            if ($errs) {
+                $results['errors'][] = ['row' => $rowNum, 'errors' => $errs];
+                $rowNum++;
+                continue;
+            }
+
+            $item = BeszedContentItem::create([
+                'game' => $game,
+                'level' => (int) ($mapped['level'] ?? 1),
+                'payload' => $payload,
+                'active' => (bool) ($mapped['active'] ?? true),
+                'source' => 'admin',
+                'edited_at' => now(),
+                'status' => 'draft',
+            ]);
+
+            $this->audit($item, 'created', null, $item->only('level', 'payload', 'active', 'status'), $request);
+            $results['imported']++;
+            $rowNum++;
+        }
+
+        fclose($handle);
+
+        return response()->json($results);
+    }
+
+    /** Bulk activate/deactivate/delete items. */
+    public function bulk(Request $request, string $game): JsonResponse
+    {
+        $this->knownGame($game);
+        $data = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer'],
+            'action' => ['required', Rule::in(['activate', 'deactivate', 'delete'])],
+        ]);
+
+        $items = BeszedContentItem::where('game', $game)->whereIn('id', $data['ids'])->get();
+        $results = [];
+
+        foreach ($items as $item) {
+            match ($data['action']) {
+                'activate' => (
+                    $item->update(['active' => true, 'edited_at' => now()]),
+                    $this->audit($item, 'updated', ['active' => false], ['active' => true], $request)
+                ),
+                'deactivate' => (
+                    $item->update(['active' => false, 'edited_at' => now()]),
+                    $this->audit($item, 'updated', ['active' => true], ['active' => false], $request)
+                ),
+                'delete' => $results[] = $this->deactivateOrDelete($item, $request),
+            };
+        }
+
+        return response()->json(['results' => $results]);
     }
 }

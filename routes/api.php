@@ -23,6 +23,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'can:edit-content'])->prefix('admin/content')->name('admin.content.')->group(function () {
     Route::get('/', [ContentController::class, 'games'])->name('games');
     Route::post('images', [ContentImageController::class, 'store'])->name('images.store');
+    Route::get('{game}/export', [ContentController::class, 'export'])->name('export');
+    Route::post('{game}/import', [ContentController::class, 'import'])->name('import');
+    Route::post('{game}/bulk', [ContentController::class, 'bulk'])->name('bulk');
     Route::get('{game}', [ContentController::class, 'index'])->name('index');
     Route::post('{game}', [ContentController::class, 'store'])->name('store');
     Route::put('{game}/{item}', [ContentController::class, 'update'])->name('update');
