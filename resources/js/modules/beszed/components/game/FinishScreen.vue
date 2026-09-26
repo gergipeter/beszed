@@ -3,7 +3,7 @@ import { onMounted, watch } from 'vue'
 import { useTimers } from '../../composables/useTimers'
 import { ICONS } from '../../config/icons'
 import { t } from '../../i18n'
-import { fanfare, levelUp, sparkle } from '../../services/audio/sfx'
+import { applause, fanfare, levelUp, sparkle } from '../../services/audio/sfx'
 import { confetti } from '../../services/effects/confetti'
 import CsillamAvatar from '../guide/CsillamAvatar.vue'
 import LevelBar from '../rewards/LevelBar.vue'
@@ -32,6 +32,7 @@ const { later } = useTimers()
 onMounted(() => {
   fanfare()
   confetti({ pieces: 45 })
+  later(applause, 500)
 })
 
 // The rewards arrive a moment later (server round trip): celebrate what they brought.

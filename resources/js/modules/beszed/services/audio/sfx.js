@@ -88,3 +88,39 @@ export function levelUp() {
     note(1568, 0.58, 0.7, { gain: 0.12 })
   })
 }
+
+/** Loud applause: multiple claps with crowd noise. */
+export function applause() {
+  play(() => {
+    const ctx = audio()
+    if (!ctx) return
+    const start = ctx.currentTime
+    const baseGain = 0.3 * config.sfx.volume
+
+    // Create 4-5 claps with varying timing
+    ;[0, 0.15, 0.28, 0.42, 0.54].forEach((offset, idx) => {
+      // Create each clap from noise bursts (higher frequencies for impact)
+      ;[1200, 3400, 5600].forEach((freq, fi) => {
+        const osc = ctx.createOscillator()
+        const amp = ctx.createGain()
+        const clap = ctx.createBiquadFilter()
+        clap.type = 'highpass'
+        clap.frequency.value = 800 + idx * 100
+        const duration = 0.06 + fi * 0.01
+
+        osc.type = 'square'
+        osc.frequency.value = freq + fi * 200
+        amp.gain.setValueAtTime(baseGain * 0.3, start + offset)
+        amp.gain.exponentialRampToValueAtTime(0.0001, start + offset + duration)
+
+        osc.connect(clap).connect(amp).connect(ctx.destination)
+        osc.start(start + offset)
+        osc.stop(start + offset + duration)
+      })
+    })
+
+    // Add low rumble for depth (crowd sound)
+    note(60, 0.3, 0.5, { type: 'sine', gain: 0.08, slideTo: 80 })
+    note(120, 0.4, 0.4, { type: 'sine', gain: 0.06, slideTo: 100 })
+  })
+}
