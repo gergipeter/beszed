@@ -5,7 +5,8 @@ services:
       - "8000:8000"
     environment:
       APP_ENV: local
-      APP_DEBUG: "true"
+      # Off: the app is also public through the Cloudflare quick tunnel, where error pages must not show details.
+      APP_DEBUG: "false"
       APP_URL: http://192.168.0.100:8000
       LOG_CHANNEL: stderr
       DB_CONNECTION: sqlite
@@ -14,7 +15,8 @@ services:
       CACHE_STORE: file
       QUEUE_CONNECTION: sync
       FILESYSTEM_DISK: local
-      SANCTUM_STATEFUL_DOMAINS: localhost,localhost:8000,127.0.0.1,127.0.0.1:8000,::1,192.168.0.100:8000
+      # *.trycloudflare.com: the free Cloudflare quick tunnel (its address changes on every restart)
+      SANCTUM_STATEFUL_DOMAINS: localhost,localhost:8000,127.0.0.1,127.0.0.1:8000,::1,192.168.0.100:8000,*.trycloudflare.com
       TTS_DRIVER: ${TTS_DRIVER:-piper}
       AZURE_SPEECH_KEY: ${AZURE_SPEECH_KEY:-}
       AZURE_SPEECH_REGION: ${AZURE_SPEECH_REGION:-westeurope}
@@ -24,8 +26,10 @@ services:
       # Parent sign-in with Google; leave empty to use the local demo sign-in only.
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
-      # Content editor (/tartalom) access; the demo parent by default.
-      ADMIN_EMAILS: ${ADMIN_EMAILS:-parent@example.test}
+      # Content editor (/tartalom) access, comma-separated e-mails. Nobody by default: through the
+      # tunnel anyone can sign in as the demo parent. Set ADMIN_EMAILS=parent@example.test in .env
+      # to edit content again while the app is not public.
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
     volumes:
       - beszed-storage:/var/www/html/storage
       - ./resources:/var/www/html/resources:ro

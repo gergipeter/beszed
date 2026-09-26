@@ -290,7 +290,8 @@ plain s (not sz, zs or cs), syllables rebuild the word with one per vowel, first
 digraph-aware (gy, sz, dzs…), rhymes are the word's ending, sentence chunks rebuild the sentence,
 accusatives end in -t. A test runs every seed item through it.
 
-**Editor** (`/tartalom`): parents whose e-mail is in `ADMIN_EMAILS` (the demo parent in Docker) get a
+**Editor** (`/tartalom`): parents whose e-mail is in `ADMIN_EMAILS` (nobody by default in Docker, since
+the demo sign-in is public through the tunnel; set `ADMIN_EMAILS=parent@example.test` in `.env` for the demo parent) get a
 *Tartalomszerkesztő* link on the *Ki játszik?* page. The form is built from the schema, shows the
 rules' errors in Hungarian, previews the pictures, can play a word in Csillám's voice, and refuses a
 word that is already in the game. Deleting a played item only switches it off.
@@ -338,6 +339,24 @@ The parent's *Haladás* page shows two weekly charts over the selected period: g
 (columns) and the share of first-try answers (line). Two single-measure charts rather than one with two
 scales; one validated series colour (`--bz-chart`) per theme; hover or keyboard focus shows each week,
 and "Heti adatok táblázatban" lists the same numbers. `GET children/{child}/progress/history?weeks=&game=`.
+
+## Public demo (free Cloudflare quick tunnel)
+
+Cloudflare's free hosting can't run PHP, so the demo is this PC's Docker app behind a free
+[quick tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/trycloudflare/)
+(no account needed). With `docker compose up` running:
+
+```bash
+docker run -d --name beszed-tunnel --network beszed_default cloudflare/cloudflared:latest \
+  tunnel --no-autoupdate --url http://app:8000
+docker logs beszed-tunnel 2>&1 | grep trycloudflare.com   # the public https address
+```
+
+The address changes whenever the tunnel restarts, and it only works while this PC is on.
+`compose.yaml` accepts sign-in cookies from `*.trycloudflare.com`. Anyone with the link can use
+"Demó belépés", so everyone shares the one demo parent, and it has no content-editor rights
+(`ADMIN_EMAILS` is empty by default). Debug error pages are off (`APP_DEBUG=false`). For a
+stable address, use a named tunnel on your own domain with the production setup below.
 
 ## Production (HTTPS)
 
