@@ -312,17 +312,14 @@ class ContentController extends Controller
         $results = [];
 
         foreach ($items as $item) {
-            match ($data['action']) {
-                'activate' => (
-                    $item->update(['active' => true, 'edited_at' => now()]),
-                    $this->audit($item, 'updated', ['active' => false], ['active' => true], $request)
-                ),
-                'deactivate' => (
-                    $item->update(['active' => false, 'edited_at' => now()]),
-                    $this->audit($item, 'updated', ['active' => true], ['active' => false], $request)
-                ),
-                'delete' => $results[] = $this->deactivateOrDelete($item, $request),
-            };
+            if ($data['action'] === 'delete') {
+                $results[] = $this->deactivateOrDelete($item, $request);
+
+                continue;
+            }
+            $active = $data['action'] === 'activate';
+            $item->update(['active' => $active, 'edited_at' => now()]);
+            $this->audit($item, 'updated', ['active' => ! $active], ['active' => $active], $request);
         }
 
         return response()->json(['results' => $results]);
