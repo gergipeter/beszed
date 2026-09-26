@@ -15,7 +15,7 @@ class KezdoRounds extends RoundFactory
 
         for ($r = 0; $r < $count && count($targets) && $bySound->count() >= 3; $r++) {
             $sound = $last = $this->pickNot($targets, $last);
-            [$ex, $ans] = $bySound[$sound]->shuffle()->take(2)->values()->all();
+            [$ans, $ex] = $this->weightedShuffle($bySound[$sound])->take(2)->all();
             $others = $bySound->keys()->reject(fn ($s) => $s === $sound)->shuffle()->take(2)
                 ->map(fn ($s) => $bySound[$s]->random());
             $opts = collect([$ans])->merge($others)->shuffle()->values();

@@ -13,7 +13,7 @@ class PapagajRounds extends RoundFactory
         $rounds = [];
 
         for ($r = 0; $r < $count; $r++) {
-            $words = $items->shuffle()->take($n)->values();
+            $words = $this->weightedShuffle($items)->take($n)->values();
             $ids = $words->pluck('id');
             $distract = $items->whereNotIn('id', $ids)->shuffle()->take(max(3, 8 - $n));
             $grid = $words->merge($distract)->shuffle()->map(fn ($w) => [

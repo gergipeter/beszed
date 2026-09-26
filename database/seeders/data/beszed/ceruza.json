@@ -1,26 +1,8 @@
 [
-  {
-    "level": 1,
-    "payload": {
-      "path": "wave"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "path": "loops"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "path": "zigzag"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "path": "arches"
-    }
-  }
+  {"level": 1, "payload": {"path": "wave"}},
+  {"level": 3, "payload": {"path": "loops"}},
+  {"level": 2, "payload": {"path": "zigzag"}},
+  {"level": 1, "payload": {"path": "arches"}},
+  {"level": 2, "payload": {"path": "steps"}},
+  {"level": 1, "payload": {"path": "hills"}}
 ]

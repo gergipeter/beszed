@@ -2,10 +2,12 @@
 
 namespace App\Beszed\Rewards;
 
+use App\Beszed\DailyPath;
 use App\Models\BeszedBadge;
 use App\Models\BeszedProfile;
 use App\Models\BeszedSession;
 use App\Models\Child;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -15,6 +17,8 @@ use Illuminate\Support\Facades\DB;
  */
 class Rewards
 {
+    public function __construct(private DailyPath $paths) {}
+
     /** Full reward state of a child, as the client shows it. */
     public function summary(Child $child, ?Stats $stats = null): array
     {
@@ -38,8 +42,10 @@ class Rewards
                 'hint' => str_replace(':goal', (string) $cfg['daily_goal'], $b['hint']),
                 'earned_at' => $earned[$id] ?? null,
             ])->values(),
-            'accessory' => $child->beszedProfile?->accessory,
+            'worn' => (object) ($child->beszedProfile?->accessories ?? []),
             'accessories' => $this->accessories($level['number']),
+            'scene' => $child->beszedProfile?->scene ?? ['background' => null, 'stickers' => []],
+            'backgrounds' => collect($cfg['backgrounds'])->map(fn ($b, $id) => ['id' => $id, 'name' => $b['name'], 'emoji' => $b['emoji']])->values(),
         ];
     }
 
@@ -58,6 +64,7 @@ class Rewards
             }
             $session->save();
 
+            $path = $this->paths->markPlayed($child, $data['game'], CarbonImmutable::parse($session->completed_at ?? now()));
             $stats = Stats::for($child, $cfg['timezone']);
             $newBadges = $this->award($child, $stats);
             $summary = $this->summary($child, $stats);
@@ -75,14 +82,26 @@ class Rewards
                 'unlocked' => collect($summary['accessories'])
                     ->filter(fn ($a) => $a['level'] > $before['number'] && $a['level'] <= $after)
                     ->values(),
+                // Today's "Mai kaland" if this game was one of its steps (null otherwise).
+                'daily_path' => $path,
             ]];
         });
     }
 
-    /** Dresses Csillám; `null` takes the accessory off. Returns false if it isn't unlocked yet. */
-    public function wear(Child $child, ?string $accessory): bool
+    /**
+     * Dresses Csillám: puts `$accessory` on in `$slot`, or clears the slot when null.
+     * Other slots keep whatever they had. Returns false if the accessory isn't unlocked yet
+     * or doesn't belong to that slot.
+     */
+    public function wear(Child $child, string $slot, ?string $accessory): bool
     {
+        $worn = $child->beszedProfile?->accessories ?? [];
+
         if ($accessory !== null) {
+            if (config("beszed.rewards.accessories.$accessory.slot") !== $slot) {
+                return false;
+            }
+
             $level = PlayerLevel::forStars(
                 Stats::for($child, config('beszed.rewards.timezone'))->stars,
                 config('beszed.rewards.level_step'),
@@ -90,12 +109,51 @@ class Rewards
             if ($level['number'] < config("beszed.rewards.accessories.$accessory.level")) {
                 return false;
             }
+
+            $worn[$slot] = $accessory;
+        } else {
+            unset($worn[$slot]);
         }
 
-        BeszedProfile::updateOrCreate(['child_id' => $child->id], ['accessory' => $accessory]);
+        BeszedProfile::updateOrCreate(['child_id' => $child->id], ['accessories' => $worn]);
         $child->unsetRelation('beszedProfile');
 
         return true;
+    }
+
+    /**
+     * Saves the sticker scene: a background and where each earned sticker sits on it.
+     * Stickers the child doesn't actually have, or hasn't unlocked as a background, are dropped silently
+     * (a stale local layout after a badge/background disappeared is not worth failing over).
+     */
+    public function saveScene(Child $child, ?string $background, array $stickers): array
+    {
+        $badges = config('beszed.rewards.badges');
+        $earned = $child->beszedBadges()->pluck('badge')->flip();
+        $backgrounds = config('beszed.rewards.backgrounds');
+        $max = config('beszed.rewards.scene_max_stickers');
+
+        if ($background !== null && ! isset($backgrounds[$background])) {
+            $background = null;
+        }
+
+        $placed = collect($stickers)
+            ->filter(fn ($s) => isset($badges[$s['badge']]) && $earned->has($s['badge']))
+            ->take($max)
+            ->map(fn ($s) => [
+                'badge' => $s['badge'],
+                'x' => max(0, min(100, (float) $s['x'])),
+                'y' => max(0, min(100, (float) $s['y'])),
+                'rotate' => max(-180, min(180, (float) ($s['rotate'] ?? 0))),
+            ])
+            ->values()
+            ->all();
+
+        $scene = ['background' => $background, 'stickers' => $placed];
+        BeszedProfile::updateOrCreate(['child_id' => $child->id], ['scene' => $scene]);
+        $child->unsetRelation('beszedProfile');
+
+        return $scene;
     }
 
     /** 0–3 medals for a first-try share (null = never played). */
@@ -140,6 +198,7 @@ class Rewards
             'name' => $a['name'],
             'emoji' => $a['emoji'],
             'level' => $a['level'],
+            'slot' => $a['slot'],
             'unlocked' => $level >= $a['level'],
         ])->values()->all();
     }

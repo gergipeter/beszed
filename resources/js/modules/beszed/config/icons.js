@@ -10,6 +10,7 @@ export const ICONS = Object.freeze({
   mic: '🎙️',
   chart: '📈',
   print: '🖨️',
+  download: '📄',
   record: '🔴',
   stop: '⏹️',
   busy: '⏳',
@@ -36,4 +37,8 @@ export const ICONS = Object.freeze({
   family: '👪',
   none: '🚫',
   settings: '⚙️',
+  share: '🔗',
+  copy: '📋',
+  map: '🗺️',
+  check: '✔️',
 })

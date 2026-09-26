@@ -92,7 +92,7 @@
  * @property {number} [pool]
  * @property {string} [onCorrect]
  *
- * @typedef {{ path: 'wave' | 'loops' | 'zigzag' | 'arches', onCorrect?: string }} TraceData
+ * @typedef {{ path: 'wave' | 'loops' | 'zigzag' | 'arches' | 'steps' | 'hills', onCorrect?: string }} TraceData
  *
  * @typedef {{ text: string, chunks: string[], emoji: string, levelLabel: string }} JudgedData
  *
@@ -138,7 +138,10 @@
  *
  * @typedef {{ number: number, stars: number, from: number, to: number, progress: number }} PlayerLevel
  * @typedef {{ id: string, name: string, emoji: string, hint: string, earned_at: string | null }} Badge
- * @typedef {{ id: string, name: string, emoji: string, level: number, unlocked: boolean }} Accessory
+ * @typedef {{ id: string, name: string, emoji: string, level: number, slot: 'head' | 'face' | 'extra', unlocked: boolean }} Accessory
+ * @typedef {{ id: string, name: string, emoji: string }} Background
+ * @typedef {{ badge: string, x: number, y: number, rotate: number }} PlacedSticker  x/y in % of the board.
+ * @typedef {{ background: string | null, stickers: PlacedSticker[] }} Scene
  *
  * @typedef {object} RewardSummary
  * @property {number} stars
@@ -148,8 +151,10 @@
  * @property {number} sessions
  * @property {Record<string, number>} medals  game id → 0–3
  * @property {Badge[]} badges
- * @property {string | null} accessory
+ * @property {Record<'head' | 'face' | 'extra', string>} worn  slot → worn accessory id
  * @property {Accessory[]} accessories
+ * @property {Scene} scene
+ * @property {Background[]} backgrounds
  *
  * @typedef {object} RewardResult  What one finished game changed.
  * @property {number} stars
@@ -158,11 +163,48 @@
  * @property {boolean} level_up
  * @property {{ id: string, name: string, emoji: string }[]} new_badges
  * @property {Accessory[]} unlocked
+ * @property {(DailyPath & { ticked: boolean, just_completed: boolean }) | null} daily_path  set when this game was a step of the day's path
+ *
+ * @typedef {object} DailyPath  "Mai kaland": Csillám's games for one day.
+ * @property {string} day        local calendar day, "YYYY-MM-DD"
+ * @property {string[]} games    game ids, in order
+ * @property {string[]} done     the ones played that day
+ * @property {boolean} completed
+ *
+ * @typedef {object} Share  A read-only progress link for the speech therapist.
+ * @property {number} id
+ * @property {string | null} label
+ * @property {string} createdAt
+ * @property {string} expiresAt
+ * @property {string | null} revokedAt
+ * @property {string | null} lastViewedAt
+ * @property {number} views
+ * @property {boolean} active
  *
  * @typedef {object} ProgressReport
- * @property {{ id: number, name: string }} child
+ * @property {{ id: number, name: string, age: string | null }} child
  * @property {string} since
+ * @property {number} days
  * @property {GameProgress[]} games
+ * @property {SkillArea[]} areas
+ * @property {string} narrative
+ * @property {string[]} recommendations
+ */
+
+/**
+ * A skill area (config/beszed_skills.php): its games' answers pooled.
+ * @typedef {object} SkillArea
+ * @property {string} key
+ * @property {string} label
+ * @property {string} emoji
+ * @property {boolean} difer      One of the DIFER areas (approximate mapping)
+ * @property {string[]} games
+ * @property {number} sessions
+ * @property {number} rounds
+ * @property {number|null} firstTryRate   null below the minimum number of answers
+ * @property {number|null} previousRate   the same-length period before
+ * @property {'up'|'flat'|'down'|null} trend
+ * @property {'strong'|'growing'|'practice'|'noData'} band
  */
 
 export {}

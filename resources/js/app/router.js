@@ -11,6 +11,9 @@ export const router = createRouter({
   routes: [
     { path: '/login', name: 'login', component: () => import('./pages/LoginPage.vue'), meta: { guest: true } },
     { path: '/adatvedelem', name: 'privacy', component: () => import('./pages/PrivacyPage.vue'), meta: { public: true } },
+    // A therapist's read-only report: no sign-in, the link is the key.
+    { path: '/megosztas/:token', name: 'share', component: () => import('./pages/SharePage.vue'), meta: { public: true } },
+    { path: '/tartalom', name: 'content', component: () => import('./pages/ContentPage.vue'), meta: { editor: true } },
     { path: '/hozzajarulas', name: 'consent', component: () => import('./pages/ConsentPage.vue') },
     { path: '/gyerekek', name: 'children', component: () => import('./pages/ChildrenPage.vue') },
     // Never rendered: the guard sends "/" to the right place.
@@ -43,6 +46,8 @@ router.beforeEach(async to => {
     const [only, ...rest] = session.children
     return only && !rest.length ? { name: 'beszed.hub', params: { childId: only.id } } : { name: 'children' }
   }
+
+  if (to.meta.editor && !session.user.can_edit_content) return { name: 'home' }
 
   // Someone else's (or a deleted) child in the URL.
   if (to.params.childId && !session.child(to.params.childId)) return { name: 'children' }

@@ -99,15 +99,17 @@ it('uses the configured timezone for day boundaries', function () {
 });
 
 it('only lets Csillám wear unlocked accessories', function () {
-    $wear = fn (?string $a) => actingAs($this->user)->putJson("/api/beszed/children/{$this->child->id}/profile", ['accessory' => $a]);
+    $wear = fn (string $slot, ?string $a) => actingAs($this->user)
+        ->putJson("/api/beszed/children/{$this->child->id}/profile", ['slot' => $slot, 'accessory' => $a]);
 
-    $wear('bow')->assertStatus(422);
+    $wear('extra', 'bow')->assertStatus(422);
     finish(correct: 8);
     finish(correct: 8); // 16 stars → level 2
-    $wear('bow')->assertOk()->assertJsonPath('accessory', 'bow');
-    $wear('crown')->assertStatus(422);
-    $wear(null)->assertOk()->assertJsonPath('accessory', null);
-    $wear('nope')->assertStatus(422);
+    $wear('extra', 'bow')->assertOk()->assertJsonPath('worn.extra', 'bow');
+    $wear('head', 'bow')->assertStatus(422); // wrong slot
+    $wear('head', 'crown')->assertStatus(422); // level 7
+    $wear('extra', null)->assertOk()->assertJsonMissingPath('worn.extra');
+    $wear('extra', 'nope')->assertStatus(422);
 });
 
 it('rejects impossible results and other families', function () {

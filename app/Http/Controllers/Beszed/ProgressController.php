@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Beszed;
 
+use App\Beszed\ProgressReport;
+use App\Beszed\ReportNarrative;
 use App\Http\Controllers\Controller;
 use App\Models\BeszedAttempt;
 use App\Models\BeszedSession;
@@ -9,10 +11,9 @@ use App\Models\Child;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-/** Per-game summary — printable for the logopédus. */
+/** Per-game and per-skill-area summary (printable for the logopédus) and weekly trend. */
 class ProgressController extends Controller
 {
     use AuthorizesChild;
@@ -75,46 +76,14 @@ class ProgressController extends Controller
         ]);
     }
 
-    public function show(Request $request, Child $child): JsonResponse
+    public function show(Request $request, Child $child, ProgressReport $report, ReportNarrative $narrative): JsonResponse
     {
         $this->authorizeChild($request, $child);
-        $days = (int) $request->integer('days', 30);
-        $since = now()->subDays(max(1, min($days, 365)));
 
-        $stats = BeszedAttempt::query()
-            ->where('child_id', $child->id)
-            ->where('created_at', '>=', $since)
-            ->groupBy('game')
-            ->select('game',
-                DB::raw('COUNT(*) as rounds'),
-                DB::raw('SUM(CASE WHEN correct AND tries = 1 THEN 1 ELSE 0 END) as first_try'),
-                DB::raw('SUM(CASE WHEN correct THEN 1 ELSE 0 END) as solved'),
-                DB::raw('MAX(created_at) as last_played'))
-            ->get()->keyBy('game');
+        $data = $report->for($child, (int) $request->integer('days', 30));
+        $data['narrative'] = $narrative->narrative($data['areas']);
+        $data['recommendations'] = $narrative->recommendations($data['areas']);
 
-        $levels = $child->beszedLevels()->pluck('level', 'game');
-        $sessions = $child->beszedSessions()->where('completed_at', '>=', $since)
-            ->groupBy('game')->selectRaw('game, COUNT(*) as n')->pluck('n', 'game');
-
-        $games = collect(config('beszed.games'))->map(function ($g, $id) use ($stats, $levels, $sessions) {
-            $s = $stats->get($id);
-            $rounds = (int) ($s->rounds ?? 0);
-
-            return [
-                'id' => $id,
-                'name' => $g['name'],
-                'emoji' => $g['emoji'],
-                'skill' => $g['skill'],
-                'sessions' => (int) ($sessions[$id] ?? 0),
-                'rounds' => $rounds,
-                'firstTryRate' => $rounds ? round($s->first_try / $rounds, 2) : null,
-                'solvedRate' => $rounds ? round($s->solved / $rounds, 2) : null,
-                'level' => isset($g['adaptive']) ? ($levels[$id] ?? $g['adaptive']['start']) : null,
-                'maxLevel' => $g['adaptive']['max'] ?? null,
-                'lastPlayed' => $s->last_played ?? null,
-            ];
-        })->values();
-
-        return response()->json(['child' => $child->only('id', 'name'), 'since' => $since->toDateString(), 'games' => $games]);
+        return response()->json($data);
     }
 }

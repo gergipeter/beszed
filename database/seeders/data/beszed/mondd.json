@@ -1,222 +1,49 @@
 [
-  {
-    "level": 1,
-    "payload": {
-      "text": "A cica a doboz alatt alszik.",
-      "chunks": [
-        "A cica",
-        "a doboz alatt",
-        "alszik."
-      ],
-      "emoji": "🐱📦"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "text": "Anya piros almát vesz.",
-      "chunks": [
-        "Anya",
-        "piros almát",
-        "vesz."
-      ],
-      "emoji": "👩🍎"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "text": "A kutya gyorsan fut a kertben.",
-      "chunks": [
-        "A kutya",
-        "gyorsan fut",
-        "a kertben."
-      ],
-      "emoji": "🐶🌳"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "text": "Apa autója az udvaron áll.",
-      "chunks": [
-        "Apa autója",
-        "az udvaron",
-        "áll."
-      ],
-      "emoji": "🚗🏡"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "text": "Zoé két macival játszik.",
-      "chunks": [
-        "Zoé",
-        "két macival",
-        "játszik."
-      ],
-      "emoji": "👧🧸"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "text": "A madár a fán énekel.",
-      "chunks": [
-        "A madár",
-        "a fán",
-        "énekel."
-      ],
-      "emoji": "🐦🌳"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "text": "A labda a szék mögött van.",
-      "chunks": [
-        "A labda",
-        "a szék mögött",
-        "van."
-      ],
-      "emoji": "⚽🪑"
-    }
-  },
-  {
-    "level": 2,
-    "payload": {
-      "text": "A kislány a kertben virágot szed a nagymamának.",
-      "chunks": [
-        "A kislány",
-        "a kertben",
-        "virágot szed",
-        "a nagymamának."
-      ],
-      "emoji": "👧🌷👵"
-    }
-  },
-  {
-    "level": 2,
-    "payload": {
-      "text": "Holnap reggel busszal megyünk az óvodába.",
-      "chunks": [
-        "Holnap reggel",
-        "busszal megyünk",
-        "az óvodába."
-      ],
-      "emoji": "🚌🏫"
-    }
-  },
-  {
-    "level": 2,
-    "payload": {
-      "text": "A kiscica megitta a tejet a tányérból.",
-      "chunks": [
-        "A kiscica",
-        "megitta a tejet",
-        "a tányérból."
-      ],
-      "emoji": "🐱🥛"
-    }
-  },
-  {
-    "level": 2,
-    "payload": {
-      "text": "Apa a konyhában finom palacsintát süt nekünk.",
-      "chunks": [
-        "Apa",
-        "a konyhában",
-        "finom palacsintát süt",
-        "nekünk."
-      ],
-      "emoji": "👨🥞"
-    }
-  },
-  {
-    "level": 2,
-    "payload": {
-      "text": "A piros autó gyorsabban megy, mint a kék.",
-      "chunks": [
-        "A piros autó",
-        "gyorsabban megy,",
-        "mint a kék."
-      ],
-      "emoji": "🚗🚙"
-    }
-  },
-  {
-    "level": 2,
-    "payload": {
-      "text": "Esik az eső, ezért esernyőt viszek.",
-      "chunks": [
-        "Esik az eső,",
-        "ezért",
-        "esernyőt viszek."
-      ],
-      "emoji": "🌧️☂️"
-    }
-  },
-  {
-    "level": 3,
-    "payload": {
-      "text": "Amikor hazaértünk, a kutya boldogan ugrált körülöttünk.",
-      "chunks": [
-        "Amikor hazaértünk,",
-        "a kutya",
-        "boldogan ugrált",
-        "körülöttünk."
-      ],
-      "emoji": "🏠🐶"
-    }
-  },
-  {
-    "level": 3,
-    "payload": {
-      "text": "A kisfiú, akinek kék sapkája van, a homokozóban játszik.",
-      "chunks": [
-        "A kisfiú,",
-        "akinek kék sapkája van,",
-        "a homokozóban játszik."
-      ],
-      "emoji": "👦🧢"
-    }
-  },
-  {
-    "level": 3,
-    "payload": {
-      "text": "Ha jó idő lesz, szombaton kirándulni megyünk az erdőbe.",
-      "chunks": [
-        "Ha jó idő lesz,",
-        "szombaton",
-        "kirándulni megyünk",
-        "az erdőbe."
-      ],
-      "emoji": "☀️🌲"
-    }
-  },
-  {
-    "level": 3,
-    "payload": {
-      "text": "Nem mehetünk ki a játszótérre, mert nagyon hideg van.",
-      "chunks": [
-        "Nem mehetünk ki",
-        "a játszótérre,",
-        "mert nagyon hideg van."
-      ],
-      "emoji": "🥶🛝"
-    }
-  },
-  {
-    "level": 3,
-    "payload": {
-      "text": "A nagymama azt mondta, hogy süt nekünk egy almás pitét.",
-      "chunks": [
-        "A nagymama azt mondta,",
-        "hogy süt nekünk",
-        "egy almás pitét."
-      ],
-      "emoji": "👵🥧"
-    }
-  }
+  {"level": 1, "payload": {"text": "A cica a doboz alatt alszik.", "chunks": ["A cica", "a doboz alatt", "alszik."], "emoji": "🐱📦"}},
+  {"level": 1, "payload": {"text": "Anya piros almát vesz.", "chunks": ["Anya", "piros almát", "vesz."], "emoji": "👩🍎"}},
+  {"level": 1, "payload": {"text": "A kutya gyorsan fut a kertben.", "chunks": ["A kutya", "gyorsan fut", "a kertben."], "emoji": "🐶🌳"}},
+  {"level": 1, "payload": {"text": "Apa autója az udvaron áll.", "chunks": ["Apa autója", "az udvaron", "áll."], "emoji": "🚗🏡"}},
+  {"level": 1, "payload": {"text": "Zoé két macival játszik.", "chunks": ["Zoé", "két macival", "játszik."], "emoji": "👧🧸"}},
+  {"level": 1, "payload": {"text": "A madár a fán énekel.", "chunks": ["A madár", "a fán", "énekel."], "emoji": "🐦🌳"}},
+  {"level": 1, "payload": {"text": "A labda a szék mögött van.", "chunks": ["A labda", "a szék mögött", "van."], "emoji": "⚽🪑"}},
+  {"level": 2, "payload": {"text": "A kislány a kertben virágot szed a nagymamának.", "chunks": ["A kislány", "a kertben", "virágot szed", "a nagymamának."], "emoji": "👧🌷👵"}},
+  {"level": 2, "payload": {"text": "Holnap reggel busszal megyünk az óvodába.", "chunks": ["Holnap reggel", "busszal megyünk", "az óvodába."], "emoji": "🚌🏫"}},
+  {"level": 2, "payload": {"text": "A kiscica megitta a tejet a tányérból.", "chunks": ["A kiscica", "megitta a tejet", "a tányérból."], "emoji": "🐱🥛"}},
+  {"level": 2, "payload": {"text": "Apa a konyhában finom palacsintát süt nekünk.", "chunks": ["Apa", "a konyhában", "finom palacsintát süt", "nekünk."], "emoji": "👨🥞"}},
+  {"level": 2, "payload": {"text": "A piros autó gyorsabban megy, mint a kék.", "chunks": ["A piros autó", "gyorsabban megy,", "mint a kék."], "emoji": "🚗🚙"}},
+  {"level": 2, "payload": {"text": "Esik az eső, ezért esernyőt viszek.", "chunks": ["Esik az eső,", "ezért", "esernyőt viszek."], "emoji": "🌧️☂️"}},
+  {"level": 3, "payload": {"text": "Amikor hazaértünk, a kutya boldogan ugrált körülöttünk.", "chunks": ["Amikor hazaértünk,", "a kutya", "boldogan ugrált", "körülöttünk."], "emoji": "🏠🐶"}},
+  {"level": 3, "payload": {"text": "A kisfiú, akinek kék sapkája van, a homokozóban játszik.", "chunks": ["A kisfiú,", "akinek kék sapkája van,", "a homokozóban játszik."], "emoji": "👦🧢"}},
+  {"level": 3, "payload": {"text": "Ha jó idő lesz, szombaton kirándulni megyünk az erdőbe.", "chunks": ["Ha jó idő lesz,", "szombaton", "kirándulni megyünk", "az erdőbe."], "emoji": "☀️🌲"}},
+  {"level": 3, "payload": {"text": "Nem mehetünk ki a játszótérre, mert nagyon hideg van.", "chunks": ["Nem mehetünk ki", "a játszótérre,", "mert nagyon hideg van."], "emoji": "🥶🛝"}},
+  {"level": 3, "payload": {"text": "A nagymama azt mondta, hogy süt nekünk egy almás pitét.", "chunks": ["A nagymama azt mondta,", "hogy süt nekünk", "egy almás pitét."], "emoji": "👵🥧"}},
+  {"level": 1, "payload": {"text": "A nyuszi répát eszik.", "chunks": ["A nyuszi", "répát", "eszik."], "emoji": "🐰🥕"}},
+  {"level": 1, "payload": {"text": "A baba a kiságyban alszik.", "chunks": ["A baba", "a kiságyban", "alszik."], "emoji": "👶🛏️"}},
+  {"level": 1, "payload": {"text": "Nagymama sütit süt.", "chunks": ["Nagymama", "sütit", "süt."], "emoji": "👵🍪"}},
+  {"level": 1, "payload": {"text": "A hal a vízben úszik.", "chunks": ["A hal", "a vízben", "úszik."], "emoji": "🐟💧"}},
+  {"level": 1, "payload": {"text": "Apa újságot olvas.", "chunks": ["Apa", "újságot", "olvas."], "emoji": "👨📰"}},
+  {"level": 1, "payload": {"text": "A béka a tóba ugrik.", "chunks": ["A béka", "a tóba", "ugrik."], "emoji": "🐸🏞️"}},
+  {"level": 1, "payload": {"text": "Esik a hó.", "chunks": ["Esik", "a hó."], "emoji": "❄️"}},
+  {"level": 1, "payload": {"text": "A cica tejet iszik.", "chunks": ["A cica", "tejet", "iszik."], "emoji": "🐱🥛"}},
+  {"level": 1, "payload": {"text": "Ma szép idő van.", "chunks": ["Ma", "szép idő", "van."], "emoji": "☀️"}},
+  {"level": 2, "payload": {"text": "A kisfiú piros labdával játszik a parkban.", "chunks": ["A kisfiú", "piros labdával", "játszik", "a parkban."], "emoji": "👦⚽"}},
+  {"level": 2, "payload": {"text": "Reggel megmosom a fogamat, és felöltözöm.", "chunks": ["Reggel", "megmosom a fogamat,", "és felöltözöm."], "emoji": "🪥👕"}},
+  {"level": 2, "payload": {"text": "A mókus diót gyűjt a téli hónapokra.", "chunks": ["A mókus", "diót gyűjt", "a téli hónapokra."], "emoji": "🐿️🌰"}},
+  {"level": 2, "payload": {"text": "Vasárnap a nagyszülőkhöz megyünk ebédelni.", "chunks": ["Vasárnap", "a nagyszülőkhöz", "megyünk ebédelni."], "emoji": "👵👴🍲"}},
+  {"level": 2, "payload": {"text": "A tűzoltók gyorsan eloltották a tüzet.", "chunks": ["A tűzoltók", "gyorsan", "eloltották a tüzet."], "emoji": "🚒🔥"}},
+  {"level": 2, "payload": {"text": "Az orvos megnézte a torkomat.", "chunks": ["Az orvos", "megnézte", "a torkomat."], "emoji": "🩺"}},
+  {"level": 2, "payload": {"text": "A boltban kenyeret és tejet vettünk.", "chunks": ["A boltban", "kenyeret és tejet", "vettünk."], "emoji": "🛒🍞🥛"}},
+  {"level": 2, "payload": {"text": "Este megfürdöm, aztán mesét hallgatok.", "chunks": ["Este megfürdöm,", "aztán", "mesét hallgatok."], "emoji": "🛁📖"}},
+  {"level": 2, "payload": {"text": "A pillangó virágról virágra repül.", "chunks": ["A pillangó", "virágról virágra", "repül."], "emoji": "🦋🌸"}},
+  {"level": 2, "payload": {"text": "A hóember orra egy nagy sárgarépa.", "chunks": ["A hóember orra", "egy nagy", "sárgarépa."], "emoji": "⛄🥕"}},
+  {"level": 3, "payload": {"text": "Mielőtt lefekszem, anya mindig olvas nekem egy mesét.", "chunks": ["Mielőtt lefekszem,", "anya mindig", "olvas nekem", "egy mesét."], "emoji": "👩📖"}},
+  {"level": 3, "payload": {"text": "Az a kutya, amelyik a kerítés mögött ugat, a szomszédé.", "chunks": ["Az a kutya,", "amelyik a kerítés mögött ugat,", "a szomszédé."], "emoji": "🐶🏡"}},
+  {"level": 3, "payload": {"text": "Mivel elfáradtunk, leültünk pihenni egy padra.", "chunks": ["Mivel elfáradtunk,", "leültünk pihenni", "egy padra."], "emoji": "🌳🪑"}},
+  {"level": 3, "payload": {"text": "A bátyám megtanított, hogyan kell biciklizni.", "chunks": ["A bátyám megtanított,", "hogyan kell", "biciklizni."], "emoji": "👦🚲"}},
+  {"level": 3, "payload": {"text": "Amikor megjön a tavasz, kinyílnak a virágok a kertben.", "chunks": ["Amikor megjön a tavasz,", "kinyílnak a virágok", "a kertben."], "emoji": "🌷🌳"}},
+  {"level": 3, "payload": {"text": "Ha elpakolod a játékaidat, mehetünk a játszótérre.", "chunks": ["Ha elpakolod", "a játékaidat,", "mehetünk a játszótérre."], "emoji": "🧸🛝"}},
+  {"level": 3, "payload": {"text": "A vonat, amivel utaztunk, sokat késett, ezért sietnünk kellett.", "chunks": ["A vonat,", "amivel utaztunk,", "sokat késett,", "ezért sietnünk kellett."], "emoji": "🚂⏰"}},
+  {"level": 3, "payload": {"text": "A kiscica, amit a kertben találtunk, most már nálunk lakik.", "chunks": ["A kiscica,", "amit a kertben találtunk,", "most már", "nálunk lakik."], "emoji": "🐱🏠"}},
+  {"level": 3, "payload": {"text": "Bár hideg volt, mégis hóembert építettünk az udvaron.", "chunks": ["Bár hideg volt,", "mégis hóembert építettünk", "az udvaron."], "emoji": "⛄❄️"}},
+  {"level": 3, "payload": {"text": "Azt szeretném, hogy a születésnapomon csokitorta legyen.", "chunks": ["Azt szeretném,", "hogy a születésnapomon", "csokitorta legyen."], "emoji": "🎂🍫"}}
 ]

@@ -39,7 +39,7 @@ watch(
   () => props.result,
   result => {
     if (!result) return
-    if (result.level_up || result.unlocked.length) {
+    if (result.level_up || result.unlocked.length || result.daily_path?.just_completed) {
       later(() => {
         levelUp()
         confetti({ pieces: 80 })
@@ -67,6 +67,14 @@ watch(
     <p v-if="savedLater" class="offline">{{ t('game.savedLater') }}</p>
 
     <template v-if="result">
+      <p v-if="result.daily_path?.ticked" class="path-note">
+        <EmojiArt :char="result.daily_path.just_completed ? ICONS.party : ICONS.map" />
+        {{
+          result.daily_path.just_completed
+            ? t('daily.finishAll')
+            : t('daily.finishStep', { done: result.daily_path.done.length })
+        }}
+      </p>
 
       <p v-if="result.level_up" class="banner">
         <EmojiArt :char="ICONS.party" /> {{ t('game.levelUp', { level: level?.number }) }}
@@ -133,6 +141,19 @@ watch(
   font-size: 24px;
   font-weight: 800;
   box-shadow: var(--bz-shadow);
+  animation: bounce 0.7s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.path-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 6px 16px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  font-size: var(--bz-text-md);
+  font-weight: 800;
+  box-shadow: var(--bz-shadow-sm);
   animation: bounce 0.7s cubic-bezier(0.2, 1.6, 0.4, 1) both;
 }
 .level {

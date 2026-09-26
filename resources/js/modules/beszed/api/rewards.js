@@ -12,4 +12,7 @@ export const fetchRewards = childId => http.get(`/children/${childId}/rewards`)
 export const completeSession = (childId, body) => postOrQueue(`/children/${childId}/sessions`, body)
 
 /** @returns {Promise<import('../types').RewardSummary>} */
-export const wearAccessory = (childId, accessory) => http.put(`/children/${childId}/profile`, { accessory })
+export const wearAccessory = (childId, slot, accessory) => http.put(`/children/${childId}/profile`, { slot, accessory })
+
+/** @returns {Promise<import('../types').Scene>} */
+export const saveScene = (childId, scene) => http.put(`/children/${childId}/scene`, scene)

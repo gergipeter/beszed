@@ -34,7 +34,10 @@ return new class extends Migration
         Schema::create('beszed_profiles', function (Blueprint $t) {
             $t->id();
             $t->foreignId('child_id')->unique()->constrained('children')->cascadeOnDelete();
-            $t->string('accessory', 32)->nullable();
+            // One worn accessory per slot (head, face, extra), e.g. {"head":"hat","face":"glasses"}.
+            $t->json('accessories')->nullable();
+            // The sticker scene: chosen background + placed stickers ({badge, x, y, rotate}).
+            $t->json('scene')->nullable();
             $t->timestamps();
         });
     }

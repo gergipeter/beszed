@@ -14,7 +14,7 @@ class MeController extends Controller
         $user = $request->user();
 
         return response()->json([
-            'user' => $user->only('id', 'name', 'email', 'avatar'),
+            'user' => $user->only('id', 'name', 'email', 'avatar') + ['can_edit_content' => $user->can('edit-content')],
             'consent' => ['required' => $user->needsConsent(), 'version' => config('privacy.version')],
             'children' => ChildController::present($user->children()->orderBy('id')->get()),
         ]);

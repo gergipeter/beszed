@@ -34,7 +34,7 @@ async function demo() {
 <template>
   <main class="bz login">
     <div class="card">
-      <div class="avatar"><CsillamAvatar :accessory="null" /></div>
+      <div class="avatar"><CsillamAvatar :worn="{}" /></div>
       <h1 class="title">{{ appConfig.name }}</h1>
       <p class="tagline">{{ texts.tagline }}</p>
 

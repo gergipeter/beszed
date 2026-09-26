@@ -11,6 +11,7 @@ export { default as BzButton } from './components/ui/BzButton.vue'
 export { default as BzNotice } from './components/ui/BzNotice.vue'
 export { default as CsillamAvatar } from './components/guide/CsillamAvatar.vue'
 export { default as EmojiArt } from './components/ui/EmojiArt.vue'
+export { default as SkillMap } from './components/progress/SkillMap.vue'
 
 /** Default routes, for `createRouter({ routes: [...yourRoutes, ...beszedRoutes] })`. */
 export const beszedRoutes = createBeszedRoutes()

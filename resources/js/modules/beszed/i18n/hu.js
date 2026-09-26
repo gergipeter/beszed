@@ -33,6 +33,16 @@ export default {
     exit: 'Gyerekek',
   },
 
+  daily: {
+    title: 'Mai kaland',
+    count: '{done}/{total}',
+    step: '{n}. állomás: {game}',
+    stepDone: '{n}. állomás: {game}, kész',
+    completed: 'Kész a mai kaland! Holnap új vár.',
+    finishStep: 'Megvan a mai kaland {done}. állomása!',
+    finishAll: 'Végigjártad a mai kalandot!',
+  },
+
   game: {
     loadFailed: 'Nem sikerült betölteni a játékot.',
     replayLabel: 'Kérdés újra',
@@ -122,10 +132,19 @@ export default {
     stickers: 'Matricák: {count} / {total}',
     medals: '{count} érem',
     wardrobe: 'Csillám szekrénye',
-    wardrobeHint: 'Válaszd ki, mit vegyen fel Csillám! Új szinteken új kincsek nyílnak.',
+    wardrobeHint: 'Válaszd ki, mit vegyen fel Csillám! Egyszerre többet is felvehet. Új szinteken új kincsek nyílnak.',
     unlockAt: '{level}. szinttől',
     wearFailed: 'Nem sikerült átöltöztetni Csillámot.',
     loadFailed: 'Nem sikerült betölteni a matricákat.',
+    tabAlbum: 'Matricaalbum',
+    tabDressUp: 'Öltöztetés',
+    tabScene: 'Matricakép',
+    sceneHint: 'Húzd a matricákat a képre, vagy koppints rájuk!',
+    sceneEmpty: 'Még üres a kép. Koppints egy matricára lent!',
+    sceneFull: 'Megtelt a kép! Vegyél le egy matricát, ha másikat tennél rá.',
+    sceneBackdrop: 'Háttér',
+    sceneRemove: '{name} matrica – dupla koppintás eltávolítja',
+    sceneSaveFailed: 'Nem sikerült elmenteni a matricaképet.',
   },
 
   progress: {
@@ -133,6 +152,7 @@ export default {
     period: 'Időszak',
     lastDays: 'Utolsó {count} nap',
     print: 'Nyomtatás',
+    exportPdf: 'Szakértői összefoglaló (PDF)',
     heading: '{name} – gyakorlás {since} óta',
     loadFailed: 'Nem sikerült betölteni a haladást.',
     summary: '{level}. szint · {stars} csillag · {streak} napos sorozat · {stickers} matrica',
@@ -174,6 +194,58 @@ export default {
     preferServerTts: 'A jobb minőségű hang használata (ha van internet)',
     tryVoice: 'Halljuk!',
     tryLine: 'Szia! Így fogok beszélni mostantól.',
+  },
+
+  skills: {
+    title: 'Készségterületek',
+    subtitle: 'elsőre jó válaszok aránya',
+    meterLabel: '{area}: elsőre jó válaszok aránya',
+    diferTitle: 'A DIFER egyik területéhez hasonló készséget gyakorol',
+    previous: 'Előző időszak: {value}',
+    legendNow: 'ez az időszak',
+    legendPrev: 'előző, ugyanilyen hosszú időszak',
+    bands: {
+      strong: 'Biztosan megy',
+      growing: 'Fejlődik',
+      practice: 'Gyakoroljuk még',
+      noData: 'Még kevés adat',
+    },
+    trend: { up: 'javult', flat: 'hasonló', down: 'kevesebb' },
+    note:
+      'A csoportosítás közelítő: a játékok a DIFER-területekhez hasonló készségeket gyakoroltatnak, ' +
+      'de ez nem DIFER-mérés és nem diagnózis. A sávok a játékbeli eredményt írják le, nem korosztályos összevetést.',
+  },
+
+  share: {
+    title: 'Megosztás a logopédussal',
+    intro:
+      'Készíts egy linket, amin a logopédus vagy az óvónő bejelentkezés nélkül láthatja {name} elmúlt 90 napjának ' +
+      'összefoglalóját. Csak olvasni tudja, és bármikor visszavonhatod.',
+    labelField: 'Kinek szól? (nem kötelező)',
+    labelHint: 'pl. Kovács Anna logopédus',
+    validity: 'Érvényes',
+    days: '{count} napig',
+    create: 'Link készítése',
+    ready: 'Kész a link:',
+    copy: 'Link másolása',
+    copied: 'Kimásolva!',
+    send: 'Küldés…',
+    shareTitle: '{name} haladása',
+    onlyNow: 'A linket csak most látod; biztonsági okból nem tároljuk. Ha elveszett, készíts újat, a régit pedig vond vissza.',
+    listTitle: 'Linkjeid',
+    noLabel: 'Névtelen link',
+    activeUntil: 'él eddig: {date}',
+    revoked: 'visszavonva',
+    expired: 'lejárt',
+    viewed: '{count}× megnyitva, utoljára {date}',
+    notViewed: 'még nem nyitották meg',
+    revoke: 'Visszavonás',
+    loadFailed: 'Nem sikerült betölteni a linkeket.',
+    createFailed: 'Nem sikerült elkészíteni a linket.',
+    revokeFailed: 'Nem sikerült visszavonni a linket.',
+    privacy:
+      'A link a gyerek keresztnevét, korcsoportját és a játékok eredményeit mutatja; hangfelvételt, születési dátumot, ' +
+      'e-mail-címet nem. Akinél a link van, amíg él, megnézheti.',
   },
 
   recordings: {

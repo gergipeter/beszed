@@ -4,6 +4,7 @@ import { config } from '../../config/options'
 import { t } from '../../i18n'
 import { useGuideStore } from '../../stores/guide'
 import { useRewardsStore } from '../../stores/rewards'
+import { emojiAssetName } from '../../utils/emoji'
 import { ACCESSORY_ART } from './accessories'
 
 /**
@@ -18,8 +19,8 @@ import { ACCESSORY_ART } from './accessories'
  */
 const props = defineProps({
   name: { type: String, default: '' },
-  /** What she wears; left out = what the child chose (rewards), null = nothing. */
-  accessory: { type: String, default: undefined },
+  /** What she wears (one id per slot); left out = what the child chose (rewards). */
+  worn: { type: Object, default: undefined },
 })
 
 /** Sparkle positions in % of the drawing (from the original SVG coordinates) and size in % of its width. */
@@ -32,7 +33,16 @@ const SPARKS = [
 
 const guide = useGuideStore()
 const rewards = useRewardsStore()
-const worn = computed(() => ACCESSORY_ART[props.accessory === undefined ? rewards.accessory : props.accessory] ?? null)
+/** Every worn slot resolved to its art, e.g. [{ slot: 'head', art: {...} }, ...]. */
+const wornArt = computed(() => {
+  const ids = props.worn === undefined ? rewards.worn : props.worn
+  return Object.entries(ids ?? {})
+    .map(([slot, id]) => ({ slot, art: ACCESSORY_ART[id] ?? null }))
+    .filter(w => w.art)
+})
+/** Same picture set as the rest of the app (config.emoji); otherwise the device's emoji as SVG text. */
+const base = config.emoji.baseUrl
+const accessoryImage = art => (base ? `${base.replace(/\/?$/, '/')}${emojiAssetName(art.char)}${config.emoji.ext}` : null)
 // Unique gradient id, in case two unicorns are ever on screen.
 const gradientId = `bz-horn-${Math.random().toString(36).slice(2, 8)}`
 const classes = computed(() => [
@@ -112,17 +122,29 @@ const label = computed(() => t('guide.avatarLabel', { name: props.name || config
         <path class="m-smile" d="M90 130 Q100 138 110 130" stroke="#5A3D6E" stroke-width="3" fill="none" stroke-linecap="round" />
         <path class="m-happy" d="M86 127 Q100 147 114 127 Z" fill="#8A2E4E" stroke="#5A3D6E" stroke-width="2.5" stroke-linejoin="round" />
         <path class="m-sad" d="M91 136 Q100 129 109 136" stroke="#5A3D6E" stroke-width="3" fill="none" stroke-linecap="round" />
-        <!-- accessory (moves with the head) -->
-        <text
-          v-if="worn"
-          class="u-accessory"
-          :x="worn.x"
-          :y="worn.y"
-          :font-size="worn.size"
-          :transform="`rotate(${worn.rotate} ${worn.x} ${worn.y})`"
-          text-anchor="middle"
-          dominant-baseline="central"
-        >{{ worn.char }}</text>
+        <!-- accessories (move with the head), one per worn slot -->
+        <template v-for="w in wornArt" :key="w.slot">
+          <image
+            v-if="accessoryImage(w.art)"
+            class="u-accessory"
+            :href="accessoryImage(w.art)"
+            :x="w.art.x - w.art.size / 2"
+            :y="w.art.y - w.art.size / 2"
+            :width="w.art.size"
+            :height="w.art.size"
+            :transform="`rotate(${w.art.rotate} ${w.art.x} ${w.art.y})`"
+          />
+          <text
+            v-else
+            class="u-accessory"
+            :x="w.art.x"
+            :y="w.art.y"
+            :font-size="w.art.size"
+            :transform="`rotate(${w.art.rotate} ${w.art.x} ${w.art.y})`"
+            text-anchor="middle"
+            dominant-baseline="central"
+          >{{ w.art.char }}</text>
+        </template>
       </g>
 
     </svg>

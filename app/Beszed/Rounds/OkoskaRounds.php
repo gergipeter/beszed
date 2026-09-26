@@ -47,7 +47,7 @@ class OkoskaRounds extends RoundFactory
 
     private function oddOneOut(Collection $cats): array
     {
-        $c = $cats->random();
+        $c = $this->weightedShuffle($cats)->first();
         $o = $cats->reject(fn ($x) => $x->id === $c->id)->random();
         $odd = collect($o->payload['emojis'])->random();
         $opts = collect($c->payload['emojis'])->shuffle()->take(3)->push($odd)->shuffle()->values();

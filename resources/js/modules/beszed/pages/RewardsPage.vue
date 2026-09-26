@@ -1,8 +1,9 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import CsillamAvatar from '../components/guide/CsillamAvatar.vue'
 import LevelBar from '../components/rewards/LevelBar.vue'
 import StickerCard from '../components/rewards/StickerCard.vue'
+import StickerScene from '../components/rewards/StickerScene.vue'
 import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
 import EmojiArt from '../components/ui/EmojiArt.vue'
@@ -15,12 +16,14 @@ import { useGuideStore } from '../stores/guide'
 import { useRewardsStore } from '../stores/rewards'
 import { errorMessage } from '../utils/errors'
 
-/** The child's sticker album, level, streak, and Csillám's wardrobe. */
+/** The child's sticker album, level, streak, Csillám's wardrobe and their sticker scene. */
 const { childId, guideName } = useModuleContext()
 const rewards = useRewardsStore()
 const guide = useGuideStore()
 const failed = ref(false)
 const message = ref('')
+const sceneMessage = ref('')
+const tab = ref('album')
 
 async function load() {
   failed.value = !(await rewards.load(childId.value))
@@ -30,16 +33,33 @@ function sayBadge(badge) {
   guide.speak([badge.earned_at ? badge.name : badge.hint])
 }
 
-async function wear(accessory) {
+/** Tapping a worn item takes it off; tapping another in the same slot swaps it. */
+async function wear(item) {
   message.value = ''
+  const next = rewards.worn[item.slot] === item.id ? null : item.id
   try {
-    await rewards.wear(childId.value, accessory)
+    await rewards.wear(childId.value, item.slot, next)
     guide.celebrate()
     sparkle()
   } catch (e) {
     message.value = errorMessage(e, t('rewards.wearFailed'))
   }
 }
+
+async function onSceneChange(scene) {
+  sceneMessage.value = ''
+  try {
+    await rewards.saveScene(childId.value, scene)
+  } catch (e) {
+    sceneMessage.value = errorMessage(e, t('rewards.sceneSaveFailed'))
+  }
+}
+
+const slots = computed(() => {
+  const groups = { head: [], face: [], extra: [] }
+  for (const item of rewards.accessories) groups[item.slot]?.push(item)
+  return groups
+})
 
 onMounted(load)
 </script>
@@ -73,46 +93,62 @@ onMounted(load)
       </div>
     </section>
 
-    <h2 class="heading">{{ t('rewards.stickers', { count: rewards.earnedCount, total: rewards.badges.length }) }}</h2>
-    <div class="album">
-      <StickerCard
-        v-for="badge in rewards.badges"
-        :key="badge.id"
-        :badge="badge"
-        :earned="Boolean(badge.earned_at)"
-        @click="sayBadge(badge)"
-      />
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab" :class="{ 'tab--on': tab === 'album' }" role="tab" :aria-selected="tab === 'album'" @click="tab = 'album'">
+        {{ t('rewards.tabAlbum') }}
+      </button>
+      <button type="button" class="tab" :class="{ 'tab--on': tab === 'dressup' }" role="tab" :aria-selected="tab === 'dressup'" @click="tab = 'dressup'">
+        {{ t('rewards.tabDressUp') }}
+      </button>
+      <button type="button" class="tab" :class="{ 'tab--on': tab === 'scene' }" role="tab" :aria-selected="tab === 'scene'" @click="tab = 'scene'">
+        {{ t('rewards.tabScene') }}
+      </button>
     </div>
 
-    <h2 class="heading">{{ t('rewards.wardrobe') }}</h2>
-    <p class="hint">{{ t('rewards.wardrobeHint') }}</p>
-    <BzNotice v-if="message" tone="warn">{{ message }}</BzNotice>
-    <div class="wardrobe">
-      <button
-        type="button"
-        class="outfit"
-        :class="{ 'outfit--on': !rewards.accessory }"
-        :aria-pressed="!rewards.accessory"
-        @click="wear(null)"
-      >
-        <EmojiArt class="outfit-art" :char="ICONS.none" />
-        <small>{{ t('common.none') }}</small>
-      </button>
-      <button
-        v-for="item in rewards.accessories"
-        :key="item.id"
-        type="button"
-        class="outfit"
-        :class="{ 'outfit--on': rewards.accessory === item.id, 'outfit--locked': !item.unlocked }"
-        :disabled="!item.unlocked"
-        :aria-pressed="rewards.accessory === item.id"
-        @click="wear(item.id)"
-      >
-        <EmojiArt class="outfit-art" :char="item.emoji" />
-        <small>{{ item.unlocked ? item.name : t('rewards.unlockAt', { level: item.level }) }}</small>
-        <EmojiArt v-if="!item.unlocked" class="lock" :char="ICONS.lock" />
-      </button>
-    </div>
+    <template v-if="tab === 'album'">
+      <h2 class="heading">{{ t('rewards.stickers', { count: rewards.earnedCount, total: rewards.badges.length }) }}</h2>
+      <div class="album">
+        <StickerCard
+          v-for="badge in rewards.badges"
+          :key="badge.id"
+          :badge="badge"
+          :earned="Boolean(badge.earned_at)"
+          @click="sayBadge(badge)"
+        />
+      </div>
+    </template>
+
+    <template v-else-if="tab === 'dressup'">
+      <p class="hint">{{ t('rewards.wardrobeHint') }}</p>
+      <BzNotice v-if="message" tone="warn">{{ message }}</BzNotice>
+      <div v-for="(items, slot) in slots" :key="slot" class="wardrobe">
+        <button
+          v-for="item in items"
+          :key="item.id"
+          type="button"
+          class="outfit"
+          :class="{ 'outfit--on': rewards.worn[slot] === item.id, 'outfit--locked': !item.unlocked }"
+          :disabled="!item.unlocked"
+          :aria-pressed="rewards.worn[slot] === item.id"
+          @click="wear(item)"
+        >
+          <EmojiArt class="outfit-art" :char="item.emoji" />
+          <small>{{ item.unlocked ? item.name : t('rewards.unlockAt', { level: item.level }) }}</small>
+          <EmojiArt v-if="!item.unlocked" class="lock" :char="ICONS.lock" />
+        </button>
+      </div>
+    </template>
+
+    <template v-else>
+      <p class="hint">{{ t('rewards.tabScene') }}</p>
+      <BzNotice v-if="sceneMessage" tone="warn">{{ sceneMessage }}</BzNotice>
+      <StickerScene
+        :scene="rewards.scene"
+        :earned-badges="rewards.earnedBadges"
+        :backgrounds="rewards.backgrounds"
+        @change="onSceneChange"
+      />
+    </template>
   </template>
 
   <p v-else class="bz-loading" aria-busy="true">{{ t('common.loading') }}</p>
@@ -150,8 +186,26 @@ onMounted(load)
   align-items: center;
   gap: 4px;
 }
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.tab {
+  padding: 9px 18px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  color: var(--bz-muted);
+  font-weight: 700;
+  font-size: var(--bz-text-sm);
+  box-shadow: var(--bz-shadow-sm);
+}
+.tab--on {
+  background: var(--bz-leaf);
+  color: var(--bz-on-accent);
+}
 .heading {
-  margin: 24px 0 10px;
+  margin: 0 0 10px;
   font-size: 24px;
 }
 .album {
@@ -167,6 +221,7 @@ onMounted(load)
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-bottom: 12px;
 }
 .outfit {
   position: relative;

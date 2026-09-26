@@ -7,6 +7,7 @@ use App\Beszed\Stt\NullSttClient;
 use App\Beszed\Stt\SttClient;
 use App\Beszed\Tts\AzureTtsClient;
 use App\Beszed\Tts\NullTtsClient;
+use App\Beszed\Tts\PiperTtsClient;
 use App\Beszed\Tts\TtsClient;
 use App\Console\Commands\BeszedTtsWarm;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,7 @@ class BeszedServiceProvider extends ServiceProvider
     {
         $this->app->singleton(TtsClient::class, fn () => match (config('tts.driver')) {
             'azure' => new AzureTtsClient(config('tts.azure')),
+            'piper' => new PiperTtsClient(config('tts.piper')),
             default => new NullTtsClient,
         });
 

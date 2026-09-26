@@ -3,6 +3,7 @@
 namespace App\Beszed\Rewards;
 
 use App\Models\BeszedAttempt;
+use App\Models\BeszedDailyPath;
 use App\Models\BeszedSession;
 use App\Models\Child;
 use Carbon\CarbonImmutable;
@@ -23,6 +24,7 @@ final class Stats
         public readonly int $today,
         public readonly array $gameSessions,
         public readonly array $gameBest,
+        public readonly int $dailyPaths = 0,
     ) {}
 
     public static function for(Child $child, string $timezone): self
@@ -59,6 +61,7 @@ final class Stats
             today: $days->filter(fn ($d) => $d === $today)->count(),
             gameSessions: $perGame->map(fn ($g) => (int) $g->n)->all(),
             gameBest: $perGame->map(fn ($g) => (float) $g->best)->all(),
+            dailyPaths: BeszedDailyPath::where('child_id', $child->id)->whereNotNull('completed_at')->count(),
         );
     }
 }

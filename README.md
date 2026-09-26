@@ -1,9 +1,11 @@
 # Beszéd & DIFER module for Betűvarázs
 
-Laravel API + Vue 3 + Pinia port of the *Zoé kertje* prototype: 15 speech/DIFER games,
-Csillám the unicorn guide, server-side neural TTS, server-side pronunciation assessment,
-parent voice recordings, adaptive difficulty, rewards (levels, streaks, medals, stickers,
-Csillám's wardrobe), parent sign-in with Google, and a printable progress report.
+Laravel API + Vue 3 + Pinia port of the *Zoé kertje* prototype: 15 speech/DIFER games with ~600
+checked content items, Csillám the unicorn guide with a free self-hosted Hungarian voice (Piper) or
+Azure neural TTS, server-side pronunciation assessment, parent voice recordings, adaptive difficulty
+and age-aware content, a daily path ("Mai kaland"), rewards (levels, streaks, medals, stickers,
+Csillám's wardrobe), parent sign-in with Google, a skill-area progress report with a read-only
+link for the speech therapist, and a content editor.
 
 ## Games
 
@@ -30,12 +32,28 @@ All derived on the server (`app/Beszed/Rewards/`, rules in `config/beszed.php �
 - **Stars** = correct answers. **Player level** n needs 5·n·(n−1) stars (0, 10, 30, 60, 100…).
 - **Daily streak** (days in a row with a finished game) and **daily goal** (3 games), in `BESZED_TIMEZONE`.
 - **Medals** per game (1–3 ⭐): the best session's share of first-try answers.
-- **Stickers** (14): first game, flawless game, daily goal, 3/7-day streak, 50/200 stars, 10/30 games,
-  every game tried, 5× Kirakó/Párkereső/Rímelő/Mondd utánam. Kept once earned.
+- **Stickers** (16): first game, flawless game, daily goal, 3/7-day streak, 50/200 stars, 10/30 games,
+  every game tried, 5× Kirakó/Párkereső/Rímelő/Mondd utánam, 1/7 daily paths. Kept once earned.
 - **Csillám's wardrobe**: bow, glasses, flower, hat, crown unlock at levels 2–7.
 
 A finished game is posted to `POST children/{child}/sessions`; the answer includes what changed
-(medal, level-up, new stickers, unlocked accessories), which the finish screen shows and Csillám announces.
+(medal, level-up, new stickers, unlocked accessories, the daily path step), which the finish screen shows
+and Csillám announces.
+
+## Daily path and repetition
+
+- **Mai kaland** (`app/Beszed/DailyPath.php`, `GET children/{child}/daily-path`): three games a day on
+  the hub. The first is the game with the lowest first-try share over the last two weeks; the others
+  are games not played for a while, each from a different skill area, never yesterday's. Fixed for the
+  local day (`BESZED_TIMEZONE`), the same on every device. Finishing a step ticks it (offline results
+  count for the day they were played); the whole path earns the *Kalandor* / *Kalandmester* stickers.
+- **Missed items come back** (`SessionBuilder::weights`, `RoundFactory::weightedShuffle`): an item
+  missed once in its last three tries is 5× as likely to be picked (about every other session), twice
+  10×, three times 20× (almost surely next time); items right at the first try twice in a row come up a
+  bit less. Each pass still uses every item once, so nothing repeats endlessly.
+- **Age.** With a birth date on the child (optional, on the *Ki játszik?* page), adaptive games start at
+  an age-appropriate level (`starts_by_age`), and the other games lean towards items whose `level` fits
+  the age band (3–4 → 1, 5–6 → 2, 7+ → 3; `config/beszed_content.php → age_levels`).
 
 ## Sign-in
 
@@ -155,9 +173,10 @@ resources/js/modules/beszed/             plain JavaScript (no TypeScript), Vue 3
   unlocks on the first tap. Interrupted playback settles immediately. While a round is played, the next
   round's sentences (and the parent's recorded praise/retry lines) are fetched in the background, so the
   server synthesises TTS ahead of time and the next prompt starts instantly.
-- **Pictures** are emojis, all drawn by `components/ui/EmojiArt.vue`. For an identical look on every
-  device, serve a Twemoji-style SVG set yourself and set `emoji: { baseUrl: '/vendor/twemoji/svg/' }`;
-  a missing file falls back to the native emoji.
+- **Pictures** are emojis, all drawn by `components/ui/EmojiArt.vue` from the bundled Twemoji SVG set
+  (`@twemoji/svg`, copied to `public/build/emoji/` by `npm run build`), so they look the same on every
+  phone. A multi-emoji picture ("🐱📦") becomes one image per emoji; a missing file falls back to the
+  native emoji. `npm run check:emoji` fails if any content or UI emoji has no Twemoji image.
 - **Styles.** Each component carries its own `<style scoped>`. Global CSS is only tokens
   (`styles/tokens.css`: colours, shadows, radii, type; dark mode) and a `:where()` reset that never
   wins over a component class, so no `!important` is needed.
@@ -209,7 +228,58 @@ offline mode. `public/manifest.webmanifest` + `public/icons/` make it installabl
   set `PRIVACY_CONTROLLER` and `PRIVACY_CONTACT`. **Have the text reviewed before real families use it.**
 - **Export.** "Adataim letöltése" downloads everything stored about the parent and their children as JSON.
 - **Delete.** "Fiók törlése" (type `TÖRLÉS`) deletes the parent, all children, every result and the
-  voice recording files. Deleting one child removes that child's results.
+  voice recording files. Deleting one child removes that child's results and share links.
+- **Share links** show only what the notice lists (first name, age band, results) and stop working
+  when revoked or expired.
+
+## Voice
+
+`TTS_DRIVER` picks Csillám's server voice; the browser's own voice is the fallback either way.
+
+- `piper` (default in Docker): [Piper](https://github.com/rhasspy/piper) runs on the server with the
+  Hungarian `hu_HU-anna-medium` (female, default) and `hu_HU-imre-medium` voices; both images download
+  it at build time, `lame` makes the mp3. Free, offline, ~0.15 s per sentence on a laptop. The parent's
+  *Beállítások* page picks the voice and speed. **License:** the voices are trained on CC0 Hungarian
+  recordings but fine-tuned from Piper's English base model; check the voice model cards before
+  commercial use.
+- `azure`: Azure neural voices (Noémi, Tamás), see *Install*.
+- `null`: browser voice only.
+
+Your own `.env` wins over the compose default: if it has `TTS_DRIVER=null`, set it to `piper` (or
+remove the line) and restart. Changing voice or speed changes the TTS cache key, so audio regenerates.
+
+## Content and the editor
+
+Every game's items live in `database/seeders/data/beszed/<game>.json` (about 600 in all). The seeder
+runs on every start: new items are added, changed ones updated, removed ones switched off (old results
+keep their reference), and items changed in the editor are never overwritten.
+
+`app/Beszed/Content/ContentRules.php` checks each item against its game's schema
+(`config/beszed_content.php`) and the Hungarian it teaches: *zs* words really contain zs, *s* words a
+plain s (not sz, zs or cs), syllables rebuild the word with one per vowel, first sounds are
+digraph-aware (gy, sz, dzs…), rhymes are the word's ending, sentence chunks rebuild the sentence,
+accusatives end in -t. A test runs every seed item through it.
+
+**Editor** (`/tartalom`): parents whose e-mail is in `ADMIN_EMAILS` (the demo parent in Docker) get a
+*Tartalomszerkesztő* link on the *Ki játszik?* page. The form is built from the schema, shows the
+rules' errors in Hungarian, previews the pictures, can play a word in Csillám's voice, and refuses a
+word that is already in the game. Deleting a played item only switches it off.
+API: `GET/POST /api/admin/content/{game}`, `PUT/DELETE /api/admin/content/{game}/{item}`.
+
+## Skill map and the therapist link
+
+- **Skill areas** (`config/beszed_skills.php`, `app/Beszed/ProgressReport.php`): the games grouped into
+  the five DIFER areas (írásmozgás-koordináció, beszédhanghallás, relációszókincs, elemi számolás,
+  tapasztalati következtetés) plus two extra groups. Each shows the first-try share of the period, the
+  same-length period before (tick on the bar) and a trend. Bands (*Biztosan megy*, *Fejlődik*,
+  *Gyakoroljuk még*, *Még kevés adat* under 5 answers) describe how the games went, not a comparison
+  with other children: there are no norms, the mapping to DIFER is approximate, and the page says so.
+- **Share link** (*Haladás → Megosztás a logopédussal*): the parent creates a read-only link valid for
+  7, 30 or 90 days, optionally named ("Kovács Anna logopédus"), sees when it was opened, and can revoke
+  it. The link opens `/megosztas/<token>` without sign-in: the child's first name, age band, the last 90
+  days per area and per game, and the written summary. Only the token's SHA-256 is stored, so a link is
+  shown once. At most 5 live links per child; the page and API are `no-store`, `noindex` and
+  `Referrer-Policy: no-referrer`; the service worker never caches them.
 
 ## Progress charts
 
@@ -254,7 +324,7 @@ docker compose exec app php artisan test
 `phpunit.xml` forces an in-memory database and `APP_ENV=testing` (`<env>` and `<server>` with
 `force="true"`), so this never touches the app's real database even inside the container.
 
-The app uses browser speech by default. To enable Azure server voice, copy `.env.example` to `.env`, then set:
+In Docker, Csillám speaks with the built-in Piper voice (see *Voice*). To use Azure's voice instead, copy `.env.example` to `.env`, then set:
 
    ```dotenv
    TTS_DRIVER=azure
@@ -315,7 +385,17 @@ stickers awarded once, daily goal, streaks across local-day boundaries, wardrobe
 (new parent, linking a verified email, refusing an unverified one, cancel), demo sign-in, `/api/me`,
 children CRUD, consent versioning, data export, account deletion (including recording files, and that
 logout can't resurrect the deleted user), weekly history, back-dated offline results, and that other
-families get 403.
+families get 403. Also: every seed item passes `ContentRules`, and the rules catch wrong content; the
+seeder keeps edited items; missed items come back more often and small children get easier items;
+the editor's access, validation, duplicate check and delete-vs-switch-off; share links (what the
+therapist sees, revoke, expiry, limits, headers); the daily path (areas, stability, weakest game first,
+ticking steps, the sticker, next day).
+
+## Credits
+
+Emoji graphics: [Twemoji](https://github.com/jdecked/twemoji) © Twitter, Inc. and other contributors,
+CC-BY 4.0 (credited on `/adatvedelem`). Font: Baloo 2, SIL OFL. Voice: Piper (MIT) with the
+`hu_HU` voices from rhasspy/piper-voices.
 
 ## Next steps worth doing
 

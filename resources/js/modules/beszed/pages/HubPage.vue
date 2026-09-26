@@ -1,6 +1,9 @@
 <script setup>
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { fetchDailyPath } from '../api'
 import GuideBubble from '../components/guide/GuideBubble.vue'
+import DailyPath from '../components/hub/DailyPath.vue'
 import GameTile from '../components/hub/GameTile.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import BzButton from '../components/ui/BzButton.vue'
@@ -25,6 +28,14 @@ function greet() {
   guide.speak([{ rec: 'greet', alt: t(childName.value ? 'hub.greetingNamed' : 'hub.greeting', params) }])
 }
 
+/** Today's path; stays hidden when it can't be loaded (e.g. offline for the first time today). */
+const path = ref(null)
+onMounted(() => {
+  fetchDailyPath(childId.value)
+    .then(p => (path.value = p))
+    .catch(() => {})
+})
+
 function play(game) {
   guide.unlock() // inside the tap, so iOS allows audio in the game
   router.push({ name: 'beszed.play', params: { childId: childId.value, game } })
@@ -43,6 +54,8 @@ function play(game) {
     :earned="rewards.earnedCount"
     :stickers-to="{ name: 'beszed.rewards', params: { childId } }"
   />
+
+  <DailyPath v-if="path && meta.games.length" :path="path" :games="meta.games" @play="play" />
 
   <div class="tiles">
     <GameTile

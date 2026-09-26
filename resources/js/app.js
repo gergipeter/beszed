@@ -11,7 +11,12 @@ const pinia = createPinia()
 
 app.use(pinia)
 // The games share the app's axios (session cookie, XSRF, 401 handling).
-app.use(beszed, { http, exitTo: { name: 'children' } })
+app.use(beszed, {
+  http,
+  exitTo: { name: 'children' },
+  // Twemoji pictures shipped with the build (scripts/copy-emoji.mjs): the same look on every device.
+  emoji: { baseUrl: '/build/emoji/' },
+})
 app.use(router)
 
 // Session expired mid-game: back to sign-in.

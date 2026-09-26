@@ -1,30 +1,24 @@
 [
-  {
-    "level": 1,
-    "payload": {
-      "name": "maci",
-      "emoji": "🧸"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "name": "cica",
-      "emoji": "🐱"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "name": "labda",
-      "emoji": "⚽"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "name": "kiscsibe",
-      "emoji": "🐤"
-    }
-  }
+  {"level": 1, "payload": {"name": "maci", "emoji": "🧸"}},
+  {"level": 1, "payload": {"name": "cica", "emoji": "🐱"}},
+  {"level": 1, "payload": {"name": "labda", "emoji": "⚽"}},
+  {"level": 1, "payload": {"name": "kiscsibe", "emoji": "🐤"}},
+  {"level": 1, "payload": {"name": "nyuszi", "emoji": "🐰"}},
+  {"level": 1, "payload": {"name": "egér", "emoji": "🐭"}},
+  {"level": 1, "payload": {"name": "béka", "emoji": "🐸"}},
+  {"level": 1, "payload": {"name": "katica", "emoji": "🐞"}},
+  {"level": 1, "payload": {"name": "csiga", "emoji": "🐌"}},
+  {"level": 1, "payload": {"name": "kacsa", "emoji": "🦆"}},
+  {"level": 1, "payload": {"name": "alma", "emoji": "🍎"}},
+  {"level": 1, "payload": {"name": "autó", "emoji": "🚗"}},
+  {"level": 1, "payload": {"name": "lufi", "emoji": "🎈"}},
+  {"level": 1, "payload": {"name": "kulcs", "emoji": "🔑"}},
+  {"level": 1, "payload": {"name": "cipő", "emoji": "👟"}},
+  {"level": 1, "payload": {"name": "ceruza", "emoji": "✏️"}},
+  {"level": 1, "payload": {"name": "pingvin", "emoji": "🐧"}},
+  {"level": 1, "payload": {"name": "süni", "emoji": "🦔"}},
+  {"level": 1, "payload": {"name": "madár", "emoji": "🐦"}},
+  {"level": 1, "payload": {"name": "pillangó", "emoji": "🦋"}},
+  {"level": 1, "payload": {"name": "csengő", "emoji": "🔔"}},
+  {"level": 1, "payload": {"name": "tojás", "emoji": "🥚"}}
 ]

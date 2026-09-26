@@ -16,7 +16,7 @@ class RimeloRounds extends RoundFactory
 
         for ($r = 0; $r < $count && count($targets) && $byRhyme->count() >= 3; $r++) {
             $rhyme = $last = $this->pickNot($targets, $last);
-            [$ask, $ans] = $byRhyme[$rhyme]->shuffle()->take(2)->values()->all();
+            [$ans, $ask] = $this->weightedShuffle($byRhyme[$rhyme])->take(2)->all();
             $word = $ask->payload['word'];
 
             // Distractors from other rhymes; avoid the same last vowel (kéz / szék) so the odd one out is clear.

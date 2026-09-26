@@ -14,11 +14,27 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY resources ./resources
 COPY public ./public
+COPY scripts ./scripts
 COPY vite.config.js ./
 RUN npm run build
 
+# Piper: free neural text-to-speech with Hungarian voices (TTS_DRIVER=piper).
+FROM debian:bookworm-slim AS piper
+ARG TARGETARCH
+ARG PIPER_VERSION=2023.11.14-2
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+    && arch="$([ "$TARGETARCH" = "arm64" ] && echo aarch64 || echo x86_64)" \
+    && curl -fsSL "https://github.com/rhasspy/piper/releases/download/${PIPER_VERSION}/piper_linux_${arch}.tar.gz" | tar -xz -C /opt \
+    && mkdir -p /opt/piper/voices \
+    && for v in anna imre; do for f in onnx onnx.json; do \
+         curl -fsSL -o "/opt/piper/voices/hu_HU-$v-medium.$f" \
+           "https://huggingface.co/rhasspy/piper-voices/resolve/main/hu/hu_HU/$v/medium/hu_HU-$v-medium.$f"; \
+       done; done
+
 FROM dunglas/frankenphp:1-php8.4
-RUN install-php-extensions pdo_sqlite opcache intl zip
+RUN install-php-extensions pdo_sqlite opcache intl zip \
+    && apt-get update && apt-get install -y --no-install-recommends lame && rm -rf /var/lib/apt/lists/*
+COPY --from=piper /opt/piper /opt/piper
 WORKDIR /app
 COPY --from=vendor /app /app
 COPY --from=frontend /app/public/build /app/public/build

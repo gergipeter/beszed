@@ -1,6 +1,7 @@
 /**
  * Where each accessory sits on Csillám, in the avatar's SVG units (viewBox 200×222).
- * Ids and unlock levels come from config/beszed.php → rewards.accessories.
+ * Ids, slots and unlock levels come from config/beszed.php → rewards.accessories.
+ * One item per slot can be worn at once (head, face, extra), so several can show together.
  */
 export const ACCESSORY_ART = {
   bow: { char: '🎀', x: 58, y: 56, size: 36, rotate: -20 },

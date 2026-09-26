@@ -47,7 +47,13 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
       <p>
         Csak te, bejelentkezve. Külső szolgáltatók: a <b>Google</b>, ha Google-fiókkal lépsz be (a belépéshez); és ha a
         szolgáltató bekapcsolta, a <b>Microsoft Azure</b> beszédszolgáltatása (Csillám gépi hangja a mondatok szövegéből,
-        illetve a „Mondd utánam” kiejtésértékelésnél a felvett hang).
+        illetve a „Mondd utánam” kiejtésértékelésnél a felvett hang). Az alapbeállítású gépi hang (Piper) a saját
+        szerverünkön fut, a szöveg nem megy külső szolgáltatóhoz.
+      </p>
+      <p>
+        <b>Megosztás a logopédussal:</b> ha te készítesz egy megosztási linket, akinek odaadod, bejelentkezés nélkül
+        láthatja a gyerek keresztnevét, korcsoportját és a játékok eredményeit (hangfelvételt, születési dátumot,
+        e-mail-címet nem). A link legfeljebb 90 napig él, és bármikor visszavonhatod.
       </p>
 
       <h2>Meddig tároljuk?</h2>
@@ -68,6 +74,14 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
           <b>Panasz:</b> a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH, naih.hu).
         </li>
       </ul>
+
+      <h2>Köszönet</h2>
+      <p class="credits">
+        Képek: <a href="https://github.com/jdecked/twemoji" rel="noopener" target="_blank">Twemoji</a> – © Twitter, Inc.
+        és közreműködők,
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC-BY 4.0</a>.
+        Betűtípus: Baloo 2 (SIL Open Font License). Gépi hang: Piper (MIT), magyar hangok CC0 hangfelvételekből.
+      </p>
 
       <p class="version">Tájékoztató változata: {{ privacy.version }}</p>
       <BzButton @click="back">Vissza</BzButton>
@@ -103,6 +117,13 @@ ul {
 }
 li + li {
   margin-top: 4px;
+}
+.credits {
+  font-size: 15px;
+  color: var(--bz-muted);
+}
+.credits a {
+  text-decoration: underline;
 }
 .version {
   margin-top: 22px;

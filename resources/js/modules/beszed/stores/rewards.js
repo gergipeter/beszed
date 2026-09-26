@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { completeSession, fetchRewards, wearAccessory } from '../api'
+import { completeSession, fetchRewards, saveScene, wearAccessory } from '../api'
 
 /**
  * The current child's rewards: level, streak, daily goal, medals, stickers and
@@ -16,9 +16,12 @@ export const useRewardsStore = defineStore('beszed/rewards', {
     level: state => state.summary?.level ?? null,
     medal: state => gameId => state.summary?.medals?.[gameId] ?? 0,
     badges: state => state.summary?.badges ?? [],
+    earnedBadges: state => (state.summary?.badges ?? []).filter(b => b.earned_at),
     earnedCount: state => (state.summary?.badges ?? []).filter(b => b.earned_at).length,
     accessories: state => state.summary?.accessories ?? [],
-    accessory: state => state.summary?.accessory ?? null,
+    worn: state => state.summary?.worn ?? {},
+    scene: state => state.summary?.scene ?? { background: null, stickers: [] },
+    backgrounds: state => state.summary?.backgrounds ?? [],
   },
 
   actions: {
@@ -44,9 +47,15 @@ export const useRewardsStore = defineStore('beszed/rewards', {
       return result
     },
 
-    async wear(childId, accessory) {
-      const summary = await wearAccessory(childId, accessory)
+    async wear(childId, slot, accessory) {
+      const summary = await wearAccessory(childId, slot, accessory)
       if (childId === this.childId) this.summary = summary
+    },
+
+    /** Persists the sticker scene (background + placed stickers). */
+    async saveScene(childId, scene) {
+      const saved = await saveScene(childId, scene)
+      if (childId === this.childId) this.summary = { ...this.summary, scene: saved }
     },
   },
 })

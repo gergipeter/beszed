@@ -1,170 +1,56 @@
 [
-  {
-    "level": 1,
-    "payload": {
-      "word": "alma",
-      "emoji": "🍎"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "ház",
-      "emoji": "🏠"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "kutya",
-      "emoji": "🐶"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "cica",
-      "emoji": "🐱"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "hal",
-      "emoji": "🐟"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "nap",
-      "emoji": "☀️"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "hold",
-      "emoji": "🌙"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "fa",
-      "emoji": "🌳"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "autó",
-      "emoji": "🚗"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "labda",
-      "emoji": "⚽"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "baba",
-      "emoji": "👶"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "béka",
-      "emoji": "🐸"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "kacsa",
-      "emoji": "🦆"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "sapka",
-      "emoji": "🧢"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "virág",
-      "emoji": "🌸"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "csiga",
-      "emoji": "🐌"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "ló",
-      "emoji": "🐴"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "vonat",
-      "emoji": "🚂"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "eper",
-      "emoji": "🍓"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "busz",
-      "emoji": "🚌"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "kulcs",
-      "emoji": "🔑"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "szív",
-      "emoji": "❤️"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "cipő",
-      "emoji": "👟"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "word": "óra",
-      "emoji": "⏰"
-    }
-  }
+  {"level": 1, "payload": {"word": "alma", "emoji": "🍎"}},
+  {"level": 1, "payload": {"word": "ház", "emoji": "🏠"}},
+  {"level": 1, "payload": {"word": "kutya", "emoji": "🐶"}},
+  {"level": 1, "payload": {"word": "cica", "emoji": "🐱"}},
+  {"level": 1, "payload": {"word": "hal", "emoji": "🐟"}},
+  {"level": 1, "payload": {"word": "nap", "emoji": "☀️"}},
+  {"level": 1, "payload": {"word": "hold", "emoji": "🌙"}},
+  {"level": 1, "payload": {"word": "fa", "emoji": "🌳"}},
+  {"level": 1, "payload": {"word": "autó", "emoji": "🚗"}},
+  {"level": 1, "payload": {"word": "labda", "emoji": "⚽"}},
+  {"level": 1, "payload": {"word": "baba", "emoji": "👶"}},
+  {"level": 1, "payload": {"word": "béka", "emoji": "🐸"}},
+  {"level": 1, "payload": {"word": "kacsa", "emoji": "🦆"}},
+  {"level": 1, "payload": {"word": "sapka", "emoji": "🧢"}},
+  {"level": 1, "payload": {"word": "virág", "emoji": "🌸"}},
+  {"level": 1, "payload": {"word": "csiga", "emoji": "🐌"}},
+  {"level": 1, "payload": {"word": "ló", "emoji": "🐴"}},
+  {"level": 1, "payload": {"word": "vonat", "emoji": "🚂"}},
+  {"level": 1, "payload": {"word": "eper", "emoji": "🍓"}},
+  {"level": 1, "payload": {"word": "busz", "emoji": "🚌"}},
+  {"level": 1, "payload": {"word": "kulcs", "emoji": "🔑"}},
+  {"level": 1, "payload": {"word": "szív", "emoji": "❤️"}},
+  {"level": 1, "payload": {"word": "cipő", "emoji": "👟"}},
+  {"level": 1, "payload": {"word": "óra", "emoji": "⏰"}},
+  {"level": 1, "payload": {"word": "tej", "emoji": "🥛"}},
+  {"level": 1, "payload": {"word": "sajt", "emoji": "🧀"}},
+  {"level": 1, "payload": {"word": "kenyér", "emoji": "🍞"}},
+  {"level": 1, "payload": {"word": "tojás", "emoji": "🥚"}},
+  {"level": 1, "payload": {"word": "répa", "emoji": "🥕"}},
+  {"level": 1, "payload": {"word": "körte", "emoji": "🍐"}},
+  {"level": 1, "payload": {"word": "szőlő", "emoji": "🍇"}},
+  {"level": 1, "payload": {"word": "fagyi", "emoji": "🍦"}},
+  {"level": 1, "payload": {"word": "torta", "emoji": "🎂"}},
+  {"level": 1, "payload": {"word": "maci", "emoji": "🧸"}},
+  {"level": 1, "payload": {"word": "lufi", "emoji": "🎈"}},
+  {"level": 1, "payload": {"word": "dob", "emoji": "🥁"}},
+  {"level": 1, "payload": {"word": "könyv", "emoji": "📖"}},
+  {"level": 1, "payload": {"word": "ágy", "emoji": "🛏️"}},
+  {"level": 1, "payload": {"word": "szék", "emoji": "🪑"}},
+  {"level": 1, "payload": {"word": "ajtó", "emoji": "🚪"}},
+  {"level": 1, "payload": {"word": "hajó", "emoji": "🚢"}},
+  {"level": 1, "payload": {"word": "bicikli", "emoji": "🚲"}},
+  {"level": 1, "payload": {"word": "traktor", "emoji": "🚜"}},
+  {"level": 1, "payload": {"word": "egér", "emoji": "🐭"}},
+  {"level": 1, "payload": {"word": "malac", "emoji": "🐷"}},
+  {"level": 1, "payload": {"word": "tehén", "emoji": "🐮"}},
+  {"level": 1, "payload": {"word": "bagoly", "emoji": "🦉"}},
+  {"level": 1, "payload": {"word": "méh", "emoji": "🐝"}},
+  {"level": 1, "payload": {"word": "csillag", "emoji": "⭐"}},
+  {"level": 1, "payload": {"word": "felhő", "emoji": "☁️"}},
+  {"level": 1, "payload": {"word": "ceruza", "emoji": "✏️"}},
+  {"level": 1, "payload": {"word": "olló", "emoji": "✂️"}},
+  {"level": 1, "payload": {"word": "kanál", "emoji": "🥄"}},
+  {"level": 1, "payload": {"word": "bögre", "emoji": "☕"}}
 ]

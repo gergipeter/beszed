@@ -13,6 +13,17 @@ abstract class RoundFactory
 {
     protected const NUM = ['nulla', 'egy', 'két', 'három', 'négy', 'öt', 'hat', 'hét', 'nyolc', 'kilenc', 'tíz'];
 
+    /** @var array<int, float> item id => weight (SessionBuilder: missed lately → heavier) */
+    protected array $weights = [];
+
+    /** @param  array<int, float>  $weights */
+    public function weigh(array $weights): static
+    {
+        $this->weights = $weights;
+
+        return $this;
+    }
+
     /**
      * @param  Collection<int, \App\Models\BeszedContentItem>  $items
      * @return array<int, array<string, mixed>>
@@ -40,12 +51,25 @@ abstract class RoundFactory
         return mb_strtoupper(mb_substr($s, 0, 1)).mb_substr($s, 1);
     }
 
-    /** $count items: whole shuffled passes, no item twice in a row. */
+    /**
+     * Random order where heavier items tend to come first (Efraimidis–Spirakis):
+     * each item still appears once, so a missed word returns sooner, not endlessly.
+     */
+    protected function weightedShuffle(Collection $items): Collection
+    {
+        return $items
+            ->map(fn ($item) => [$item, (mt_rand(1, mt_getrandmax()) / mt_getrandmax()) ** (1 / max(0.05, $this->weights[$item->id] ?? 1.0))])
+            ->sortByDesc(fn ($pair) => $pair[1])
+            ->map(fn ($pair) => $pair[0])
+            ->values();
+    }
+
+    /** $count items: whole weighted-shuffled passes, no item twice in a row. */
     protected function cycle(Collection $items, int $count): Collection
     {
         $out = [];
         while (count($out) < $count && $items->isNotEmpty()) {
-            $batch = $items->shuffle()->values()->all();
+            $batch = $this->weightedShuffle($items)->all();
             if ($out && count($batch) > 1 && end($out)->id === $batch[0]->id) {
                 [$batch[0], $batch[1]] = [$batch[1], $batch[0]];
             }

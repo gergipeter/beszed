@@ -45,11 +45,28 @@ class RewardController extends Controller
         $this->authorizeChild($request, $child);
 
         $data = $request->validate([
+            'slot' => ['required', Rule::in(['head', 'face', 'extra'])],
             'accessory' => ['present', 'nullable', Rule::in(array_keys(config('beszed.rewards.accessories')))],
         ]);
 
-        abort_unless($rewards->wear($child, $data['accessory']), 422, 'Ez még nincs kinyitva.');
+        abort_unless($rewards->wear($child, $data['slot'], $data['accessory']), 422, 'Ez még nincs kinyitva.');
 
         return response()->json($rewards->summary($child));
+    }
+
+    public function scene(Request $request, Child $child, Rewards $rewards): JsonResponse
+    {
+        $this->authorizeChild($request, $child);
+
+        $data = $request->validate([
+            'background' => ['present', 'nullable', Rule::in(array_keys(config('beszed.rewards.backgrounds')))],
+            'stickers' => ['required', 'array', 'max:' . config('beszed.rewards.scene_max_stickers')],
+            'stickers.*.badge' => ['required', 'string'],
+            'stickers.*.x' => ['required', 'numeric', 'between:0,100'],
+            'stickers.*.y' => ['required', 'numeric', 'between:0,100'],
+            'stickers.*.rotate' => ['nullable', 'numeric', 'between:-180,180'],
+        ]);
+
+        return response()->json($rewards->saveScene($child, $data['background'], $data['stickers']));
     }
 }

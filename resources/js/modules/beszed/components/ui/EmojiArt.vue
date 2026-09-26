@@ -1,12 +1,13 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { config } from '../../config/options'
-import { emojiAssetName } from '../../utils/emoji'
+import { emojiAssetName, splitEmoji } from '../../utils/emoji'
 
 /**
  * The one place emojis are drawn. Sized by font-size like text, so callers style
  * it the same either way. With `config.emoji.baseUrl` set it shows that image set
- * (same look on every device) and falls back to the native emoji if a file is missing.
+ * (same look on every device); a sequence like "🐱📦" becomes one image per emoji,
+ * and any missing file falls back to the native emoji.
  */
 const props = defineProps({
   char: { type: String, required: true },
@@ -14,28 +15,49 @@ const props = defineProps({
   label: { type: String, default: '' },
 })
 
-const failed = ref(false)
-watch(() => props.char, () => (failed.value = false))
+const failed = reactive(new Set())
+watch(
+  () => props.char,
+  () => failed.clear(),
+)
 
-const src = computed(() => {
-  const { baseUrl, ext } = config.emoji
-  if (!baseUrl || failed.value) return null
-  return `${baseUrl.replace(/\/?$/, '/')}${emojiAssetName(props.char)}${ext}`
-})
+const base = computed(() => (config.emoji.baseUrl ? config.emoji.baseUrl.replace(/\/?$/, '/') : null))
+const parts = computed(() =>
+  splitEmoji(props.char).map(ch => ({
+    ch,
+    src: base.value && !failed.has(ch) ? `${base.value}${emojiAssetName(ch)}${config.emoji.ext}` : null,
+  })),
+)
+const single = computed(() => (parts.value.length === 1 ? parts.value[0] : null))
+const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.label } : { 'aria-hidden': 'true' }))
 </script>
 
 <template>
   <img
-    v-if="src"
+    v-if="single?.src"
     class="emoji emoji--img"
-    :src="src"
+    :src="single.src"
     :alt="label"
     :aria-hidden="label ? undefined : 'true'"
     draggable="false"
     decoding="async"
-    @error="failed = true"
+    @error="failed.add(single.ch)"
   />
-  <span v-else class="emoji" :role="label ? 'img' : undefined" :aria-label="label || undefined" :aria-hidden="label ? undefined : 'true'">{{ char }}</span>
+  <span v-else-if="base && parts.length > 1" class="emoji emoji--group" v-bind="a11y">
+    <template v-for="(p, i) in parts" :key="i">
+      <img
+        v-if="p.src"
+        class="emoji--img"
+        :src="p.src"
+        alt=""
+        draggable="false"
+        decoding="async"
+        @error="failed.add(p.ch)"
+      />
+      <span v-else>{{ p.ch }}</span>
+    </template>
+  </span>
+  <span v-else class="emoji" v-bind="a11y">{{ char }}</span>
 </template>
 
 <style scoped>
@@ -49,5 +71,11 @@ const src = computed(() => {
   vertical-align: -0.1em;
   object-fit: contain;
   user-select: none;
+  -webkit-user-drag: none;
+}
+.emoji--group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.04em;
 }
 </style>

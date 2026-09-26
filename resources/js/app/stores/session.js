@@ -84,6 +84,12 @@ export const useSessionStore = defineStore('app/session', {
       return data.child
     },
 
+    async updateChild(id, fields) {
+      const { data } = await http.put(`/api/children/${id}`, fields)
+      this.children = this.children.map(c => (c.id === id ? data.child : c))
+      return data.child
+    },
+
     async removeChild(id) {
       await http.delete(`/api/children/${id}`)
       this.children = this.children.filter(c => c.id !== id)

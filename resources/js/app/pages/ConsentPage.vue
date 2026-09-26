@@ -35,7 +35,7 @@ async function logout() {
 <template>
   <main class="bz consent">
     <div class="card">
-      <div class="avatar"><CsillamAvatar :accessory="null" /></div>
+      <div class="avatar"><CsillamAvatar :worn="{}" /></div>
       <h1>{{ texts.consent.title }}</h1>
       <p>{{ texts.consent.intro }}</p>
       <h2>{{ texts.consent.stored }}</h2>

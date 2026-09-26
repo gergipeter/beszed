@@ -6,7 +6,11 @@ use App\Models\BeszedContentItem;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-/** Loads database/seeders/data/beszed/{game}.json. Re-running replaces a game's content. */
+/**
+ * Loads database/seeders/data/beszed/{game}.json. Safe to run on every start:
+ * new items are added, changed ones updated, removed ones deactivated (answers
+ * keep pointing at them), and anything edited in the content editor is left alone.
+ */
 class BeszedContentSeeder extends Seeder
 {
     public function run(): void
@@ -21,14 +25,29 @@ class BeszedContentSeeder extends Seeder
 
             $rows = json_decode(file_get_contents($file), true, flags: JSON_THROW_ON_ERROR);
 
-            DB::transaction(function () use ($game, $rows) {
-                BeszedContentItem::where('game', $game)->delete();
+            $added = DB::transaction(function () use ($game, $rows) {
+                $existing = BeszedContentItem::where('game', $game)->where('source', 'seed')->get()->keyBy('seed_key');
+                $keep = [];
+                $added = 0;
+
                 foreach ($rows as $row) {
-                    BeszedContentItem::create(['game' => $game, 'level' => $row['level'] ?? 1, 'payload' => $row['payload']]);
+                    $key = BeszedContentItem::seedKey($row['payload']);
+                    $keep[] = $key;
+                    $item = $existing[$key] ?? new BeszedContentItem(['game' => $game, 'source' => 'seed', 'seed_key' => $key]);
+                    if ($item->edited_at) {
+                        continue; // the editor wins
+                    }
+                    $added += (int) ! $item->exists;
+                    $item->fill(['level' => $row['level'] ?? 1, 'payload' => $row['payload'], 'active' => true])->save();
                 }
+
+                BeszedContentItem::where('game', $game)->where('source', 'seed')->whereNull('edited_at')
+                    ->whereNotIn('seed_key', $keep)->update(['active' => false]);
+
+                return $added;
             });
 
-            $this->command?->info(sprintf('%-8s %3d items', $game, count($rows)));
+            $this->command?->info(sprintf('%-10s %3d items (%d new)', $game, count($rows), $added));
         }
     }
 }

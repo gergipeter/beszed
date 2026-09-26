@@ -1,50 +1,27 @@
 [
-  {
-    "level": 1,
-    "payload": {
-      "name": "alma",
-      "accusative": "almát",
-      "emoji": "🍎"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "name": "eper",
-      "accusative": "epret",
-      "emoji": "🍓"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "name": "körte",
-      "accusative": "körtét",
-      "emoji": "🍐"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "name": "banán",
-      "accusative": "banánt",
-      "emoji": "🍌"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "name": "cseresznye",
-      "accusative": "cseresznyét",
-      "emoji": "🍒"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "name": "narancs",
-      "accusative": "narancsot",
-      "emoji": "🍊"
-    }
-  }
+  {"level": 1, "payload": {"name": "alma", "accusative": "almát", "emoji": "🍎"}},
+  {"level": 1, "payload": {"name": "eper", "accusative": "epret", "emoji": "🍓"}},
+  {"level": 1, "payload": {"name": "körte", "accusative": "körtét", "emoji": "🍐"}},
+  {"level": 1, "payload": {"name": "banán", "accusative": "banánt", "emoji": "🍌"}},
+  {"level": 1, "payload": {"name": "cseresznye", "accusative": "cseresznyét", "emoji": "🍒"}},
+  {"level": 1, "payload": {"name": "narancs", "accusative": "narancsot", "emoji": "🍊"}},
+  {"level": 1, "payload": {"name": "citrom", "accusative": "citromot", "emoji": "🍋"}},
+  {"level": 1, "payload": {"name": "dinnye", "accusative": "dinnyét", "emoji": "🍉"}},
+  {"level": 1, "payload": {"name": "répa", "accusative": "répát", "emoji": "🥕"}},
+  {"level": 1, "payload": {"name": "paradicsom", "accusative": "paradicsomot", "emoji": "🍅"}},
+  {"level": 1, "payload": {"name": "uborka", "accusative": "uborkát", "emoji": "🥒"}},
+  {"level": 1, "payload": {"name": "gomba", "accusative": "gombát", "emoji": "🍄"}},
+  {"level": 1, "payload": {"name": "tojás", "accusative": "tojást", "emoji": "🥚"}},
+  {"level": 1, "payload": {"name": "keksz", "accusative": "kekszet", "emoji": "🍪"}},
+  {"level": 1, "payload": {"name": "labda", "accusative": "labdát", "emoji": "⚽"}},
+  {"level": 1, "payload": {"name": "csillag", "accusative": "csillagot", "emoji": "⭐"}},
+  {"level": 1, "payload": {"name": "virág", "accusative": "virágot", "emoji": "🌸"}},
+  {"level": 1, "payload": {"name": "levél", "accusative": "levelet", "emoji": "🍃"}},
+  {"level": 1, "payload": {"name": "kagyló", "accusative": "kagylót", "emoji": "🐚"}},
+  {"level": 1, "payload": {"name": "gesztenye", "accusative": "gesztenyét", "emoji": "🌰"}},
+  {"level": 1, "payload": {"name": "toll", "accusative": "tollat", "emoji": "🪶"}},
+  {"level": 1, "payload": {"name": "ceruza", "accusative": "ceruzát", "emoji": "✏️"}},
+  {"level": 1, "payload": {"name": "lufi", "accusative": "lufit", "emoji": "🎈"}},
+  {"level": 1, "payload": {"name": "fánk", "accusative": "fánkot", "emoji": "🍩"}},
+  {"level": 1, "payload": {"name": "kulcs", "accusative": "kulcsot", "emoji": "🔑"}}
 ]

@@ -16,6 +16,8 @@ const colorOf = child => COLORS[child.id % COLORS.length]
 const adding = ref(false)
 const editing = ref(false)
 const name = ref('')
+const birthDate = ref('')
+const today = new Date().toISOString().slice(0, 10)
 const error = ref('')
 const saving = ref(false)
 const showForm = computed(() => adding.value || !session.children.length)
@@ -25,14 +27,25 @@ async function add() {
   saving.value = true
   error.value = ''
   try {
-    const child = await session.addChild({ name: name.value.trim() })
+    const child = await session.addChild({ name: name.value.trim(), birth_date: birthDate.value || null })
     name.value = ''
+    birthDate.value = ''
     adding.value = false
     router.push({ name: 'beszed.hub', params: { childId: child.id } })
   } catch (e) {
     error.value = e.response?.data?.message || texts.saveFailed
   } finally {
     saving.value = false
+  }
+}
+
+/** The birth date only sets the age band: games start at a fitting level and pick age-appropriate words. */
+async function setBirthDate(child, value) {
+  error.value = ''
+  try {
+    await session.updateChild(child.id, { name: child.name, birth_date: value || null })
+  } catch (e) {
+    error.value = e.response?.data?.message || texts.saveFailed
   }
 }
 
@@ -70,7 +83,7 @@ async function deleteAccount() {
     </header>
 
     <div class="hello">
-      <div class="avatar"><CsillamAvatar :accessory="null" /></div>
+      <div class="avatar"><CsillamAvatar :worn="{}" /></div>
       <h1 class="title">{{ session.children.length ? texts.whoPlays : texts.firstChild }}</h1>
     </div>
 
@@ -95,11 +108,31 @@ async function deleteAccount() {
         <span>{{ texts.childName }}</span>
         <input v-model="name" maxlength="40" required :placeholder="texts.childNamePlaceholder" autocomplete="off" />
       </label>
+      <label class="field">
+        <span>{{ texts.birthDate }}</span>
+        <input v-model="birthDate" type="date" min="2010-01-02" :max="today" />
+        <small class="hint">{{ texts.birthDateHint }}</small>
+      </label>
       <div class="bz-row">
         <BzButton type="submit" variant="primary" :disabled="saving || !name.trim()">{{ texts.save }}</BzButton>
         <BzButton v-if="session.children.length" @click="adding = false">{{ texts.cancel }}</BzButton>
       </div>
     </form>
+
+    <ul v-if="editing" class="birthdays">
+      <li v-for="child in session.children" :key="child.id">
+        <label>
+          <span>{{ fill(texts.birthDateOf, { name: child.name }) }}</span>
+          <input
+            type="date"
+            min="2010-01-02"
+            :max="today"
+            :value="child.birth_date ?? ''"
+            @change="setBirthDate(child, $event.target.value)"
+          />
+        </label>
+      </li>
+    </ul>
 
     <div v-if="session.children.length" class="manage">
       <BzButton size="sm" variant="soft" @click="editing = !editing">{{ editing ? texts.done : texts.edit }}</BzButton>
@@ -108,6 +141,7 @@ async function deleteAccount() {
     <!-- the parent's own data -->
     <footer class="account">
       <RouterLink :to="{ name: 'privacy' }">{{ texts.privacyLink }}</RouterLink>
+      <RouterLink v-if="session.user?.can_edit_content" :to="{ name: 'content' }">{{ texts.contentEditor }}</RouterLink>
       <a href="/api/me/export" download>{{ texts.exportData }}</a>
       <button type="button" class="danger" @click="deleteAccount">{{ texts.deleteAccount }}</button>
     </footer>
@@ -115,6 +149,34 @@ async function deleteAccount() {
 </template>
 
 <style scoped>
+.hint {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--bz-muted);
+}
+.birthdays {
+  display: grid;
+  gap: 8px;
+  max-width: 420px;
+  margin: 16px auto 0;
+  padding: 0;
+  list-style: none;
+}
+.birthdays label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 700;
+}
+.birthdays input {
+  padding: 6px 10px;
+  border: 2px solid var(--bz-guide);
+  border-radius: 12px;
+  background: var(--bz-soft);
+  color: var(--bz-ink);
+  font: inherit;
+}
 .account {
   display: flex;
   flex-wrap: wrap;

@@ -20,6 +20,7 @@ export function createBeszedRoutes({ path = '/beszed', props } = {}) {
         { path: '', name: 'beszed.hub', component: () => import('../pages/HubPage.vue') },
         { path: 'hang', name: 'beszed.recordings', component: () => import('../pages/RecordingsPage.vue') },
         { path: 'haladas', name: 'beszed.progress', component: () => import('../pages/ProgressPage.vue') },
+        { path: 'haladas/megosztas', name: 'beszed.shares', component: () => import('../pages/SharesPage.vue') },
         { path: 'matricak', name: 'beszed.rewards', component: () => import('../pages/RewardsPage.vue') },
         { path: 'beallitasok', name: 'beszed.settings', component: () => import('../pages/SettingsPage.vue') },
         {

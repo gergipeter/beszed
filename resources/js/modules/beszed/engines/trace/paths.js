@@ -15,6 +15,16 @@ export const PATHS = {
     return [0.08 + 0.84 * t, i % 2 === 0 ? 0.74 - 0.46 * f : 0.28 + 0.46 * f]
   },
   arches: t => [0.08 + 0.84 * t, 0.74 - 0.46 * Math.abs(Math.sin(t * Math.PI * 4))],
+  /** A staircase going up: flat treads, short steep risers. */
+  steps: t => {
+    const s = t * 5
+    const i = Math.min(4, Math.floor(s))
+    const f = s - i
+    const rise = f < 0.7 ? 0 : (f - 0.7) / 0.3
+    return [0.08 + 0.84 * t, 0.78 - 0.11 * (i + rise)]
+  },
+  /** Two big, gentle hills. */
+  hills: t => [0.08 + 0.84 * t, 0.72 - 0.42 * Math.abs(Math.sin(t * Math.PI * 2))],
 }
 
 /** `samples` evenly spaced points along path `name` (wave if unknown). */

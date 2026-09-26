@@ -1,122 +1,45 @@
 [
-  {
-    "level": 1,
-    "payload": {
-      "good": "A cica a doboz alatt van.",
-      "bad": "A cica van alatt a doboz.",
-      "emoji": "🐱📦"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Látom a kutyát.",
-      "bad": "Látom a kutya.",
-      "emoji": "👀🐶"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Két cica alszik.",
-      "bad": "Két cicák alszanak.",
-      "emoji": "🐱🐱"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "A virág szép.",
-      "bad": "A virág van szép.",
-      "emoji": "🌸"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Anya táskája piros.",
-      "bad": "Anya táska piros.",
-      "emoji": "👜"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Zoé a kertben játszik.",
-      "bad": "Zoé játszik benne a kert.",
-      "emoji": "👧🌳"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Nekem van egy macim.",
-      "bad": "Én van egy maci.",
-      "emoji": "🧸"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Megyek a boltba.",
-      "bad": "Én megyek a bolt.",
-      "emoji": "🛒"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "A kutya nagyobb, mint a cica.",
-      "bad": "A kutya van nagyobb, mint a cica.",
-      "emoji": "🐶🐱"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Holnap megyünk az óvodába.",
-      "bad": "Mi megyünk óvoda holnap.",
-      "emoji": "🏫"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Három almát eszem.",
-      "bad": "Én eszem három almák.",
-      "emoji": "🍎🍎🍎"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Apa autója kék.",
-      "bad": "Az apa autó kék.",
-      "emoji": "🚙"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "A madár a fán ül.",
-      "bad": "A madár ül rajta a fa.",
-      "emoji": "🐦🌳"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "Kérek egy pohár vizet.",
-      "bad": "Én akarok egy pohár víz.",
-      "emoji": "🥛"
-    }
-  },
-  {
-    "level": 1,
-    "payload": {
-      "good": "A labda az asztal mögött van.",
-      "bad": "A labda van mögött az asztal.",
-      "emoji": "⚽"
-    }
-  }
+  {"level": 1, "payload": {"good": "A cica a doboz alatt van.", "bad": "A cica van alatt a doboz.", "emoji": "🐱📦"}},
+  {"level": 1, "payload": {"good": "Látom a kutyát.", "bad": "Látom a kutya.", "emoji": "👀🐶"}},
+  {"level": 1, "payload": {"good": "Két cica alszik.", "bad": "Két cicák alszanak.", "emoji": "🐱🐱"}},
+  {"level": 1, "payload": {"good": "A virág szép.", "bad": "A virág van szép.", "emoji": "🌸"}},
+  {"level": 1, "payload": {"good": "Anya táskája piros.", "bad": "Anya táska piros.", "emoji": "👜"}},
+  {"level": 1, "payload": {"good": "Zoé a kertben játszik.", "bad": "Zoé játszik benne a kert.", "emoji": "👧🌳"}},
+  {"level": 1, "payload": {"good": "Nekem van egy macim.", "bad": "Én van egy maci.", "emoji": "🧸"}},
+  {"level": 1, "payload": {"good": "Megyek a boltba.", "bad": "Én megyek a bolt.", "emoji": "🛒"}},
+  {"level": 1, "payload": {"good": "A kutya nagyobb, mint a cica.", "bad": "A kutya van nagyobb, mint a cica.", "emoji": "🐶🐱"}},
+  {"level": 1, "payload": {"good": "Holnap megyünk az óvodába.", "bad": "Mi megyünk óvoda holnap.", "emoji": "🏫"}},
+  {"level": 1, "payload": {"good": "Három almát eszem.", "bad": "Én eszem három almák.", "emoji": "🍎🍎🍎"}},
+  {"level": 1, "payload": {"good": "Apa autója kék.", "bad": "Az apa autó kék.", "emoji": "🚙"}},
+  {"level": 1, "payload": {"good": "A madár a fán ül.", "bad": "A madár ül rajta a fa.", "emoji": "🐦🌳"}},
+  {"level": 1, "payload": {"good": "Kérek egy pohár vizet.", "bad": "Én akarok egy pohár víz.", "emoji": "🥛"}},
+  {"level": 1, "payload": {"good": "A labda az asztal mögött van.", "bad": "A labda van mögött az asztal.", "emoji": "⚽"}},
+  {"level": 1, "payload": {"good": "Kérek egy almát.", "bad": "Kérek egy alma.", "emoji": "🍎"}},
+  {"level": 1, "payload": {"good": "Öt csillagot látok.", "bad": "Öt csillagokat látok.", "emoji": "⭐"}},
+  {"level": 1, "payload": {"good": "Megetetem a halat.", "bad": "Megetetem a hal.", "emoji": "🐟"}},
+  {"level": 1, "payload": {"good": "Rajzolok egy házat.", "bad": "Rajzolok egy ház.", "emoji": "🏠✏️"}},
+  {"level": 1, "payload": {"good": "Iszom egy pohár tejet.", "bad": "Iszom egy pohár tej.", "emoji": "🥛"}},
+  {"level": 1, "payload": {"good": "Nincs kedvem aludni.", "bad": "Nem van kedvem aludni.", "emoji": "😴"}},
+  {"level": 1, "payload": {"good": "Két kezem van.", "bad": "Két kezeim van.", "emoji": "✋✋"}},
+  {"level": 2, "payload": {"good": "A kutya a házban alszik.", "bad": "A kutya a házben alszik.", "emoji": "🐶🏠"}},
+  {"level": 2, "payload": {"good": "A macska a kertben van.", "bad": "A macska a kertban van.", "emoji": "🐈🌳"}},
+  {"level": 2, "payload": {"good": "A gyerekek futnak.", "bad": "A gyerekek fut.", "emoji": "👧👦"}},
+  {"level": 2, "payload": {"good": "Mi együtt játszunk.", "bad": "Mi együtt játszik.", "emoji": "🧸"}},
+  {"level": 2, "payload": {"good": "Én szépen rajzolok.", "bad": "Én szépen rajzol.", "emoji": "✏️"}},
+  {"level": 2, "payload": {"good": "A madarak énekelnek.", "bad": "A madarak énekel.", "emoji": "🐦🐦"}},
+  {"level": 2, "payload": {"good": "Anyának adok egy virágot.", "bad": "Anya adok egy virágot.", "emoji": "👩🌷"}},
+  {"level": 2, "payload": {"good": "Holnap elmegyünk az állatkertbe.", "bad": "Holnap elmegyünk az állatkertben.", "emoji": "🦁"}},
+  {"level": 2, "payload": {"good": "Az asztalra teszem a poharat.", "bad": "Az asztalon teszem a poharat.", "emoji": "🥛"}},
+  {"level": 2, "payload": {"good": "Kiveszem a labdát a dobozból.", "bad": "Kiveszem a labdát a dobozban.", "emoji": "⚽📦"}},
+  {"level": 2, "payload": {"good": "A mackónak nagy füle van.", "bad": "A mackó nagy füle van.", "emoji": "🧸"}},
+  {"level": 2, "payload": {"good": "A cica felmászott a fára.", "bad": "A cica felmászott a fán.", "emoji": "🐱🌳"}},
+  {"level": 2, "payload": {"good": "Ő a legjobb barátom.", "bad": "Ő a legjobbabb barátom.", "emoji": "🤝"}},
+  {"level": 2, "payload": {"good": "Az én macim puha.", "bad": "Az én maci puha.", "emoji": "🧸"}},
+  {"level": 3, "payload": {"good": "Megeszem az almát.", "bad": "Megeszek az almát.", "emoji": "🍎"}},
+  {"level": 3, "payload": {"good": "Látok egy nyuszit.", "bad": "Látom egy nyuszit.", "emoji": "🐰"}},
+  {"level": 3, "payload": {"good": "Tegnap a parkban játszottunk.", "bad": "Tegnap a parkban játszunk.", "emoji": "🛝"}},
+  {"level": 3, "payload": {"good": "Ezt a könyvet olvasom.", "bad": "Ezt a könyvet olvasok.", "emoji": "📖"}},
+  {"level": 3, "payload": {"good": "Nagyobb vagyok, mint az öcsém.", "bad": "Nagyobb vagyok, mint az öcsémnél.", "emoji": "👦"}},
+  {"level": 3, "payload": {"good": "Kérem szépen a ceruzát.", "bad": "Kérek szépen a ceruzát.", "emoji": "✏️"}},
+  {"level": 3, "payload": {"good": "A csiga lassabb, mint a nyuszi.", "bad": "A csiga lassúbb, mint a nyuszi.", "emoji": "🐌🐰"}}
 ]

@@ -50,7 +50,16 @@ class Leveler
     {
         return BeszedSkillLevel::firstOrCreate(
             ['child_id' => $child->id, 'game' => $game],
-            ['level' => $cfg['start'], 'streak' => 0],
+            ['level' => $this->startingLevel($child, $cfg), 'streak' => 0],
         );
+    }
+
+    /** Age-appropriate starting level, clamped to [min, max]; falls back to the fixed 'start'. */
+    private function startingLevel(Child $child, array $cfg): int
+    {
+        $band = AgeBands::of($child);
+        $start = $cfg['starts_by_age'][$band] ?? $cfg['start'];
+
+        return max($cfg['min'], min($cfg['max'], $start));
     }
 }

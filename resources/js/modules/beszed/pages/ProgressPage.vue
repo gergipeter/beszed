@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { fetchProgress, fetchProgressHistory } from '../api'
 import TrendChart from '../components/charts/TrendChart.vue'
+import SkillMap from '../components/progress/SkillMap.vue'
 import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
 import PageHeader from '../components/ui/PageHeader.vue'
@@ -9,6 +10,7 @@ import { useAsync } from '../composables/useAsync'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
 import { formatDate, formatDay, formatPercent, t } from '../i18n'
+import { downloadClinicalReport } from '../services/reports/clinicalReport'
 import { useRewardsStore } from '../stores/rewards'
 
 /** Weekly trends + per-game summary; printable for the speech therapist (logopédus). */
@@ -43,6 +45,7 @@ const gamePoints = computed(() => points('games'))
 const ratePoints = computed(() => points('firstTryRate'))
 
 const print = () => window.print()
+const exportPdf = () => downloadClinicalReport(report.value)
 
 onMounted(load)
 watch(days, load)
@@ -54,6 +57,8 @@ watch(days, load)
       <option v-for="n in PERIODS" :key="n" :value="n">{{ t('progress.lastDays', { count: n }) }}</option>
     </select>
     <BzButton :icon="ICONS.print" @click="print">{{ t('progress.print') }}</BzButton>
+    <BzButton :icon="ICONS.download" @click="exportPdf">{{ t('progress.exportPdf') }}</BzButton>
+    <BzButton :icon="ICONS.share" :to="{ name: 'beszed.shares', params: { childId } }">{{ t('share.title') }}</BzButton>
   </PageHeader>
 
   <BzNotice v-if="error" tone="warn">
@@ -73,6 +78,15 @@ watch(days, load)
         })
       }}
     </p>
+
+    <SkillMap :areas="report.areas" :games="report.games" />
+
+    <BzNotice v-if="report.narrative" class="narrative">
+      <p class="narrative-text">{{ report.narrative }}</p>
+      <ul v-if="report.recommendations?.length" class="recommendations">
+        <li v-for="(item, i) in report.recommendations" :key="i">{{ item }}</li>
+      </ul>
+    </BzNotice>
 
     <!-- two single-measure charts (never one chart with two scales); refetch keeps the frame, dimmed -->
     <div class="charts" :aria-busy="loading">
@@ -171,6 +185,16 @@ watch(days, load)
   margin: 0 0 14px;
   font-weight: 700;
   color: var(--bz-muted);
+}
+.narrative-text {
+  margin: 0 0 6px;
+}
+.recommendations {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+.recommendations li {
+  margin: 2px 0;
 }
 .table-wrap {
   overflow-x: auto;

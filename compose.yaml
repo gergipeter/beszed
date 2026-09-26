@@ -15,7 +15,7 @@ services:
       QUEUE_CONNECTION: sync
       FILESYSTEM_DISK: local
       SANCTUM_STATEFUL_DOMAINS: localhost,localhost:8000,127.0.0.1,127.0.0.1:8000,::1,192.168.0.100:8000
-      TTS_DRIVER: ${TTS_DRIVER:-null}
+      TTS_DRIVER: ${TTS_DRIVER:-piper}
       AZURE_SPEECH_KEY: ${AZURE_SPEECH_KEY:-}
       AZURE_SPEECH_REGION: ${AZURE_SPEECH_REGION:-westeurope}
       AZURE_SPEECH_VOICE: ${AZURE_SPEECH_VOICE:-hu-HU-NoemiNeural}
@@ -24,6 +24,8 @@ services:
       # Parent sign-in with Google; leave empty to use the local demo sign-in only.
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      # Content editor (/tartalom) access; the demo parent by default.
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-parent@example.test}
     volumes:
       - beszed-storage:/var/www/html/storage
 

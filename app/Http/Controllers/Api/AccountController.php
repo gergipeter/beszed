@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BeszedAttempt;
 use App\Models\BeszedBadge;
+use App\Models\BeszedDailyPath;
 use App\Models\BeszedRecording;
 use App\Models\BeszedSession;
+use App\Models\BeszedShare;
 use App\Models\BeszedSkillLevel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -48,7 +50,11 @@ class AccountController extends Controller
                 'answers' => BeszedAttempt::where('child_id', $c->id)->orderBy('created_at')
                     ->get(['game', 'level', 'correct', 'tries', 'duration_ms', 'created_at']),
                 'stickers' => BeszedBadge::where('child_id', $c->id)->get(['badge', 'earned_at']),
-                'wearing' => $c->beszedProfile?->accessory,
+                'wearing' => $c->beszedProfile?->accessories,
+                'sticker_scene' => $c->beszedProfile?->scene,
+                'daily_paths' => BeszedDailyPath::where('child_id', $c->id)->orderBy('day')->get(['day', 'games', 'done', 'completed_at']),
+                // Links given to a therapist (the link itself is not stored, only its hash).
+                'share_links' => BeszedShare::where('child_id', $c->id)->get(['label', 'created_at', 'expires_at', 'revoked_at', 'last_viewed_at', 'views']),
             ])->values(),
             // The audio itself stays downloadable in the app; listed here by line.
             'voice_recordings' => BeszedRecording::where('user_id', $user->id)->get(['line_key', 'mime', 'size', 'updated_at']),

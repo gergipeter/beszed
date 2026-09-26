@@ -45,13 +45,19 @@ return [
         'papagaj' => [
             'name' => 'Papagáj', 'emoji' => '🦜', 'skill' => 'Szavak sorban visszamondva', 'color' => '#B8ECE6',
             'factory' => Rounds\PapagajRounds::class, 'rounds' => 6,
-            'adaptive' => ['min' => 2, 'max' => 6, 'start' => 3, 'up_after' => 2],
+            'adaptive' => [
+                'min' => 2, 'max' => 6, 'start' => 3, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 2, '5-6' => 3, '7+' => 4],
+            ],
             'intro' => 'Játsszunk papagájosat! Én mondok szavakat, te pedig visszamondod, pont úgy, mint egy papagáj. Utána megmutatod a képeken!',
         ],
         'mondd' => [
             'name' => 'Mondd utánam', 'emoji' => '🗣️', 'skill' => 'Mondatismétlés, szülővel', 'color' => '#FFC9A8',
             'factory' => Rounds\MonddRounds::class, 'rounds' => 6, 'no_idle' => true,
-            'adaptive' => ['min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3],
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
             'intro' => 'Most mondatokat mondok. Figyelj jól, és mondd utánam! Anya vagy apa is segít.',
         ],
         'melyik' => [
@@ -68,14 +74,20 @@ return [
             'name' => 'Kirakó', 'emoji' => '🧩', 'skill' => 'Képkirakó, formaérzék', 'color' => '#FFDAC1',
             'factory' => Rounds\KirakoRounds::class, 'rounds' => 3,
             // level = grid: 1 → 2×2, 2 → 3×2, 3 → 3×3 pieces
-            'adaptive' => ['min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2],
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
             'intro' => 'Összekeveredtek a kép darabjai! Koppints két darabra, és helyet cserélnek. Rakd ki a képet!',
         ],
         'parkereso' => [
             'name' => 'Párkereső', 'emoji' => '🃏', 'skill' => 'Emlékezet és szókincs', 'color' => '#C7E9FF',
             'factory' => Rounds\ParkeresoRounds::class, 'rounds' => 2,
             // level = number of pairs
-            'adaptive' => ['min' => 3, 'max' => 6, 'start' => 3, 'up_after' => 2],
+            'adaptive' => [
+                'min' => 3, 'max' => 6, 'start' => 3, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 3, '5-6' => 4, '7+' => 5],
+            ],
             'intro' => 'Kártyázzunk! Fordíts fel két kártyát. Ha egyformák, megtaláltad a párt. Jegyezd meg, mi hol van!',
         ],
         'arnyek' => [
@@ -92,7 +104,10 @@ return [
             'name' => 'Válogató', 'emoji' => '🧺', 'skill' => 'Csoportosítás, fogalmak', 'color' => '#D4F0C0',
             'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
             // level = pictures per round: 1 → 4, 2 → 6, 3 → 8
-            'adaptive' => ['min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2],
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
             'intro' => 'Rendet rakunk! Minden kép a saját kosarába kerül. Koppints a jó kosárra!',
         ],
     ],
@@ -140,6 +155,7 @@ return [
         | rule: [type, ...args]
         |   sessions n · stars n · streak n · perfect n (flawless sessions)
         |   all_games (each game finished once) · game <id> n · daily_goal
+        |   daily_path n ("Mai kaland" finished on n days)
         | ":goal" in a hint becomes daily_goal.
         */
         'badges' => [
@@ -157,15 +173,30 @@ return [
             'memory' => ['name' => 'Jó memória', 'emoji' => '🧠', 'hint' => 'Játssz ötször a Párkeresővel!', 'rule' => ['game', 'parkereso', 5]],
             'rhyme' => ['name' => 'Rímfaragó', 'emoji' => '🎶', 'hint' => 'Játssz ötször a Rímelővel!', 'rule' => ['game', 'rimelo', 5]],
             'speaker' => ['name' => 'Szószóló', 'emoji' => '🎤', 'hint' => 'Játssz ötször a Mondd utánammal!', 'rule' => ['game', 'mondd', 5]],
+            'path_1' => ['name' => 'Kalandor', 'emoji' => '🗺️', 'hint' => 'Járd végig Csillám mai kalandját!', 'rule' => ['daily_path', 1]],
+            'path_7' => ['name' => 'Kalandmester', 'emoji' => '🏕️', 'hint' => 'Járj végig hét napi kalandot!', 'rule' => ['daily_path', 7]],
         ],
 
-        // Csillám's wardrobe, unlocked at these player levels.
+        /*
+        | Csillám's wardrobe, unlocked at these player levels. Grouped into slots
+        | (head, face, extra) so the child can wear one item per slot at once —
+        | e.g. a hat AND glasses AND a flower, but not a hat and a crown together.
+        */
         'accessories' => [
-            'bow' => ['name' => 'Masni', 'emoji' => '🎀', 'level' => 2],
-            'glasses' => ['name' => 'Napszemüveg', 'emoji' => '🕶️', 'level' => 3],
-            'flower' => ['name' => 'Virág', 'emoji' => '🌸', 'level' => 4],
-            'hat' => ['name' => 'Varázskalap', 'emoji' => '🎩', 'level' => 5],
-            'crown' => ['name' => 'Korona', 'emoji' => '👑', 'level' => 7],
+            'bow' => ['name' => 'Masni', 'emoji' => '🎀', 'level' => 2, 'slot' => 'extra'],
+            'glasses' => ['name' => 'Napszemüveg', 'emoji' => '🕶️', 'level' => 3, 'slot' => 'face'],
+            'flower' => ['name' => 'Virág', 'emoji' => '🌸', 'level' => 4, 'slot' => 'extra'],
+            'hat' => ['name' => 'Varázskalap', 'emoji' => '🎩', 'level' => 5, 'slot' => 'head'],
+            'crown' => ['name' => 'Korona', 'emoji' => '👑', 'level' => 7, 'slot' => 'head'],
         ],
+
+        // Scene backgrounds for the sticker board; the child picks one, then places earned stickers on it.
+        'backgrounds' => [
+            'meadow' => ['name' => 'Rét', 'emoji' => '🌼', 'colors' => ['#CDEFAE', '#EAF7C9']],
+            'sky' => ['name' => 'Éjszakai ég', 'emoji' => '🌙', 'colors' => ['#2B2A5C', '#4B3F80']],
+            'castle' => ['name' => 'Kastély', 'emoji' => '🏰', 'colors' => ['#FFD9EA', '#D8C8FF']],
+        ],
+        // Stickers placed on the scene at once.
+        'scene_max_stickers' => 24,
     ],
 ];

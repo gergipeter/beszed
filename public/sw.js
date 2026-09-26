@@ -59,6 +59,9 @@ self.addEventListener('message', event => {
   }
 })
 
+// Never kept: the data export, the editor, and therapist share links (a revoked link must stop working).
+const NO_CACHE = /^\/api\/(me\/export$|admin\/|share\/)/
+
 self.addEventListener('fetch', event => {
   const request = event.request
   if (request.method !== 'GET') return
@@ -71,7 +74,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(cacheFirst(request, ASSETS))
   } else if (url.pathname === '/api/beszed/tts' || /^\/api\/beszed\/recordings\/[^/]+\/audio$/.test(url.pathname)) {
     event.respondWith(cacheFirst(request, AUDIO))
-  } else if (url.pathname.startsWith('/api/') && url.pathname !== '/api/me/export') {
+  } else if (url.pathname.startsWith('/api/') && !NO_CACHE.test(url.pathname)) {
     event.respondWith(networkFirst(request, API))
   }
 })

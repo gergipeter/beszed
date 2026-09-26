@@ -13,7 +13,7 @@ class ParkeresoRounds extends RoundFactory
         $rounds = [];
 
         for ($r = 0; $r < $count; $r++) {
-            $cards = $items->shuffle()->take($pairs)
+            $cards = $this->weightedShuffle($items)->take($pairs)
                 ->flatMap(fn ($w) => array_fill(0, 2, $w))
                 ->shuffle()->values()
                 ->map(fn ($w, $i) => [
