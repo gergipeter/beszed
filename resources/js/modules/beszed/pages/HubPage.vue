@@ -190,9 +190,10 @@ function play(game) {
   line-height: 1.25;
   color: var(--bz-muted);
 }
+/* at least two columns, even on the narrowest phone (the tiles scale their text to fit) */
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(170px, calc(50% - 8px)), 1fr));
   gap: 16px;
 }
 .parents {

@@ -25,8 +25,10 @@ defineProps({
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 18px 16px 16px;
+  padding: 18px clamp(12px, 4vw, 16px) 16px;
   border-radius: 30px 30px 30px 10px;
+  /* the picture and text below size themselves to the tile (two narrow columns on phones) */
+  container-type: inline-size;
   background: var(--tile-color, var(--bz-card));
   color: var(--bz-on-bright);
   text-align: left;
@@ -46,19 +48,25 @@ defineProps({
   }
 }
 .art {
-  font-size: 56px;
+  font-size: clamp(40px, 36cqi, 56px);
   line-height: 1.1;
 }
 .name {
   margin-top: 6px;
-  font-size: 23px;
+  font-size: clamp(16px, 15cqi, 23px);
   font-weight: 800;
   line-height: 1.1;
 }
 .skill {
-  font-size: 15px;
+  font-size: clamp(13px, 10cqi, 15px);
   line-height: 1.25;
   opacity: 0.75;
+}
+/* a word longer than the narrowest tile (megkülönböztetése) is hyphenated, or else broken */
+.name,
+.skill {
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
 .medals {
   position: absolute;
