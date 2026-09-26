@@ -1,6 +1,6 @@
 # Beszéd & DIFER module for Betűvarázs
 
-Laravel API + Vue 3 + Pinia port of the *Zoé kertje* prototype: 24 speech/DIFER games, grouped on the
+Laravel API + Vue 3 + Pinia port of the *Zoé kertje* prototype: 25 speech/DIFER games, grouped on the
 hub into simple and advanced ones, with ~5,500 checked content items, Csillám the unicorn guide with a
 free self-hosted Hungarian voice (Piper) or
 Azure neural TTS, server-side pronunciation assessment, parent voice recordings, adaptive difficulty
@@ -28,10 +28,13 @@ link for the speech therapist, and a content editor.
 | 🎩 **Mi tűnt el?** | `vanish` | remember 3–6 pictures; a sparkle cloud hides them and one is gone (Kim's game) |
 | 🐣 **Mi történt előbb?** | `order` | put a little story's pictures in order (3 → 4 steps); Csillám names each step, then tells the story |
 | 🎼 **Állatkórus** | `simon` | four animals sing in turn, each with its own note and colour; repeat the tune (2–7 notes) |
+| 👆 **Csináld, amit mondok!** | `directions` | follow Csillám's spoken direction: one picture → two in order / "az összes állatra" → three in order, "Mielőtt…" (said the other way round), "mindenre, ami nem…" |
 
-The six games at the bottom were picked from what recurs across leading children's apps (Kiddopia,
-BabyBus, Bimi Boo, Lingokids, Otsimo, MentalUP, LogicLike, Okos Doboz…): spot the difference, "what's
-missing?", size ordering, story sequencing, emotion recognition and Simon-style sequence memory.
+The seven games at the bottom were picked from what recurs across leading children's apps (Kiddopia,
+BabyBus, Bimi Boo, Lingokids, Otsimo, MentalUP, LogicLike, Okos Doboz, Hamaguchi…): spot the difference,
+"what's missing?", size ordering, story sequencing, emotion recognition, Simon-style sequence memory
+and following directions. The directions need each picture's "-ra/-re" form (kutyára, kenyérre),
+stored with the picture (`onto`) and checked by the content rules.
 
 **Hub groups.** Each game has a `tier` in `config/beszed.php`: *Egyszerű játékok* (one tap, little
 to remember: good first games for 3–5 year olds) or *Haladó játékok* (sounds, rhymes, memory and
@@ -47,8 +50,9 @@ All derived on the server (`app/Beszed/Rewards/`, rules in `config/beszed.php �
 - **Stars** = correct answers. **Player level** n needs 5·n·(n−1) stars (0, 10, 30, 60, 100…).
 - **Daily streak** (days in a row with a finished game) and **daily goal** (3 games), in `BESZED_TIMEZONE`.
 - **Medals** per game (1–3 ⭐): the best session's share of first-try answers.
-- **Stickers** (16): first game, flawless game, daily goal, 3/7-day streak, 50/200 stars, 10/30 games,
-  every game tried, 5× Kirakó/Párkereső/Rímelő/Mondd utánam, 1/7 daily paths. Kept once earned.
+- **Stickers** (25): first game, flawless game, daily goal, 3/7-day streak, 50/200 stars, 10/30 games,
+  every game tried, 5× Kirakó/Párkereső/Rímelő/Mondd utánam and each of the seven newest games,
+  Párkereső beginner/master, 1/7 daily paths. Kept once earned.
 - **Csillám's wardrobe**: bow, glasses, flower, hat, crown unlock at levels 2–7.
 
 A finished game is posted to `POST children/{child}/sessions`; the answer includes what changed
@@ -115,8 +119,8 @@ GET /session ──▶ SessionBuilder ──▶ RoundFactory (per game) ──�
 ```
 
 - **Server decides, client plays.** RoundFactories build options, distractors and every feedback
-  sentence. The 12 Vue engines (`choice`, `sequence`, `tapcount`, `trace`, `judged`, `puzzle`, `memory`,
-  `sort`, `difference`, `order`, `vanish`, `simon`) know nothing about specific games.
+  sentence. The 13 Vue engines (`choice`, `sequence`, `tapcount`, `trace`, `judged`, `puzzle`, `memory`,
+  `sort`, `difference`, `order`, `vanish`, `simon`, `directions`) know nothing about specific games.
 - **Voice order of preference:** parent's recording (if that line was recorded) → server TTS mp3
   (cached forever by text hash) → browser Web Speech. After 3 TTS failures in a row the client stays on
   Web Speech for the rest of the visit.
@@ -169,7 +173,7 @@ resources/js/modules/beszed/             plain JavaScript (no TypeScript), Vue 3
     hub/, recordings/    GameTile, RecordingRow
   engines/               registry (lazy, one chunk each) + contract.js; one folder per engine:
                          choice/ (+ SceneView, scenes.js), sequence/, tapcount/, trace/ (+ paths.js), judged/,
-                         puzzle/, memory/, sort/, difference/, order/, vanish/, simon/
+                         puzzle/, memory/, sort/, difference/, order/, vanish/, simon/, directions/
   composables/           useGameSession (the round state machine), useIdleHelp, useRecorder,
                          useAsync, useTimers, useShake, useModuleContext
   services/audio/        player (shared <audio>), webSpeech (fallback voice), preload, sfx (synthesised effects)

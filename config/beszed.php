@@ -265,7 +265,14 @@ return [
             'path_1' => ['name' => 'Kalandor', 'emoji' => '🗺️', 'hint' => 'Járd végig Csillám mai kalandját!', 'rule' => ['daily_path', 1]],
             'path_7' => ['name' => 'Kalandmester', 'emoji' => '🏕️', 'hint' => 'Járj végig hét napi kalandot!', 'rule' => ['daily_path', 7], 'email' => true],
             'memory_easy' => ['name' => 'Memória kezdő', 'emoji' => '🧠', 'hint' => 'Játssz a Párkereső könnyű szintjén!', 'rule' => ['game', 'parkereso', 1]],
-            'memory_hard' => ['name' => 'Memória mester', 'emoji' => '🧠‍💨', 'hint' => 'Játssz a Párkereső nehéz szintjén és nyerj!', 'rule' => ['game', 'parkereso', 3]],
+            'memory_hard' => ['name' => 'Memória mester', 'emoji' => '🎓', 'hint' => 'Játssz a Párkereső nehéz szintjén és nyerj!', 'rule' => ['game', 'parkereso', 3]],
+            'spotter' => ['name' => 'Sasszem', 'emoji' => '🦅', 'hint' => 'Játssz ötször a „Mi a különbség?” játékkal!', 'rule' => ['game', 'kulonbseg', 5]],
+            'sizes' => ['name' => 'Rendrakó', 'emoji' => '📏', 'hint' => 'Játssz ötször a „Kicsitől a nagyig” játékkal!', 'rule' => ['game', 'nagysag', 5]],
+            'feelings' => ['name' => 'Jó barát', 'emoji' => '🤗', 'hint' => 'Játssz ötször a „Hogy érzi magát?” játékkal!', 'rule' => ['game', 'erzelmek', 5]],
+            'magician' => ['name' => 'Bűvész', 'emoji' => '🪄', 'hint' => 'Játssz ötször a „Mi tűnt el?” játékkal!', 'rule' => ['game', 'mitunt', 5]],
+            'stories' => ['name' => 'Mesemondó', 'emoji' => '📖', 'hint' => 'Játssz ötször a „Mi történt előbb?” játékkal!', 'rule' => ['game', 'tortenet', 5]],
+            'choir' => ['name' => 'Kórusmester', 'emoji' => '🎼', 'hint' => 'Játssz ötször az Állatkórussal!', 'rule' => ['game', 'korus', 5]],
+            'listener' => ['name' => 'Figyelmes', 'emoji' => '🦉', 'hint' => 'Játssz ötször a „Csináld, amit mondok!” játékkal!', 'rule' => ['game', 'utasitas', 5]],
         ],
 
         /*
