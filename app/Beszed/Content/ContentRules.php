@@ -117,6 +117,9 @@ final class ContentRules
             'rimelo', 'rimparok' => str_ends_with($lower($p['word']), $lower($p['rhyme'])) ? [] : ['rhyme' => 'A szó nem erre végződik.'],
             'mondd' => $lower(implode(' ', $p['chunks'])) === $lower($p['text']) ? [] : ['chunks' => 'A darabok együtt nem adják ki a mondatot.'],
             'melyik' => $lower($p['good']) !== $lower($p['bad']) ? [] : ['bad' => 'A két mondat ugyanaz.'],
+            // "Koppints a kutyára": the -ra/-re form of the name (a final a/e lengthens: kutya → kutyára)
+            'utasitas' => preg_match('/(ra|re)$/u', $lower($p['onto'])) && mb_substr(Hungarian::fold($p['onto']), 0, 2) === mb_substr(Hungarian::fold($p['name']), 0, 2)
+                ? [] : ['onto' => 'A szó -ra/-re végű alakja kell (pl. kutya → kutyára, kenyér → kenyérre).'],
             // two identical pictures would make the order ambiguous
             'tortenet' => count(array_unique(array_column($p['steps'], 0))) === count($p['steps']) ? [] : ['steps' => 'Egy képet csak egyszer használj a történetben.'],
             // Same start, ignoring vowel length: ló → lovat, kéz → kezet, kő → követ.

@@ -160,6 +160,11 @@ export default {
     tooHard: 'Semmi baj, próbáljunk egy rövidebbet!',
   },
 
+  directions: {
+    listen: 'Figyelj, mit mondok…',
+    tooHard: 'Semmi baj, próbáljunk egy könnyebbet!',
+  },
+
   rewards: {
     title: 'Matricáim',
     level: '{level}. szint',

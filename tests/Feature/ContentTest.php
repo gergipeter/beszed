@@ -40,6 +40,7 @@ it('catches content that would teach something wrong', function (string $game, a
     'chunks rebuild the sentence' => ['mondd', ['text' => 'A cica alszik.', 'chunks' => ['A kutya', 'alszik.'], 'emoji' => '🐱'], 'chunks'],
     'not an emoji' => ['papagaj', ['word' => 'alma', 'emoji' => 'alma'], 'emoji'],
     'unknown option' => ['ceruza', ['path' => 'spiral'], 'path'],
+    'direction needs the -ra/-re form' => ['utasitas', ['name' => 'kutya', 'emoji' => '🐶', 'group' => 'allat', 'onto' => 'kutyát'], 'onto'],
     'too few pictures' => ['valogato', ['key' => 'x', 'label' => 'X', 'singular' => 'x', 'icon' => '🎁', 'items' => [['🐶', 'kutya']]], 'items'],
 ]);
 

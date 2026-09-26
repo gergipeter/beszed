@@ -4,6 +4,7 @@ use App\Beszed\Rounds\KirakoRounds;
 use App\Beszed\Rounds\KulonbsegRounds;
 use App\Beszed\Rounds\NagysagRounds;
 use App\Beszed\Rounds\TortenetRounds;
+use App\Beszed\Rounds\UtasitasRounds;
 use App\Beszed\Rounds\ValogatoRounds;
 use App\Models\BeszedContentItem;
 use App\Models\BeszedSkillLevel;
@@ -34,7 +35,7 @@ it('builds a playable session for every game', function (string $game) {
     expect($session['rounds'])->toHaveCount(config("beszed.games.$game.rounds"));
 
     foreach ($session['rounds'] as $round) {
-        expect($round['engine'])->toBeIn(['choice', 'sequence', 'tapcount', 'trace', 'judged', 'puzzle', 'memory', 'sort', 'difference', 'vanish', 'order', 'simon'])
+        expect($round['engine'])->toBeIn(['choice', 'sequence', 'tapcount', 'trace', 'judged', 'puzzle', 'memory', 'sort', 'difference', 'vanish', 'order', 'simon', 'directions'])
             ->and($round['prompt']['text'])->not->toBeEmpty();
 
         if ($round['engine'] === 'choice') {
@@ -262,6 +263,45 @@ it('állatkórus: the same four animals all session, n notes, never one animal t
         }
     }
 })->with([2, 7]);
+
+it('csináld, amit mondok: every direction has exactly one right way to follow it', function (int $level) {
+    BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'utasitas', 'level' => $level]);
+    $items = BeszedContentItem::forGame('utasitas')->get()->keyBy('id');
+    [$size, $kinds] = UtasitasRounds::LEVELS[$level];
+
+    foreach (gameSession('utasitas')['rounds'] as $r => $round) {
+        $grid = collect($round['data']['grid'])->pluck('id');
+        $steps = $round['data']['steps'];
+        $tapped = collect($steps)->flatten();
+        $text = $round['prompt']['text'];
+        $kind = $kinds[$r % count($kinds)];
+
+        expect($grid)->toHaveCount($size)
+            ->and($grid->unique())->toHaveCount($size)
+            ->and($tapped->diff($grid)->all())->toBe([])
+            ->and($tapped->unique())->toHaveCount($tapped->count());
+
+        $of = fn ($id) => $items[(int) $id]->payload;
+        if (in_array($kind, ['one', 'two', 'three', 'before'], true)) {
+            // one picture per step, each named in the direction ("before" names them the other way round)
+            $said = collect($steps)->map(fn ($s) => $of($s[0])['onto']);
+            expect(collect($steps)->every(fn ($s) => count($s) === 1))->toBeTrue()
+                ->and($said->every(fn ($w) => str_contains($text, $w)))->toBeTrue();
+            $at = $said->map(fn ($w) => mb_strpos($text, $w))->all();
+            expect($at)->toBe(collect($at)->sort()->when($kind === 'before', fn ($p) => $p->reverse())->values()->all());
+        } else {
+            // the step is exactly the grid's pictures of the group (or, for "not", all the others)
+            $group = $of($round['content_item_id'])['group'];
+            $members = $grid->filter(fn ($id) => $of($id)['group'] === $group)->values();
+            $expected = $kind === 'not' ? $grid->diff($members) : $members;
+            expect(count($steps))->toBe(1)
+                ->and(collect($steps[0])->sort()->values()->all())->toBe($expected->sort()->values()->all());
+            if ($kind === 'group') {
+                expect($members)->toHaveCount(1);
+            }
+        }
+    }
+})->with([1, 2, 3]);
 
 it('puts every game in the simple or the advanced group of the hub', function () {
     $games = collect(actingAs($this->user)->getJson('/api/beszed/meta')->assertOk()->json('games'));

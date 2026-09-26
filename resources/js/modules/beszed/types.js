@@ -138,6 +138,12 @@
  * @property {string} [onCorrect]
  * @property {string} [onWrong]
  *
+ * @typedef {object} DirectionsData  Csináld, amit mondok!: tap what was said.
+ * @property {Option[]} grid
+ * @property {string[][]} steps    Picture ids to tap, step by step; one step's pictures in any order.
+ * @property {string} wrong        Said on a wrong tap, before the direction is repeated.
+ * @property {string} [onCorrect]
+ *
  * @typedef {object} SimonData  Állatkórus: repeat the tune.
  * @property {Option[]} pads       Four animals; each position has its own note and colour.
  * @property {string[]} order      Pad ids, in the order they sing.

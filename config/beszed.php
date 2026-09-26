@@ -187,6 +187,16 @@ return [
             ],
             'intro' => 'Az állatok egymás után énekelnek. Figyeld, ki énekel, aztán koppints rájuk ugyanabban a sorrendben!',
         ],
+        'utasitas' => [
+            'name' => 'Csináld, amit mondok!', 'emoji' => '👆', 'skill' => 'Utasítások követése', 'color' => '#FFDDEE', 'tier' => 'advanced',
+            'factory' => Rounds\UtasitasRounds::class, 'rounds' => 6,
+            // level = kind of direction: 1 → one step, 2 → two steps / "all", 3 → three steps, "before", "not"
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Most jól figyelj! Mondok valamit, te pedig pontosan azt csinálod. Várd meg, amíg végigmondom, és csak utána koppints!',
+        ],
     ],
 
     'praise' => [

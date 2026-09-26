@@ -124,5 +124,15 @@ return [
             'story' => $text('Elmesélve (a végén hangzik el)', ['max' => 300]),
         ]],
         'korus' => ['title' => 'name', 'fields' => ['name' => $text('Állat neve'), 'emoji' => $emoji()]],
+        'utasitas' => ['title' => 'name', 'fields' => [
+            'name' => $text('Mi van a képen?'),
+            'emoji' => $emoji(),
+            // "Koppints az összes állatra!" / "…mindenre, ami nem állat"
+            'group' => ['type' => 'select', 'label' => 'Csoport', 'options' => [
+                'allat' => 'Állat', 'gyumolcs' => 'Gyümölcs', 'zoldseg' => 'Zöldség', 'etel' => 'Étel', 'jarmu' => 'Jármű',
+                'ruha' => 'Ruha', 'jatek' => 'Játék', 'hangszer' => 'Hangszer', 'virag' => 'Virág',
+            ]],
+            'onto' => $text('Koppints a …', ['max' => 40, 'hint' => 'kutyára, kenyérre']),
+        ]],
     ],
 ];
