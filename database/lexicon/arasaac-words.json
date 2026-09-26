@@ -1,0 +1,57 @@
+{
+  "_": "Words for small children that come with an ARASAAC pictogram but no emoji. scripts/arasaac-import.mjs looks each one up (the pictogram whose tags fit the category) and adds it to hu.json. Add words here, then run the script. An entry like óvoda=nursery school looks the picture up by its English ARASAAC keyword when the Hungarian one is missing.",
+  "animal": [
+    "bika", "borjú=calf", "csikó=foal", "póni", "öszvér=mule", "vaddisznó", "borz", "vakond", "őz=fawn", "hiúz", "puma", "jaguár=jaguar", "lajhár", "tatu", "hangyász", "antilop=antelope", "gazella", "bivaly=buffalo", "rozmár", "pelikán", "strucc", "kolibri", "tukán", "gólya", "fecske", "veréb", "cinege=great tit", "rigó=blackbird", "harkály=woodpecker", "holló", "varjú=crow", "sirály", "sólyom", "keselyű", "kanári", "kaméleon", "szöcske", "szitakötő", "darázs", "giliszta", "medúza", "csikóhal", "lazac", "tonhal", "patkány", "hernyó"
+  ],
+  "fruit": [
+    "mandarin", "szilva", "meggy", "málna", "szeder", "ribizli=redcurrant", "egres=gooseberry", "füge", "datolya", "gránátalma", "sárgabarack", "nektarin", "dió", "mazsola"
+  ],
+  "vegetable": [
+    "káposzta", "karfiol", "cékla=beetroot", "retek", "spárga", "tök", "cukkini", "zeller=celery", "petrezselyem", "spenót", "lencse", "sóska=sorrel", "karalábé"
+  ],
+  "food": [
+    "kakaó", "tea", "víz", "joghurt", "pirítós", "rántotta", "spagetti", "popcorn", "sonka", "szalonna", "kolbász", "pogácsa=scone", "kalács", "lekvár", "túró=cottage cheese", "tejföl=sour cream", "rétes=strudel", "piskóta", "szörp=syrup", "limonádé", "fasírt", "főzelék", "gulyás=goulash", "nokedli", "gombóc=dumpling", "jégkrém", "cukor", "liszt", "olaj", "bors=black pepper", "ketchup", "mustár", "müzli=muesli", "gyümölcslé", "ebéd", "vacsora", "reggeli", "uzsonna", "makaróni"
+  ],
+  "clothing": [
+    "ing", "pulóver", "harisnya", "szoknya", "pizsama", "köntös", "mellény", "melegítő", "fülvédő=earmuffs", "esőkabát", "gumicsizma=wellies", "öv", "nyaklánc", "karkötő", "fülbevaló", "hajcsat", "jelmez", "kötény", "pelenka=nappy", "zsebkendő", "overall=dungarees", "kardigán", "farmer=jeans", "sapka", "bugyi", "alsónadrág", "trikó"
+  ],
+  "toy": [
+    "golyó=marble", "homokozó", "lapát=shovel", "hinta", "mászóka=climbing frame", "trambulin", "kisautó=toy car", "építőkocka", "gyurma=plasticine", "báb", "pörgettyű", "hintaló", "síp", "társasjáték", "sakk", "ugrókötél=skipping rope", "karika=hoop", "játék", "baba", "babakocsi=pram", "labda", "sárkány", "vonat", "kocka=cube", "ütő", "gördeszka", "szánkó"
+  ],
+  "instrument": [
+    "xilofon", "cintányér", "triangulum", "tamburin", "hárfa", "cselló", "nagybőgő", "fuvola=transverse flute", "klarinét", "tuba", "kürt", "orgona=organ", "furulya", "citera=zither"
+  ],
+  "tool": [
+    "gereblye", "kapa", "locsolókanna=watering can", "talicska", "fogó", "szög", "kötél=rope", "mérőszalag", "fűnyíró", "ecset", "festék", "ásó", "csiszolópapír", "villáskulcs", "reszelő", "fúró", "horgászbot"
+  ],
+  "house": [
+    "asztal", "szekrény", "polc", "fiók", "lámpa", "függöny", "szőnyeg", "párna", "takaró", "paplan", "lepedő", "matrac", "bölcső=cradle", "kiságy", "etetőszék=high chair", "fotel", "pad", "lépcső", "kémény", "tető", "kerítés", "kapu", "fal", "padló", "erkély", "garázs", "pince=basement", "padlás=attic", "kandalló", "törölköző", "fogkrém", "fésű", "hajkefe", "szivacs", "mosdó", "porszívó", "vasaló", "mosógép", "hűtő", "sütő", "mikró", "kenyérpirító", "hajszárító", "pohár", "lábas", "fazék", "edény=pot", "tálca", "palack", "kancsó", "szalvéta", "kuka", "ébresztőóra", "naptár=calendar", "telefon", "laptop", "tablet", "lemez", "mobil"
+  ],
+  "body": [
+    "fej", "haj", "arc", "áll", "nyak", "váll", "hát", "has", "köldök", "térd", "könyök", "talp=sole", "lábujj=toe", "köröm", "szemöldök", "szempilla", "bajusz", "szakáll", "homlok", "csukló", "tenyér=palm", "ököl", "comb", "sarok", "fenék", "mellkas"
+  ],
+  "building": [
+    "óvoda=nursery school", "bölcsőde=nursery", "könyvtár", "múzeum", "mozi", "színház", "posta", "rendőrség", "tűzoltóság=fire station", "pályaudvar", "állomás=station", "repülőtér", "kikötő", "híd", "piac=market", "pékség", "cukrászda", "étterem", "palota", "kastély=mansion", "világítótorony", "szélmalom", "malom=mill", "istálló=stable", "ól=pigsty", "tanya", "felhőkarcoló=skyscraper", "játszótér", "park=park", "állatkert", "uszoda=swimming pool", "strand=beach", "bolt", "áruház=shopping centre", "kert", "garázs"
+  ],
+  "nature": [
+    "erdő", "mező", "rét=meadow", "domb", "völgy", "folyó", "patak", "tó", "tenger", "óceán=ocean", "part", "homok", "vízesés", "barlang", "sivatag", "dzsungel", "ég", "fű", "bokor", "ág", "gyökér", "mag", "makk=acorn", "toboz=pine cone", "kavics=pebble", "sár=mud", "jég", "hó", "pocsolya=puddle", "tengerpart", "szikla=cliff", "fatörzs", "kéreg", "moha=moss", "nád=reed", "búza", "széna=hay", "szalma"
+  ],
+  "weather": [
+    "vihar=storm", "jégeső", "zivatar=thunderstorm", "hóvihar=snowstorm", "napsütés=sunny", "dér=frost", "szivárvány"
+  ],
+  "person": [
+    "kislány", "testvér=siblings", "báty", "nővér", "öcs=younger brother", "húg=younger sister", "nagynéni=aunt", "nagybácsi=uncle", "család", "barát", "szomszéd", "óvónő=nursery teacher", "tanárnő", "doktor", "ápoló", "fogorvos", "állatorvos", "pék", "cukrász", "pincér", "eladó", "pénztáros", "postás", "pilóta", "kapitány", "sofőr", "kertész", "gazda", "farmer=jeans", "pásztor=shepherd", "halász", "kőműves", "festő", "asztalos", "szabó", "fodrász", "zenész", "énekes", "táncos", "színész", "bűvész", "király", "királynő", "lovag", "kalóz", "boszorkány", "óriás", "törpe=dwarf", "cowboy", "felnőtt", "gyerek", "ember=person", "nő", "férfi", "fotós", "takarító", "szerelő", "kertész", "tudós", "író", "diák=pupil", "lány", "fiú"
+  ],
+  "school": [
+    "tolltartó", "radír", "hegyező", "mese", "tábla", "kréta", "ragasztó", "papír", "térkép=map", "szám=number", "festmény=painting", "rajz", "óra", "iskolatáska=schoolbag", "mesekönyv=storybook", "füzet"
+  ],
+  "thing": [
+    "kép", "keret", "zacskó", "pénz", "érme=coin", "pénztárca", "újság", "bélyeg", "képeslap", "csomag", "kötél=rope", "háló", "elem", "szemeteszsák=rubbish bag", "tükör", "kulcscsomó=bunch of keys", "esernyő", "napernyő=parasol", "gyufa", "lámpás=lantern", "üveg", "tál", "vödör", "lufi", "ajándék", "cumi=dummy", "cumisüveg", "gyertya", "zseblámpa", "szemüveg"
+  ],
+  "vehicle": [
+    "kamion", "trolibusz=trolleybus", "mozdony=locomotive", "vagon=wagon", "lovaskocsi=carriage", "szekér", "hintó", "markoló=digger", "daru", "betonkeverő", "úthenger", "kukásautó", "komp=ferry", "tengeralattjáró", "léghajó=airship", "hőlégballon", "űrhajó", "műhold=satellite", "dömper", "kajak=kayak", "kenu", "tutaj=raft", "gumicsónak", "jacht", "vitorlás", "autóbusz"
+  ],
+  "flower": [
+    "pitypang=dandelion", "pipacs", "ibolya", "liliom=lily", "hóvirág=snowdrop", "nárcisz=daffodil", "orgona=organ", "levendula=lavender", "kamilla=chamomile", "gyöngyvirág=lily of the valley", "búzavirág=cornflower"
+  ]
+}

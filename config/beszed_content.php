@@ -18,6 +18,10 @@ return [
         explode(',', (string) env('ADMIN_EMAILS', '')),
     ))),
 
+    // ARASAAC pictograms instead of emojis wherever the word bank has one
+    // (Sergio Palao, ARASAAC, Government of Aragón, CC BY-NC-SA 4.0: non-commercial use).
+    'pictograms' => (bool) env('BESZED_PICTOGRAMS', true),
+
     // Games without an adaptive level: which item level suits each age band
     // (AgeBands). Items above it come up rarely, items below it a bit less often.
     'age_levels' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
@@ -53,6 +57,13 @@ return [
             'emojis' => ['type' => 'emoji_list', 'label' => 'Képek', 'min' => 4],
         ]],
         'papagaj' => ['title' => 'word', 'fields' => ['word' => $text('Szó'), 'emoji' => $emoji()]],
+        'hallgasd' => ['title' => 'word', 'fields' => ['word' => $text('Szó'), 'emoji' => $emoji()]],
+        'ikerhangok' => ['title' => 'wordA', 'fields' => [
+            'wordA' => $text('Szó A'),
+            'emojiA' => $emoji('Kép A'),
+            'wordB' => $text('Szó B'),
+            'emojiB' => $emoji('Kép B'),
+        ]],
         'mondd' => ['title' => 'text', 'fields' => [
             'text' => $text('Mondat'),
             'chunks' => ['type' => 'list', 'label' => 'Darabok (lassú kimondáshoz)', 'separator' => '|', 'hint' => 'A cica | alszik.'],
@@ -71,6 +82,11 @@ return [
         ]],
         'kirako' => ['title' => 'name', 'fields' => ['name' => $text('Mi van a képen?'), 'emoji' => $emoji()]],
         'parkereso' => ['title' => 'word', 'fields' => ['word' => $text('Szó'), 'emoji' => $emoji()]],
+        'rimparok' => ['title' => 'word', 'fields' => [
+            'word' => $text('Szó'),
+            'emoji' => $emoji(),
+            'rhyme' => $text('Rím (a szó vége)', ['max' => 6, 'hint' => 'ó, éz, ál']),
+        ]],
         'arnyek' => ['title' => 'name', 'fields' => ['name' => $text('Név'), 'emoji' => $emoji()]],
         'rimelo' => ['title' => 'word', 'fields' => [
             'word' => $text('Szó'),

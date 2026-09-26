@@ -2,6 +2,7 @@
 
 namespace App\Beszed;
 
+use App\Beszed\Content\Pictures;
 use App\Models\BeszedAttempt;
 use App\Models\BeszedContentItem;
 use App\Models\Child;
@@ -21,7 +22,7 @@ class SessionBuilder
 
         $level = $this->leveler->current($child, $game);
         $rounds = app($cfg['factory'])
-            ->weigh($this->weights($child, $game, $items, isset($cfg['adaptive'])))
+            ->weigh($this->weights($child, $game, $items, isset($cfg['adaptive']), $cfg['rounds']))
             ->build($items, $level, $cfg['rounds']);
 
         return [
@@ -32,20 +33,27 @@ class SessionBuilder
             'first_time' => ! $child->beszedAttempts()->where('game', $game)->exists(),
             'no_idle' => (bool) ($cfg['no_idle'] ?? false),
             'stars' => $child->beszedAttempts()->where('correct', true)->count(),
-            'rounds' => collect($rounds)->values()->map(fn ($r, $i) => ['key' => "$game-$i"] + $r)->all(),
+            'rounds' => collect(Pictures::apply($rounds))->values()->map(fn ($r, $i) => ['key' => "$game-$i"] + $r)->all(),
         ];
     }
 
+    /** Chance that an item missed 1, 2 or 3 times in its last three tries is practised this session. */
+    private const REVIEW_CHANCE = [1 => 0.5, 2 => 0.75, 3 => 0.95];
+
+    /** Weight that puts an item picked for practice at the front of the session. */
+    private const REVIEW_WEIGHT = 1_000_000.0;
+
     /**
-     * How likely each item is to come up. Missed once in its last three tries →
-     * 5× as likely (roughly every other session), twice → 10×, three times → 20×
-     * (almost surely next time); right at the first try the last two times → a
-     * bit rarer. Games without an adaptive level also lean towards items that
-     * fit the child's age.
+     * How likely each item is to come up. Missed items are practised again
+     * whatever the size of the game's pool: missed once in its last three tries
+     * → about every other session, twice → three sessions in four, three times
+     * → almost always; at most a third of a session is such practice. Items
+     * right at the first try the last two times come up a bit less. Games
+     * without an adaptive level also lean towards items that fit the child's age.
      *
      * @return array<int, float>
      */
-    private function weights(Child $child, string $game, Collection $items, bool $adaptive): array
+    private function weights(Child $child, string $game, Collection $items, bool $adaptive, int $rounds): array
     {
         $recent = BeszedAttempt::where('child_id', $child->id)->where('game', $game)
             ->whereNotNull('content_item_id')->where('created_at', '>=', now()->subDays(30))
@@ -53,19 +61,34 @@ class SessionBuilder
             ->groupBy('content_item_id');
         $ageLevel = $adaptive ? null : (config('beszed_content.age_levels')[AgeBands::of($child)] ?? null);
 
-        return $items->mapWithKeys(function ($item) use ($recent, $ageLevel) {
+        $missed = [];
+        $weights = $items->mapWithKeys(function ($item) use ($recent, $ageLevel, &$missed) {
             $last = ($recent[$item->id] ?? collect())->take(3);
-            $missed = $last->reject(fn ($a) => $a->correct && (int) $a->tries === 1)->count();
-            $weight = match (true) {
-                $missed > 0 => 5.0 * 2 ** ($missed - 1),
-                $last->count() >= 2 => 0.6,
-                default => 1.0,
-            };
+            $misses = $last->reject(fn ($a) => $a->correct && (int) $a->tries === 1)->count();
+            if ($misses) {
+                $missed[$item->id] = $misses;
+            }
+            $weight = $misses === 0 && $last->count() >= 2 ? 0.6 : 1.0;
             if ($ageLevel) {
                 $weight *= match ($item->level <=> $ageLevel) { 1 => 0.3, -1 => 0.7, 0 => 1.0 };
             }
 
             return [$item->id => $weight];
         })->all();
+
+        // The most-missed first; each gets its chance until a third of the rounds is practice.
+        arsort($missed);
+        $slots = max(1, intdiv($rounds, 3));
+        foreach ($missed as $id => $misses) {
+            if ($slots === 0) {
+                break;
+            }
+            if (mt_rand() / mt_getrandmax() < self::REVIEW_CHANCE[$misses]) {
+                $weights[$id] = self::REVIEW_WEIGHT;
+                $slots--;
+            }
+        }
+
+        return $weights;
     }
 }

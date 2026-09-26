@@ -1,0 +1,18 @@
+[
+  {"level": 1, "payload": {"wordA": "kéz", "emojiA": "✋", "wordB": "kés", "emojiB": "🔪"}},
+  {"level": 1, "payload": {"wordA": "nyár", "emojiA": "☀️", "wordB": "nyál", "emojiB": "🤤"}},
+  {"level": 1, "payload": {"wordA": "vár", "emojiA": "🏰", "wordB": "váll", "emojiB": "💪"}},
+  {"level": 1, "payload": {"wordA": "só", "emojiA": "🧂", "wordB": "szó", "emojiB": "🗣️"}},
+  {"level": 1, "payload": {"wordA": "hal", "emojiA": "🐟", "wordB": "hall", "emojiB": "👂"}},
+  {"level": 1, "payload": {"wordA": "pite", "emojiA": "🥧", "wordB": "bili", "emojiB": "🚽"}},
+  {"level": 1, "payload": {"wordA": "toll", "emojiA": "🖋️", "wordB": "doboz", "emojiB": "📦"}},
+  {"level": 1, "payload": {"wordA": "fül", "emojiA": "👂", "wordB": "fa", "emojiB": "🌳"}},
+  {"level": 1, "payload": {"wordA": "zsák", "emojiA": "🛍️", "wordB": "sál", "emojiB": "🧣"}},
+  {"level": 1, "payload": {"wordA": "gomba", "emojiA": "🍄", "wordB": "korona", "emojiB": "👑"}},
+  {"level": 1, "payload": {"wordA": "róka", "emojiA": "🦊", "wordB": "ló", "emojiB": "🐴"}},
+  {"level": 1, "payload": {"wordA": "tető", "emojiA": "🏠", "wordB": "teve", "emojiB": "🐫"}},
+  {"level": 1, "payload": {"wordA": "vér", "emojiA": "🩸", "wordB": "tér", "emojiB": "🗺️"}},
+  {"level": 1, "payload": {"wordA": "por", "emojiA": "💨", "wordB": "bor", "emojiB": "🍷"}},
+  {"level": 1, "payload": {"wordA": "gáz", "emojiA": "🔥", "wordB": "váza", "emojiB": "🏺"}},
+  {"level": 1, "payload": {"wordA": "nap", "emojiA": "☀️", "wordB": "lap", "emojiB": "📄"}}
+]

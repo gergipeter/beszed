@@ -77,6 +77,12 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
 
       <h2>Köszönet</h2>
       <p class="credits">
+        Piktogramok: a piktografikus jelek szerzője Sergio Palao, forrása az
+        <a href="https://arasaac.org" rel="noopener" target="_blank">ARASAAC</a> (https://arasaac.org), tulajdonosa Aragónia
+        kormánya (Spanyolország); licenc:
+        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.hu" rel="noopener" target="_blank">CC BY-NC-SA 4.0</a>.
+      </p>
+      <p class="credits">
         Képek: <a href="https://github.com/jdecked/twemoji" rel="noopener" target="_blank">Twemoji</a> – © Twitter, Inc.
         és közreműködők,
         <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC-BY 4.0</a>.

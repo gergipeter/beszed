@@ -11,6 +11,16 @@ export function emojiAssetName(emoji) {
   return [...text].map(char => char.codePointAt(0).toString(16)).join('-')
 }
 
+/**
+ * An ARASAAC pictogram reference: "arasaac:2462", or "arasaac:2462~🍎" with the
+ * emoji to show if the picture can't load. Null for anything else.
+ * @returns {{ id: string, fallback: string } | null}
+ */
+export function pictogram(text) {
+  const m = /^arasaac:(\d+)(?:~(.+))?$/.exec(text ?? '')
+  return m ? { id: m[1], fallback: m[2] ?? '' } : null
+}
+
 const segmenter = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null
 
 /** "🐱📦" → ["🐱", "📦"] (whole emoji, including ZWJ sequences and skin tones); spaces dropped. */

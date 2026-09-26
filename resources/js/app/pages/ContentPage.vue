@@ -22,6 +22,9 @@ const loading = ref(false)
 const error = ref('')
 const query = ref('')
 const showInactive = ref(false)
+/** Games have hundreds of items: render them a page at a time. */
+const PAGE = 100
+const limit = ref(PAGE)
 
 /** The item being edited (id null = new), as form strings. */
 const form = ref(null)
@@ -33,12 +36,15 @@ const game = computed(() => games.value.find(g => g.id === gameId.value) ?? null
 const fields = computed(() => Object.entries(game.value?.schema.fields ?? {}))
 const levelLabels = computed(() => (game.value?.adaptive ? LEVELS.adaptive : LEVELS.age))
 
-const visible = computed(() => {
+const matching = computed(() => {
   const q = query.value.trim().toLowerCase()
   return items.value.filter(
     i => (showInactive.value || i.active) && (!q || JSON.stringify(i.payload).toLowerCase().includes(q)),
   )
 })
+
+const visible = computed(() => matching.value.slice(0, limit.value))
+watch([query, showInactive], () => (limit.value = PAGE))
 
 const title = item => {
   const v = item.payload[game.value.schema.title]
@@ -154,6 +160,7 @@ function listen(text) {
 watch(gameId, () => {
   form.value = null
   query.value = ''
+  limit.value = PAGE
   loadItems()
 })
 onMounted(async () => {
@@ -266,6 +273,9 @@ onMounted(async () => {
           </div>
         </li>
       </ul>
+      <div v-if="matching.length > visible.length" class="more">
+        <BzButton @click="limit += PAGE">Még {{ Math.min(PAGE, matching.length - visible.length) }} ({{ visible.length }} / {{ matching.length }})</BzButton>
+      </div>
     </template>
   </main>
 </template>
@@ -416,6 +426,11 @@ h2 {
   border-radius: var(--bz-radius-sm);
   background: var(--bz-card);
   margin-bottom: 6px;
+}
+.more {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 .item--off {
   opacity: 0.55;

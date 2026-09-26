@@ -9,6 +9,7 @@ use App\Http\Controllers\Beszed\RecordingController;
 use App\Http\Controllers\Beszed\RewardController;
 use App\Http\Controllers\Beszed\SessionController;
 use App\Http\Controllers\Beszed\ShareController;
+use App\Http\Controllers\Beszed\SpotlightController;
 use App\Http\Controllers\Beszed\TtsController;
 use App\Http\Controllers\Beszed\VoiceSettingsController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,7 @@ Route::name('beszed.')->group(function () {
     Route::post('children/{child}/shares', [ShareController::class, 'store'])->middleware('throttle:10,1')->name('shares.store');
     Route::delete('children/{child}/shares/{share}', [ShareController::class, 'destroy'])->name('shares.destroy');
     Route::get('children/{child}/daily-path', [DailyPathController::class, 'show'])->name('daily-path');
+    Route::get('children/{child}/spotlight', [SpotlightController::class, 'show'])->name('spotlight');
 
     Route::get('children/{child}/rewards', [RewardController::class, 'show'])->name('rewards');
     Route::post('children/{child}/sessions', [RewardController::class, 'store'])->middleware('throttle:60,1')->name('sessions.store');

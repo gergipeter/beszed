@@ -65,6 +65,7 @@ class RewardController extends Controller
             'stickers.*.x' => ['required', 'numeric', 'between:0,100'],
             'stickers.*.y' => ['required', 'numeric', 'between:0,100'],
             'stickers.*.rotate' => ['nullable', 'numeric', 'between:-180,180'],
+            'stickers.*.scale' => ['nullable', 'numeric', 'between:0.5,2.5'],
         ]);
 
         return response()->json($rewards->saveScene($child, $data['background'], $data['stickers']));

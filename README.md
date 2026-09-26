@@ -47,10 +47,10 @@ and Csillám announces.
   are games not played for a while, each from a different skill area, never yesterday's. Fixed for the
   local day (`BESZED_TIMEZONE`), the same on every device. Finishing a step ticks it (offline results
   count for the day they were played); the whole path earns the *Kalandor* / *Kalandmester* stickers.
-- **Missed items come back** (`SessionBuilder::weights`, `RoundFactory::weightedShuffle`): an item
-  missed once in its last three tries is 5× as likely to be picked (about every other session), twice
-  10×, three times 20× (almost surely next time); items right at the first try twice in a row come up a
-  bit less. Each pass still uses every item once, so nothing repeats endlessly.
+- **Missed items come back** (`SessionBuilder::weights`, `RoundFactory::weightedShuffle`), however big
+  the game's pool is: an item missed once in its last three tries is practised again in about every
+  other session, twice in three sessions of four, three times almost always; at most a third of a
+  session is such practice. Items right at the first try twice in a row come up a bit less.
 - **Age.** With a birth date on the child (optional, on the *Ki játszik?* page), adaptive games start at
   an age-appropriate level (`starts_by_age`), and the other games lean towards items whose `level` fits
   the age band (3–4 → 1, 5–6 → 2, 7+ → 3; `config/beszed_content.php → age_levels`).
@@ -250,7 +250,22 @@ remove the line) and restart. Changing voice or speed changes the TTS cache key,
 
 ## Content and the editor
 
-Every game's items live in `database/seeders/data/beszed/<game>.json` (about 600 in all). The seeder
+Every game's items live in `database/seeders/data/beszed/<game>.json`, about 4,800 in all.
+
+**Word bank.** Most of them are generated from `database/lexicon/hu.json`: about 780 picturable
+Hungarian words with a category and how familiar each is to a small child (1–3). The first ~400 were
+written by hand with their Twemoji picture and accusative (almát, lovat, kezet); the rest are
+everyday preschool words from a hand-picked list (`database/lexicon/arasaac-words.json`) that have an
+ARASAAC pictogram but no emoji. They appear in the sound, syllable, memory, puzzle, shadow and rhyme
+games; the category, counting, "Hol van?" and grammar games keep to the hand-checked words. `php artisan beszed:content-generate` (`--dry-run` to preview)
+works out syllables, first sounds, zs/s, rhyme endings, categories and simple grammar pairs from it,
+keeps the hand-written rows, marks generated ones `"gen": true`, never uses a word or picture twice in a
+game, skips rhymes that are just a compound of the same word (labda / kosárlabda), and runs every item
+through the content rules. A test fails if the seed files and the word bank drift apart. To add words,
+add them to the word bank and run the command; to add something the rules can't derive (sentences for
+*Mondd utánam*, tricky grammar), add a hand-written row.
+
+The seeder
 runs on every start: new items are added, changed ones updated, removed ones switched off (old results
 keep their reference), and items changed in the editor are never overwritten.
 
@@ -265,6 +280,27 @@ accusatives end in -t. A test runs every seed item through it.
 rules' errors in Hungarian, previews the pictures, can play a word in Csillám's voice, and refuses a
 word that is already in the game. Deleting a played item only switches it off.
 API: `GET/POST /api/admin/content/{game}`, `PUT/DELETE /api/admin/content/{game}/{item}`.
+
+## Pictures: ARASAAC pictograms
+
+Where a word has one, the games show its [ARASAAC](https://arasaac.org) pictogram, the picture set
+speech therapists use, instead of the emoji (`BESZED_PICTOGRAMS=false` turns this off).
+
+- `node scripts/arasaac-import.mjs` matches every word-bank word to the pictogram whose Hungarian
+  keyword is the word and whose tags fit its category (so *levél* is a leaf, not a letter), adds the
+  words of `arasaac-words.json` (an entry `óvoda=nursery school` falls back to the English keyword),
+  and records the pictogram id as `"p"`. Every choice was checked by eye; the few wrong ones are pinned
+  in `PICK` in the script. Then `php artisan beszed:content-generate` rebuilds the content.
+- Content keeps the emoji where a word has one; a session swaps it for `arasaac:<id>~<emoji>`
+  (`App\Beszed\Content\Pictures`), and `EmojiArt.vue` draws the pictogram, or the emoji if the
+  picture can't load. Words without an emoji store `arasaac:<id>`, which the content editor accepts too.
+- The server fetches each pictogram from ARASAAC once and serves its own copy at
+  `/pictograms/<id>.png` (no session or cookies, cached for a year); players never contact ARASAAC.
+  `php artisan beszed:pictograms-fetch` downloads all of them ahead (about 720 small PNGs, ~5 MB).
+  The service worker keeps the ones seen for offline play.
+- **License: CC BY-NC-SA 4.0 — non-commercial use only**, with attribution (Sergio Palao, ARASAAC,
+  Government of Aragón), shown on `/adatvedelem`. A paid or ad-supported version needs a different
+  picture set or ARASAAC's permission.
 
 ## Skill map and the therapist link
 
@@ -393,8 +429,9 @@ ticking steps, the sticker, next day).
 
 ## Credits
 
-Emoji graphics: [Twemoji](https://github.com/jdecked/twemoji) © Twitter, Inc. and other contributors,
-CC-BY 4.0 (credited on `/adatvedelem`). Font: Baloo 2, SIL OFL. Voice: Piper (MIT) with the
+Pictograms: Sergio Palao, [ARASAAC](https://arasaac.org), property of the Government of Aragón (Spain),
+CC BY-NC-SA 4.0. Emoji graphics: [Twemoji](https://github.com/jdecked/twemoji) © Twitter, Inc. and other
+contributors, CC-BY 4.0 (both credited on `/adatvedelem`). Font: Baloo 2, SIL OFL. Voice: Piper (MIT) with the
 `hu_HU` voices from rhasspy/piper-voices.
 
 ## Next steps worth doing

@@ -15,7 +15,7 @@ return [
         ],
         'beszedhanghallas' => [
             'label' => 'Beszédhanghallás', 'emoji' => '👂', 'difer' => true,
-            'games' => ['zs', 'kezdo', 'szotag', 'rimelo'],
+            'games' => ['zs', 'kezdo', 'szotag', 'rimelo', 'ikerhangok'],
         ],
         'relacioszokincs' => [
             'label' => 'Relációszókincs', 'emoji' => '📦', 'difer' => true,
@@ -31,7 +31,7 @@ return [
         ],
         'nyelv_emlekezet' => [
             'label' => 'Mondatok és emlékezet', 'emoji' => '🗣️', 'difer' => false,
-            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso'],
+            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok'],
         ],
         'vizualis' => [
             'label' => 'Vizuális észlelés', 'emoji' => '👀', 'difer' => false,

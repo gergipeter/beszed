@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { ICONS } from '../../config/icons'
 import { t } from '../../i18n'
 import { beep, sparkle } from '../../services/audio/sfx'
 import EmojiArt from '../ui/EmojiArt.vue'
@@ -24,10 +25,12 @@ const board = ref(null)
 const stickers = ref(props.scene.stickers.map(s => ({ ...s })))
 const background = ref(props.scene.background)
 let nextKey = 0
-const keyed = ref(stickers.value.map(s => ({ ...s, key: nextKey++ })))
+const keyed = ref(stickers.value.map(s => ({ scale: 1, ...s, key: nextKey++ })))
+const selected = ref(null)
 
 const badgeById = computed(() => Object.fromEntries(props.earnedBadges.map(b => [b.id, b])))
 const full = computed(() => keyed.value.length >= props.maxStickers)
+const selectedSticker = computed(() => keyed.value.find(s => s.key === selected.value) || null)
 
 let saveTimer = null
 function scheduleSave() {
@@ -52,30 +55,88 @@ function boardPoint(clientX, clientY) {
 function addSticker(badge) {
   if (full.value) return
   const jitter = () => 38 + Math.random() * 24
-  keyed.value.push({ key: nextKey++, badge: badge.id, x: jitter(), y: jitter(), rotate: Math.round(Math.random() * 30 - 15) })
+  const key = nextKey++
+  keyed.value.push({ key, badge: badge.id, x: jitter(), y: jitter(), rotate: Math.round(Math.random() * 30 - 15), scale: 1 })
+  selected.value = key
   beep(420)
   scheduleSave()
 }
 
 function removeSticker(key) {
   keyed.value = keyed.value.filter(s => s.key !== key)
+  if (selected.value === key) selected.value = null
   scheduleSave()
 }
 
+function selectSticker(key) {
+  selected.value = selected.value === key ? null : key
+}
+
+function nudgeScale(delta) {
+  const item = selectedSticker.value
+  if (!item) return
+  item.scale = Math.round(Math.max(0.5, Math.min(2.5, item.scale + delta)) * 20) / 20
+  scheduleSave()
+}
+
+function nudgeRotate(delta) {
+  const item = selectedSticker.value
+  if (!item) return
+  item.rotate = Math.max(-180, Math.min(180, item.rotate + delta))
+  scheduleSave()
+}
+
+/** One finger moves; two fingers pinch (scale) and twist (rotate) the selected sticker. */
+const pointers = new Map()
 let dragKey = null
+let gestureStart = null
+
+function pointsAngleDist(a, b) {
+  const dx = b.x - a.x
+  const dy = b.y - a.y
+  return { dist: Math.hypot(dx, dy), angle: (Math.atan2(dy, dx) * 180) / Math.PI }
+}
+
 function startDrag(key, event) {
+  selectSticker(key)
   dragKey = key
   event.target.setPointerCapture?.(event.pointerId)
+  pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+}
+/** Tapping the empty board deselects; a second finger while a sticker is held starts a pinch/rotate. */
+function onBoardPointerDown(event) {
+  if (dragKey === null) {
+    if (event.target === board.value) selected.value = null
+    return
+  }
+  if (pointers.has(event.pointerId)) return
+  board.value?.setPointerCapture?.(event.pointerId)
+  pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+  const item = keyed.value.find(s => s.key === dragKey)
+  if (pointers.size === 2 && item) {
+    gestureStart = { ...pointsAngleDist(...pointers.values()), scale: item.scale, rotate: item.rotate }
+  }
 }
 function onDrag(event) {
-  if (dragKey === null || !board.value) return
+  if (dragKey === null || !board.value || !pointers.has(event.pointerId)) return
+  pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
   const item = keyed.value.find(s => s.key === dragKey)
   if (!item) return
+
+  if (pointers.size === 2 && gestureStart) {
+    const now = pointsAngleDist(...pointers.values())
+    item.scale = Math.max(0.5, Math.min(2.5, gestureStart.scale * (now.dist / (gestureStart.dist || 1))))
+    item.rotate = Math.max(-180, Math.min(180, gestureStart.rotate + (now.angle - gestureStart.angle)))
+    return
+  }
   const p = boardPoint(event.clientX, event.clientY)
   item.x = p.x
   item.y = p.y
 }
-function endDrag() {
+function endDrag(event) {
+  pointers.delete(event.pointerId)
+  if (pointers.size < 2) gestureStart = null
+  if (pointers.size > 0) return
   if (dragKey === null) return
   dragKey = null
   sparkle()
@@ -87,7 +148,9 @@ function onBoardDrop(event) {
   const badgeId = event.dataTransfer?.getData('text/badge')
   if (!badgeId || !badgeById.value[badgeId] || full.value) return
   const p = boardPoint(event.clientX, event.clientY)
-  keyed.value.push({ key: nextKey++, badge: badgeId, x: p.x, y: p.y, rotate: Math.round(Math.random() * 30 - 15) })
+  const key = nextKey++
+  keyed.value.push({ key, badge: badgeId, x: p.x, y: p.y, rotate: Math.round(Math.random() * 30 - 15), scale: 1 })
+  selected.value = key
   beep(420)
   scheduleSave()
 }
@@ -119,6 +182,7 @@ function onBoardDrop(event) {
       @pointercancel="endDrag"
       @dragover.prevent
       @drop.prevent="onBoardDrop"
+      @pointerdown="onBoardPointerDown"
     >
       <p v-if="!keyed.length" class="board-hint">{{ t('rewards.sceneEmpty') }}</p>
       <button
@@ -126,13 +190,30 @@ function onBoardDrop(event) {
         :key="s.key"
         type="button"
         class="placed"
-        :style="{ left: `${s.x}%`, top: `${s.y}%`, transform: `translate(-50%, -50%) rotate(${s.rotate}deg)` }"
-        :aria-label="t('rewards.sceneRemove', { name: badgeById[s.badge]?.name || '' })"
-        @pointerdown="startDrag(s.key, $event)"
+        :class="{ 'placed--selected': selected === s.key }"
+        :style="{
+          left: `${s.x}%`,
+          top: `${s.y}%`,
+          transform: `translate(-50%, -50%) rotate(${s.rotate}deg) scale(${s.scale})`,
+        }"
+        :aria-label="
+          selected === s.key
+            ? t('rewards.sceneSelected', { name: badgeById[s.badge]?.name || '' })
+            : t('rewards.sceneRemove', { name: badgeById[s.badge]?.name || '' })
+        "
+        @pointerdown.stop="startDrag(s.key, $event)"
         @dblclick="removeSticker(s.key)"
       >
         <EmojiArt :char="badgeById[s.badge]?.emoji || '⭐'" />
       </button>
+
+      <div v-if="selectedSticker" class="sticker-controls" :style="{ left: `${selectedSticker.x}%`, top: `${selectedSticker.y}%` }">
+        <button type="button" class="ctrl" :aria-label="t('rewards.sceneSmaller')" @click.stop="nudgeScale(-0.15)"><EmojiArt :char="ICONS.zoomOut" /></button>
+        <button type="button" class="ctrl" :aria-label="t('rewards.sceneRotateLeft')" @click.stop="nudgeRotate(-15)"><EmojiArt :char="ICONS.rotateLeft" /></button>
+        <button type="button" class="ctrl ctrl--danger" :aria-label="t('rewards.sceneDelete')" @click.stop="removeSticker(selectedSticker.key)"><EmojiArt :char="ICONS.trash" /></button>
+        <button type="button" class="ctrl" :aria-label="t('rewards.sceneRotateRight')" @click.stop="nudgeRotate(15)"><EmojiArt :char="ICONS.rotateRight" /></button>
+        <button type="button" class="ctrl" :aria-label="t('rewards.sceneBigger')" @click.stop="nudgeScale(0.15)"><EmojiArt :char="ICONS.zoomIn" /></button>
+      </div>
     </div>
 
     <p class="tray-hint">{{ full ? t('rewards.sceneFull') : t('rewards.sceneHint') }}</p>
@@ -227,6 +308,34 @@ function onBoardDrop(event) {
 }
 .placed:active {
   cursor: grabbing;
+}
+.placed--selected {
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.2)) drop-shadow(0 0 0 3px var(--bz-leaf));
+}
+.sticker-controls {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  box-shadow: var(--bz-shadow);
+  transform: translate(-50%, calc(-100% - 34px));
+  white-space: nowrap;
+  pointer-events: auto;
+}
+.ctrl {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--bz-soft);
+  font-size: 15px;
+}
+.ctrl--danger {
+  background: color-mix(in srgb, var(--bz-coral) 25%, var(--bz-soft));
 }
 .tray-hint {
   margin: 0;

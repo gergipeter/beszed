@@ -1,13 +1,14 @@
 <script setup>
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { config } from '../../config/options'
-import { emojiAssetName, splitEmoji } from '../../utils/emoji'
+import { emojiAssetName, pictogram, splitEmoji } from '../../utils/emoji'
 
 /**
  * The one place emojis are drawn. Sized by font-size like text, so callers style
  * it the same either way. With `config.emoji.baseUrl` set it shows that image set
  * (same look on every device); a sequence like "🐱📦" becomes one image per emoji,
- * and any missing file falls back to the native emoji.
+ * and any missing file falls back to the native emoji. An ARASAAC pictogram
+ * ("arasaac:2462~🍎") is drawn as its picture, with the emoji as the fallback.
  */
 const props = defineProps({
   char: { type: String, required: true },
@@ -16,14 +17,20 @@ const props = defineProps({
 })
 
 const failed = reactive(new Set())
+const picto = computed(() => pictogram(props.char))
+const pictoFailed = ref(false)
+const shown = computed(() => (picto.value ? (pictoFailed.value ? picto.value.fallback : '') : props.char))
 watch(
   () => props.char,
-  () => failed.clear(),
+  () => {
+    failed.clear()
+    pictoFailed.value = false
+  },
 )
 
 const base = computed(() => (config.emoji.baseUrl ? config.emoji.baseUrl.replace(/\/?$/, '/') : null))
 const parts = computed(() =>
-  splitEmoji(props.char).map(ch => ({
+  splitEmoji(shown.value).map(ch => ({
     ch,
     src: base.value && !failed.has(ch) ? `${base.value}${emojiAssetName(ch)}${config.emoji.ext}` : null,
   })),
@@ -34,7 +41,17 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
 
 <template>
   <img
-    v-if="single?.src"
+    v-if="picto && !pictoFailed"
+    class="emoji emoji--img emoji--picto"
+    :src="`${config.pictograms.baseUrl.replace(/\/?$/, '/')}${picto.id}.png`"
+    :alt="label"
+    :aria-hidden="label ? undefined : 'true'"
+    draggable="false"
+    decoding="async"
+    @error="pictoFailed = true"
+  />
+  <img
+    v-else-if="single?.src"
     class="emoji emoji--img"
     :src="single.src"
     :alt="label"
@@ -57,7 +74,7 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
       <span v-else>{{ p.ch }}</span>
     </template>
   </span>
-  <span v-else class="emoji" v-bind="a11y">{{ char }}</span>
+  <span v-else class="emoji" v-bind="a11y">{{ shown }}</span>
 </template>
 
 <style scoped>
@@ -72,6 +89,12 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
+}
+/* pictograms carry a thin margin of their own; a touch larger matches an emoji's weight */
+.emoji--picto {
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.2em;
 }
 .emoji--group {
   display: inline-flex;

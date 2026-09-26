@@ -1,13 +1,16 @@
 [
-  {"level": 1, "payload": {"kind": "symbols", "emojis": ["🔴", "🔵", "🟡", "🟢", "🟣", "⭐", "🌙", "❤️", "🍄", "🐟"]}},
-  {"level": 1, "payload": {"kind": "category", "category": "állat", "emojis": ["🐶", "🐱", "🐰", "🐮", "🐷", "🐸", "🐴"]}},
-  {"level": 1, "payload": {"kind": "category", "category": "gyümölcs", "emojis": ["🍎", "🍌", "🍐", "🍇", "🍓", "🍒"]}},
-  {"level": 1, "payload": {"kind": "category", "category": "jármű", "emojis": ["🚗", "🚌", "🚲", "🚂", "🚢", "🚜"]}},
-  {"level": 1, "payload": {"kind": "category", "category": "ruha", "emojis": ["👕", "👖", "🧦", "🧢", "🧣", "👗"]}},
-  {"level": 1, "payload": {"kind": "category", "category": "labda", "emojis": ["⚽", "🏀", "🏈", "⚾", "🎾", "🏐"]}},
-  {"level": 1, "payload": {"kind": "category", "category": "édesség", "emojis": ["🍭", "🍬", "🍫", "🍩", "🧁", "🍰"]}},
-  {"level": 2, "payload": {"kind": "category", "category": "zöldség", "emojis": ["🥕", "🥦", "🥒", "🌽", "🥔", "🧅", "🍆", "🫑"]}},
-  {"level": 2, "payload": {"kind": "category", "category": "virág", "emojis": ["🌷", "🌹", "🌻", "🌼", "🪷", "💐"]}},
-  {"level": 2, "payload": {"kind": "category", "category": "hangszer", "emojis": ["🥁", "🎸", "🎺", "🎻", "🎹", "🎷", "🪗"]}},
-  {"level": 3, "payload": {"kind": "category", "category": "szerszám", "emojis": ["🔨", "🪛", "🪚", "🔧", "🪓", "⛏️"]}}
+  {"level":1,"payload":{"kind":"symbols","emojis":["🔴","🔵","🟡","🟢","🟣","⭐","🌙","❤️","🍄","🐟"]}},
+  {"level":1,"payload":{"kind":"category","category":"állat","emojis":["🐶","🐱","🐰","🐮","🐷","🐸","🐴","🐈","🐇","🐭","🐹","🐖","🐑","🐐","🐔","🐓","🐤","🦆","🪿","🦃","🕊️","🐦","🦉","🦅","🦜","🐧","🦩","🦚","🦢","🐢","🦎","🐍","🐊","🦕","🐟","🐬","🐳","🦈","🐙","🦀","🦭","🦦","🦫","🐝","🐞","🦋","🐜","🐌","🕷️","🦟","🪰","🪲","🦗","🪱","🦁","🐯","🦓","🦒","🐘","🦛","🦏","🐒","🦍","🐫","🦙","🦘","🐨","🐼","🐻","🐻‍❄️","🦊","🐺","🦝","🦔","🐿️","🦇","🦌","🦄","🐉","🫏"]},"gen_emojis":["🐈","🐇","🐭","🐹","🐖","🐑","🐐","🐔","🐓","🐤","🦆","🪿","🦃","🕊️","🐦","🦉","🦅","🦜","🐧","🦩","🦚","🦢","🐢","🦎","🐍","🐊","🦕","🐟","🐬","🐳","🦈","🐙","🦀","🦭","🦦","🦫","🐝","🐞","🦋","🐜","🐌","🕷️","🦟","🪰","🪲","🦗","🪱","🦁","🐯","🦓","🦒","🐘","🦛","🦏","🐒","🦍","🐫","🦙","🦘","🐨","🐼","🐻","🐻‍❄️","🦊","🐺","🦝","🦔","🐿️","🦇","🦌","🦄","🐉","🫏"]},
+  {"level":1,"payload":{"kind":"category","category":"gyümölcs","emojis":["🍎","🍌","🍐","🍇","🍓","🍒","🍊","🍋","🍑","🍍","🥭","🥝","🍉","🍈","🥥","🫐"]},"gen_emojis":["🍊","🍋","🍑","🍍","🥭","🥝","🍉","🍈","🥥","🫐"]},
+  {"level":1,"payload":{"kind":"category","category":"jármű","emojis":["🚗","🚌","🚲","🚂","🚢","🚜","🚋","🚇","🚕","🚓","🚑","🚒","🚚","🛴","🏍️","✈️","🚁","🚀","⛵","🛶","🛸","🏎️"]},"gen_emojis":["🚋","🚇","🚕","🚓","🚑","🚒","🚚","🛴","🏍️","✈️","🚁","🚀","⛵","🛶","🛸","🏎️"]},
+  {"level":1,"payload":{"kind":"category","category":"ruha","emojis":["👕","👖","🧦","🧢","🧣","👗","👔","🎩","🧤","🧥","👟","👢","👡","🩴","🩱","🩳","👓","🕶️","👜","⛑️","🥾"]},"gen_emojis":["👔","🎩","🧤","🧥","👟","👢","👡","🩴","🩱","🩳","👓","🕶️","👜","⛑️","🥾"]},
+  {"level":1,"payload":{"kind":"category","category":"labda","emojis":["⚽","🏀","🏈","⚾","🎾","🏐"]}},
+  {"level":1,"payload":{"kind":"category","category":"édesség","emojis":["🍭","🍬","🍫","🍩","🧁","🍰","🎂","🍪","🍦","🍮","🥧"]},"gen_emojis":["🎂","🍪","🍦","🍮","🥧"]},
+  {"level":2,"payload":{"kind":"category","category":"zöldség","emojis":["🥕","🥦","🥒","🌽","🥔","🧅","🍆","🫑","🧄","🍅","🥬","🫛","🫘"]},"gen_emojis":["🧄","🍅","🥬","🫛","🫘"]},
+  {"level":2,"payload":{"kind":"category","category":"virág","emojis":["🌷","🌹","🌻","🌼","🪷","💐","🌸"]},"gen_emojis":["🌸"]},
+  {"level":2,"payload":{"kind":"category","category":"hangszer","emojis":["🥁","🎸","🎺","🎻","🎹","🎷","🪗","🪈","🪇"]},"gen_emojis":["🪈","🪇"]},
+  {"level":3,"payload":{"kind":"category","category":"szerszám","emojis":["🔨","🪛","🪚","🔧","🪓","⛏️","🪜","🔩","🧲","🧹","🪣","🔒"]},"gen_emojis":["🪜","🔩","🧲","🧹","🪣","🔒"]},
+  {"level":3,"payload":{"kind":"category","category":"konyhai eszköz","emojis":["🥄","🍴","🔪","🍽️","☕","🫖","🥣","🍳","🍼"]},"gen":true},
+  {"level":2,"payload":{"kind":"category","category":"épület","emojis":["🏠","🏰","🏫","🏥","⛪","🏭","🗼","🏪","🏨","🛖"]},"gen":true},
+  {"level":2,"payload":{"kind":"category","category":"iskolaszer","emojis":["✏️","🖍️","🖊️","🖌️","✂️","📏","📖","📓","🎒"]},"gen":true}
 ]

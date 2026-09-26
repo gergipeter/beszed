@@ -19,6 +19,7 @@ const guide = useGuideStore()
 const failed = ref(false)
 const message = ref('')
 const saving = ref(false)
+const customWord = ref('')
 
 async function load() {
   failed.value = false
@@ -43,6 +44,11 @@ async function save(patch) {
 
 function tryVoice() {
   guide.speak([t('settings.tryLine')])
+}
+
+function playCustomWord() {
+  const word = customWord.value.trim()
+  if (word) guide.speak([word])
 }
 
 onMounted(load)
@@ -120,6 +126,23 @@ onMounted(load)
 
       <BzButton :disabled="settings.muted" @click="tryVoice">{{ t('settings.tryVoice') }}</BzButton>
     </section>
+
+    <section class="card" :class="{ 'card--disabled': settings.muted }">
+      <h2 class="heading">{{ t('settings.customWordTitle') }}</h2>
+      <p class="hint">{{ t('settings.customWordHint') }}</p>
+      <div class="row">
+        <input
+          v-model="customWord"
+          type="text"
+          class="word-input"
+          maxlength="40"
+          :placeholder="t('settings.customWordPlaceholder')"
+          :disabled="settings.muted"
+          @keyup.enter="playCustomWord"
+        />
+        <BzButton :disabled="settings.muted || !customWord.trim()" @click="playCustomWord">{{ t('settings.customWordPlay') }}</BzButton>
+      </div>
+    </section>
   </template>
 
   <p v-else class="bz-loading" aria-busy="true">{{ t('common.loading') }}</p>
@@ -157,6 +180,26 @@ onMounted(load)
 .row input[type='range'] {
   flex: 1;
   max-width: 220px;
+}
+.hint {
+  margin: -6px 0 0;
+  font-size: var(--bz-text-sm);
+  font-weight: 500;
+  color: var(--bz-muted);
+}
+.word-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 2px solid var(--bz-soft);
+  border-radius: var(--bz-radius);
+  background: var(--bz-bg);
+  font-size: var(--bz-text-md);
+  font-weight: 700;
+}
+.word-input:focus {
+  outline: none;
+  border-color: var(--bz-leaf);
 }
 .voice-pick {
   padding: 8px 16px;

@@ -1,11 +1,13 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { fetchDailyPath } from '../api'
+import { fetchDailyPath, fetchSpotlight } from '../api'
 import GuideBubble from '../components/guide/GuideBubble.vue'
 import DailyPath from '../components/hub/DailyPath.vue'
 import GameTile from '../components/hub/GameTile.vue'
+import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
+import StreakHistory from '../components/rewards/StreakHistory.vue'
 import BzButton from '../components/ui/BzButton.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
@@ -36,6 +38,15 @@ onMounted(() => {
     .catch(() => {})
 })
 
+/** "Ma ezt gyakoroljuk": stays hidden until there's enough recent play to tell what's weak. */
+const spotlightGameId = ref(null)
+onMounted(() => {
+  fetchSpotlight(childId.value)
+    .then(s => (spotlightGameId.value = s?.game ?? null))
+    .catch(() => {})
+})
+const spotlightGame = computed(() => (spotlightGameId.value ? meta.game(spotlightGameId.value) : null))
+
 function play(game) {
   guide.unlock() // inside the tap, so iOS allows audio in the game
   router.push({ name: 'beszed.play', params: { childId: childId.value, game } })
@@ -54,6 +65,9 @@ function play(game) {
     :earned="rewards.earnedCount"
     :stickers-to="{ name: 'beszed.rewards', params: { childId } }"
   />
+  <StreakHistory v-if="rewards.summary?.streak.recent.some(d => d.played)" :days="rewards.summary.streak.recent" />
+
+  <Spotlight v-if="spotlightGame" :game="spotlightGame" @play="play" />
 
   <DailyPath v-if="path && meta.games.length" :path="path" :games="meta.games" @play="play" />
 

@@ -1,4 +1,5 @@
 <script setup>
+import { formatDate, t } from '../../i18n'
 import EmojiArt from '../ui/EmojiArt.vue'
 
 /** One sticker of the album: colourful when earned, a shadow with a hint when not. */
@@ -15,7 +16,8 @@ defineProps({
   <button type="button" class="sticker" :class="{ 'sticker--earned': earned, 'sticker--fresh': fresh }">
     <span class="disc"><EmojiArt class="art" :char="badge.emoji" /></span>
     <b class="name">{{ badge.name }}</b>
-    <small v-if="!earned" class="hint">{{ badge.hint }}</small>
+    <small v-if="earned" class="date">{{ t('rewards.earnedOn', { date: formatDate(badge.earned_at) }) }}</small>
+    <small v-else class="hint">{{ badge.hint }}</small>
   </button>
 </template>
 
@@ -64,6 +66,12 @@ defineProps({
 }
 .sticker:not(.sticker--earned) .name {
   color: var(--bz-muted);
+}
+.date {
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--bz-muted);
+  font-variant-numeric: tabular-nums;
 }
 .hint {
   font-size: 13px;

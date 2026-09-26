@@ -42,6 +42,16 @@ return [
             'factory' => Rounds\OkoskaRounds::class, 'rounds' => 8,
             'intro' => 'Most okoskodunk! Nézd meg jól a képeket!',
         ],
+        'hallgasd' => [
+            'name' => 'Hallgasd meg!', 'emoji' => '🎧', 'skill' => 'Szavak jelentése, hallás alapján', 'color' => '#A8E6CF',
+            'factory' => Rounds\HallgasdRounds::class, 'rounds' => 8,
+            'intro' => 'Most figyelj jól! Kimondok egy szót, te pedig megkeresed a hozzá illő képet. Kezdjük!',
+        ],
+        'ikerhangok' => [
+            'name' => 'Ikerhangok', 'emoji' => '👯', 'skill' => 'Hasonló szavak megkülönböztetése', 'color' => '#FFB8D9',
+            'factory' => Rounds\IkerhangokRounds::class, 'rounds' => 8,
+            'intro' => 'Most nagyon hasonló szavakat hallasz! Figyelj jól, melyiket mondtam, és koppints a jó képre!',
+        ],
         'papagaj' => [
             'name' => 'Papagáj', 'emoji' => '🦜', 'skill' => 'Szavak sorban visszamondva', 'color' => '#B8ECE6',
             'factory' => Rounds\PapagajRounds::class, 'rounds' => 6,
@@ -89,6 +99,16 @@ return [
                 'starts_by_age' => ['3-4' => 3, '5-6' => 4, '7+' => 5],
             ],
             'intro' => 'Kártyázzunk! Fordíts fel két kártyát. Ha egyformák, megtaláltad a párt. Jegyezd meg, mi hol van!',
+        ],
+        'rimparok' => [
+            'name' => 'Rímpárok', 'emoji' => '🎶', 'skill' => 'Rímelő szavak megjegyzése', 'color' => '#F0D9FF',
+            'factory' => Rounds\RimparokRounds::class, 'rounds' => 2,
+            // level = number of rhyme pairs
+            'adaptive' => [
+                'min' => 2, 'max' => 4, 'start' => 2, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 2, '5-6' => 3, '7+' => 4],
+            ],
+            'intro' => 'Kártyázzunk! De most nem ugyanaz a párja egy kártyának, hanem az, amelyik rímel rá. Fordíts fel kettőt, és figyelj a hangjukra!',
         ],
         'arnyek' => [
             'name' => 'Árnyékkereső', 'emoji' => '👤', 'skill' => 'Alak és forma felismerése', 'color' => '#D6DCE4',
@@ -157,24 +177,26 @@ return [
         |   all_games (each game finished once) · game <id> n · daily_goal
         |   daily_path n ("Mai kaland" finished on n days)
         | ":goal" in a hint becomes daily_goal.
+        | email: true → a milestone worth mailing the parent about (MilestoneEarned),
+        |   if they haven't turned that off. Left off the common, small ones on purpose.
         */
         'badges' => [
             'first_game' => ['name' => 'Első játék', 'emoji' => '🎈', 'hint' => 'Játssz végig egy játékot!', 'rule' => ['sessions', 1]],
             'daily_goal' => ['name' => 'Napi cél', 'emoji' => '🎯', 'hint' => 'Játssz :goal játékot egy nap alatt!', 'rule' => ['daily_goal']],
             'perfect' => ['name' => 'Hibátlan', 'emoji' => '💎', 'hint' => 'Oldj meg egy egész játékot elsőre!', 'rule' => ['perfect', 1]],
-            'streak_3' => ['name' => 'Három nap', 'emoji' => '🔥', 'hint' => 'Játssz három nap egymás után!', 'rule' => ['streak', 3]],
-            'streak_7' => ['name' => 'Egész héten', 'emoji' => '🌈', 'hint' => 'Játssz hét nap egymás után!', 'rule' => ['streak', 7]],
+            'streak_3' => ['name' => 'Három nap', 'emoji' => '🔥', 'hint' => 'Játssz három nap egymás után!', 'rule' => ['streak', 3], 'email' => true],
+            'streak_7' => ['name' => 'Egész héten', 'emoji' => '🌈', 'hint' => 'Játssz hét nap egymás után!', 'rule' => ['streak', 7], 'email' => true],
             'stars_50' => ['name' => 'Csillaggyűjtő', 'emoji' => '⭐', 'hint' => 'Gyűjts 50 csillagot!', 'rule' => ['stars', 50]],
-            'stars_200' => ['name' => 'Csillagszóró', 'emoji' => '🌟', 'hint' => 'Gyűjts 200 csillagot!', 'rule' => ['stars', 200]],
-            'sessions_10' => ['name' => 'Kis bajnok', 'emoji' => '🏅', 'hint' => 'Játssz végig 10 játékot!', 'rule' => ['sessions', 10]],
-            'sessions_30' => ['name' => 'Nagy bajnok', 'emoji' => '🏆', 'hint' => 'Játssz végig 30 játékot!', 'rule' => ['sessions', 30]],
-            'explorer' => ['name' => 'Felfedező', 'emoji' => '🧭', 'hint' => 'Próbáld ki az összes játékot!', 'rule' => ['all_games']],
+            'stars_200' => ['name' => 'Csillagszóró', 'emoji' => '🌟', 'hint' => 'Gyűjts 200 csillagot!', 'rule' => ['stars', 200], 'email' => true],
+            'sessions_10' => ['name' => 'Kis bajnok', 'emoji' => '🏅', 'hint' => 'Játssz végig 10 játékot!', 'rule' => ['sessions', 10], 'email' => true],
+            'sessions_30' => ['name' => 'Nagy bajnok', 'emoji' => '🏆', 'hint' => 'Játssz végig 30 játékot!', 'rule' => ['sessions', 30], 'email' => true],
+            'explorer' => ['name' => 'Felfedező', 'emoji' => '🧭', 'hint' => 'Próbáld ki az összes játékot!', 'rule' => ['all_games'], 'email' => true],
             'puzzle' => ['name' => 'Kirakóbajnok', 'emoji' => '🖼️', 'hint' => 'Játssz ötször a Kirakóval!', 'rule' => ['game', 'kirako', 5]],
             'memory' => ['name' => 'Jó memória', 'emoji' => '🧠', 'hint' => 'Játssz ötször a Párkeresővel!', 'rule' => ['game', 'parkereso', 5]],
             'rhyme' => ['name' => 'Rímfaragó', 'emoji' => '🎶', 'hint' => 'Játssz ötször a Rímelővel!', 'rule' => ['game', 'rimelo', 5]],
             'speaker' => ['name' => 'Szószóló', 'emoji' => '🎤', 'hint' => 'Játssz ötször a Mondd utánammal!', 'rule' => ['game', 'mondd', 5]],
             'path_1' => ['name' => 'Kalandor', 'emoji' => '🗺️', 'hint' => 'Járd végig Csillám mai kalandját!', 'rule' => ['daily_path', 1]],
-            'path_7' => ['name' => 'Kalandmester', 'emoji' => '🏕️', 'hint' => 'Járj végig hét napi kalandot!', 'rule' => ['daily_path', 7]],
+            'path_7' => ['name' => 'Kalandmester', 'emoji' => '🏕️', 'hint' => 'Járj végig hét napi kalandot!', 'rule' => ['daily_path', 7], 'email' => true],
         ],
 
         /*

@@ -43,6 +43,12 @@ export default {
     finishAll: 'Végigjártad a mai kalandot!',
   },
 
+  spotlight: {
+    title: 'Ma ezt gyakoroljuk',
+    cta: 'Gyerünk!',
+    hint: 'Csillám szerint ez most egy kis gyakorlást igényel.',
+  },
+
   game: {
     loadFailed: 'Nem sikerült betölteni a játékot.',
     replayLabel: 'Kérdés újra',
@@ -128,8 +134,14 @@ export default {
     level: '{level}. szint',
     toNext: 'Még {count} csillag a következő szintig',
     streak: '{count} napos sorozat',
+    streakDayPlayed: '{date}: játszottunk',
+    streakDayMissed: '{date}: nem játszottunk',
+    streakDayToday: '{date}: ma',
     daily: 'Mai cél: {done} / {goal} játék',
     stickers: 'Matricák: {count} / {total}',
+    earnedOn: 'Megszerezve: {date}',
+    albumEarned: 'Megvan',
+    albumLocked: 'Még hiányzik',
     medals: '{count} érem',
     wardrobe: 'Csillám szekrénye',
     wardrobeHint: 'Válaszd ki, mit vegyen fel Csillám! Egyszerre többet is felvehet. Új szinteken új kincsek nyílnak.',
@@ -139,12 +151,18 @@ export default {
     tabAlbum: 'Matricaalbum',
     tabDressUp: 'Öltöztetés',
     tabScene: 'Matricakép',
-    sceneHint: 'Húzd a matricákat a képre, vagy koppints rájuk!',
+    sceneHint: 'Húzd a matricákat a képre, vagy koppints rájuk! Két ujjal nagyíthatod és forgathatod őket.',
     sceneEmpty: 'Még üres a kép. Koppints egy matricára lent!',
     sceneFull: 'Megtelt a kép! Vegyél le egy matricát, ha másikat tennél rá.',
     sceneBackdrop: 'Háttér',
     sceneRemove: '{name} matrica – dupla koppintás eltávolítja',
     sceneSaveFailed: 'Nem sikerült elmenteni a matricaképet.',
+    sceneSelected: '{name} matrica kijelölve',
+    sceneBigger: 'Nagyítás',
+    sceneSmaller: 'Kicsinyítés',
+    sceneRotateLeft: 'Forgatás balra',
+    sceneRotateRight: 'Forgatás jobbra',
+    sceneDelete: 'Törlés',
   },
 
   progress: {
@@ -194,6 +212,10 @@ export default {
     preferServerTts: 'A jobb minőségű hang használata (ha van internet)',
     tryVoice: 'Halljuk!',
     tryLine: 'Szia! Így fogok beszélni mostantól.',
+    customWordTitle: 'Egy szó kimondása',
+    customWordHint: 'Írj be egy nevet vagy szót (pl. egy háziállat neve), és Csillám kimondja!',
+    customWordPlaceholder: 'pl. Bogyó',
+    customWordPlay: 'Kimondás',
   },
 
   skills: {

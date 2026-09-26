@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/** The parent's own account: consent, data export, deletion. */
+/** The parent's own account: consent, data export, deletion, preferences. */
 class AccountController extends Controller
 {
     public function consent(Request $request): JsonResponse
@@ -29,6 +29,17 @@ class AccountController extends Controller
         $user->forceFill(['consented_at' => now(), 'consent_version' => config('privacy.version')])->save();
 
         return response()->json(['consent' => ['required' => false, 'version' => $user->consent_version]]);
+    }
+
+    /** Whether an email is sent when a child hits a milestone (see MilestoneEarned). */
+    public function preferences(Request $request): JsonResponse
+    {
+        $data = $request->validate(['milestone_emails_enabled' => ['required', 'boolean']]);
+
+        $user = $request->user();
+        $user->forceFill($data)->save();
+
+        return response()->json(['milestone_emails_enabled' => $user->milestone_emails_enabled]);
     }
 
     /** Everything stored about the parent and their children, as a JSON download. */

@@ -65,6 +65,7 @@ it('stores offline results at the time they were played, within 30 days', functi
     actingAs($this->user)->postJson("/api/beszed/children/{$this->child->id}/sessions",
         ['game' => 'zs', 'level' => 1, 'rounds' => 1, 'correct' => 1, 'first_try' => 1, 'played_at' => $yesterday->toIso8601String()])
         ->assertCreated()
-        ->assertJsonPath('streak', ['days' => 1, 'today' => false])
+        ->assertJsonPath('streak.days', 1)
+        ->assertJsonPath('streak.today', false)
         ->assertJsonPath('daily.done', 0);
 });

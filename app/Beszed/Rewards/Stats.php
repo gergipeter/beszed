@@ -14,6 +14,7 @@ final class Stats
     /**
      * @param  array<string, int>  $gameSessions  finished sessions per game
      * @param  array<string, float>  $gameBest  best first-try share per game
+     * @param  string[]  $recentDays  the last 14 local calendar days played, oldest first
      */
     public function __construct(
         public readonly int $stars,
@@ -25,6 +26,7 @@ final class Stats
         public readonly array $gameSessions,
         public readonly array $gameBest,
         public readonly int $dailyPaths = 0,
+        public readonly array $recentDays = [],
     ) {}
 
     public static function for(Child $child, string $timezone): self
@@ -52,6 +54,11 @@ final class Stats
             $cursor = $cursor->subDay();
         }
 
+        $recentDays = collect(range(13, 0))
+            ->map(fn ($daysAgo) => $now->subDays($daysAgo)->toDateString())
+            ->map(fn ($date) => ['date' => $date, 'played' => $played->has($date)])
+            ->all();
+
         return new self(
             stars: BeszedAttempt::where('child_id', $child->id)->where('correct', true)->count(),
             sessions: (int) $perGame->sum('n'),
@@ -62,6 +69,7 @@ final class Stats
             gameSessions: $perGame->map(fn ($g) => (int) $g->n)->all(),
             gameBest: $perGame->map(fn ($g) => (float) $g->best)->all(),
             dailyPaths: BeszedDailyPath::where('child_id', $child->id)->whereNotNull('completed_at')->count(),
+            recentDays: $recentDays,
         );
     }
 }

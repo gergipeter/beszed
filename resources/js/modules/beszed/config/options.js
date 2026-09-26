@@ -22,6 +22,12 @@ const defaults = {
    */
   emoji: { baseUrl: null, ext: '.svg' },
 
+  /**
+   * ARASAAC pictograms ("arasaac:2462" in the content), served by the Laravel
+   * route GET /pictograms/{id}.png. Pictures by Sergio Palao, ARASAAC, CC BY-NC-SA.
+   */
+  pictograms: { baseUrl: '/pictograms/' },
+
   /** Browser Web Speech fallback voice. */
   voice: { lang: 'hu-HU', rate: 0.85, pitch: 1.15 },
 

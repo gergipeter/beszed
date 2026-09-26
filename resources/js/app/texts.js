@@ -33,6 +33,8 @@ export const texts = {
 
   privacyLink: 'Adatvédelem',
   exportData: 'Adataim letöltése',
+  milestoneEmails: 'E-mail, ha a gyerek elér egy mérföldkövet',
+  milestoneEmailsSaveFailed: 'Nem sikerült elmenteni ezt a beállítást.',
   deleteAccount: 'Fiók törlése',
   deletePrompt:
     'A fiókod, az összes gyerek, minden eredmény, matrica és hangfelvétel véglegesen törlődik. Ha biztos vagy benne, írd be: TÖRLÉS',

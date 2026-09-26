@@ -61,6 +61,13 @@ const slots = computed(() => {
   return groups
 })
 
+/** Earned first (most recent catch first), then the ones still to find. */
+const sortedBadges = computed(() => {
+  const earned = rewards.badges.filter(b => b.earned_at).sort((a, b) => b.earned_at.localeCompare(a.earned_at))
+  const locked = rewards.badges.filter(b => !b.earned_at)
+  return { earned, locked }
+})
+
 onMounted(load)
 </script>
 
@@ -107,15 +114,20 @@ onMounted(load)
 
     <template v-if="tab === 'album'">
       <h2 class="heading">{{ t('rewards.stickers', { count: rewards.earnedCount, total: rewards.badges.length }) }}</h2>
-      <div class="album">
-        <StickerCard
-          v-for="badge in rewards.badges"
-          :key="badge.id"
-          :badge="badge"
-          :earned="Boolean(badge.earned_at)"
-          @click="sayBadge(badge)"
-        />
-      </div>
+
+      <template v-if="sortedBadges.earned.length">
+        <h3 class="group-heading">{{ t('rewards.albumEarned') }}</h3>
+        <div class="album">
+          <StickerCard v-for="badge in sortedBadges.earned" :key="badge.id" :badge="badge" earned @click="sayBadge(badge)" />
+        </div>
+      </template>
+
+      <template v-if="sortedBadges.locked.length">
+        <h3 class="group-heading">{{ t('rewards.albumLocked') }}</h3>
+        <div class="album">
+          <StickerCard v-for="badge in sortedBadges.locked" :key="badge.id" :badge="badge" :earned="false" @click="sayBadge(badge)" />
+        </div>
+      </template>
     </template>
 
     <template v-else-if="tab === 'dressup'">
@@ -207,6 +219,17 @@ onMounted(load)
 .heading {
   margin: 0 0 10px;
   font-size: 24px;
+}
+.group-heading {
+  margin: 18px 0 10px;
+  font-size: var(--bz-text-sm);
+  font-weight: 800;
+  color: var(--bz-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.group-heading:first-of-type {
+  margin-top: 0;
 }
 .album {
   display: grid;

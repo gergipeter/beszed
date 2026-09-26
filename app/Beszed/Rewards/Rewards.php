@@ -7,6 +7,7 @@ use App\Models\BeszedBadge;
 use App\Models\BeszedProfile;
 use App\Models\BeszedSession;
 use App\Models\Child;
+use App\Notifications\MilestoneEarned;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
@@ -30,7 +31,7 @@ class Rewards
         return [
             'stars' => $stats->stars,
             'level' => $level,
-            'streak' => ['days' => $stats->streak, 'today' => $stats->playedToday],
+            'streak' => ['days' => $stats->streak, 'today' => $stats->playedToday, 'recent' => $stats->recentDays],
             'daily' => ['done' => $stats->today, 'goal' => $cfg['daily_goal']],
             'sessions' => $stats->sessions,
             'medals' => collect(config('beszed.games'))
@@ -145,6 +146,7 @@ class Rewards
                 'x' => max(0, min(100, (float) $s['x'])),
                 'y' => max(0, min(100, (float) $s['y'])),
                 'rotate' => max(-180, min(180, (float) ($s['rotate'] ?? 0))),
+                'scale' => max(0.5, min(2.5, (float) ($s['scale'] ?? 1))),
             ])
             ->values()
             ->all();
@@ -185,10 +187,23 @@ class Rewards
                 continue;
             }
             BeszedBadge::firstOrCreate(['child_id' => $child->id, 'badge' => $id]);
-            $new[] = ['id' => $id, 'name' => $badge['name'], 'emoji' => $badge['emoji']];
+            $entry = ['id' => $id, 'name' => $badge['name'], 'emoji' => $badge['emoji']];
+            $new[] = $entry;
+            if ($badge['email'] ?? false) {
+                $this->mailMilestone($child, $entry);
+            }
         }
 
         return $new;
+    }
+
+    /** Mails the parent, unless they turned it off or have no address to reach. */
+    private function mailMilestone(Child $child, array $badge): void
+    {
+        $user = $child->user;
+        if ($user?->milestone_emails_enabled && $user->email) {
+            $user->notify(new MilestoneEarned($child, $badge));
+        }
     }
 
     private function accessories(int $level): array

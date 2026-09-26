@@ -58,6 +58,26 @@ it('kirakó: shuffled, never solved, grid follows the level', function (int $lev
     }
 })->with([1, 2, 3]);
 
+it('rímpárok: cards pair by rhyme, never by identical word, pairs = level', function (int $level) {
+    BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'rimparok', 'level' => $level]);
+    $rhymeOf = BeszedContentItem::forGame('rimparok')->get()->mapWithKeys(fn ($i) => [$i->payload['word'] => $i->payload['rhyme']]);
+
+    foreach (gameSession('rimparok')['rounds'] as $round) {
+        $cards = collect($round['data']['cards']);
+        $byPair = $cards->groupBy('pair');
+
+        expect($cards)->toHaveCount($level * 2)
+            ->and($cards->pluck('id')->unique())->toHaveCount($level * 2)
+            ->and($byPair->map->count()->unique()->values()->all())->toBe([2]);
+
+        foreach ($byPair as $pair) {
+            [$a, $b] = $pair->pluck('label')->all();
+            expect($a)->not->toBe($b)
+                ->and($rhymeOf[$a])->toBe($rhymeOf[$b]);
+        }
+    }
+})->with([2, 3, 4]);
+
 it('párkereső: every word exactly twice, pairs = level', function () {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'parkereso', 'level' => 5]);
 
@@ -86,6 +106,36 @@ it('rímelő: the answer rhymes with the word, the distractors do not', function
             expect($rhymes)->toBe($o['id'] === $round['data']['answer'], "$word / {$o['label']}");
             expect($o['label'])->not->toBe($word);
         }
+    }
+});
+
+it('hallgasd: the spoken word names the answer, options never repeat', function () {
+    $wordOf = BeszedContentItem::forGame('hallgasd')->get()->keyBy('id')->map(fn ($i) => $i->payload['word']);
+
+    foreach (gameSession('hallgasd')['rounds'] as $round) {
+        $options = collect($round['data']['options']);
+        $answer = $options->firstWhere('id', $round['data']['answer']);
+
+        expect($round['prompt']['text'])->toBe($wordOf[(int) $round['data']['answer']])
+            ->and($options)->toHaveCount(3)
+            ->and($options->pluck('id')->unique())->toHaveCount(3)
+            ->and($answer['label'])->toBe($round['prompt']['text']);
+    }
+});
+
+it('ikerhangok: the two options are always the item\'s own minimal pair', function () {
+    $pairOf = BeszedContentItem::forGame('ikerhangok')->get()->keyBy('id')
+        ->map(fn ($i) => [$i->payload['wordA'], $i->payload['wordB']]);
+
+    foreach (gameSession('ikerhangok')['rounds'] as $round) {
+        $options = collect($round['data']['options']);
+        $answer = $options->firstWhere('id', $round['data']['answer']);
+        $pair = $pairOf[$round['content_item_id']];
+
+        expect($options)->toHaveCount(2)
+            ->and($options->pluck('label')->sort()->values()->all())->toBe(collect($pair)->sort()->values()->all())
+            ->and($round['prompt']['text'])->toBeIn($pair)
+            ->and($answer['label'])->toBe($round['prompt']['text']);
     }
 });
 

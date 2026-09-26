@@ -72,6 +72,16 @@ async function deleteAccount() {
     error.value = e.response?.data?.message || texts.deleteFailed
   }
 }
+
+async function toggleMilestoneEmails(event) {
+  const enabled = event.target.checked
+  try {
+    await session.savePreferences({ milestone_emails_enabled: enabled })
+  } catch {
+    event.target.checked = !enabled
+    error.value = texts.milestoneEmailsSaveFailed
+  }
+}
 </script>
 
 <template>
@@ -139,6 +149,11 @@ async function deleteAccount() {
     </div>
 
     <!-- the parent's own data -->
+    <label class="milestone-toggle">
+      <input type="checkbox" :checked="session.user?.milestone_emails_enabled" @change="toggleMilestoneEmails" />
+      <span>{{ texts.milestoneEmails }}</span>
+    </label>
+
     <footer class="account">
       <RouterLink :to="{ name: 'privacy' }">{{ texts.privacyLink }}</RouterLink>
       <RouterLink v-if="session.user?.can_edit_content" :to="{ name: 'content' }">{{ texts.contentEditor }}</RouterLink>
@@ -177,12 +192,22 @@ async function deleteAccount() {
   color: var(--bz-ink);
   font: inherit;
 }
+.milestone-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--bz-muted);
+}
 .account {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px 22px;
-  margin-top: 36px;
+  margin-top: 12px;
   font-size: 15px;
   font-weight: 700;
   color: var(--bz-muted);

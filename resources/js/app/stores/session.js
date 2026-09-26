@@ -14,7 +14,7 @@ function clearOfflineData() {
 /** The signed-in parent and their children. */
 export const useSessionStore = defineStore('app/session', {
   state: () => ({
-    /** @type {{ id: number, name: string, email: string, avatar: string | null } | null} */
+    /** @type {{ id: number, name: string, email: string, avatar: string | null, milestone_emails_enabled: boolean } | null} */
     user: null,
     /** @type {{ id: number, name: string, birth_date: string | null }[]} */
     children: [],
@@ -69,6 +69,11 @@ export const useSessionStore = defineStore('app/session', {
     async acceptConsent() {
       await http.post('/api/me/consent', { accept: true })
       this.consentRequired = false
+    },
+
+    async savePreferences(patch) {
+      const { data } = await http.put('/api/me/preferences', patch)
+      this.user = { ...this.user, ...data }
     },
 
     /** Deletes the parent, all children and every result. `confirm` must be "TÖRLÉS". */

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', MeController::class)->name('me');
     Route::post('me/consent', [AccountController::class, 'consent'])->name('me.consent');
+    Route::put('me/preferences', [AccountController::class, 'preferences'])->name('me.preferences');
     Route::get('me/export', [AccountController::class, 'export'])->middleware('throttle:10,1')->name('me.export');
     Route::delete('me', [AccountController::class, 'destroy'])->name('me.destroy');
 

@@ -141,13 +141,13 @@
  * @typedef {{ id: string, name: string, emoji: string, hint: string, earned_at: string | null }} Badge
  * @typedef {{ id: string, name: string, emoji: string, level: number, slot: 'head' | 'face' | 'extra', unlocked: boolean }} Accessory
  * @typedef {{ id: string, name: string, emoji: string }} Background
- * @typedef {{ badge: string, x: number, y: number, rotate: number }} PlacedSticker  x/y in % of the board.
+ * @typedef {{ badge: string, x: number, y: number, rotate: number, scale: number }} PlacedSticker  x/y in % of the board.
  * @typedef {{ background: string | null, stickers: PlacedSticker[] }} Scene
  *
  * @typedef {object} RewardSummary
  * @property {number} stars
  * @property {PlayerLevel} level
- * @property {{ days: number, today: boolean }} streak
+ * @property {{ days: number, today: boolean, recent: { date: string, played: boolean }[] }} streak
  * @property {{ done: number, goal: number }} daily
  * @property {number} sessions
  * @property {Record<string, number>} medals  game id → 0–3

@@ -88,7 +88,7 @@ it('brings recently missed items back more often', function () {
         ->getJson("/api/beszed/children/{$child->id}/session?game=szotag")->assertOk()->json('rounds'))
         ->contains('content_item_id', $missed->id))->count();
 
-    // 8 of 73 items per session: about 1 in 9 by chance; missed three times, nearly always.
+    // 8 of 360+ items per session: about 1 in 45 by chance; missed three times, nearly always.
     expect($hits)->toBeGreaterThanOrEqual(15);
 });
 

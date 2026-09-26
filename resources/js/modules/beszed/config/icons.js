@@ -41,4 +41,8 @@ export const ICONS = Object.freeze({
   copy: '📋',
   map: '🗺️',
   check: '✔️',
+  zoomIn: '➕',
+  zoomOut: '➖',
+  rotateLeft: '↩️',
+  rotateRight: '↪️',
 })

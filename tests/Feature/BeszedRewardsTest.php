@@ -45,7 +45,7 @@ it('awards the first sticker, a perfect sticker and a level-up on the first flaw
         ->and($res['level']['number'])->toBe(1)
         ->and($res['medals']['zs'])->toBe(3)
         ->and($res['daily'])->toBe(['done' => 1, 'goal' => 3])
-        ->and($res['streak'])->toBe(['days' => 1, 'today' => true]);
+        ->and($res['streak'])->toMatchArray(['days' => 1, 'today' => true]);
 
     // Stickers are only new once.
     $again = finish(rounds: 4, correct: 4, firstTry: 2);
@@ -55,6 +55,24 @@ it('awards the first sticker, a perfect sticker and a level-up on the first flaw
         ->and($again['level']['number'])->toBe(2)
         ->and(collect($again['result']['unlocked'])->pluck('id')->all())->toBe(['bow'])
         ->and($again['medals']['zs'])->toBe(3); // the best session counts
+});
+
+it('saves a sticker scene with its scale', function () {
+    finish(correct: 8); // earns the "first_game" badge, so it can be placed
+
+    $save = fn (array $stickers) => actingAs($this->user)
+        ->putJson("/api/beszed/children/{$this->child->id}/scene", ['background' => 'meadow', 'stickers' => $stickers]);
+
+    $saved = $save([['badge' => 'first_game', 'x' => 50, 'y' => 50, 'rotate' => 10, 'scale' => 1.8]])->assertOk()->json();
+    expect($saved['stickers'][0])->toMatchArray(['badge' => 'first_game', 'rotate' => 10, 'scale' => 1.8]);
+
+    // out of 0.5-2.5 range: rejected, same as rotate outside -180..180
+    $save([['badge' => 'first_game', 'x' => 50, 'y' => 50, 'scale' => 99]])
+        ->assertInvalid(['stickers.0.scale']);
+
+    // missing scale defaults to 1 (older saved scenes, or a sticker just dropped)
+    $defaulted = $save([['badge' => 'first_game', 'x' => 50, 'y' => 50]])->assertOk()->json();
+    expect($defaulted['stickers'][0]['scale'])->toEqual(1);
 });
 
 it('reaches the daily goal on the third game of the day', function () {
@@ -78,7 +96,9 @@ it('counts consecutive local days as a streak, and a missed day breaks it', func
     // Next day, not played yet: the streak is still alive.
     travelTo($day->copy()->addDays(3));
     $summary = actingAs($this->user)->getJson("/api/beszed/children/{$this->child->id}/rewards")->json();
-    expect($summary['streak'])->toBe(['days' => 3, 'today' => false]);
+    expect($summary['streak'])->toMatchArray(['days' => 3, 'today' => false])
+        ->and($summary['streak']['recent'])->toHaveCount(14)
+        ->and(collect($summary['streak']['recent'])->pluck('played')->all())->toBe([false, false, false, false, false, false, false, false, false, false, true, true, true, false]);
 
     // A whole day missed: gone.
     travelTo($day->copy()->addDays(5));
@@ -95,7 +115,8 @@ it('uses the configured timezone for day boundaries', function () {
 
     expect($res['daily']['done'])->toBe(1)
         ->and($summary['daily']['done'])->toBe(1)
-        ->and($summary['streak'])->toBe(['days' => 1, 'today' => true]);
+        ->and($summary['streak'])->toMatchArray(['days' => 1, 'today' => true])
+        ->and(end($summary['streak']['recent']))->toMatchArray(['date' => '2026-10-02', 'played' => true]);
 });
 
 it('only lets Csillám wear unlocked accessories', function () {
