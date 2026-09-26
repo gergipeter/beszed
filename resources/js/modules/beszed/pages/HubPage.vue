@@ -2,15 +2,19 @@
 import { useRouter } from 'vue-router'
 import GuideBubble from '../components/guide/GuideBubble.vue'
 import GameTile from '../components/hub/GameTile.vue'
+import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import BzButton from '../components/ui/BzButton.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
+import { config } from '../config/options'
 import { t } from '../i18n'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
+import { useRewardsStore } from '../stores/rewards'
 
 const { childId, childName, guideName } = useModuleContext()
 const meta = useMetaStore()
+const rewards = useRewardsStore()
 const guide = useGuideStore()
 const router = useRouter()
 
@@ -33,8 +37,22 @@ function play(game) {
     <p class="intro">{{ t('hub.intro', { guide: guideName }) }}</p>
   </GuideBubble>
 
+  <PlayerStatus
+    v-if="rewards.summary"
+    :summary="rewards.summary"
+    :earned="rewards.earnedCount"
+    :stickers-to="{ name: 'beszed.rewards', params: { childId } }"
+  />
+
   <div class="tiles">
-    <GameTile v-for="game in meta.games" :key="game.id" :game="game" @click="play(game.id)" />
+    <GameTile
+      v-for="(game, i) in meta.games"
+      :key="game.id"
+      :game="game"
+      :medal="rewards.medal(game.id)"
+      :style="{ '--i': i }"
+      @click="play(game.id)"
+    />
   </div>
 
   <nav class="parents" :aria-label="t('hub.forParents')">
@@ -44,6 +62,10 @@ function play(game) {
     <BzButton :to="{ name: 'beszed.progress', params: { childId } }" :icon="ICONS.chart">
       {{ t('progress.title') }}
     </BzButton>
+    <BzButton :to="{ name: 'beszed.settings', params: { childId } }" :icon="ICONS.settings">
+      {{ t('settings.title') }}
+    </BzButton>
+    <BzButton v-if="config.exitTo" :to="config.exitTo" :icon="ICONS.family">{{ t('hub.exit') }}</BzButton>
   </nav>
 </template>
 

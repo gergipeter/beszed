@@ -5,7 +5,12 @@ mkdir -p storage/app/private storage/framework/cache/data storage/framework/sess
 touch "$DB_DATABASE"
 
 if [ -z "${APP_KEY:-}" ]; then
-    APP_KEY="$(php artisan key:generate --show)"
+    if [ -f storage/app/app-key ]; then
+        APP_KEY="$(cat storage/app/app-key)"
+    else
+        APP_KEY="$(php artisan key:generate --show)"
+        printf '%s' "$APP_KEY" > storage/app/app-key
+    fi
     export APP_KEY
 fi
 

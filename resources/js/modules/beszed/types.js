@@ -3,7 +3,7 @@
  * completion and checks without TypeScript. Nothing here runs; reference a type
  * with `@type {import('../types').Session}`.
  *
- * @typedef {'choice' | 'sequence' | 'tapcount' | 'trace' | 'judged'} EngineName
+ * @typedef {'choice' | 'sequence' | 'tapcount' | 'trace' | 'judged' | 'puzzle' | 'memory' | 'sort'} EngineName
  *
  * @typedef {object} Prompt
  * @property {string} text      Shown as caption and spoken.
@@ -14,7 +14,7 @@
  * @property {EngineName} engine
  * @property {number | null} content_item_id
  * @property {Prompt} prompt
- * @property {ChoiceData | SequenceData | TapCountData | TraceData | JudgedData} data
+ * @property {ChoiceData | SequenceData | TapCountData | TraceData | JudgedData | PuzzleData | MemoryData | SortData} data
  *
  * @typedef {object} Session
  * @property {string} game
@@ -41,6 +41,19 @@
  * @property {string[]} retry
  * @property {Line[]} lines
  * @property {boolean} serverTts
+ * @property {boolean} serverStt
+ * @property {VoiceOption[]} voices
+ * @property {{ min: number, max: number }} rateRange
+ * @property {{ min: number, max: number }} pitchRange
+ *
+ * @typedef {{ id: string, label: string, gender: 'female' | 'male' }} VoiceOption
+ *
+ * @typedef {object} VoiceSettings
+ * @property {string | null} voice
+ * @property {number | null} rate
+ * @property {number | null} pitch
+ * @property {boolean} preferServerTts
+ * @property {boolean} muted
  *
  * @typedef {object} Option
  * @property {string} id
@@ -50,7 +63,7 @@
  * @property {string} [scene]  Relation key rendered by SceneView (folott, alatt…).
  * @property {string} [say]
  *
- * @typedef {{ emoji: string, label?: string, say?: string, highlight?: boolean }} Stimulus
+ * @typedef {{ emoji: string, label?: string, say?: string, highlight?: boolean, silhouette?: boolean }} Stimulus
  *
  * @typedef {object} ChoiceData
  * @property {Stimulus} [stimulus]
@@ -83,9 +96,24 @@
  *
  * @typedef {{ text: string, chunks: string[], emoji: string, levelLabel: string }} JudgedData
  *
+ * @typedef {object} PuzzleData
+ * @property {string} emoji     The picture.
+ * @property {number} cols
+ * @property {number} rows
+ * @property {number[]} pieces  pieces[position] = piece lying there; solved when pieces[i] === i.
+ * @property {string} [onCorrect]
+ *
+ * @typedef {{ id: string, pair: string, emoji: string, label: string }} MemoryCard
+ * @typedef {{ cards: MemoryCard[], onCorrect?: string }} MemoryData
+ *
+ * @typedef {{ id: string, emoji: string, label: string }} SortBin
+ * @typedef {{ id: string, emoji: string, label: string, bin: string, wrong: string }} SortItem
+ * @typedef {{ bins: SortBin[], items: SortItem[], onCorrect?: string }} SortData
+ *
  * @typedef {object} AnswerEvent
  * @property {boolean} correct
  * @property {string} [say]  Feedback sentence; without it the runner picks a praise/retry line.
+ * @property {number} [tries] Self-graded win (1–3) for engines where mistakes are part of play.
  *
  * @typedef {object} AttemptBody
  * @property {string} game
@@ -100,12 +128,36 @@
  * @property {string} name
  * @property {string} emoji
  * @property {string} skill
+ * @property {number} sessions  Games finished in the period.
  * @property {number} rounds
  * @property {number | null} firstTryRate
  * @property {number | null} solvedRate
  * @property {number | null} level
  * @property {number | null} maxLevel
  * @property {string | null} lastPlayed
+ *
+ * @typedef {{ number: number, stars: number, from: number, to: number, progress: number }} PlayerLevel
+ * @typedef {{ id: string, name: string, emoji: string, hint: string, earned_at: string | null }} Badge
+ * @typedef {{ id: string, name: string, emoji: string, level: number, unlocked: boolean }} Accessory
+ *
+ * @typedef {object} RewardSummary
+ * @property {number} stars
+ * @property {PlayerLevel} level
+ * @property {{ days: number, today: boolean }} streak
+ * @property {{ done: number, goal: number }} daily
+ * @property {number} sessions
+ * @property {Record<string, number>} medals  game id → 0–3
+ * @property {Badge[]} badges
+ * @property {string | null} accessory
+ * @property {Accessory[]} accessories
+ *
+ * @typedef {object} RewardResult  What one finished game changed.
+ * @property {number} stars
+ * @property {number} medal
+ * @property {PlayerLevel} level_before
+ * @property {boolean} level_up
+ * @property {{ id: string, name: string, emoji: string }[]} new_badges
+ * @property {Accessory[]} unlocked
  *
  * @typedef {object} ProgressReport
  * @property {{ id: number, name: string }} child

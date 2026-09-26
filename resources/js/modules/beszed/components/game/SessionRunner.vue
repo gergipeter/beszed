@@ -6,6 +6,7 @@ import { resolveEngine } from '../../engines'
 import { t } from '../../i18n'
 import { useGuideStore } from '../../stores/guide'
 import { useMetaStore } from '../../stores/meta'
+import { useRewardsStore } from '../../stores/rewards'
 import GuideBubble from '../guide/GuideBubble.vue'
 import BzButton from '../ui/BzButton.vue'
 import BzNotice from '../ui/BzNotice.vue'
@@ -23,8 +24,25 @@ const emit = defineEmits(['exit'])
 const { childId, guideName } = useModuleContext()
 const guide = useGuideStore()
 const meta = useMetaStore()
-const { session, round, index, total, locked, promptDone, finished, stars, error, load, speakPrompt, answer, skip } =
-  useGameSession(childId, props.game)
+const rewards = useRewardsStore()
+const {
+  session,
+  round,
+  index,
+  total,
+  locked,
+  promptDone,
+  finished,
+  stars,
+  solved,
+  result,
+  savedLater,
+  error,
+  load,
+  speakPrompt,
+  answer,
+  skip,
+} = useGameSession(childId, props.game)
 
 const info = computed(() => meta.game(props.game))
 const engine = computed(() => (round.value ? resolveEngine(round.value.engine) : null))
@@ -51,40 +69,58 @@ onMounted(load)
       :show-progress="Boolean(session) && !finished"
       @exit="exit"
       @replay="speakPrompt()"
+      @replay-slow="speakPrompt({ slow: true })"
     />
 
-    <BzNotice v-if="error" tone="warn">
-      {{ error }}
-      <BzButton size="sm" @click="load">{{ t('common.retry') }}</BzButton>
-    </BzNotice>
+    <!-- Scene changes (playing ↔ finished) and each new round glide in: opacity/transform only. -->
+    <Transition name="scene" mode="out-in">
+      <BzNotice v-if="error" key="error" tone="warn">
+        {{ error }}
+        <BzButton size="sm" @click="load">{{ t('common.retry') }}</BzButton>
+      </BzNotice>
 
-    <FinishScreen v-else-if="finished" :stars="total" :guide-name="guideName" @again="load" @exit="exit" />
+      <FinishScreen
+        v-else-if="finished"
+        key="finish"
+        :stars="solved"
+        :rounds="total"
+        :result="result"
+        :saved-later="savedLater"
+        :level="rewards.level"
+        :guide-name="guideName"
+        @again="load"
+        @exit="exit"
+      />
 
-    <template v-else>
-      <GuideBubble :name="guideName" :avatar-label="t('game.repeatLabel', { guide: guideName })" @press="replay">
-        <b v-if="info" class="game-name"><EmojiArt :char="info.emoji" /> {{ info.name }}</b>
-        <p class="caption" aria-live="polite">{{ guide.caption }}</p>
-      </GuideBubble>
+      <div v-else key="play">
+        <GuideBubble :name="guideName" :avatar-label="t('game.repeatLabel', { guide: guideName })" @press="replay">
+          <b v-if="info" class="game-name"><EmojiArt :char="info.emoji" /> {{ info.name }}</b>
+          <p class="caption" aria-live="polite">{{ guide.caption }}</p>
+        </GuideBubble>
 
-      <div v-if="round" class="stage">
-        <component
-          :is="engine"
-          v-if="engine"
-          :key="round.key"
-          :data="round.data"
-          :locked="locked"
-          :prompt-done="promptDone"
-          @answer="answer"
-          @skip="skip"
-          @say="text => guide.speak([text])"
-          @replay="parts => speakPrompt({ parts })"
-        />
-        <BzNotice v-else tone="warn">
-          {{ t('game.unsupported') }}
-          <BzButton size="sm" @click="skip()">{{ t('common.next') }}</BzButton>
-        </BzNotice>
+        <div v-if="round" class="stage">
+          <Transition name="round" mode="out-in">
+            <div :key="round.key" class="round">
+              <component
+                :is="engine"
+                v-if="engine"
+                :data="round.data"
+                :locked="locked"
+                :prompt-done="promptDone"
+                @answer="answer"
+                @skip="skip"
+                @say="text => guide.speak([text])"
+                @replay="parts => speakPrompt({ parts })"
+              />
+              <BzNotice v-else tone="warn">
+                {{ t('game.unsupported') }}
+                <BzButton size="sm" @click="skip()">{{ t('common.next') }}</BzButton>
+              </BzNotice>
+            </div>
+          </Transition>
+        </div>
       </div>
-    </template>
+    </Transition>
   </div>
 </template>
 
@@ -100,10 +136,37 @@ onMounted(load)
   font-size: var(--bz-text-md);
   line-height: 1.3;
 }
-.stage {
+.round {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 18px;
+}
+.round-enter-active {
+  transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.round-leave-active {
+  transition: opacity 0.14s ease, transform 0.14s ease-in;
+}
+.round-enter-from {
+  opacity: 0;
+  transform: translate3d(28px, 0, 0);
+}
+.round-leave-to {
+  opacity: 0;
+  transform: translate3d(-28px, 0, 0);
+}
+.scene-enter-active {
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.scene-leave-active {
+  transition: opacity 0.15s ease;
+}
+.scene-enter-from {
+  opacity: 0;
+  transform: scale(0.97);
+}
+.scene-leave-to {
+  opacity: 0;
 }
 </style>

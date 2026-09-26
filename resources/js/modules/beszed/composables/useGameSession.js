@@ -1,12 +1,15 @@
-import { computed, onScopeDispose, ref, toValue } from 'vue'
+import { computed, onScopeDispose, ref, shallowRef, toValue } from 'vue'
 import { fetchSession, recordAttempt } from '../api'
+import { isNetworkError } from '../api/outbox'
 import { config } from '../config/options'
 import { preloadEngines } from '../engines'
 import { t } from '../i18n'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
 import { useRecordingsStore } from '../stores/recordings'
+import { useRewardsStore } from '../stores/rewards'
 import { sleep } from '../utils/async'
+import { chime } from '../services/audio/sfx'
 import { errorMessage } from '../utils/errors'
 import { pick } from '../utils/random'
 import { useIdleHelp } from './useIdleHelp'
@@ -25,9 +28,20 @@ const stamp = (/** @type {Round[]} */ rounds) => {
   return rounds.map(round => ({ ...round, key: `${round.key}-${at}` }))
 }
 
+/** What Csillám announces about a finished game's rewards. */
+function rewardSpeech(/** @type {import('../types').RewardResult | null} */ result, level) {
+  if (!result) return []
+  return [
+    ...(result.level_up ? [t('game.levelUpSpeech', { level })] : []),
+    ...result.unlocked.map(a => t('game.unlockSpeech', { name: a.name })),
+    ...result.new_badges.map(b => t('game.stickerSpeech', { name: b.name })),
+  ]
+}
+
 /**
  * One play-through of a game: loads the rounds, speaks the prompts, judges
- * answers, saves attempts and follows level changes. SessionRunner only renders.
+ * answers, saves attempts, follows level changes and hands the finished game
+ * to the rewards. SessionRunner only renders.
  *
  * @param {import('vue').MaybeRefOrGetter<number>} childId
  * @param {string} game
@@ -36,6 +50,7 @@ export function useGameSession(childId, game) {
   const guide = useGuideStore()
   const meta = useMetaStore()
   const recordings = useRecordingsStore()
+  const rewards = useRewardsStore()
 
   /** @type {import('vue').Ref<import('../types').Session | null>} */
   const session = ref(null)
@@ -47,7 +62,15 @@ export function useGameSession(childId, game) {
   const loading = ref(false)
   const stars = ref(0)
   const error = ref('')
+  /** This game's score: rounds solved, and solved at the first try. */
+  const solved = ref(0)
+  const firstTry = ref(0)
+  /** @type {import('vue').ShallowRef<import('../types').RewardResult | null>} */
+  const result = shallowRef(null)
+  /** The finished game couldn't be sent (offline); it waits in the outbox. */
+  const savedLater = ref(false)
   let startedAt = 0
+  let gameStartedAt = 0
   let active = true
 
   const round = computed(() => session.value?.rounds[index.value] ?? null)
@@ -56,6 +79,11 @@ export function useGameSession(childId, game) {
   const idle = useIdleHelp({
     ms: config.timing.idleHelpMs,
     enabled: () => Boolean(session.value) && !session.value.no_idle && !finished.value,
+    // A little life before the full help: a hop, no speech, so it never talks over the child.
+    onFidget: () => {
+      if (!round.value || locked.value || guide.talking) return
+      guide.hop()
+    },
     onIdle: () => {
       if (!round.value || locked.value) return
       guide.hop()
@@ -75,6 +103,11 @@ export function useGameSession(childId, game) {
       session.value = { ...fresh, rounds: stamp(fresh.rounds) }
       stars.value = fresh.stars
       index.value = 0
+      solved.value = 0
+      firstTry.value = 0
+      result.value = null
+      savedLater.value = false
+      gameStartedAt = Date.now()
       // The intro is requested right away by the player; warm what comes after it.
       const feedback = [...recordings.keysStartingWith('praise'), ...recordings.keysStartingWith('retry')]
       guide.preload([...feedback.map(rec => ({ rec })), ...(round.value ? roundItems(round.value) : [])])
@@ -96,15 +129,18 @@ export function useGameSession(childId, game) {
     if (upcoming) guide.preload(roundItems(upcoming))
   }
 
-  /** Says the round's prompt (or `parts` instead); `promptDone` turns true afterwards. */
-  async function speakPrompt({ withIntro = false, parts } = {}) {
+  /**
+   * Says the round's prompt (or `parts` instead); `promptDone` turns true afterwards.
+   * `slow: true` says it at a reduced rate, for a child who wants it repeated more clearly.
+   */
+  async function speakPrompt({ withIntro = false, parts, slow = false } = {}) {
     const current = round.value
     if (!current) return
     const at = index.value
     promptDone.value = false
     const items = withIntro ? [{ rec: `intro_${game}`, alt: session.value.intro }] : []
     items.push(...(parts ?? promptItems(current)))
-    await guide.speak(items, { caption: current.prompt.text })
+    await guide.speak(items, { caption: current.prompt.text, slow })
     if (at === index.value) promptDone.value = true
   }
 
@@ -118,9 +154,10 @@ export function useGameSession(childId, game) {
   }
 
   /** @param {import('../types').AnswerEvent} event */
-  async function answer({ correct, say }) {
+  async function answer({ correct, say, tries: graded }) {
     if (locked.value) return
-    tries.value++
+    // Self-graded wins (puzzle, memory, sort) replace the count of wrong answers.
+    tries.value = correct && graded ? graded : tries.value + 1
     if (!correct) {
       guide.comfort()
       guide.speak(feedback('retry', say))
@@ -129,7 +166,10 @@ export function useGameSession(childId, game) {
     locked.value = true
     idle.cancel()
     stars.value++
+    solved.value++
+    if (tries.value === 1) firstTry.value++
     guide.celebrate()
+    chime()
     const saved = saveAttempt(true)
     await Promise.all([guide.speak(feedback('praise', say)), sleep(config.timing.praisePauseMs), saved])
     next()
@@ -150,7 +190,7 @@ export function useGameSession(childId, game) {
     const played = round.value
     if (!current || !played) return
     try {
-      const result = await recordAttempt(toValue(childId), {
+      const saved = await recordAttempt(toValue(childId), {
         game,
         content_item_id: played.content_item_id,
         level: current.level,
@@ -158,9 +198,9 @@ export function useGameSession(childId, game) {
         tries: correct ? tries.value : Math.max(tries.value, 1),
         duration_ms: Date.now() - startedAt,
       })
-      stars.value = result.stars
+      stars.value = saved.stars
       const remaining = current.rounds.length - index.value - 1
-      if (result.level !== current.level && remaining > 0) {
+      if (saved.level !== current.level && remaining > 0) {
         const fresh = await fetchSession(toValue(childId), game)
         await preloadEngines(fresh.rounds.map(r => r.engine))
         current.rounds.splice(index.value + 1, remaining, ...stamp(fresh.rounds.slice(0, remaining)))
@@ -175,15 +215,40 @@ export function useGameSession(childId, game) {
     // The child may have left mid-praise; don't start talking on another page.
     if (!active || !session.value) return
     if (index.value + 1 >= total.value) {
-      finished.value = true
-      idle.cancel()
-      guide.party = true
-      guide.setMood('happy')
-      guide.speak([{ rec: 'finish', alt: t('game.finishSpeech', { count: total.value }) }])
+      finish()
       return
     }
     index.value++
     startRound(false)
+  }
+
+  /** Last round done: celebrate, record the game, then announce what it earned. */
+  async function finish() {
+    finished.value = true
+    idle.cancel()
+    guide.party = true
+    guide.setMood('happy')
+    const played = session.value
+    const earned = await rewards
+      .complete(toValue(childId), {
+        game,
+        level: played.level,
+        rounds: total.value,
+        correct: solved.value,
+        first_try: firstTry.value,
+        duration_ms: Date.now() - gameStartedAt,
+      })
+      .catch(error => {
+        // Offline: the game still ends happily; the outbox uploads it later.
+        savedLater.value = isNetworkError(error)
+        return null
+      })
+    if (!active || session.value !== played) return
+    result.value = earned
+    guide.speak([
+      { rec: 'finish', alt: t('game.finishSpeech', { count: solved.value }) },
+      ...rewardSpeech(earned, rewards.level?.number),
+    ])
   }
 
   onScopeDispose(() => {
@@ -191,5 +256,23 @@ export function useGameSession(childId, game) {
     guide.reset()
   })
 
-  return { session, round, index, total, locked, promptDone, finished, loading, stars, error, load, speakPrompt, answer, skip }
+  return {
+    session,
+    round,
+    index,
+    total,
+    locked,
+    promptDone,
+    finished,
+    loading,
+    stars,
+    solved,
+    result,
+    savedLater,
+    error,
+    load,
+    speakPrompt,
+    answer,
+    skip,
+  }
 }

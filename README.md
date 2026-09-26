@@ -1,8 +1,73 @@
 # Beszéd & DIFER module for Betűvarázs
 
-Laravel API + Vue 3 + Pinia port of the *Zoé kertje* prototype: 10 speech/DIFER games,
-Csillám the unicorn guide, server-side neural TTS, parent voice recordings,
-adaptive difficulty and a printable progress report.
+Laravel API + Vue 3 + Pinia port of the *Zoé kertje* prototype: 15 speech/DIFER games,
+Csillám the unicorn guide, server-side neural TTS, server-side pronunciation assessment,
+parent voice recordings, adaptive difficulty, rewards (levels, streaks, medals, stickers,
+Csillám's wardrobe), parent sign-in with Google, and a printable progress report.
+
+## Games
+
+| Game | Engine | Practises |
+|---|---|---|
+| Zümi vagy Susi?, Első hang, Hol van?, Okoska, Melyik mondja szépen? | `choice` | sounds, first sounds, relations, patterns, grammar |
+| Dobolós szavak, Számolós | `tapcount` (+ `choice`) | syllables, counting |
+| Papagáj | `sequence` | word-list recall (adaptive 2–6 words) |
+| Mondd utánam | `judged` | sentence repetition; scored by Azure pronunciation assessment, or judged by the parent |
+| Méhecske útja | `trace` | fine motor tracing |
+| 🧩 **Kirakó** | `puzzle` | picture puzzle: tap two pieces to swap; adaptive 2×2 → 3×2 → 3×3 |
+| 🃏 **Párkereső** | `memory` | find the pairs; each card says its word; adaptive 3–6 pairs |
+| 👤 **Árnyékkereső** | `choice` (silhouette) | whose shadow is it? |
+| 🎵 **Rímelő** | `choice` | which word rhymes (distractors never share the last vowel) |
+| 🧺 **Válogató** | `sort` | put each picture in the right basket; adaptive 4 → 6 → 8 pictures |
+
+Puzzle, memory and sort count mistakes as part of play, so they grade their own win
+(`answer({ correct, tries: 1–3 })`) instead of one "try" per wrong move.
+
+## Rewards
+
+All derived on the server (`app/Beszed/Rewards/`, rules in `config/beszed.php → rewards`):
+
+- **Stars** = correct answers. **Player level** n needs 5·n·(n−1) stars (0, 10, 30, 60, 100…).
+- **Daily streak** (days in a row with a finished game) and **daily goal** (3 games), in `BESZED_TIMEZONE`.
+- **Medals** per game (1–3 ⭐): the best session's share of first-try answers.
+- **Stickers** (14): first game, flawless game, daily goal, 3/7-day streak, 50/200 stars, 10/30 games,
+  every game tried, 5× Kirakó/Párkereső/Rímelő/Mondd utánam. Kept once earned.
+- **Csillám's wardrobe**: bow, glasses, flower, hat, crown unlock at levels 2–7.
+
+A finished game is posted to `POST children/{child}/sessions`; the answer includes what changed
+(medal, level-up, new stickers, unlocked accessories), which the finish screen shows and Csillám announces.
+
+## Sign-in
+
+Parents sign in with Google (Laravel Socialite); a child picker ("Ki játszik ma?") lets them add,
+choose or delete children (deleting removes all of that child's results). Local development without
+Google keys signs straight in as the demo parent.
+
+To enable Google: in Google Cloud Console → *APIs & Services → Credentials*, create an **OAuth client ID**
+of type *Web application*, add the redirect URI `<APP_URL>/auth/google/callback`
+(e.g. `http://localhost:8000/auth/google/callback`), then set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+(in `.env`, which `docker compose` also reads). Google only accepts `localhost` or a real HTTPS domain
+as redirect: a LAN address like `http://192.168.0.100:8000` won't work, so use the demo sign-in on a
+tablet, or put the app behind HTTPS (a tunnel or a real host).
+
+## Pronunciation assessment
+
+In "Mondd utánam" the child can tap the mic and speak the sentence instead of (or as well as)
+the parent judging it by ear. `app/Beszed/Stt/` (`SttClient` / `AzureSttClient` / `NullSttClient`,
+mirroring the TTS client) sends the recording to Azure's Pronunciation Assessment API and maps its
+accuracy/fluency/completeness scores onto the engines' existing 1–3 `tries` self-grade, so it drives
+levels and medals the same way a parent's judgement does.
+
+Off by default (`STT_DRIVER=null`): the mic button only appears when a server assessment is
+configured *and* the browser has mic access: the parent's Approve/Not-yet buttons are always there
+underneath as a fallback (no mic permission, no server key, or a failed request all fall back to them
+seamlessly). To enable it, reuse the `AZURE_SPEECH_KEY`/`AZURE_SPEECH_REGION` from the TTS setup below
+and set:
+
+```dotenv
+STT_DRIVER=azure
+AZURE_SPEECH_STT_LANGUAGE=hu-HU
+```
 
 ## How it's built
 
@@ -17,8 +82,8 @@ GET /session ──▶ SessionBuilder ──▶ RoundFactory (per game) ──�
 ```
 
 - **Server decides, client plays.** RoundFactories build options, distractors and every feedback
-  sentence. The 5 Vue engines (`choice`, `sequence`, `tapcount`, `trace`, `judged`) know nothing about
-  specific games.
+  sentence. The 8 Vue engines (`choice`, `sequence`, `tapcount`, `trace`, `judged`, `puzzle`, `memory`,
+  `sort`) know nothing about specific games.
 - **Voice order of preference:** parent's recording (if that line was recorded) → server TTS mp3
   (cached forever by text hash) → browser Web Speech. After 3 TTS failures in a row the client stays on
   Web Speech for the rest of the visit.
@@ -30,45 +95,167 @@ GET /session ──▶ SessionBuilder ──▶ RoundFactory (per game) ──�
 ```
 app/Beszed/Rounds/*Rounds.php     game logic (one per game)
 app/Beszed/{SessionBuilder,Leveler,Lines}.php
+app/Beszed/Rewards/               Rewards (summary, finish a game, wardrobe), Stats, PlayerLevel, BadgeRules
 app/Beszed/Tts/                   TtsClient (Azure / Null) + TtsCache
-app/Http/Controllers/Beszed/      meta, session, attempts, progress, tts, recordings
+app/Beszed/Stt/                   SttClient (Azure / Null) + PronunciationResult (Mondd utánam scoring)
+app/Http/Controllers/Beszed/      meta, session, attempts, progress, rewards, tts, pronunciation, recordings
+app/Http/Controllers/Auth/        GoogleController, DemoLoginController (local only), LogoutController
+app/Http/Controllers/Api/         MeController, ChildController (a parent's children), AccountController (consent, export, delete)
+app/Http/Controllers/SpaController.php   serves the Vue app + its sign-in options
+routes/web.php, routes/api.php    sign-in + SPA pages; /api/me, /api/children
 app/Jobs/SynthesizeSpeech.php     + artisan beszed:tts-warm
-app/Providers/BeszedServiceProvider.php   routes + TTS binding
-config/beszed.php, config/tts.php
+app/Providers/BeszedServiceProvider.php   routes + TTS/STT bindings
+config/beszed.php, config/tts.php, config/stt.php
 database/migrations/…_create_beszed_tables.php
 database/seeders/BeszedContentSeeder.php + data/beszed/*.json   (content from the prototype)
 routes/beszed.php
 tests/Feature/BeszedSessionTest.php   (Pest)
 
-resources/js/modules/beszed/
-  api.ts, types.ts, utils.ts, routes.ts
-  stores/guide.ts        Csillám: speech queue, mood, talking
-  stores/beszed.ts       meta + recordings
-  components/            Csillam.vue, SessionRunner.vue, SceneView.vue
-  engines/               Choice, Sequence, TapCount, Trace, Judged
-  composables/useRecorder.ts
-  pages/                 BeszedHub, BeszedPlay, RecordingsPage, ProgressPage
-  styles/beszed.css      everything scoped under .bz
+resources/js/app.js                      host entry: router + Pinia + the module plugin
+resources/js/app/                        app shell outside the module: router (auth + consent guard), http (shared
+                                         axios, 401 → sign-in), stores/session, pages/LoginPage, ChildrenPage,
+                                         ConsentPage, PrivacyPage
+public/sw.js, public/manifest.webmanifest, public/icons/   offline play + installable app
+compose.prod.yaml, docker/production/    FrankenPHP (Caddy) image with automatic HTTPS
+resources/js/modules/beszed/             plain JavaScript (no TypeScript), Vue 3 <script setup>
+  index.js               public API: default plugin, beszedRoutes, createBeszedRoutes, registerEngine
+  types.js               API contract as JSDoc typedefs (editor completion without TS)
+  config/options.js      every tunable: apiBase, guideName, emoji set, voice, timings, preloading
+  config/icons.js        every UI glyph in one place
+  i18n/                  t() + hu.js; all UI text (game sentences come from the server)
+  api/                   one file per resource (incl. pronunciation.js); client.js holds the (replaceable) axios instance
+  router/routes.js       layout route with the pages nested under it
+  layouts/BeszedLayout   loads styles + meta/recordings once, provides child/guide context, audio unlock
+  pages/                 HubPage, PlayPage, ProgressPage, RecordingsPage, RewardsPage (sticker album + wardrobe)
+  components/
+    ui/                  BzButton, BzIconButton, BzNotice, EmojiArt, OptionTile, OptionGrid, PictureCard, PageHeader
+    guide/               CsillamAvatar (animated SVG + accessories.js), GuideBubble
+    game/                SessionRunner, GameHud, FinishScreen
+    rewards/             LevelBar, PlayerStatus (hub strip), MedalStars, StickerCard
+    charts/              TrendChart (weekly columns / line, SVG)
+    hub/, recordings/    GameTile, RecordingRow
+  engines/               registry (lazy, one chunk each) + contract.js; one folder per engine:
+                         choice/ (+ SceneView, scenes.js), sequence/, tapcount/, trace/ (+ paths.js), judged/,
+                         puzzle/, memory/, sort/
+  composables/           useGameSession (the round state machine), useIdleHelp, useRecorder,
+                         useAsync, useTimers, useShake, useModuleContext
+  services/audio/        player (shared <audio>), webSpeech (fallback voice), preload, sfx (synthesised effects)
+  services/effects/      confetti (Web Animations, compositor-only)
+  stores/                meta, recordings, guide, rewards (Pinia, ids prefixed "beszed/")
+  styles/                index.css → fonts, tokens (design variables), base (zero-specificity reset)
+  assets/                fonts/ (Baloo 2, self-hosted, OFL), audio/silent.wav (iOS unlock)
+  utils/                 text, emoji, errors, random, async
 ```
+
+### Frontend assets
+
+- **Fonts** are self-hosted: two variable woff2 files (latin + latin-ext for ő/ű, weights 500–800),
+  fingerprinted by Vite. No request goes to Google Fonts, so no visitor IP reaches a third party.
+- **Audio.** All speech plays through one shared `<audio>` element (`services/audio/player.js`) that iOS
+  unlocks on the first tap. Interrupted playback settles immediately. While a round is played, the next
+  round's sentences (and the parent's recorded praise/retry lines) are fetched in the background, so the
+  server synthesises TTS ahead of time and the next prompt starts instantly.
+- **Pictures** are emojis, all drawn by `components/ui/EmojiArt.vue`. For an identical look on every
+  device, serve a Twemoji-style SVG set yourself and set `emoji: { baseUrl: '/vendor/twemoji/svg/' }`;
+  a missing file falls back to the native emoji.
+- **Styles.** Each component carries its own `<style scoped>`. Global CSS is only tokens
+  (`styles/tokens.css`: colours, shadows, radii, type; dark mode) and a `:where()` reset that never
+  wins over a component class, so no `!important` is needed.
+- **Code splitting.** Every page and every engine is its own chunk; a session downloads the engines it
+  needs before its first round shows.
+
+### Smooth on phones
+
+Everything that moves continuously animates only `transform`/`opacity` on HTML layers, which the GPU
+runs off the main thread. Measured on an emulated phone (4× CPU slowdown), layout passes per animation:
+
+| Scene | Before | After |
+|---|---|---|
+| Hub idle (Csillám bobbing) | 121 | 0 |
+| Memory card flip | 102 | 0 |
+| Puzzle swap + solve | 119 | 15 |
+| Finish screen | 379 | 22 |
+
+How: Csillám's body bob/jump, arms, talking mouth and sparkles are HTML layers around the SVG (browsers
+don't composite animations inside SVG); the level bar slides with `translateX` instead of growing
+`width`; the puzzle's "solved" moment fades a picture in instead of animating grid gaps; confetti uses
+the Web Animations API with concrete values (CSS keyframes with custom properties fall back to the main
+thread). Rounds, pages and the finish screen glide in with short transform/opacity transitions; hub
+tiles float in one by one. `prefers-reduced-motion` switches all of it off.
+
+### Celebration
+
+- **Sounds** (`services/audio/sfx.js`) are synthesised with WebAudio: a chime for a right answer, a fanfare
+  at the end of a game, a rising run on level-up, a shimmer for stickers. No files; unlocked on the first
+  tap for iOS; soft enough not to cover Csillám. `config.sfx = { enabled, volume }`.
+- **Confetti** (`services/effects/confetti.js`) at the end of every game, a bigger burst on level-up.
+
+## Offline play
+
+`public/sw.js` (a small hand-written service worker, no build plugin) makes the app work without a
+connection after the first visit: it precaches the whole Vite build and the app shell, keeps TTS and
+recording audio, and answers `GET /api/*` from the last response when offline (so a game played before
+can be replayed). Results played offline go to an outbox in `localStorage` (`api/outbox.js`) and are
+uploaded, oldest first, when the device is back online; they carry `played_at`, so streaks count the
+day the child actually played. Signing out wipes the cached personal data.
+
+Service workers need HTTPS (or `localhost`), so on the LAN address the app works as before, just without
+offline mode. `public/manifest.webmanifest` + `public/icons/` make it installable ("Add to home screen").
+
+## Privacy
+
+- **Consent.** After the first sign-in a parent must accept the privacy notice before anything is stored
+  about a child; bumping `PRIVACY_VERSION` asks everyone again. `/adatvedelem` is the notice (public);
+  set `PRIVACY_CONTROLLER` and `PRIVACY_CONTACT`. **Have the text reviewed before real families use it.**
+- **Export.** "Adataim letöltése" downloads everything stored about the parent and their children as JSON.
+- **Delete.** "Fiók törlése" (type `TÖRLÉS`) deletes the parent, all children, every result and the
+  voice recording files. Deleting one child removes that child's results.
+
+## Progress charts
+
+The parent's *Haladás* page shows two weekly charts over the selected period: games finished per week
+(columns) and the share of first-try answers (line). Two single-measure charts rather than one with two
+scales; one validated series colour (`--bz-chart`) per theme; hover or keyboard focus shows each week,
+and "Heti adatok táblázatban" lists the same numbers. `GET children/{child}/progress/history?weeks=&game=`.
+
+## Production (HTTPS)
+
+`compose.prod.yaml` + `docker/production/` run the app on FrankenPHP (Caddy), which gets and renews the
+HTTPS certificate for your domain by itself. On a server with Docker and a domain pointing at it:
+
+```bash
+cp .env.production.example .env.production   # domain, APP_KEY, Google keys, privacy contact
+docker compose -f compose.prod.yaml up -d --build
+```
+
+Ports 80 and 443 must be reachable. Production mode has no demo sign-in, caches config/routes/views,
+seeds only the game content, sets security headers and keeps data in the `storage` volume. Google's
+redirect URI is `https://<your-domain>/auth/google/callback`. The dev setup below is unchanged.
 
 ## Install
 
-1. Copy the folders into the Laravel project.
-2. Register the provider in `bootstrap/providers.php`:
-   `App\Providers\BeszedServiceProvider::class`
-3. Routes use `api` + `auth:sanctum` (SPA cookie auth). If the api stack isn't set up: `php artisan install:api`.
-4. Migrate and seed:
-   ```bash
-   php artisan migrate
-   php artisan db:seed --class=BeszedContentSeeder
-   ```
-5. Frontend deps (skip what you already have): `npm i pinia vue-router axios`, then
-   ```ts
-   import { beszedRoutes } from '@/modules/beszed/routes'
-   const router = createRouter({ history: createWebHistory(), routes: [...yourRoutes, ...beszedRoutes] })
-   ```
-   and open `/beszed/{childId}`.
-6. Server voice (optional but the big win):
+Start the complete app with Docker Desktop running:
+
+```bash
+docker compose up --build
+```
+
+Open [http://localhost:8000](http://localhost:8000). The local app creates a demo parent and child,
+migrates SQLite, and seeds all game content automatically. Use Ctrl+C to stop it; Docker keeps
+progress and recordings in the `beszed-storage` volume. The local-only demo sign-in is disabled
+outside `APP_ENV=local`; with Google keys set (see *Sign-in*) you get the sign-in page instead.
+
+Run the feature tests with:
+
+```bash
+docker compose exec app php artisan test
+```
+
+`phpunit.xml` forces an in-memory database and `APP_ENV=testing` (`<env>` and `<server>` with
+`force="true"`), so this never touches the app's real database even inside the container.
+
+The app uses browser speech by default. To enable Azure server voice, copy `.env.example` to `.env`, then set:
+
    ```dotenv
    TTS_DRIVER=azure
    AZURE_SPEECH_KEY=...
@@ -77,21 +264,35 @@ resources/js/modules/beszed/
    TTS_RATE=-10%
    TTS_PITCH=+8%
    ```
-   Then run a queue worker and pre-generate the fixed sentences:
+
+Then rebuild/restart the container and pre-generate the fixed sentences:
    ```bash
-   php artisan beszed:tts-warm        # or --sync
+  docker compose exec app php artisan beszed:tts-warm
    ```
    Changing voice/rate/pitch changes the cache key, so audio regenerates automatically.
+
+Pronunciation assessment for "Mondd utánam" is off by default too. See *Pronunciation assessment*
+above to enable it with the same Azure Speech resource.
 
 ## Things to adapt to Betűvarázs
 
 - **Child model / ownership.** The migration only creates `children` if it doesn't exist, and
   `Child.php` is a minimal version. Ownership is checked in `AuthorizesChild` (`child.user_id === user.id`);
   replace with your family/policy check.
-- **axios.** `api.ts` creates its own instance; swap in your configured one if you have interceptors.
-- **Guide name / child name.** Hub and play pages accept `childName` / `guideName` props. Wire them from
-  your child store (e.g. let the child name the unicorn and store it on the child profile).
-- **Fonts.** `beszed.css` imports Baloo 2 from Google Fonts; drop the import if you self-host.
+- **Plugin options.** Everything is set once in `resources/js/app.js`:
+  ```js
+  app.use(beszed, {
+    http: myAxios,                   // your configured axios (interceptors, CSRF…); default: its own
+    guideName: 'Csillám',
+    routes: { path: '/beszed', props: route => ({ childName: children.byId(route.params.childId)?.name }) },
+    router,                          // optional: registers the routes instead of spreading beszedRoutes
+    exitTo: { name: 'children' },    // "Gyerekek" button on the hub → your child picker
+  })
+  ```
+  See `config/options.js` for the rest (API base, emoji set, voice, timings).
+- **Guide name / child name.** The layout takes `childName` / `guideName` props from `routes.props`.
+  Wire them from your child store (e.g. let the child name the unicorn and store it on the child profile).
+- **Fonts.** Already self-hosting Baloo 2 in the host app? Drop `@import './fonts.css'` in `styles/index.css`.
 
 ## Adding a game
 
@@ -99,20 +300,25 @@ resources/js/modules/beszed/
 2. Logic: `app/Beszed/Rounds/<Game>Rounds.php` extending `RoundFactory`, returning rounds for an existing engine.
 3. Config: add an entry in `config/beszed.php → games` (name, emoji, colour, intro, rounds, adaptive).
 
-No frontend change is needed unless the game needs a new interaction type (then add an engine that
-implements the `EngineEmits` contract in `types.ts`).
+No frontend change is needed unless the game needs a new interaction type. Then add
+`engines/<name>/<Name>Engine.vue` using `defineProps(engineProps)` / `defineEmits(engineEmits)` from
+`engines/contract.js`, and register it in `engines/index.js` (or call `registerEngine(name, loader)`).
 
 ## Tests
 
 ```bash
-php artisan test --filter=Beszed
+php artisan test
 ```
-Covers: every game builds a valid session, Papagáj levels up/down, other families get 403.
+Covers: every game builds a valid session; game rules (Kirakó never starts solved, every Párkereső word
+exactly twice, Rímelő distractors never rhyme, Válogató baskets); adaptive levels; rewards (levels,
+stickers awarded once, daily goal, streaks across local-day boundaries, wardrobe unlocks); Google sign-in
+(new parent, linking a verified email, refusing an unverified one, cancel), demo sign-in, `/api/me`,
+children CRUD, consent versioning, data export, account deletion (including recording files, and that
+logout can't resurrect the deleted user), weekly history, back-dated offline results, and that other
+families get 403.
 
 ## Next steps worth doing
 
-- **PWA:** `vite-plugin-pwa` with a runtime cache rule for `/api/beszed/tts` and `/recordings/*/audio`
-  (CacheFirst), so sessions work offline after the first play.
+- **Legal review** of the privacy notice, and a retention period (e.g. prune answers older than 2 years).
+- **Deploy** with `compose.prod.yaml` on an EU server, then add HSTS in `docker/production/Caddyfile`.
 - **Unit tests per RoundFactory** (e.g. HolRounds never shows fölött + mögött together).
-- **Privacy:** recordings and results are children's data. Before this ships to paying families: explicit
-  parental consent, EU storage, retention period, and a "delete all my data" action.

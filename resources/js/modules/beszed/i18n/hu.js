@@ -14,6 +14,7 @@ export default {
     next: 'Tovább',
     loading: 'Betöltés…',
     picture: 'kép',
+    none: 'Semmi',
   },
 
   guide: {
@@ -29,11 +30,13 @@ export default {
     greetLabel: '{guide} köszön',
     forParents: 'Szülőknek',
     loadFailed: 'Nem sikerült betölteni a játékokat.',
+    exit: 'Gyerekek',
   },
 
   game: {
     loadFailed: 'Nem sikerült betölteni a játékot.',
     replayLabel: 'Kérdés újra',
+    replaySlowLabel: 'Kérdés újra, lassan',
     repeatLabel: '{guide}, mondd el újra',
     progressLabel: 'Kör',
     starsLabel: '{count} csillag',
@@ -43,6 +46,13 @@ export default {
     retryFallback: 'Próbáld újra!',
     finishTitle: 'Nagyon ügyes voltál!',
     finishSpeech: 'Hurrá! Nagyon ügyes voltál! Kaptál {count} csillagot! Adj egy ötöst!',
+    levelUpSpeech: 'Szintet léptél! Most már {level}. szinten vagy!',
+    stickerSpeech: 'Új matricát kaptál: {name}!',
+    unlockSpeech: 'Csillám új kincset kapott: {name}!',
+    levelUp: 'Új szint: {level}!',
+    newSticker: 'Új matrica!',
+    unlocked: 'Új kincs Csillámnak: {name}',
+    savedLater: 'Most nincs internet: az eredményt elmentjük, amint újra lesz.',
     again: 'Még egyszer',
     otherGame: 'Másik játék',
     unsupported: 'Ezt a feladatot most nem tudom megmutatni.',
@@ -83,6 +93,39 @@ export default {
     approved: 'Szuper! Pontosan így mondjuk!',
     together: 'Semmi baj! Mondjuk együtt, darabonként.',
     oneGo: 'Most egyben: {text}',
+    recordAttempt: 'Mondd a mikrofonba',
+    recording: 'Felvétel… koppints, ha kész',
+    scoring: 'Figyelem…',
+    micUnavailable: 'A mikrofon most nem érhető el {folder}. Kérd meg a szülőt, hogy döntsön!',
+  },
+
+  puzzle: {
+    preview: 'Így kell kinéznie a képnek',
+    piece: '{n}. darab',
+  },
+
+  memory: {
+    card: '{n}. kártya',
+  },
+
+  sort: {
+    basket: '{label} kosár',
+    left: '{done} / {total}',
+  },
+
+  rewards: {
+    title: 'Matricáim',
+    level: '{level}. szint',
+    toNext: 'Még {count} csillag a következő szintig',
+    streak: '{count} napos sorozat',
+    daily: 'Mai cél: {done} / {goal} játék',
+    stickers: 'Matricák: {count} / {total}',
+    medals: '{count} érem',
+    wardrobe: 'Csillám szekrénye',
+    wardrobeHint: 'Válaszd ki, mit vegyen fel Csillám! Új szinteken új kincsek nyílnak.',
+    unlockAt: '{level}. szinttől',
+    wearFailed: 'Nem sikerült átöltöztetni Csillámot.',
+    loadFailed: 'Nem sikerült betölteni a matricákat.',
   },
 
   progress: {
@@ -92,9 +135,11 @@ export default {
     print: 'Nyomtatás',
     heading: '{name} – gyakorlás {since} óta',
     loadFailed: 'Nem sikerült betölteni a haladást.',
+    summary: '{level}. szint · {stars} csillag · {streak} napos sorozat · {stickers} matrica',
     columns: {
       game: 'Játék',
       skill: 'Mit gyakorol',
+      sessions: 'Végigjátszva',
       rounds: 'Körök',
       firstTry: 'Elsőre jó',
       solved: 'Megoldva',
@@ -103,6 +148,32 @@ export default {
     },
     levelNote:
       'Papagáj szint = ennyi szót mond vissza sorrendben. Mondd utánam szint: 1 rövid, 2 közepes, 3 összetett mondat.',
+    charts: {
+      games: 'Végigjátszott játékok hetente',
+      rate: 'Elsőre jó válaszok aránya',
+      weeks: 'utolsó {count} hét',
+      weekOf: '{date} hete',
+      empty: 'Ebben az időszakban még nem volt játék.',
+      table: 'Heti adatok táblázatban',
+      week: 'Hét',
+      games_col: 'Játékok',
+      answers: 'Válaszok',
+      minutes: 'Perc',
+    },
+  },
+
+  settings: {
+    title: 'Beállítások',
+    loadFailed: 'Nem sikerült betölteni a beállításokat.',
+    saveFailed: 'Nem sikerült elmenteni a beállítást.',
+    muteTitle: 'Hang',
+    mute: 'Csillám hangja némítva',
+    voiceTitle: 'Csillám hangja',
+    rate: 'Beszédsebesség',
+    pitch: 'Hangmagasság',
+    preferServerTts: 'A jobb minőségű hang használata (ha van internet)',
+    tryVoice: 'Halljuk!',
+    tryLine: 'Szia! Így fogok beszélni mostantól.',
   },
 
   recordings: {

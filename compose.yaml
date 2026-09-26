@@ -6,7 +6,7 @@ services:
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
-      APP_URL: http://localhost:8000
+      APP_URL: http://192.168.0.100:8000
       LOG_CHANNEL: stderr
       DB_CONNECTION: sqlite
       DB_DATABASE: /var/www/html/storage/app/database.sqlite
@@ -14,8 +14,16 @@ services:
       CACHE_STORE: file
       QUEUE_CONNECTION: sync
       FILESYSTEM_DISK: local
-      SANCTUM_STATEFUL_DOMAINS: localhost,localhost:8000,127.0.0.1,127.0.0.1:8000,::1
-      TTS_DRIVER: "null"
+      SANCTUM_STATEFUL_DOMAINS: localhost,localhost:8000,127.0.0.1,127.0.0.1:8000,::1,192.168.0.100:8000
+      TTS_DRIVER: ${TTS_DRIVER:-null}
+      AZURE_SPEECH_KEY: ${AZURE_SPEECH_KEY:-}
+      AZURE_SPEECH_REGION: ${AZURE_SPEECH_REGION:-westeurope}
+      AZURE_SPEECH_VOICE: ${AZURE_SPEECH_VOICE:-hu-HU-NoemiNeural}
+      TTS_RATE: ${TTS_RATE:--10%}
+      TTS_PITCH: ${TTS_PITCH:-+8%}
+      # Parent sign-in with Google; leave empty to use the local demo sign-in only.
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
     volumes:
       - beszed-storage:/var/www/html/storage
 

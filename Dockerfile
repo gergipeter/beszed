@@ -1,9 +1,9 @@
 FROM composer:2 AS vendor
 WORKDIR /app
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts --no-autoloader
+RUN composer install --prefer-dist --no-interaction --no-scripts --no-autoloader
 COPY . .
-RUN composer dump-autoload --no-dev --optimize --no-interaction
+RUN composer dump-autoload --optimize --no-interaction
 
 FROM node:24-alpine AS frontend
 WORKDIR /app
@@ -14,10 +14,10 @@ COPY public ./public
 COPY vite.config.js ./
 RUN npm run build
 
-FROM php:8.3-cli
+FROM php:8.4-cli
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libonig-dev libsqlite3-dev \
-    && docker-php-ext-install mbstring pdo_sqlite \
+    && apt-get install -y --no-install-recommends libonig-dev libsqlite3-dev libxml2-dev \
+    && docker-php-ext-install dom mbstring pdo_sqlite xml xmlwriter \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /var/www/html
 COPY --from=vendor /app ./
