@@ -14,13 +14,13 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
-Route::post('/auth/demo', DemoLoginController::class)->middleware('throttle:10,1')->name('auth.demo');
+Route::post('/auth/demo', DemoLoginController::class)->middleware('throttle:10,1,demo')->name('auth.demo');
 Route::post('/logout', LogoutController::class)->name('logout');
 
 // ARASAAC pictograms, from this server's copy (fetched once). Plain files: no session, no cookies.
 Route::get('/pictograms/{id}.png', PictogramController::class)
     ->where('id', '[0-9]{1,6}')
-    ->middleware('throttle:600,1')
+    ->middleware('throttle:600,1,pictograms')
     ->withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, AddQueuedCookiesToResponse::class, EncryptCookies::class, ValidateCsrfToken::class])
     ->name('pictogram');
 

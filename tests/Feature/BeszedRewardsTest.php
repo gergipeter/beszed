@@ -142,6 +142,17 @@ it('rejects impossible results and other families', function () {
     actingAs(User::factory()->create())->getJson("/api/beszed/children/{$this->child->id}/rewards")->assertForbidden();
 });
 
+it('keeps every rate limit to its own route: a busy voice never blocks saving a game', function () {
+    config(['tts.driver' => null]);
+    app()->forgetInstance(\App\Beszed\Tts\TtsClient::class);
+    foreach (range(1, 120) as $i) {
+        actingAs($this->user)->getJson('/api/beszed/tts?t=Szia')->assertNotFound(); // no voice: the browser speaks
+    }
+    actingAs($this->user)->getJson('/api/beszed/tts?t=Szia')->assertStatus(429);
+
+    finish(); // sessions has its own allowance (asserts 201)
+});
+
 it('has a valid rule for every sticker and a level for every accessory', function () {
     foreach (config('beszed.rewards.badges') as $id => $badge) {
         expect($badge['rule'][0])->toBeIn(BadgeRules::TYPES, $id);

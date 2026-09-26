@@ -23,24 +23,24 @@ Route::name('beszed.')->group(function () {
     Route::get('children/{child}/progress', [ProgressController::class, 'show'])->name('progress');
     Route::get('children/{child}/progress/history', [ProgressController::class, 'history'])->name('progress.history');
     Route::get('children/{child}/shares', [ShareController::class, 'index'])->name('shares.index');
-    Route::post('children/{child}/shares', [ShareController::class, 'store'])->middleware('throttle:10,1')->name('shares.store');
+    Route::post('children/{child}/shares', [ShareController::class, 'store'])->middleware('throttle:10,1,shares')->name('shares.store');
     Route::delete('children/{child}/shares/{share}', [ShareController::class, 'destroy'])->name('shares.destroy');
     Route::get('children/{child}/daily-path', [DailyPathController::class, 'show'])->name('daily-path');
     Route::get('children/{child}/spotlight', [SpotlightController::class, 'show'])->name('spotlight');
 
     Route::get('children/{child}/rewards', [RewardController::class, 'show'])->name('rewards');
-    Route::post('children/{child}/sessions', [RewardController::class, 'store'])->middleware('throttle:60,1')->name('sessions.store');
+    Route::post('children/{child}/sessions', [RewardController::class, 'store'])->middleware('throttle:60,1,sessions')->name('sessions.store');
     Route::put('children/{child}/profile', [RewardController::class, 'wear'])->name('profile');
     Route::put('children/{child}/scene', [RewardController::class, 'scene'])->name('scene');
 
-    Route::get('tts', TtsController::class)->middleware('throttle:120,1')->name('tts');
-    Route::post('pronunciation', PronunciationController::class)->middleware('throttle:30,1')->name('pronunciation');
+    Route::get('tts', TtsController::class)->middleware('throttle:120,1,tts')->name('tts');
+    Route::post('pronunciation', PronunciationController::class)->middleware('throttle:30,1,pronunciation')->name('pronunciation');
 
     Route::get('voice-settings', [VoiceSettingsController::class, 'show'])->name('voice-settings.show');
     Route::put('voice-settings', [VoiceSettingsController::class, 'update'])->name('voice-settings.update');
 
     Route::get('recordings', [RecordingController::class, 'index'])->name('recordings.index');
-    Route::post('recordings', [RecordingController::class, 'store'])->middleware('throttle:30,1')->name('recordings.store');
+    Route::post('recordings', [RecordingController::class, 'store'])->middleware('throttle:30,1,recordings')->name('recordings.store');
     Route::get('recordings/{lineKey}/audio', [RecordingController::class, 'audio'])->name('recordings.audio');
     Route::delete('recordings/{lineKey}', [RecordingController::class, 'destroy'])->name('recordings.destroy');
 });
