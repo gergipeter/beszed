@@ -8,13 +8,16 @@ class SzotagRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
-        return $this->cycle($items, $count)->map(function ($it) {
+        return $this->cycle($items, $count)->map(function ($it, $i) {
             $p = $it->payload;
             $w = $p['word'];
             $syl = $p['syllables'];
             $n = count($syl);
 
-            return $this->round('tapcount', "Doboljuk el: {$w}! Minden szótagra üss egyet a dobra, aztán nyomd meg a pipát!", [
+            // The how-to only in the first round; after that just the word.
+            $prompt = $i === 0 ? "Doboljuk el: {$w}! Minden szótagra üss egyet a dobra, aztán nyomd meg a pipát!" : "Doboljuk el: {$w}!";
+
+            return $this->round('tapcount', $prompt, [
                 'mode' => 'drum',
                 'stimulus' => ['emoji' => $p['emoji'], 'label' => $w, 'say' => $w],
                 'target' => $n,

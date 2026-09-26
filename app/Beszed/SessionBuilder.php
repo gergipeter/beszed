@@ -28,6 +28,8 @@ class SessionBuilder
             'game' => $game,
             'level' => $level,
             'intro' => $cfg['intro'],
+            // Csillám introduces a game only the first time; after that the first question comes right away.
+            'first_time' => ! $child->beszedAttempts()->where('game', $game)->exists(),
             'no_idle' => (bool) ($cfg['no_idle'] ?? false),
             'stars' => $child->beszedAttempts()->where('correct', true)->count(),
             'rounds' => collect($rounds)->values()->map(fn ($r, $i) => ['key' => "$game-$i"] + $r)->all(),

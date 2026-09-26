@@ -108,10 +108,11 @@ export function useGameSession(childId, game) {
       result.value = null
       savedLater.value = false
       gameStartedAt = Date.now()
-      // The intro is requested right away by the player; warm what comes after it.
+      // The first prompt is requested right away by the player; warm what comes after it.
       const feedback = [...recordings.keysStartingWith('praise'), ...recordings.keysStartingWith('retry')]
       guide.preload([...feedback.map(rec => ({ rec })), ...(round.value ? roundItems(round.value) : [])])
-      startRound(true)
+      // The game's introduction only the first time the child plays it; otherwise straight to the question.
+      startRound(Boolean(fresh.first_time))
     } catch (e) {
       error.value = errorMessage(e, t('game.loadFailed'))
     } finally {
@@ -119,11 +120,11 @@ export function useGameSession(childId, game) {
     }
   }
 
-  function startRound(first) {
+  function startRound(withIntro = false) {
     tries.value = 0
     locked.value = false
     startedAt = Date.now()
-    speakPrompt({ withIntro: first })
+    speakPrompt({ withIntro })
     idle.arm()
     const upcoming = session.value.rounds[index.value + 1]
     if (upcoming) guide.preload(roundItems(upcoming))
@@ -203,7 +204,8 @@ export function useGameSession(childId, game) {
       if (saved.level !== current.level && remaining > 0) {
         const fresh = await fetchSession(toValue(childId), game)
         await preloadEngines(fresh.rounds.map(r => r.engine))
-        current.rounds.splice(index.value + 1, remaining, ...stamp(fresh.rounds.slice(0, remaining)))
+        // From the new session's second round on: its first one carries the how-to, already heard.
+        current.rounds.splice(index.value + 1, remaining, ...stamp(fresh.rounds.slice(1, remaining + 1)))
         current.level = fresh.level
       }
     } catch {
@@ -219,7 +221,7 @@ export function useGameSession(childId, game) {
       return
     }
     index.value++
-    startRound(false)
+    startRound()
   }
 
   /** Last round done: celebrate, record the game, then announce what it earned. */

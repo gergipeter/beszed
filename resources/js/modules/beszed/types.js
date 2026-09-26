@@ -20,6 +20,7 @@
  * @property {string} game
  * @property {number} level
  * @property {string} intro
+ * @property {boolean} first_time  never played before: Csillám introduces the game
  * @property {boolean} no_idle
  * @property {number} stars
  * @property {Round[]} rounds

@@ -21,12 +21,17 @@ class PapagajRounds extends RoundFactory
             ])->values()->all();
             $names = $words->map(fn ($w) => $w->payload['word'])->all();
 
-            $rounds[] = $this->round('sequence', 'Figyelj, és mondd utánam! '.implode(', ', $names).'.', [
+            // The how-to only in the first round; after that just the words.
+            [$open, $close] = $r === 0
+                ? ['Figyelj, és mondd utánam!', 'Mondd vissza hangosan, aztán mutasd meg sorban a képeken!']
+                : ['Figyelj!', 'Most te!'];
+
+            $rounds[] = $this->round('sequence', $open.' '.implode(', ', $names).'.', [
                 'order' => $ids->map(fn ($id) => (string) $id)->all(),
                 'grid' => $grid,
                 'onCorrect' => 'Szuper! '.implode(', ', $names).'. Mind megvan!',
                 'replayParts' => ['Figyelj még egyszer!', ...$names],
-            ], null, ['Figyelj, és mondd utánam!', ...$names, 'Mondd vissza hangosan, aztán mutasd meg sorban a képeken!']);
+            ], null, [$open, ...$names, $close]);
         }
 
         return $rounds;
