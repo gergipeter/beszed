@@ -9,6 +9,7 @@ import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import StreakHistory from '../components/rewards/StreakHistory.vue'
 import BzButton from '../components/ui/BzButton.vue'
+import DevPanel from '../components/dev/DevPanel.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
 import { config } from '../config/options'
@@ -94,6 +95,8 @@ function play(game) {
     </BzButton>
     <BzButton v-if="config.exitTo" :to="config.exitTo" :icon="ICONS.family">{{ t('hub.exit') }}</BzButton>
   </nav>
+
+  <DevPanel />
 </template>
 
 <style scoped>

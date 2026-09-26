@@ -6,6 +6,7 @@ import { ICONS } from '../../config/icons'
 import { t } from '../../i18n'
 import { beep } from '../../services/audio/sfx'
 import { engineEmits, engineProps } from '../contract'
+import { useDevOverridesStore } from '../../stores/devOverrides'
 
 /**
  * Memory (Párkereső): flip two cards; a pair stays open. Every flipped card
@@ -15,6 +16,7 @@ import { engineEmits, engineProps } from '../contract'
  */
 const props = defineProps(engineProps)
 const emit = defineEmits(engineEmits)
+const devOverrides = useDevOverridesStore()
 
 // Difficulty settings: affects flip-back timing and grading threshold
 const DIFFICULTY_SETTINGS = {
@@ -23,9 +25,16 @@ const DIFFICULTY_SETTINGS = {
   hard: { flipBackMs: 800, mismatchThresholds: [0, 1] },
 }
 
-const difficulty = computed(() => props.data.difficulty || 'medium')
+const difficulty = computed(() => {
+  // Override from dev panel if set
+  if (devOverrides.state.memoryDifficulty) return devOverrides.state.memoryDifficulty
+  return props.data.difficulty || 'medium'
+})
 const settings = computed(() => DIFFICULTY_SETTINGS[difficulty.value])
-const FLIP_BACK_MS = computed(() => settings.value.flipBackMs)
+const FLIP_BACK_MS = computed(() => {
+  const base = settings.value.flipBackMs
+  return Math.round(base * devOverrides.state.flipBackMultiplier)
+})
 const WIN_DELAY_MS = 700
 
 /** ids of the face-up, not yet matched cards (0–2) */
