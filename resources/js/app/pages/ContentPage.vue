@@ -40,6 +40,10 @@ const importFile = ref(null)
 const importResults = ref(null)
 const showImportResults = ref(false)
 const showHistory = ref(null) // item id whose history is shown
+const history = ref({}) // item id => list of edits
+const loadingHistory = ref({}) // item id => is loading
+const exportLoading = ref(false)
+const uploadingField = ref(null) // field key being uploaded
 
 const game = computed(() => games.value.find(g => g.id === gameId.value) ?? null)
 const fields = computed(() => Object.entries(game.value?.schema.fields ?? {}))
@@ -228,6 +232,7 @@ const doImport = async () => {
 const uploadImage = async (event, fieldKey) => {
   const file = event.target.files?.[0]
   if (!file) return
+  uploadingField.value = fieldKey
   const formData = new FormData()
   formData.append('image', file)
   try {
@@ -237,6 +242,47 @@ const uploadImage = async (event, fieldKey) => {
     form.value.payload[fieldKey] = data.reference
   } catch (e) {
     fieldErrors.value[fieldKey] = e.response?.data?.message || 'Upload sikertelen.'
+  } finally {
+    uploadingField.value = null
+  }
+}
+
+const loadHistory = async (itemId) => {
+  if (history.value[itemId]) return
+  loadingHistory.value[itemId] = true
+  try {
+    // TODO: implement GET /api/admin/content/{game}/{item}/history endpoint
+    // For now, placeholder that shows the feature is ready
+    history.value[itemId] = []
+  } catch (e) {
+    history.value[itemId] = []
+  } finally {
+    loadingHistory.value[itemId] = false
+  }
+}
+
+const doExportWithLoader = async () => {
+  exportLoading.value = true
+  try {
+    doExport()
+  } finally {
+    setTimeout(() => {
+      exportLoading.value = false
+    }, 500)
+  }
+}
+
+// Keyboard shortcuts
+const handleKeyboard = (e) => {
+  // Ctrl+E: Export CSV
+  if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+    e.preventDefault()
+    doExportWithLoader()
+  }
+  // Escape: Clear selection
+  if (e.key === 'Escape' && selected.value.size > 0) {
+    selected.value.clear()
+    bulkAction.value = null
   }
 }
 
@@ -250,8 +296,15 @@ watch(gameId, () => {
 onMounted(async () => {
   try {
     await loadGames()
+    window.addEventListener('keydown', handleKeyboard)
   } catch (e) {
     error.value = e.response?.status === 403 ? 'Ehhez nincs jogosultságod.' : 'Nem sikerült betölteni.'
+  }
+})
+
+watch(() => showHistory.value, async (itemId) => {
+  if (itemId) {
+    await loadHistory(itemId)
   }
 })
 </script>
@@ -259,7 +312,10 @@ onMounted(async () => {
 <template>
   <main class="bz editor">
     <header class="top">
-      <h1>Tartalomszerkesztő</h1>
+      <div>
+        <h1>Tartalomszerkesztő</h1>
+        <small class="shortcuts-hint" title="Ctrl+E: CSV exportálás | Esc: Kijelölés törlése">⌨️ Billentyűparancsok</small>
+      </div>
       <BzButton size="sm" variant="soft" :to="{ name: 'children' }">Vissza</BzButton>
     </header>
 
@@ -295,9 +351,10 @@ onMounted(async () => {
             <span v-else class="with-preview">
               <input v-model="form.payload[key]" :placeholder="spec.hint" />
               <EmojiArt v-if="spec.type === 'emoji' || spec.type === 'emoji_list'" class="preview" :char="form.payload[key] || ' '" />
-              <label v-if="spec.type === 'emoji'" class="upload-btn" title="Képfeltöltés">
-                <input type="file" accept="image/png,image/jpeg,image/webp" @change="e => uploadImage(e, key)" />
-                <EmojiArt char="📸" />
+              <label v-if="spec.type === 'emoji'" class="upload-btn" :title="uploadingField === key ? 'Feltöltés…' : 'Képfeltöltés'">
+                <input type="file" accept="image/png,image/jpeg,image/webp" @change="e => uploadImage(e, key)" :disabled="uploadingField === key" />
+                <span v-if="uploadingField === key" class="spinner"></span>
+                <EmojiArt v-else char="📸" />
               </label>
               <button
                 v-else-if="spec.type === 'text' && spec.speak !== false"
@@ -342,7 +399,10 @@ onMounted(async () => {
         <BzButton v-if="!form" variant="primary" @click="edit(null)">+ Új elem</BzButton>
         <input v-model="query" class="search" type="search" placeholder="Keresés…" aria-label="Keresés" />
         <label class="check"><input v-model="showInactive" type="checkbox" /> kikapcsoltak is</label>
-        <BzButton size="sm" variant="soft" @click="doExport">Exportálás CSV</BzButton>
+        <BzButton size="sm" variant="soft" :disabled="exportLoading" @click="doExportWithLoader">
+          <span v-if="exportLoading" class="spinner"></span>
+          {{ exportLoading ? 'Letöltés…' : 'Exportálás CSV' }}
+        </BzButton>
         <label class="file-input">
           <input type="file" accept=".csv,.txt" @change="e => importFile = e.target.files?.[0]" />
           Importálás CSV
@@ -393,7 +453,24 @@ onMounted(async () => {
             <BzButton size="sm" variant="soft" @click="showHistory = showHistory === item.id ? null : item.id">Előzmények</BzButton>
           </div>
           <div v-if="showHistory === item.id" class="item-history">
-            <p class="muted">Szerkesztési előzmények (hamarosan...)</p>
+            <div v-if="loadingHistory[item.id]" class="history-loading">
+              <span class="spinner small"></span>
+              <span class="muted">Előzmények betöltése…</span>
+            </div>
+            <div v-else-if="history[item.id] && history[item.id].length > 0" class="history-list">
+              <div v-for="(edit, i) in history[item.id]" :key="i" class="history-entry">
+                <strong>{{ edit.action }}</strong>
+                <span class="muted">{{ edit.editor_email }}</span>
+                <span class="muted">{{ new Date(edit.created_at).toLocaleString('hu-HU') }}</span>
+                <div v-if="edit.before || edit.after" class="history-diff">
+                  <small v-if="edit.before" class="muted">volt: {{ JSON.stringify(edit.before).slice(0, 60) }}…</small>
+                  <small v-if="edit.after" class="muted">lett: {{ JSON.stringify(edit.after).slice(0, 60) }}…</small>
+                </div>
+              </div>
+            </div>
+            <div v-else class="muted">
+              Nincs szerkesztési előzmény
+            </div>
           </div>
         </li>
       </ul>
@@ -432,9 +509,19 @@ onMounted(async () => {
   justify-content: space-between;
   gap: 12px;
 }
+.top > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 h1 {
   margin: 0;
   font-size: 28px;
+}
+.shortcuts-hint {
+  color: var(--bz-muted);
+  font-size: 12px;
+  cursor: help;
 }
 h2 {
   margin: 0;
@@ -611,6 +698,56 @@ h2 {
   padding-top: 10px;
   border-top: 1px solid var(--bz-guide);
   font-size: 14px;
+}
+.history-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+.history-list {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.history-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  margin-bottom: 6px;
+  background: var(--bz-soft);
+  border-radius: 4px;
+  font-size: 12px;
+}
+.history-entry strong {
+  color: var(--bz-ink);
+  font-size: 13px;
+}
+.history-diff {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--bz-guide);
+}
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--bz-guide);
+  border-top-color: var(--bz-ink);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.spinner.small {
+  width: 12px;
+  height: 12px;
+  border-width: 1.5px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 .bulk-toolbar {
   display: flex;

@@ -28,6 +28,7 @@ services:
       ADMIN_EMAILS: ${ADMIN_EMAILS:-parent@example.test}
     volumes:
       - beszed-storage:/var/www/html/storage
+      - ./resources:/var/www/html/resources:ro
 
 volumes:
   beszed-storage:
