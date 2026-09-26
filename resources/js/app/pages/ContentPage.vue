@@ -32,6 +32,15 @@ const fieldErrors = ref({})
 const saving = ref(false)
 const formEl = ref(null)
 
+/** Bulk operations state */
+const selected = ref(new Set())
+const bulkAction = ref(null)
+const bulkLoading = ref(false)
+const importFile = ref(null)
+const importResults = ref(null)
+const showImportResults = ref(false)
+const showHistory = ref(null) // item id whose history is shown
+
 const game = computed(() => games.value.find(g => g.id === gameId.value) ?? null)
 const fields = computed(() => Object.entries(game.value?.schema.fields ?? {}))
 const levelLabels = computed(() => (game.value?.adaptive ? LEVELS.adaptive : LEVELS.age))
@@ -105,7 +114,7 @@ function edit(item) {
     const value = item?.payload[key] ?? (spec.type === 'select' ? Object.keys(spec.options)[0] : null)
     payload[key] = spec.type === 'select' ? value : toText(spec, value)
   }
-  form.value = reactive({ id: item?.id ?? null, level: item?.level ?? 1, active: item?.active ?? true, payload })
+  form.value = reactive({ id: item?.id ?? null, level: item?.level ?? 1, active: item?.active ?? true, status: item?.status ?? 'live', payload })
   // the form sits above the list: bring it into view when editing an item further down
   nextTick(() => formEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
 }
@@ -157,10 +166,85 @@ function listen(text) {
   if (text) new Audio(`/api/beszed/tts?t=${encodeURIComponent(text)}`).play().catch(() => {})
 }
 
+/** Bulk actions */
+const toggleSelection = item => {
+  if (selected.value.has(item.id)) {
+    selected.value.delete(item.id)
+  } else {
+    selected.value.add(item.id)
+  }
+}
+
+const toggleAll = () => {
+  if (selected.value.size === visible.value.length) {
+    selected.value.clear()
+  } else {
+    visible.value.forEach(item => selected.value.add(item.id))
+  }
+}
+
+const doBulkAction = async () => {
+  if (!bulkAction.value || selected.value.size === 0) return
+  bulkLoading.value = true
+  try {
+    await http.post(`/api/admin/content/${gameId.value}/bulk`, {
+      ids: Array.from(selected.value),
+      action: bulkAction.value,
+    })
+    selected.value.clear()
+    bulkAction.value = null
+    await Promise.all([loadItems(), loadGames()])
+  } catch (e) {
+    error.value = e.response?.data?.message || 'Nem sikerült.'
+  } finally {
+    bulkLoading.value = false
+  }
+}
+
+const doExport = () => {
+  window.location.href = `/api/admin/content/${gameId.value}/export`
+}
+
+const doImport = async () => {
+  if (!importFile.value) return
+  bulkLoading.value = true
+  showImportResults.value = true
+  const formData = new FormData()
+  formData.append('file', importFile.value)
+  try {
+    const { data } = await http.post(`/api/admin/content/${gameId.value}/import`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    importResults.value = data
+    importFile.value = null
+    await Promise.all([loadItems(), loadGames()])
+  } catch (e) {
+    error.value = e.response?.data?.message || 'Import sikertelen.'
+  } finally {
+    bulkLoading.value = false
+  }
+}
+
+const uploadImage = async (event, fieldKey) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+  const formData = new FormData()
+  formData.append('image', file)
+  try {
+    const { data } = await http.post('/api/admin/content/images', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    form.value.payload[fieldKey] = data.reference
+  } catch (e) {
+    fieldErrors.value[fieldKey] = e.response?.data?.message || 'Upload sikertelen.'
+  }
+}
+
 watch(gameId, () => {
   form.value = null
   query.value = ''
   limit.value = PAGE
+  selected.value.clear()
   loadItems()
 })
 onMounted(async () => {
@@ -211,6 +295,10 @@ onMounted(async () => {
             <span v-else class="with-preview">
               <input v-model="form.payload[key]" :placeholder="spec.hint" />
               <EmojiArt v-if="spec.type === 'emoji' || spec.type === 'emoji_list'" class="preview" :char="form.payload[key] || ' '" />
+              <label v-if="spec.type === 'emoji'" class="upload-btn" title="Képfeltöltés">
+                <input type="file" accept="image/png,image/jpeg,image/webp" @change="e => uploadImage(e, key)" />
+                <EmojiArt char="📸" />
+              </label>
               <button
                 v-else-if="spec.type === 'text' && spec.speak !== false"
                 type="button"
@@ -235,6 +323,13 @@ onMounted(async () => {
             </select>
           </label>
           <label class="check"><input v-model="form.active" type="checkbox" /> Játékban</label>
+          <label class="field">
+            <span>Státusz</span>
+            <select v-model="form.status">
+              <option value="live">Élő</option>
+              <option value="draft">Piszkozat</option>
+            </select>
+          </label>
         </div>
 
         <div class="bz-row">
@@ -247,6 +342,23 @@ onMounted(async () => {
         <BzButton v-if="!form" variant="primary" @click="edit(null)">+ Új elem</BzButton>
         <input v-model="query" class="search" type="search" placeholder="Keresés…" aria-label="Keresés" />
         <label class="check"><input v-model="showInactive" type="checkbox" /> kikapcsoltak is</label>
+        <BzButton size="sm" variant="soft" @click="doExport">Exportálás CSV</BzButton>
+        <label class="file-input">
+          <input type="file" accept=".csv,.txt" @change="e => importFile = e.target.files?.[0]" />
+          Importálás CSV
+        </label>
+      </div>
+
+      <div v-if="selected.size > 0" class="bulk-toolbar">
+        <label class="check"><input type="checkbox" :checked="selected.size === visible.length" @change="toggleAll" /> Mind kijelölve</label>
+        <span class="selected-count">{{ selected.size }} kijelölve</span>
+        <select v-model="bulkAction">
+          <option value="">-- Művelet --</option>
+          <option value="activate">Aktiválás</option>
+          <option value="deactivate">Deaktiválás</option>
+          <option value="delete">Törlés</option>
+        </select>
+        <BzButton :disabled="!bulkAction || bulkLoading" @click="doBulkAction">Alkalmaz</BzButton>
       </div>
 
       <p class="muted">
@@ -256,9 +368,17 @@ onMounted(async () => {
 
       <ul class="list" :aria-busy="loading">
         <li v-for="item in visible" :key="item.id" class="item" :class="{ 'item--off': !item.active }">
+          <label class="item-select">
+            <input type="checkbox" :checked="selected.has(item.id)" @change="() => toggleSelection(item)" />
+          </label>
           <EmojiArt class="item-art" :char="picture(item) || '·'" />
           <div class="item-main">
-            <b>{{ title(item) }}</b>
+            <div>
+              <b>{{ title(item) }}</b>
+              <span v-if="item.status" :class="['status-badge', `status--${item.status}`]">
+                {{ item.status === 'draft' ? 'Piszkozat' : 'Élő' }}
+              </span>
+            </div>
             <span class="muted">
               {{ item.level }}. szint ·
               {{ item.source === 'admin' ? 'saját' : item.edited ? 'alap, átírva' : 'alap' }}
@@ -270,11 +390,33 @@ onMounted(async () => {
             <BzButton size="sm" @click="edit(item)">Szerkesztés</BzButton>
             <BzButton size="sm" variant="soft" @click="toggle(item)">{{ item.active ? 'Kikapcsolás' : 'Bekapcsolás' }}</BzButton>
             <BzButton size="sm" variant="danger" @click="remove(item)">Törlés</BzButton>
+            <BzButton size="sm" variant="soft" @click="showHistory = showHistory === item.id ? null : item.id">Előzmények</BzButton>
+          </div>
+          <div v-if="showHistory === item.id" class="item-history">
+            <p class="muted">Szerkesztési előzmények (hamarosan...)</p>
           </div>
         </li>
       </ul>
       <div v-if="matching.length > visible.length" class="more">
         <BzButton @click="limit += PAGE">Még {{ Math.min(PAGE, matching.length - visible.length) }} ({{ visible.length }} / {{ matching.length }})</BzButton>
+      </div>
+
+      <div v-if="showImportResults && importResults" class="import-results">
+        <div class="results-overlay" @click="showImportResults = false" />
+        <div class="results-modal">
+          <h3>Import eredmények</h3>
+          <p><strong>{{ importResults.imported }} sor sikeresen importálva</strong></p>
+          <div v-if="importResults.errors.length > 0" class="errors">
+            <p><strong>{{ importResults.errors.length }} sor hiba:</strong></p>
+            <ul>
+              <li v-for="(err, i) in importResults.errors.slice(0, 10)" :key="i" class="error-row">
+                <strong>{{ err.row }}. sor:</strong> {{ Object.values(err.errors)[0] }}
+              </li>
+            </ul>
+            <p v-if="importResults.errors.length > 10" class="muted">… és {{ importResults.errors.length - 10 }} sor még</p>
+          </div>
+          <BzButton @click="showImportResults = false">Bezárás</BzButton>
+        </div>
       </div>
     </template>
   </main>
@@ -456,12 +598,137 @@ h2 {
   justify-content: flex-end;
   gap: 6px;
 }
+.item-select {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+.item-select input {
+  margin: 0;
+}
+.item-history {
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid var(--bz-guide);
+  font-size: 14px;
+}
+.bulk-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin: 12px 0;
+  background: var(--bz-soft);
+  border-radius: var(--bz-radius-sm);
+}
+.bulk-toolbar select {
+  padding: 8px 12px;
+  border: 1px solid var(--bz-guide);
+  border-radius: 6px;
+  background: var(--bz-card);
+}
+.selected-count {
+  font-weight: 600;
+  color: var(--bz-ink);
+}
+.status-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.status--draft {
+  background: #fff3cd;
+  color: #856404;
+}
+.status--live {
+  background: #d4edda;
+  color: #155724;
+}
+.upload-btn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex: none;
+  font-size: 18px;
+}
+.upload-btn input {
+  display: none;
+}
+.file-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid var(--bz-guide);
+  border-radius: 6px;
+  background: var(--bz-soft);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.file-input input {
+  display: none;
+}
+.import-results {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.results-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.results-modal {
+  position: relative;
+  background: var(--bz-card);
+  padding: 20px;
+  border-radius: var(--bz-radius);
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.results-modal h3 {
+  margin: 0 0 12px;
+}
+.results-modal p {
+  margin: 8px 0;
+}
+.results-modal .errors {
+  margin: 12px 0;
+  padding: 12px;
+  background: var(--bz-soft);
+  border-radius: 6px;
+  border-left: 4px solid #ff6b6b;
+}
+.error-row {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #666;
+}
 @media (max-width: 600px) {
   .item {
     flex-wrap: wrap;
   }
   .item-actions {
     width: 100%;
+  }
+  .results-modal {
+    max-width: 90vw;
   }
 }
 </style>
