@@ -56,6 +56,11 @@ export function beep(freq = 160, duration = 0.14) {
   play(() => note(freq, 0, duration, { type: 'triangle', gain: 0.5, slideTo: freq * 0.5 }))
 }
 
+/** One clear note, held for `duration` s (Állatkórus: each animal sings its own). */
+export function tone(freq, duration = 0.4) {
+  play(() => note(freq, 0, duration, { type: 'triangle', gain: 0.4 }))
+}
+
 /** Right answer: two bright notes. */
 export function chime() {
   play(() => {

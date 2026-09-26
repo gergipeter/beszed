@@ -14,6 +14,10 @@ const loaders = {
   puzzle: () => import('./puzzle/PuzzleEngine.vue'),
   memory: () => import('./memory/MemoryEngine.vue'),
   sort: () => import('./sort/SortEngine.vue'),
+  difference: () => import('./difference/DifferenceEngine.vue'),
+  vanish: () => import('./vanish/VanishEngine.vue'),
+  order: () => import('./order/OrderEngine.vue'),
+  simon: () => import('./simon/SimonEngine.vue'),
 }
 
 /** Engines already downloaded, as plain components (render with no async gap). */

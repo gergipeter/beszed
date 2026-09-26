@@ -100,5 +100,29 @@ return [
             'icon' => $emoji('Kosár képe'),
             'items' => ['type' => 'pairs', 'label' => 'Képek a kosárba', 'min' => 4, 'hint' => 'soronként: emoji név'],
         ]],
+        'kulonbseg' => ['title' => 'name', 'fields' => [
+            'name' => $text('Mi van a képen?'),
+            'emoji' => $emoji(),
+            // the top level swaps in a look-alike from the same group
+            'group' => ['type' => 'select', 'label' => 'Csoport', 'options' => [
+                'allat' => 'Állat', 'gyumolcs' => 'Gyümölcs', 'zoldseg' => 'Zöldség', 'etel' => 'Étel', 'jarmu' => 'Jármű',
+                'ruha' => 'Ruha', 'jatek' => 'Játék', 'hangszer' => 'Hangszer', 'virag' => 'Virág', 'egyeb' => 'Egyéb',
+            ]],
+        ]],
+        'nagysag' => ['title' => 'name', 'fields' => ['name' => $text('Mi van a képen?'), 'emoji' => $emoji()]],
+        'erzelmek' => ['title' => 'name', 'fields' => [
+            'name' => $text('Érzés (Melyik arc …?)', ['hint' => 'szomorú']),
+            'emoji' => $emoji('Arc (emoji)'),
+            'faces' => ['type' => 'emoji_list', 'label' => 'További arcok ugyanerre', 'required' => false],
+            'situations' => ['type' => 'pairs', 'label' => 'Helyzetek (Hogy érzi most magát?)', 'required' => false, 'hint' => 'soronként: kép mondat'],
+            'close' => ['type' => 'list', 'label' => 'Hasonló érzések (helyzetnél nem kínáljuk fel)', 'separator' => ',', 'required' => false, 'hint' => 'meglepett, vidám'],
+        ]],
+        'mitunt' => ['title' => 'name', 'fields' => ['name' => $text('Mi van a képen?'), 'emoji' => $emoji()]],
+        'tortenet' => ['title' => 'title', 'fields' => [
+            'title' => $text('Történet címe', ['speak' => false]),
+            'steps' => ['type' => 'pairs', 'label' => 'Képek sorrendben', 'min' => 3, 'hint' => 'soronként: emoji mi történik'],
+            'story' => $text('Elmesélve (a végén hangzik el)', ['max' => 300]),
+        ]],
+        'korus' => ['title' => 'name', 'fields' => ['name' => $text('Állat neve'), 'emoji' => $emoji()]],
     ],
 ];

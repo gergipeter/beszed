@@ -19,7 +19,7 @@ return [
         ],
         'relacioszokincs' => [
             'label' => 'Relációszókincs', 'emoji' => '📦', 'difer' => true,
-            'games' => ['hol'],
+            'games' => ['hol', 'nagysag'],
         ],
         'szamolas' => [
             'label' => 'Elemi számolás', 'emoji' => '🔢', 'difer' => true,
@@ -27,15 +27,19 @@ return [
         ],
         'kovetkeztetes' => [
             'label' => 'Tapasztalati következtetés', 'emoji' => '🧠', 'difer' => true,
-            'games' => ['okoska', 'valogato'],
+            'games' => ['okoska', 'valogato', 'tortenet'],
         ],
         'nyelv_emlekezet' => [
             'label' => 'Mondatok és emlékezet', 'emoji' => '🗣️', 'difer' => false,
-            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok'],
+            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok', 'mitunt', 'korus'],
         ],
         'vizualis' => [
             'label' => 'Vizuális észlelés', 'emoji' => '👀', 'difer' => false,
-            'games' => ['arnyek', 'kirako'],
+            'games' => ['arnyek', 'kirako', 'kulonbseg'],
+        ],
+        'erzelmek' => [
+            'label' => 'Érzelmek felismerése', 'emoji' => '😊', 'difer' => false,
+            'games' => ['erzelmek'],
         ],
     ],
 

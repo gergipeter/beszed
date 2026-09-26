@@ -31,6 +31,7 @@
  * @property {string} emoji
  * @property {string} skill
  * @property {string} color
+ * @property {'simple' | 'advanced'} tier  Hub group: simple games first, then the advanced ones.
  * @property {number} rounds
  * @property {boolean} noIdle
  *
@@ -110,6 +111,38 @@
  * @typedef {{ id: string, emoji: string, label: string }} SortBin
  * @typedef {{ id: string, emoji: string, label: string, bin: string, wrong: string }} SortItem
  * @typedef {{ bins: SortBin[], items: SortItem[], onCorrect?: string }} SortData
+ *
+ * @typedef {object} DifferenceData  Spot the difference: two panels, alike but for cell `diff`.
+ * @property {number} cols
+ * @property {number} rows
+ * @property {string[]} left   One picture per cell, row by row.
+ * @property {string[]} right
+ * @property {number} diff
+ * @property {string} [onCorrect]
+ * @property {string} [onWrong]
+ *
+ * @typedef {{ id: string, emoji: string, label?: string, scale?: number }} OrderItem  scale: 0–1 size (seriation).
+ * @typedef {object} OrderData  Tap the items in `order` (sizes, story steps).
+ * @property {OrderItem[]} items   Shuffled.
+ * @property {string[]} order
+ * @property {boolean} [arrows]    Show "first → last" arrows between the slots.
+ * @property {string} wrong        Said on a wrong tap.
+ * @property {string} [onCorrect]
+ *
+ * @typedef {object} VanishData  "Mi tűnt el?": look, hide, find the missing one.
+ * @property {Option[]} items      The pictures to remember.
+ * @property {string} missing      The id that is gone when they come back.
+ * @property {Option[]} options    The missing one + pictures that weren't shown.
+ * @property {number} lookMs       Looking time after the prompt.
+ * @property {string} question     Said when the pictures come back.
+ * @property {string} [onCorrect]
+ * @property {string} [onWrong]
+ *
+ * @typedef {object} SimonData  Állatkórus: repeat the tune.
+ * @property {Option[]} pads       Four animals; each position has its own note and colour.
+ * @property {string[]} order      Pad ids, in the order they sing.
+ * @property {string} [onCorrect]
+ * @property {string[]} [replayParts]
  *
  * @typedef {object} AnswerEvent
  * @property {boolean} correct

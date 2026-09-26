@@ -40,6 +40,8 @@ export const ICONS = Object.freeze({
   share: '🔗',
   copy: '📋',
   map: '🗺️',
+  tierSimple: '🌱',
+  tierAdvanced: '🚀',
   check: '✔️',
   zoomIn: '➕',
   zoomOut: '➖',

@@ -1,0 +1,18 @@
+[
+  {"level":1,"payload":{"title":"A kiscsibe","steps":[["🥚","tojás"],["🐣","kikel a csibe"],["🐥","kiscsibe"],["🐔","nagy tyúk"]],"story":"Először csak egy tojás volt. Kikelt belőle egy csibe, aztán nőtt, nőtt, és végül nagy tyúk lett belőle."}},
+  {"level":1,"payload":{"title":"A virág","steps":[["🫘","mag"],["🌱","kibújik a földből"],["🌿","nő"],["🌻","kinyílik a virág"]],"story":"Elültettük a magot. Kibújt a földből egy kis hajtás, nőtt, nőtt, és végül kinyílt a virág."}},
+  {"level":1,"payload":{"title":"Felnövünk","steps":[["👶","kisbaba"],["🧒","gyerek"],["🧑","felnőtt"],["🧓","idős"]],"story":"Mindenki kisbabaként kezdi. Aztán gyerek lesz, később felnőtt, és a végén idős néni vagy bácsi."}},
+  {"level":1,"payload":{"title":"Este","steps":[["🛁","fürdés"],["🪥","fogmosás"],["📖","esti mese"],["😴","alvás"]],"story":"Este először megfürdünk, aztán fogat mosunk. Utána jön az esti mese, és végül elalszunk."}},
+  {"level":1,"payload":{"title":"Reggel","steps":[["⏰","csörög az óra"],["🥣","reggeli"],["🎒","felvesszük a táskát"],["🏫","megérkezünk az oviba"]],"story":"Reggel csörög az óra. Megreggelizünk, felvesszük a táskát, és elindulunk az oviba."}},
+  {"level":1,"payload":{"title":"A hóember","steps":[["❄️","esik a hó"],["⛄","hóembert építünk"],["☀️","kisüt a nap"],["💧","elolvad"]],"story":"Esett a hó, és építettünk egy hóembert. Aztán kisütött a nap, és a hóember elolvadt."}},
+  {"level":1,"payload":{"title":"Palacsinta","steps":[["🥣","összekeverjük a tésztát"],["🍳","kisütjük"],["🥞","kész a palacsinta"],["😋","megesszük"]],"story":"Összekevertük a tésztát, kisütöttük a serpenyőben, és kész lett a palacsinta. Hm, de finom volt!"}},
+  {"level":1,"payload":{"title":"Az eső","steps":[["☀️","süt a nap"],["☁️","jön egy felhő"],["🌧️","esik az eső"],["🌈","szivárvány"]],"story":"Sütött a nap, aztán jött egy nagy felhő, és esni kezdett az eső. Amikor elállt, szivárvány lett az égen."}},
+  {"level":1,"payload":{"title":"Az orvosnál","steps":[["🤒","beteg"],["🧑‍⚕️","orvos"],["💊","gyógyszer"],["😊","meggyógyult"]],"story":"Nyuszi beteg lett. Elment az orvoshoz, aki gyógyszert adott neki, és pár nap múlva meggyógyult."}},
+  {"level":1,"payload":{"title":"A levél","steps":[["✏️","megírjuk"],["✉️","borítékba tesszük"],["📮","bedobjuk"],["📬","megérkezik"]],"story":"Megírtuk a levelet, borítékba tettük, bedobtuk a postaládába, és megérkezett a nagymamához."}},
+  {"level":1,"payload":{"title":"A torta","steps":[["🎂","egész torta"],["🍰","egy szelet"],["🍽️","üres tányér"]],"story":"Volt egy nagy torta. Levágtunk belőle egy szeletet, megettük, és üres lett a tányér."}},
+  {"level":1,"payload":{"title":"Utazás","steps":[["🧳","bepakolunk"],["✈️","repülünk"],["🏝️","megérkezünk"]],"story":"Bepakoltunk a bőröndbe, felszálltunk a repülőre, és megérkeztünk a szigetre."}},
+  {"level":1,"payload":{"title":"Az almafa","steps":[["🌸","virágzik a fa"],["🍏","kis zöld alma"],["🍎","érett piros alma"]],"story":"Tavasszal virágzik az almafa. Nyáron kis zöld alma nő rajta, ősszel pedig piros és érett lesz."}},
+  {"level":1,"payload":{"title":"A ház","steps":[["🧱","tégla"],["🏗️","építkezés"],["🏠","kész a ház"]],"story":"Hoztak sok téglát, a daru segített építeni, és kész lett a ház."}},
+  {"level":1,"payload":{"title":"A pillangó","steps":[["🥚","pete"],["🐛","hernyó"],["🦋","pillangó"]],"story":"A kis petéből hernyó bújt ki. Evett, evett, aztán gyönyörű pillangó lett belőle."}},
+  {"level":1,"payload":{"title":"Rajzolás","steps":[["📄","üres lap"],["🖍️","rajzolunk"],["🖼️","kész a kép"]],"story":"Volt egy üres lapunk. Elővettük a zsírkrétát, rajzoltunk, és kész lett a szép kép."}}
+]

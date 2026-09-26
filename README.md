@@ -1,7 +1,8 @@
 # Beszéd & DIFER module for Betűvarázs
 
-Laravel API + Vue 3 + Pinia port of the *Zoé kertje* prototype: 15 speech/DIFER games with ~600
-checked content items, Csillám the unicorn guide with a free self-hosted Hungarian voice (Piper) or
+Laravel API + Vue 3 + Pinia port of the *Zoé kertje* prototype: 24 speech/DIFER games, grouped on the
+hub into simple and advanced ones, with ~5,500 checked content items, Csillám the unicorn guide with a
+free self-hosted Hungarian voice (Piper) or
 Azure neural TTS, server-side pronunciation assessment, parent voice recordings, adaptive difficulty
 and age-aware content, a daily path ("Mai kaland"), rewards (levels, streaks, medals, stickers,
 Csillám's wardrobe), parent sign-in with Google, a skill-area progress report with a read-only
@@ -21,8 +22,22 @@ link for the speech therapist, and a content editor.
 | 👤 **Árnyékkereső** | `choice` (silhouette) | whose shadow is it? |
 | 🎵 **Rímelő** | `choice` | which word rhymes (distractors never share the last vowel) |
 | 🧺 **Válogató** | `sort` | put each picture in the right basket; adaptive 4 → 6 → 8 pictures |
+| 🔍 **Mi a különbség?** | `difference` | spot the one different picture on two panels; adaptive 2×2 → 3×2 → 3×3, the top level swaps in a look-alike |
+| 🪆 **Kicsitől a nagyig** | `order` | tap one picture in 3 → 4 → 5 sizes from smallest to biggest (top level: also biggest first) |
+| 😊 **Hogy érzi magát?** | `choice` | find the happy / sad / angry… face, or pick how Brumi or Nyuszi feels in a little situation |
+| 🎩 **Mi tűnt el?** | `vanish` | remember 3–6 pictures; a sparkle cloud hides them and one is gone (Kim's game) |
+| 🐣 **Mi történt előbb?** | `order` | put a little story's pictures in order (3 → 4 steps); Csillám names each step, then tells the story |
+| 🎼 **Állatkórus** | `simon` | four animals sing in turn, each with its own note and colour; repeat the tune (2–7 notes) |
 
-Puzzle, memory and sort count mistakes as part of play, so they grade their own win
+The six games at the bottom were picked from what recurs across leading children's apps (Kiddopia,
+BabyBus, Bimi Boo, Lingokids, Otsimo, MentalUP, LogicLike, Okos Doboz…): spot the difference, "what's
+missing?", size ordering, story sequencing, emotion recognition and Simon-style sequence memory.
+
+**Hub groups.** Each game has a `tier` in `config/beszed.php`: *Egyszerű játékok* (one tap, little
+to remember: good first games for 3–5 year olds) or *Haladó játékok* (sounds, rhymes, memory and
+reasoning). The hub shows the simple group first; the order inside a group is the config order.
+
+Puzzle, memory, sort and order count mistakes as part of play, so they grade their own win
 (`answer({ correct, tries: 1–3 })`) instead of one "try" per wrong move.
 
 ## Rewards
@@ -100,8 +115,8 @@ GET /session ──▶ SessionBuilder ──▶ RoundFactory (per game) ──�
 ```
 
 - **Server decides, client plays.** RoundFactories build options, distractors and every feedback
-  sentence. The 8 Vue engines (`choice`, `sequence`, `tapcount`, `trace`, `judged`, `puzzle`, `memory`,
-  `sort`) know nothing about specific games.
+  sentence. The 12 Vue engines (`choice`, `sequence`, `tapcount`, `trace`, `judged`, `puzzle`, `memory`,
+  `sort`, `difference`, `order`, `vanish`, `simon`) know nothing about specific games.
 - **Voice order of preference:** parent's recording (if that line was recorded) → server TTS mp3
   (cached forever by text hash) → browser Web Speech. After 3 TTS failures in a row the client stays on
   Web Speech for the rest of the visit.
@@ -154,7 +169,7 @@ resources/js/modules/beszed/             plain JavaScript (no TypeScript), Vue 3
     hub/, recordings/    GameTile, RecordingRow
   engines/               registry (lazy, one chunk each) + contract.js; one folder per engine:
                          choice/ (+ SceneView, scenes.js), sequence/, tapcount/, trace/ (+ paths.js), judged/,
-                         puzzle/, memory/, sort/
+                         puzzle/, memory/, sort/, difference/, order/, vanish/, simon/
   composables/           useGameSession (the round state machine), useIdleHelp, useRecorder,
                          useAsync, useTimers, useShake, useModuleContext
   services/audio/        player (shared <audio>), webSpeech (fallback voice), preload, sfx (synthesised effects)
@@ -250,7 +265,7 @@ remove the line) and restart. Changing voice or speed changes the TTS cache key,
 
 ## Content and the editor
 
-Every game's items live in `database/seeders/data/beszed/<game>.json`, about 4,800 in all.
+Every game's items live in `database/seeders/data/beszed/<game>.json`, about 5,500 in all.
 
 **Word bank.** Most of them are generated from `database/lexicon/hu.json`: about 780 picturable
 Hungarian words with a category and how familiar each is to a small child (1–3). The first ~400 were

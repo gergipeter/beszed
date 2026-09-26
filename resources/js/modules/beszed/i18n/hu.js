@@ -31,6 +31,10 @@ export default {
     forParents: 'Szülőknek',
     loadFailed: 'Nem sikerült betölteni a játékokat.',
     exit: 'Gyerekek',
+    tiers: {
+      simple: { title: 'Egyszerű játékok', hint: 'Kezdésnek és a legkisebbeknek: egy koppintás, kevés megjegyezni való.' },
+      advanced: { title: 'Haladó játékok', hint: 'Nagyobbaknak: hangok, rímek, emlékezet és gondolkodás.' },
+    },
   },
 
   daily: {
@@ -131,6 +135,29 @@ export default {
   sort: {
     basket: '{label} kosár',
     left: '{done} / {total}',
+  },
+
+  difference: {
+    left: 'Bal oldali kép',
+    right: 'Jobb oldali kép',
+    cell: '{n}. hely',
+  },
+
+  order: {
+    row: 'Sorrend',
+    piece: 'kép',
+  },
+
+  vanish: {
+    ready: 'Megjegyeztem!',
+  },
+
+  simon: {
+    watch: 'Figyelj…',
+    yourTurn: 'Most te jössz!',
+    progress: '{done} / {total} hang',
+    wrong: 'Hoppá, nem ez jött.',
+    tooHard: 'Semmi baj, próbáljunk egy rövidebbet!',
   },
 
   rewards: {

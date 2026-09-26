@@ -9,6 +9,7 @@ import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import StreakHistory from '../components/rewards/StreakHistory.vue'
 import BzButton from '../components/ui/BzButton.vue'
+import EmojiArt from '../components/ui/EmojiArt.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
 import { config } from '../config/options'
@@ -55,6 +56,21 @@ onMounted(() => {
     .catch(() => {})
 })
 const spotlightGame = computed(() => (spotlightGameId.value ? meta.game(spotlightGameId.value) : null))
+
+/** The hub's game groups, simple ones first; `from` keeps the tiles' float-in running on across groups. */
+const TIERS = [
+  { id: 'simple', icon: ICONS.tierSimple },
+  { id: 'advanced', icon: ICONS.tierAdvanced },
+]
+const groups = computed(() => {
+  let from = 0
+  return TIERS.map(tier => {
+    const games = meta.games.filter(g => (g.tier ?? 'simple') === tier.id)
+    const group = { ...tier, games, from }
+    from += games.length
+    return group
+  }).filter(group => group.games.length)
+})
 
 function play(game) {
   guide.unlock() // inside the tap, so iOS allows audio in the game
@@ -103,16 +119,23 @@ function play(game) {
 
   <DailyPath v-if="path && meta.games.length" :path="path" :games="meta.games" @play="play" />
 
-  <div class="tiles">
-    <GameTile
-      v-for="(game, i) in meta.games"
-      :key="game.id"
-      :game="game"
-      :medal="rewards.medal(game.id)"
-      :style="{ '--i': i }"
-      @click="play(game.id)"
-    />
-  </div>
+  <section v-for="group in groups" :key="group.id" class="group" :aria-labelledby="`hub-group-${group.id}`">
+    <header class="group-head">
+      <EmojiArt class="group-icon" :char="group.icon" />
+      <h2 :id="`hub-group-${group.id}`" class="group-title">{{ t(`hub.tiers.${group.id}.title`) }}</h2>
+      <p class="group-hint">{{ t(`hub.tiers.${group.id}.hint`) }}</p>
+    </header>
+    <div class="tiles">
+      <GameTile
+        v-for="(game, i) in group.games"
+        :key="game.id"
+        :game="game"
+        :medal="rewards.medal(game.id)"
+        :style="{ '--i': group.from + i }"
+        @click="play(game.id)"
+      />
+    </div>
+  </section>
 
   <nav class="parents" :aria-label="t('hub.forParents')">
     <BzButton :to="{ name: 'beszed.recordings', params: { childId } }" :icon="ICONS.mic">
@@ -138,6 +161,32 @@ function play(game) {
 .intro {
   margin: 2px 0 0;
   font-size: var(--bz-text-md);
+  line-height: 1.25;
+  color: var(--bz-muted);
+}
+.group + .group {
+  margin-top: 26px;
+}
+.group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 10px;
+  margin: 0 4px 12px;
+}
+.group-icon {
+  font-size: 30px;
+}
+.group-title {
+  margin: 0;
+  font-size: var(--bz-text-lg);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.group-hint {
+  flex-basis: 100%;
+  margin: 2px 0 0;
+  font-size: var(--bz-text-sm);
   line-height: 1.25;
   color: var(--bz-muted);
 }

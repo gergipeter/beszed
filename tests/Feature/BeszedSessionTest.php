@@ -1,6 +1,9 @@
 <?php
 
 use App\Beszed\Rounds\KirakoRounds;
+use App\Beszed\Rounds\KulonbsegRounds;
+use App\Beszed\Rounds\NagysagRounds;
+use App\Beszed\Rounds\TortenetRounds;
 use App\Beszed\Rounds\ValogatoRounds;
 use App\Models\BeszedContentItem;
 use App\Models\BeszedSkillLevel;
@@ -31,7 +34,7 @@ it('builds a playable session for every game', function (string $game) {
     expect($session['rounds'])->toHaveCount(config("beszed.games.$game.rounds"));
 
     foreach ($session['rounds'] as $round) {
-        expect($round['engine'])->toBeIn(['choice', 'sequence', 'tapcount', 'trace', 'judged', 'puzzle', 'memory', 'sort'])
+        expect($round['engine'])->toBeIn(['choice', 'sequence', 'tapcount', 'trace', 'judged', 'puzzle', 'memory', 'sort', 'difference', 'vanish', 'order', 'simon'])
             ->and($round['prompt']['text'])->not->toBeEmpty();
 
         if ($round['engine'] === 'choice') {
@@ -151,6 +154,121 @@ it('válogató: two baskets, each picture belongs to one of them, count follows 
             ->and($items->every(fn ($i) => str_contains($i['wrong'], ' nem ')))->toBeTrue();
     }
 })->with([1, 2, 3]);
+
+it('mi a különbség: the panels differ in exactly one cell, grid follows the level', function (int $level) {
+    BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'kulonbseg', 'level' => $level]);
+    $groupOf = BeszedContentItem::forGame('kulonbseg')->get()->mapWithKeys(fn ($i) => [$i->payload['emoji'] => $i->payload['group']]);
+    $bare = fn (string $picture) => str_contains($picture, '~') ? explode('~', $picture)[1] : $picture; // "arasaac:1~🐶" → "🐶"
+    [$cols, $rows] = KulonbsegRounds::GRIDS[$level];
+
+    foreach (gameSession('kulonbseg')['rounds'] as $round) {
+        ['left' => $left, 'right' => $right, 'diff' => $diff] = $round['data'];
+        $differs = collect($left)->keys()->filter(fn ($k) => $left[$k] !== $right[$k])->values()->all();
+
+        expect($round['data'])->toMatchArray(['cols' => $cols, 'rows' => $rows])
+            ->and($left)->toHaveCount($cols * $rows)
+            ->and($differs)->toBe([$diff])
+            ->and(collect($left)->unique())->toHaveCount($cols * $rows)
+            ->and(collect($right)->unique())->toHaveCount($cols * $rows);
+        // top level: a look-alike from the same group; below it, something clearly different
+        $same = $groupOf[$bare($left[$diff])] === $groupOf[$bare($right[$diff])];
+        expect($same)->toBe($level === 3);
+    }
+})->with([1, 2, 3]);
+
+it('kicsitől a nagyig: n sizes of one picture, shuffled, ordered by size', function (int $level) {
+    BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'nagysag', 'level' => $level]);
+
+    foreach (gameSession('nagysag')['rounds'] as $r => $round) {
+        $items = collect($round['data']['items'])->keyBy('id');
+        $scales = collect($round['data']['order'])->map(fn ($id) => $items[$id]['scale'])->all();
+        $down = $level === 3 && $r % 2 === 1;
+
+        expect($items)->toHaveCount(NagysagRounds::SIZES[$level])
+            ->and($items->pluck('emoji')->unique())->toHaveCount(1)
+            ->and($scales)->toBe(collect($scales)->sort()->when($down, fn ($s) => $s->reverse())->values()->all())
+            ->and($items->keys()->all())->not->toBe($round['data']['order']);
+    }
+})->with([1, 2, 3]);
+
+it('mi történt előbb: the story\'s steps in order, first and last kept, shuffled', function (int $level) {
+    BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'tortenet', 'level' => $level]);
+    $stories = BeszedContentItem::forGame('tortenet')->get()->keyBy('id');
+
+    foreach (gameSession('tortenet')['rounds'] as $round) {
+        $steps = collect($stories[$round['content_item_id']]->payload['steps'])->pluck(1)->all();
+        $items = collect($round['data']['items'])->keyBy('id');
+        $told = collect($round['data']['order'])->map(fn ($id) => $items[$id]['label'])->all();
+        $positions = collect($told)->map(fn ($label) => array_search($label, $steps, true))->all();
+
+        expect($told)->toHaveCount(TortenetRounds::STEPS[$level])
+            ->and($positions)->toBe(collect($positions)->sort()->values()->all())
+            ->and($told[0])->toBe($steps[0])
+            ->and(end($told))->toBe(end($steps))
+            ->and($items->keys()->all())->not->toBe($round['data']['order']);
+    }
+})->with([1, 2]);
+
+it('mi tűnt el: n pictures, the missing one among them, the other choices never shown', function (int $level) {
+    BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'mitunt', 'level' => $level]);
+
+    foreach (gameSession('mitunt')['rounds'] as $round) {
+        $shown = collect($round['data']['items'])->pluck('id');
+        $options = collect($round['data']['options'])->pluck('id');
+
+        expect($shown)->toHaveCount($level)
+            ->and($shown->unique())->toHaveCount($level)
+            ->and($shown)->toContain($round['data']['missing'])
+            ->and($options)->toContain($round['data']['missing'])
+            ->and($options->intersect($shown)->values()->all())->toBe([$round['data']['missing']])
+            ->and((string) $round['content_item_id'])->toBe($round['data']['missing']);
+    }
+})->with([3, 6]);
+
+it('hogy érzi magát: the right face belongs to the feeling, situations never offer a look-alike feeling', function () {
+    $feelings = BeszedContentItem::forGame('erzelmek')->get()->keyBy('id');
+    $faces = fn ($f) => [$f->payload['emoji'], ...($f->payload['faces'] ?? [])];
+
+    foreach (gameSession('erzelmek')['rounds'] as $round) {
+        $feel = $feelings[(int) $round['data']['answer']];
+        $options = collect($round['data']['options']);
+        $answer = $options->firstWhere('id', $round['data']['answer']);
+
+        expect($options)->toHaveCount(3)
+            ->and($faces($feel))->toContain($answer['emoji'])
+            ->and($round['data']['onWrong'])->toHaveKeys($options->pluck('id')->all());
+        if (isset($round['data']['stimulus'])) {
+            $offered = $options->pluck('id')->map(fn ($id) => $feelings[(int) $id]->payload['name']);
+            expect($offered->intersect($feel->payload['close'] ?? [])->all())->toBe([]);
+        }
+    }
+    // a face means one feeling only
+    expect($feelings->flatMap($faces)->duplicates()->all())->toBe([]);
+});
+
+it('állatkórus: the same four animals all session, n notes, never one animal three times in a row', function (int $level) {
+    BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'korus', 'level' => $level]);
+    $rounds = gameSession('korus')['rounds'];
+    $pads = collect($rounds[0]['data']['pads'])->pluck('id')->all();
+
+    foreach ($rounds as $round) {
+        $order = $round['data']['order'];
+        expect(collect($round['data']['pads'])->pluck('id')->all())->toBe($pads)
+            ->and($pads)->toHaveCount(4)
+            ->and($order)->toHaveCount($level)
+            ->and(array_diff($order, $pads))->toBe([]);
+        for ($k = 2; $k < count($order); $k++) {
+            expect($order[$k] === $order[$k - 1] && $order[$k] === $order[$k - 2])->toBeFalse();
+        }
+    }
+})->with([2, 7]);
+
+it('puts every game in the simple or the advanced group of the hub', function () {
+    $games = collect(actingAs($this->user)->getJson('/api/beszed/meta')->assertOk()->json('games'));
+
+    expect($games->pluck('tier')->unique()->sort()->values()->all())->toBe(['advanced', 'simple'])
+        ->and($games->every(fn ($g) => in_array($g['tier'], ['simple', 'advanced'], true)))->toBeTrue();
+});
 
 it('levels papagáj up after two clean wins and down after a skip', function () {
     $post = fn (bool $ok, int $tries) => actingAs($this->user)

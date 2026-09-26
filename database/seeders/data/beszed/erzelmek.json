@@ -1,0 +1,8 @@
+[
+  {"level":1,"payload":{"name":"vidám","emoji":"😀","faces":["😄","😊"],"close":["meglepett"],"situations":[["🎁","Brumi ajándékot kapott a születésnapjára."],["🛝","Nyuszi a játszótéren csúszdázik a barátaival."],["🍦","Brumi a kedvenc fagyiját eszi."]]}},
+  {"level":1,"payload":{"name":"szomorú","emoji":"😢","faces":["😞","😭"],"close":["mérges"],"situations":[["🎈","Elszállt Nyuszi lufija, és már nem tudja visszahozni."],["🧸","Brumi elvesztette a kedvenc játékát."],["🌧️","Esik az eső, és Nyuszi nem mehet ki játszani."]]}},
+  {"level":1,"payload":{"name":"mérges","emoji":"😠","faces":["😡","😤"],"close":["szomorú"],"situations":[["🧱","Valaki szándékosan ledöntötte a tornyot, amit Brumi épített."],["🥕","Valaki elvette Nyuszi répáját, pedig ő akarta megenni."]]}},
+  {"level":2,"payload":{"name":"ijedt","emoji":"😨","faces":["😱","😰"],"close":["meglepett"],"situations":[["⚡","Hatalmasat villámlott és dörgött, Nyuszi egyedül van otthon."],["🐺","Brumi az erdőben hirtelen egy farkast látott."],["🕷️","Egy nagy pók mászott Nyuszi kezére."]]}},
+  {"level":2,"payload":{"name":"meglepett","emoji":"😮","faces":["😲","😯"],"close":["ijedt","vidám"],"situations":[["🎩","A bűvész kalapjából hirtelen egy galamb repült ki. Brumi tátott szájjal nézi."]]}},
+  {"level":2,"payload":{"name":"álmos","emoji":"😴","faces":["🥱","😪"],"situations":[["🌙","Késő este van, Brumi egész nap játszott, és nagyokat ásít."],["🛏️","Nyuszi egész nap a réten ugrált, és most már alig áll a lábán."]]}}
+]

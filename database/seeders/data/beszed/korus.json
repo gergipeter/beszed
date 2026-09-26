@@ -1,0 +1,14 @@
+[
+  {"level":1,"payload":{"name":"béka","emoji":"🐸"}},
+  {"level":1,"payload":{"name":"csibe","emoji":"🐤"}},
+  {"level":1,"payload":{"name":"cica","emoji":"🐱"}},
+  {"level":1,"payload":{"name":"kutya","emoji":"🐶"}},
+  {"level":1,"payload":{"name":"tehén","emoji":"🐮"}},
+  {"level":1,"payload":{"name":"malac","emoji":"🐷"}},
+  {"level":1,"payload":{"name":"kacsa","emoji":"🦆"}},
+  {"level":1,"payload":{"name":"birka","emoji":"🐑"}},
+  {"level":1,"payload":{"name":"ló","emoji":"🐴"}},
+  {"level":1,"payload":{"name":"kakas","emoji":"🐓"}},
+  {"level":1,"payload":{"name":"bagoly","emoji":"🦉"}},
+  {"level":1,"payload":{"name":"egér","emoji":"🐭"}}
+]

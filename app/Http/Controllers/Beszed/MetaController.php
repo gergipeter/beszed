@@ -20,6 +20,7 @@ class MetaController extends Controller
             'emoji' => $g['emoji'],
             'skill' => $g['skill'],
             'color' => $g['color'],
+            'tier' => $g['tier'] ?? 'simple',
             'rounds' => $g['rounds'],
             'noIdle' => (bool) ($g['no_idle'] ?? false),
         ])->values();
