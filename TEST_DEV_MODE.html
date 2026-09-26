@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEV MODE TEST - Memory Game Difficulty Selector</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .feature {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+        }
+        .feature h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .feature p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .selector {
+            background: #1a1a1a;
+            border: 2px solid #0f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+        }
+        .selector h3 {
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a0a;
+            border: 1px solid #0f0;
+            border-radius: 6px;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+        }
+        .status {
+            background: #0a0a0a;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            border: 1px solid #333;
+        }
+        .saved-label {
+            color: #888;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+        .saved-value {
+            color: #0f0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .code {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 16px;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #856404;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 DEV MODE TEST</h1>
+        <p class="subtitle">Memory Game Difficulty Selector</p>
+
+        <div class="feature">
+            <h3>✅ Difficulty Levels Implemented</h3>
+            <p>The Párkereső (memory game) now has 3 difficulty levels with different timings and grading.</p>
+        </div>
+
+        <div class="feature">
+            <h3>🟢 Easy Mode</h3>
+            <p><strong>Flip-back:</strong> 1400ms<br><strong>Grading:</strong> Always 2-3 stars<br><strong>Feel:</strong> Relaxed & encouraging</p>
+        </div>
+
+        <div class="feature">
+            <h3>🟡 Medium Mode</h3>
+            <p><strong>Flip-back:</strong> 1100ms<br><strong>Grading:</strong> Standard (0-1 = 1⭐, 2 = 2⭐, 3+ = 3⭐)<br><strong>Feel:</strong> Balanced</p>
+        </div>
+
+        <div class="feature">
+            <h3>🔴 Hard Mode</h3>
+            <p><strong>Flip-back:</strong> 800ms<br><strong>Grading:</strong> Strict (0 = 1⭐, 1 = 2⭐, 2+ = 3⭐)<br><strong>Feel:</strong> Challenging</p>
+        </div>
+
+        <div class="selector">
+            <h3>⚙️ Select Difficulty</h3>
+            <select id="difficulty-select">
+                <option value="auto">🔄 Auto (by player level)</option>
+                <option value="easy">🟢 Easy (Könnyű)</option>
+                <option value="medium">🟡 Medium (Közepesen nehéz)</option>
+                <option value="hard">🔴 Hard (Nehéz)</option>
+            </select>
+            <div class="status">
+                <div class="saved-label">💾 SAVED TO LOCALSTORAGE:</div>
+                <div class="saved-value" id="saved-value">auto</div>
+            </div>
+        </div>
+
+        <div class="code">
+            <strong>How it works:</strong><br><br>
+            1. Select a difficulty above<br>
+            2. It saves to localStorage<br>
+            3. When you play Párkereső, it uses this difficulty<br>
+            4. Override the auto-assignment by player level<br>
+            5. Refresh to apply changes
+        </div>
+
+        <div class="note">
+            <strong>ℹ️ Next Steps:</strong><br>
+            • This test works offline<br>
+            • The dev button is in your live app's bottom-right<br>
+            • If Cloudflare hasn't updated yet, you can run it locally with Docker
+        </div>
+
+        <button class="btn" onclick="testDifficulty()">
+            🧪 Test Difficulty Setting
+        </button>
+    </div>
+
+    <script>
+        // Load saved difficulty
+        const saved = localStorage.getItem('dev-difficulty') || 'auto';
+        document.getElementById('difficulty-select').value = saved;
+        document.getElementById('saved-value').textContent = saved;
+
+        // Save on change
+        document.getElementById('difficulty-select').addEventListener('change', (e) => {
+            localStorage.setItem('dev-difficulty', e.target.value);
+            document.getElementById('saved-value').textContent = e.target.value;
+            console.log('✅ Difficulty set to:', e.target.value);
+        });
+
+        function testDifficulty() {
+            const difficulty = document.getElementById('difficulty-select').value;
+            alert(`✅ Difficulty set to: ${difficulty}\n\nWhen you play Párkereső, it will use this setting!\n\nLocalStorage saved: dev-difficulty = "${difficulty}"`);
+        }
+
+        console.log('🎮 DEV MODE TEST PAGE LOADED');
+        console.log('Current setting:', localStorage.getItem('dev-difficulty'));
+    </script>
+</body>
+</html>
