@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\Admin\ContentController;
+use App\Http\Controllers\Api\Admin\ContentImageController;
 use App\Http\Controllers\Api\ChildController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Beszed\ShareController;
@@ -21,11 +22,15 @@ Route::middleware('auth:sanctum')->group(function () {
 // Content editor, for the parents listed in ADMIN_EMAILS.
 Route::middleware(['auth:sanctum', 'can:edit-content'])->prefix('admin/content')->name('admin.content.')->group(function () {
     Route::get('/', [ContentController::class, 'games'])->name('games');
+    Route::post('images', [ContentImageController::class, 'store'])->name('images.store');
     Route::get('{game}', [ContentController::class, 'index'])->name('index');
     Route::post('{game}', [ContentController::class, 'store'])->name('store');
     Route::put('{game}/{item}', [ContentController::class, 'update'])->name('update');
     Route::delete('{game}/{item}', [ContentController::class, 'destroy'])->name('destroy');
 });
+
+// Public: serve uploaded content images.
+Route::get('content-images/{id}', \App\Http\Controllers\ContentImageController::class)->name('content-images.show');
 
 // The read-only report behind a therapist's share link: no sign-in, just the token.
 Route::get('share/{token}', [ShareController::class, 'show'])

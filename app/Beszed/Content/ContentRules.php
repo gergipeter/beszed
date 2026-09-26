@@ -80,12 +80,13 @@ final class ContentRules
         };
     }
 
-    /** An emoji (or a few, for a scene), or an ARASAAC pictogram: "arasaac:2462". */
+    /** An emoji (or a few, for a scene), an ARASAAC pictogram: "arasaac:2462", or an uploaded image: "upload:123". */
     public static function isPicture(mixed $value): bool
     {
         return is_string($value) && (
             (mb_strlen($value) <= 24 && preg_match('/\p{Extended_Pictographic}/u', $value))
             || preg_match('/^arasaac:\d{1,6}$/', $value)
+            || preg_match('/^upload:\d+$/', $value)
         );
     }
 

@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 /** A word, sentence or picture set a game builds its rounds from. */
 class BeszedContentItem extends Model
 {
-    protected $fillable = ['game', 'level', 'payload', 'active', 'source', 'seed_key', 'edited_at'];
+    protected $fillable = ['game', 'level', 'payload', 'active', 'source', 'seed_key', 'edited_at', 'status'];
 
     protected $casts = ['payload' => 'array', 'active' => 'boolean', 'edited_at' => 'datetime'];
 
     public function scopeForGame(Builder $q, string $game): Builder
     {
-        return $q->where('game', $game)->where('active', true);
+        return $q->where('game', $game)->where('active', true)->where('status', 'live');
     }
 
     /** Stable id of a seed payload (same encoding as the array cast, so stored rows hash the same). */

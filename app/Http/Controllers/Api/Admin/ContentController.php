@@ -6,8 +6,10 @@ use App\Beszed\Content\ContentRules;
 use App\Http\Controllers\Controller;
 use App\Models\BeszedAttempt;
 use App\Models\BeszedContentItem;
+use App\Models\BeszedContentItemEdit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -53,15 +55,20 @@ class ContentController extends Controller
 
         $item = BeszedContentItem::create($data + ['game' => $game, 'source' => 'admin', 'edited_at' => now()]);
 
+        $this->audit($item, 'created', null, $item->only('level', 'payload', 'active', 'status'), $request);
+
         return response()->json(['item' => $this->present($item, 0)], 201);
     }
 
     public function update(Request $request, string $game, BeszedContentItem $item): JsonResponse
     {
         $this->ownItem($game, $item);
+        $before = $item->only('level', 'payload', 'active', 'status');
         $data = $this->validated($request, $game, $item->id);
 
         $item->update($data + ['edited_at' => now()]);
+
+        $this->audit($item, 'updated', $before, $item->only('level', 'payload', 'active', 'status'), $request);
 
         return response()->json(['item' => $this->present($item, $this->uses($item))]);
     }
@@ -70,14 +77,17 @@ class ContentController extends Controller
     public function destroy(string $game, BeszedContentItem $item): JsonResponse
     {
         $this->ownItem($game, $item);
+        $before = $item->only('level', 'payload', 'active', 'status');
 
         if ($this->uses($item) === 0 && $item->source === 'admin') {
+            $this->audit($item, 'deleted', $before, null, request());
             $item->delete();
 
             return response()->json(['deleted' => true]);
         }
 
         $item->update(['active' => false, 'edited_at' => now()]);
+        $this->audit($item, 'deactivated', $before, $item->only('level', 'payload', 'active', 'status'), request());
 
         return response()->json(['deleted' => false, 'item' => $this->present($item, $this->uses($item))]);
     }
@@ -87,6 +97,7 @@ class ContentController extends Controller
         $data = $request->validate([
             'level' => ['required', 'integer', 'min:1', 'max:3'],
             'active' => ['sometimes', 'boolean'],
+            'status' => ['sometimes', Rule::in(['draft', 'live'])],
             'payload' => ['required', 'array'],
         ]);
 
@@ -102,7 +113,15 @@ class ContentController extends Controller
             throw ValidationException::withMessages(collect($errors)->mapWithKeys(fn ($m, $f) => ["payload.$f" => $m])->all());
         }
 
-        return ['level' => $data['level'], 'payload' => $payload] + (isset($data['active']) ? ['active' => $data['active']] : []);
+        $result = ['level' => $data['level'], 'payload' => $payload];
+        if (isset($data['active'])) {
+            $result['active'] = $data['active'];
+        }
+        if (isset($data['status'])) {
+            $result['status'] = $data['status'];
+        }
+
+        return $result;
     }
 
     /** The same word twice in a game would make two identical cards or options. */
@@ -132,7 +151,7 @@ class ContentController extends Controller
 
     private function present(BeszedContentItem $i, int $uses): array
     {
-        return $i->only('id', 'level', 'payload', 'active', 'source') + [
+        return $i->only('id', 'level', 'payload', 'active', 'source', 'status') + [
             'edited' => (bool) $i->edited_at,
             'uses' => $uses,
         ];
@@ -147,5 +166,16 @@ class ContentController extends Controller
     {
         $this->knownGame($game);
         abort_unless($item->game === $game, 404);
+    }
+
+    private function audit(BeszedContentItem $item, string $action, ?array $before, ?array $after, Request $request): void
+    {
+        BeszedContentItemEdit::create([
+            'content_item_id' => $item->id,
+            'editor_email' => strtolower($request->user()->email),
+            'action' => $action,
+            'before' => $before,
+            'after' => $after,
+        ]);
     }
 }

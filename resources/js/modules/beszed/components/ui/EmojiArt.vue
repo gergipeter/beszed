@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { config } from '../../config/options'
-import { emojiAssetName, pictogram, splitEmoji } from '../../utils/emoji'
+import { emojiAssetName, pictogram, upload, splitEmoji } from '../../utils/emoji'
 
 /**
  * The one place emojis are drawn. Sized by font-size like text, so callers style
@@ -18,13 +18,20 @@ const props = defineProps({
 
 const failed = reactive(new Set())
 const picto = computed(() => pictogram(props.char))
+const uploaded = computed(() => upload(props.char))
 const pictoFailed = ref(false)
-const shown = computed(() => (picto.value ? (pictoFailed.value ? picto.value.fallback : '') : props.char))
+const uploadFailed = ref(false)
+const shown = computed(() => {
+  if (picto.value) return pictoFailed.value ? picto.value.fallback : ''
+  if (uploaded.value) return uploadFailed.value ? ' ' : ''
+  return props.char
+})
 watch(
   () => props.char,
   () => {
     failed.clear()
     pictoFailed.value = false
+    uploadFailed.value = false
   },
 )
 
@@ -49,6 +56,16 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
     draggable="false"
     decoding="async"
     @error="pictoFailed = true"
+  />
+  <img
+    v-else-if="uploaded && !uploadFailed"
+    class="emoji emoji--img"
+    :src="`/api/content-images/${uploaded.id}`"
+    :alt="label"
+    :aria-hidden="label ? undefined : 'true'"
+    draggable="false"
+    decoding="async"
+    @error="uploadFailed = true"
   />
   <img
     v-else-if="single?.src"

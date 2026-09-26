@@ -21,6 +21,15 @@ export function pictogram(text) {
   return m ? { id: m[1], fallback: m[2] ?? '' } : null
 }
 
+/**
+ * An uploaded image reference: "upload:123". Null for anything else.
+ * @returns {{ id: string } | null}
+ */
+export function upload(text) {
+  const m = /^upload:(\d+)$/.exec(text ?? '')
+  return m ? { id: m[1] } : null
+}
+
 const segmenter = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null
 
 /** "🐱📦" → ["🐱", "📦"] (whole emoji, including ZWJ sequences and skin tones); spaces dropped. */
