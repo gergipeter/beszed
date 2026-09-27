@@ -3,15 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** A sticker a child has earned (keys: config/beszed.php → rewards.badges). */
 class BeszedBadge extends Model
 {
-    public const CREATED_AT = 'earned_at';
+    protected $table = 'beszed_badges';
 
-    public const UPDATED_AT = null;
+    protected $fillable = [
+        'child_id',
+        'badge',
+        'name',
+        'description',
+        'icon',
+        'earned_at',
+    ];
 
-    protected $fillable = ['child_id', 'badge'];
+    protected $casts = [
+        'earned_at' => 'datetime',
+    ];
 
-    protected $casts = ['earned_at' => 'datetime'];
+    public function child(): BelongsTo
+    {
+        return $this->belongsTo(Child::class);
+    }
 }
