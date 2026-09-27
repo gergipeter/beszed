@@ -20,7 +20,7 @@
     <meta property="og:url" content="{{ url('/') }}">
     <meta property="og:title" content="Beszéd - Interactive Speech Therapy for Children">
     <meta property="og:description" content="Gamified speech therapy app with AI analysis, interactive exercises, and progress tracking for children.">
-    <meta property="og:image" content="{{ url('/og-image.png') }}">
+    <meta property="og:image" content="{{ url('/og-image.svg') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="hu_HU">
@@ -31,7 +31,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Beszéd - Speech Therapy for Children">
     <meta name="twitter:description" content="Interactive speech therapy app with AI analysis and gamified learning.">
-    <meta name="twitter:image" content="{{ url('/og-image.png') }}">
+    <meta name="twitter:image" content="{{ url('/og-image.svg') }}">
 
     <!-- Canonical & Language Alternates -->
     <link rel="canonical" href="{{ url()->current() }}">
