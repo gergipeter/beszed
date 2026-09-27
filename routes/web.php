@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\DemoLoginController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\PictogramController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\SpaController;
 use App\Http\Controllers\WeeklyReportUnsubscribeController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -12,6 +13,9 @@ use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+// SEO Routes
+Route::get('/robots.txt', [SeoController::class, 'robots'])->withoutMiddleware('web');
 
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');

@@ -1,2 +1,18 @@
 User-agent: *
-Disallow:
+Allow: /
+Allow: /api/language/
+Disallow: /admin/
+Disallow: /api/admin/
+Disallow: /email-unsubscribe
+Disallow: /sanctum/
+
+Sitemap: https://beszed.hu/sitemap.xml
+Crawl-delay: 2
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
