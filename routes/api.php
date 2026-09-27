@@ -49,6 +49,40 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('predict/games/{game}', [\App\Http\Controllers\Beszed\AdaptiveController::class, 'predictGameProgress'])->name('predict-game');
         Route::get('summary', [\App\Http\Controllers\Beszed\AdaptiveController::class, 'progressSummary'])->name('summary');
     });
+
+    // Dashboard & Reports API (Phase 3)
+    Route::prefix('beszed/children/{child}/dashboard')->name('beszed.dashboard.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Beszed\DashboardController::class, 'parentDashboard'])->name('parent');
+        Route::get('reports/weekly', [\App\Http\Controllers\Beszed\DashboardController::class, 'weeklyReport'])->name('weekly-report');
+        Route::get('reports/monthly', [\App\Http\Controllers\Beszed\DashboardController::class, 'monthlyReport'])->name('monthly-report');
+        Route::get('reports/therapist-note', [\App\Http\Controllers\Beszed\DashboardController::class, 'therapistNote'])->name('therapist-note');
+    });
+
+    Route::get('beszed/therapist/dashboard', [\App\Http\Controllers\Beszed\DashboardController::class, 'therapistDashboard'])->name('beszed.dashboard.therapist');
+
+    // Gamification API (Phase 4)
+    Route::prefix('beszed/children/{child}/gamification')->name('beszed.gamification.')->group(function () {
+        Route::get('leaderboard/family', [\App\Http\Controllers\Beszed\GamificationController::class, 'familyLeaderboard'])->name('family-leaderboard');
+        Route::get('leaderboard/classroom', [\App\Http\Controllers\Beszed\GamificationController::class, 'classroomLeaderboard'])->name('classroom-leaderboard');
+        Route::get('leaderboard/regional', [\App\Http\Controllers\Beszed\GamificationController::class, 'regionalLeaderboard'])->name('regional-leaderboard');
+        Route::get('achievements', [\App\Http\Controllers\Beszed\GamificationController::class, 'achievements'])->name('achievements');
+        Route::post('achievements/check', [\App\Http\Controllers\Beszed\GamificationController::class, 'checkAchievements'])->name('check-achievements');
+        Route::post('score/update', [\App\Http\Controllers\Beszed\GamificationController::class, 'updateScore'])->name('update-score');
+    });
+
+    // Enterprise & Healthcare API (Phase 5)
+    Route::prefix('beszed/children/{child}/enterprise')->name('beszed.enterprise.')->group(function () {
+        Route::get('fhir/json', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'exportFHIRJson'])->name('fhir-json');
+        Route::get('fhir/xml', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'exportFHIRXml'])->name('fhir-xml');
+        Route::get('encryption/keys', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'getEncryptionKeys'])->name('encryption-keys');
+        Route::get('compliance/audit-trail', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'getAuditTrail'])->name('audit-trail');
+        Route::post('compliance/dsar', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'generateDSARReport'])->name('dsar-report');
+        Route::get('compliance/validate', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'validateCompliance'])->name('validate-compliance');
+        Route::post('deletion-request', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'requestDeletion'])->name('deletion-request');
+        Route::get('parental-controls', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'getParentalControls'])->name('parental-controls');
+        Route::post('parental-controls', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'updateParentalControls'])->name('update-parental-controls');
+        Route::post('notifications/send', [\App\Http\Controllers\Beszed\EnterpriseController::class, 'sendNotification'])->name('send-notification');
+    });
 });
 
 // Content editor, for the parents listed in ADMIN_EMAILS.
