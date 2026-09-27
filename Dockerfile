@@ -1,46 +1,108 @@
-FROM composer:2 AS vendor
+# Build stage
+FROM node:20-alpine AS node-builder
 WORKDIR /app
-COPY composer.json composer.lock ./
-RUN composer install --prefer-dist --no-interaction --no-scripts --no-autoloader
-COPY . .
-RUN composer dump-autoload --optimize --no-interaction
-
-FROM node:24-alpine AS frontend
-WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm ci
-COPY resources ./resources
-COPY public ./public
-COPY scripts ./scripts
-COPY vite.config.js ./
+COPY . .
 RUN npm run build
 
-# Piper: free neural text-to-speech with Hungarian voices (TTS_DRIVER=piper).
-FROM debian:bookworm-slim AS piper
-ARG TARGETARCH
-ARG PIPER_VERSION=2023.11.14-2
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
-    && arch="$([ "$TARGETARCH" = "arm64" ] && echo aarch64 || echo x86_64)" \
-    && curl -fsSL "https://github.com/rhasspy/piper/releases/download/${PIPER_VERSION}/piper_linux_${arch}.tar.gz" | tar -xz -C /opt \
-    && mkdir -p /opt/piper/voices \
-    && for v in anna imre; do for f in onnx onnx.json; do \
-         curl -fsSL -o "/opt/piper/voices/hu_HU-$v-medium.$f" \
-           "https://huggingface.co/rhasspy/piper-voices/resolve/main/hu/hu_HU/$v/medium/hu_HU-$v-medium.$f"; \
-       done; done
+# PHP stage
+FROM php:8.2-fpm-alpine
 
-FROM php:8.4-cli
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libonig-dev libsqlite3-dev libxml2-dev libpq-dev lame \
-    && docker-php-ext-install dom mbstring pdo_sqlite pdo_mysql xml xmlwriter \
-    && rm -rf /var/lib/apt/lists/*
-COPY --from=piper /opt/piper /opt/piper
-WORKDIR /var/www/html
-COPY --from=vendor /app ./
-COPY --from=frontend /app/public/build ./public/build
-ENV APP_ENV=local APP_DEBUG=true APP_URL=http://localhost:8000 \
-    LOG_CHANNEL=stderr DB_CONNECTION=sqlite \
-    DB_DATABASE=/var/www/html/storage/app/database.sqlite \
-    SESSION_DRIVER=file CACHE_STORE=file QUEUE_CONNECTION=sync \
-    FILESYSTEM_DISK=local TTS_DRIVER=piper
+# Install dependencies
+RUN apk add --no-cache \
+    curl \
+    git \
+    zip \
+    unzip \
+    libpq-dev \
+    mysql-client \
+    redis \
+    supervisor \
+    nginx
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql bcmath ctype json mbstring
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+# Copy PHP code
+COPY . .
+
+# Copy built assets from node builder
+COPY --from=node-builder /app/public/build ./public/build
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Set permissions
+RUN chmod -R 755 storage bootstrap/cache
+
+# Create nginx config
+RUN mkdir -p /etc/nginx/conf.d
+COPY <<'NGINXEOF' /etc/nginx/conf.d/default.conf
+server {
+    listen 8000;
+    server_name _;
+    root /app/public;
+    index index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+
+    location = /robots.txt {
+        access_log off;
+        log_not_found off;
+    }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+NGINXEOF
+
+# Create supervisor config
+RUN mkdir -p /etc/supervisor/conf.d
+COPY <<'SUPERVISOREOF' /etc/supervisor/conf.d/app.conf
+[supervisord]
+nodaemon=true
+
+[program:php-fpm]
+command=php-fpm
+autostart=true
+autorestart=true
+
+[program:nginx]
+command=nginx -g 'daemon off;'
+autostart=true
+autorestart=true
+
+[program:queue-worker]
+command=php /app/artisan queue:work --sleep=3 --tries=3
+autostart=true
+autorestart=true
+numprocs=1
+SUPERVISOREOF
+
 EXPOSE 8000
-CMD ["sh", "docker/entrypoint.sh"]
+
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]

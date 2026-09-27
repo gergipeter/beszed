@@ -1,0 +1,40 @@
+name = "beszed"
+type = "javascript"
+account_id = "your_account_id"
+workers_dev = true
+route = "https://api.beszed.com/*"
+zone_id = "your_zone_id"
+
+[env.production]
+name = "beszed-prod"
+route = "https://api.beszed.com/*"
+
+[env.staging]
+name = "beszed-staging"
+route = "https://staging-api.beszed.com/*"
+
+# Bindings for Durable Objects, KV, etc.
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "your_kv_namespace_id"
+preview_id = "your_preview_kv_id"
+
+# D1 Database binding (serverless SQL)
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "beszed_db"
+database_id = "your_database_id"
+
+# Environment variables
+[env.production.vars]
+API_ENDPOINT = "https://api.beszed.com"
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+
+[build]
+command = "npm install && npm run build"
+cwd = "./"
+watch_paths = ["src/**/*.js", "resources/**/*"]
+
+[build.upload]
+format = "modules"
