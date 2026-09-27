@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useModuleContext } from '../../composables/useModuleContext'
 import { useTimers } from '../../composables/useTimers'
+import { usePinchZoom } from '../../composables/usePinchZoom'
 import { ICONS } from '../../config/icons'
 import { formatDate, t } from '../../i18n'
 import { sparkle } from '../../services/audio/sfx'
@@ -27,6 +28,10 @@ const props = defineProps({
 const { childId } = useModuleContext()
 const guide = useGuideStore()
 const { later } = useTimers()
+
+// --- pinch zoom for the whole book ---
+const bookContainer = ref(null)
+const { scale, resetZoom } = usePinchZoom(bookContainer)
 
 // --- unwrapped stickers (the rest of the earned ones are packs) ---
 const seenKey = () => `beszed.stickers.seen.${childId.value}`
@@ -131,7 +136,7 @@ function tap(badge) {
 </script>
 
 <template>
-  <div class="sticker-book">
+  <div ref="bookContainer" class="sticker-book" :style="{ '--bz-scale': scale }">
     <div class="progress">
       <b class="count"><EmojiArt :char="ICONS.star" /> {{ t('rewards.stickers', { count: earned.length, total: badges.length }) }}</b>
       <span class="bar" aria-hidden="true"><i :style="{ transform: `scaleX(${badges.length ? earned.length / badges.length : 0})` }" /></span>
@@ -215,10 +220,15 @@ function tap(badge) {
 </template>
 
 <style scoped>
+:root {
+  --bz-scale: 1;
+}
+
 .sticker-book {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  --bz-scale: 1;
 }
 .progress {
   display: flex;
@@ -269,8 +279,9 @@ function tap(badge) {
   background: linear-gradient(135deg, #ff9ec7, #b9a6ff 45%, #7cc7ff 70%, #9ee6c9);
   box-shadow:
     inset 0 0 0 3px rgba(255, 255, 255, 0.6),
-    var(--bz-shadow);
-  animation: nudge 2.4s ease-in-out infinite;
+    var(--bz-shadow),
+    0 8px 20px rgba(185, 166, 255, 0.4);
+  animation: nudge 3.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite, bounce 1.6s ease-in-out infinite;
   animation-delay: calc(var(--i, 0) * -0.4s);
 }
 /* a zigzag, torn-off top */
@@ -315,6 +326,9 @@ function tap(badge) {
   box-shadow:
     inset 0 0 0 5px color-mix(in srgb, var(--bz-bark) 35%, transparent),
     var(--bz-shadow-lg);
+  transform: scale(var(--bz-scale));
+  transform-origin: center;
+  transition: transform 0.1s linear;
 }
 .book::-webkit-scrollbar {
   display: none;
@@ -472,53 +486,110 @@ function tap(badge) {
 
 @keyframes nudge {
   0%,
-  80%,
+  78%,
   100% {
-    transform: rotate(0deg);
+    transform: rotate(0deg) translateY(0);
   }
-  86% {
-    transform: rotate(-6deg);
+  80% {
+    transform: rotate(-8deg) translateY(-4px);
   }
-  92% {
-    transform: rotate(6deg);
+  85% {
+    transform: rotate(8deg) translateY(2px);
+  }
+  90% {
+    transform: rotate(-5deg) translateY(-2px);
+  }
+  95% {
+    transform: rotate(4deg) translateY(1px);
   }
 }
+
 @keyframes shine {
   0%,
-  60% {
+  55% {
     translate: 0 0;
   }
   100% {
     translate: 420% 0;
   }
 }
+
 @keyframes rattle {
+  0%, 100% {
+    transform: rotate(0deg) scale(1) skew(0deg);
+  }
+  12.5% {
+    transform: rotate(-12deg) scale(1.08) skew(2deg);
+  }
   25% {
-    transform: rotate(-9deg) scale(1.05);
+    transform: rotate(12deg) scale(1.08) skew(-2deg);
+  }
+  37.5% {
+    transform: rotate(-10deg) scale(1.06) skew(1deg);
+  }
+  50% {
+    transform: rotate(10deg) scale(1.06) skew(-1deg);
+  }
+  62.5% {
+    transform: rotate(-6deg) scale(1.03) skew(0.5deg);
   }
   75% {
-    transform: rotate(9deg) scale(1.05);
+    transform: rotate(6deg) scale(1.03) skew(-0.5deg);
   }
 }
+
 @keyframes popout {
-  from {
-    transform: scale(0.1) rotate(-30deg);
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15) rotate(15deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
   }
 }
+
 @keyframes peel {
-  30% {
-    transform: rotate(calc(var(--tilt) - 12deg)) translateY(-10px) scale(1.12);
+  0% {
+    transform: rotate(var(--tilt)) translateY(0) scale(1);
   }
-  60% {
-    transform: rotate(calc(var(--tilt) + 8deg)) scale(1.04);
+  25% {
+    transform: rotate(calc(var(--tilt) - 15deg)) translateY(-14px) scale(1.15);
+  }
+  50% {
+    transform: rotate(calc(var(--tilt) + 12deg)) translateY(-8px) scale(1.12);
+  }
+  75% {
+    transform: rotate(calc(var(--tilt) - 8deg)) translateY(-3px) scale(1.05);
+  }
+  100% {
+    transform: rotate(var(--tilt)) translateY(0) scale(1);
   }
 }
+
 @keyframes stick {
-  from {
-    transform: rotate(var(--tilt)) scale(1.5);
+  0% {
+    transform: rotate(var(--tilt)) scale(1.8) translateY(-30px);
+    opacity: 0;
   }
-  40% {
-    transform: rotate(var(--tilt)) scale(0.85);
+  50% {
+    transform: rotate(var(--tilt)) scale(1.1);
+  }
+  100% {
+    transform: rotate(var(--tilt)) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
   }
 }
 </style>

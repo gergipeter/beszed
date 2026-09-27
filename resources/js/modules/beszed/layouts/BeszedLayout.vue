@@ -6,6 +6,7 @@ import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
 import { useAsync } from '../composables/useAsync'
 import { useDaytime } from '../composables/useDaytime'
+import { usePinchZoom } from '../composables/usePinchZoom'
 import { createModuleContext, provideModuleContext } from '../composables/useModuleContext'
 import { t } from '../i18n'
 import { installTouchFeel } from '../services/touch/feel'
@@ -50,6 +51,7 @@ const unlock = () => guide.unlock()
 
 /** Every touch answers with a soft note and a tiny buzz (services/touch/feel.js). */
 const root = ref(null)
+const { scale: globalScale } = usePinchZoom(root)
 let uninstallFeel = () => {}
 
 onMounted(async () => {
@@ -76,7 +78,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main ref="root" class="bz" :data-daytime="daytime">
+  <main ref="root" class="bz" :data-daytime="daytime" :style="{ '--bz-global-scale': globalScale }">
     <div class="bz-backdrop" aria-hidden="true" />
     <BzNotice v-if="error" tone="warn">
       {{ error }}
