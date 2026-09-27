@@ -66,6 +66,8 @@ watch(
     </p>
 
     <p v-if="savedLater" class="offline">{{ t('game.savedLater') }}</p>
+    <!-- every finished game grows a plant in the garden (the hub shows it sprouting) -->
+    <p v-if="result" class="garden-note"><EmojiArt :char="ICONS.sprout" /> {{ t('game.gardenGrew') }}</p>
 
     <template v-if="result">
       <p v-if="result.daily_path?.ticked" class="path-note">
@@ -116,6 +118,23 @@ watch(
 .title {
   margin: 0;
   font-size: 36px;
+}
+.garden-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: var(--bz-radius-pill);
+  background: color-mix(in srgb, var(--bz-leaf) 18%, var(--bz-card));
+  font-weight: 800;
+  animation: grow-in 0.6s var(--bz-spring) 0.9s backwards;
+}
+@keyframes grow-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
 }
 .earned {
   display: inline-flex;

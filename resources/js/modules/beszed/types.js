@@ -31,7 +31,8 @@
  * @property {string} emoji
  * @property {string} skill
  * @property {string} color
- * @property {'simple' | 'advanced'} tier  Hub group: simple games first, then the advanced ones.
+ * @property {'simple' | 'advanced'} tier  Hub group: the meadow (simple) or the enchanted forest (advanced).
+ * @property {string} stage  The scene it's played in (components/game/GameStage.vue).
  * @property {number} rounds
  * @property {boolean} noIdle
  *
@@ -76,6 +77,15 @@
  * @property {string} answer
  * @property {string} [onCorrect]
  * @property {string | Record<string, string>} [onWrong]
+ * @property {Guess} [guess]  Csillám has a go first (App\Beszed\CsillamGuess).
+ *
+ * @typedef {object} Guess  Csillám points at an answer (sometimes wrongly on purpose) and asks the child.
+ * @property {string} id           the option she picks
+ * @property {string} ask          "Szerintem ez az. Igazam van?"
+ * @property {string} confirmed    the child agreed, and she was right
+ * @property {string} caught       the child caught her mistake (then picks the right one)
+ * @property {string} agreedWrong  the child agreed with a wrong guess
+ * @property {string} deniedRight  the child said no to a right guess
  *
  * @typedef {object} SequenceData
  * @property {string[]} order

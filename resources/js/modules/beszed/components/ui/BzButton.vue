@@ -44,10 +44,12 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, `btn--${props.si
   font-weight: 700;
   line-height: 1.2;
   box-shadow: var(--bz-shadow);
-  transition: transform 0.08s;
+  transition: transform 0.38s var(--bz-spring);
 }
 .btn:active:not(:disabled) {
-  transform: translateY(2px);
+  transform: scale(0.95);
+  transition-duration: 0.07s;
+  transition-timing-function: ease-out;
 }
 .btn:disabled {
   opacity: 0.35;

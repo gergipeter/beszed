@@ -24,6 +24,10 @@ class SessionBuilder
         $rounds = app($cfg['factory'])
             ->weigh($this->weights($child, $game, $items, isset($cfg['adaptive']), $cfg['rounds']))
             ->build($items, $level, $cfg['rounds']);
+        // now and then Csillám has a go first, sometimes wrongly on purpose, and the child judges her
+        if ($cfg['guess'] ?? true) {
+            $rounds = CsillamGuess::apply($rounds, config('beszed.guesses', []));
+        }
 
         return [
             'game' => $game,

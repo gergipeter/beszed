@@ -94,7 +94,7 @@ function done() {
       <EmojiArt v-for="n in count" :key="n" :char="ICONS.tap" />
       <span class="bz-sr-only">{{ t('tapcount.taps', { count }) }}</span>
     </div>
-    <button type="button" class="drum" :aria-label="t('tapcount.drum')" @click="drum">
+    <button type="button" class="drum" data-no-feel :aria-label="t('tapcount.drum')" @click="drum">
       <EmojiArt :char="ICONS.drum" />
     </button>
     <div class="hint">{{ hint }}</div>

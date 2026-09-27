@@ -1,13 +1,14 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import EmojiArt from '../../components/ui/EmojiArt.vue'
+import { useDrag } from '../../composables/useDrag'
 import { t } from '../../i18n'
 import { beep } from '../../services/audio/sfx'
 import { engineEmits, engineProps } from '../contract'
 
 /**
- * Picture puzzle (Kirakó): tap two pieces to swap them until the picture is
- * whole. A piece in its right place locks. The win is graded by wasted swaps
+ * Picture puzzle (Kirakó): drag a piece onto another, or tap two pieces, to
+ * swap them until the picture is whole. A piece in its right place locks. The win is graded by wasted swaps
  * (swaps that put neither piece in place).
  * data: PuzzleData
  */
@@ -31,6 +32,10 @@ function tap(pos) {
     return
   }
 
+  swap(from, pos)
+}
+
+function swap(from, pos) {
   const next = [...order.value]
   ;[next[from], next[pos]] = [next[pos], next[from]]
   order.value = next
@@ -40,6 +45,28 @@ function tap(pos) {
   if (!placed) wasted++
   beep(placed ? 640 : 300, 0.09)
   if (solved.value) emit('answer', { correct: true, say: props.data.onCorrect, tries: grade() })
+}
+
+/**
+ * Dragged onto another piece: they swap. The dragged one is already where it
+ * lands, so that swap doesn't slide (the other one pops into its new place).
+ */
+const board = ref(null)
+const slide = ref(true)
+const drag = useDrag({
+  root: board,
+  onDrop: async (from, to) => {
+    const pos = Number(to)
+    if (props.locked || solved.value || pos === from || order.value[pos] === pos) return false
+    slide.value = false
+    swap(from, pos)
+    await nextTick()
+    slide.value = true
+    return true
+  },
+})
+function grab(event, pos) {
+  if (!props.locked && !solved.value && order.value[pos] !== pos) drag.start(event, pos)
 }
 
 /** Shows the part of the picture that belongs to `piece`. */
@@ -57,16 +84,18 @@ function slice(piece) {
 <template>
   <div class="preview" role="img" :aria-label="t('puzzle.preview')"><EmojiArt :char="data.emoji" /></div>
 
-  <div class="board-wrap">
-    <TransitionGroup tag="div" name="swap" class="board" :style="{ '--cols': data.cols, '--rows': data.rows }">
+  <div ref="board" class="board-wrap">
+    <TransitionGroup tag="div" :name="slide ? 'swap' : 'none'" class="board" :style="{ '--cols': data.cols, '--rows': data.rows }">
       <button
         v-for="(piece, pos) in order"
         :key="piece"
         type="button"
-        class="piece"
+        class="piece bz-draggable"
         :class="{ 'piece--selected': selected === pos, 'piece--placed': piece === pos && !solved }"
+        :data-drop="piece === pos ? undefined : String(pos)"
         :aria-label="t('puzzle.piece', { n: pos + 1 })"
         :aria-pressed="selected === pos"
+        @pointerdown="grab($event, pos)"
         @click="tap(pos)"
       >
         <span class="slice" :style="slice(piece)"><EmojiArt :char="data.emoji" /></span>

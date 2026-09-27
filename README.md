@@ -170,7 +170,8 @@ resources/js/modules/beszed/             plain JavaScript (no TypeScript), Vue 3
     game/                SessionRunner, GameHud, FinishScreen
     rewards/             LevelBar, PlayerStatus (hub strip), MedalStars, StickerCard
     charts/              TrendChart (weekly columns / line, SVG)
-    hub/, recordings/    GameTile, RecordingRow
+    garden/              GardenMap, GameStop, GardenSky, trail.js (the hub's garden)
+    hub/, recordings/    DailyPath, Spotlight, RecordingRow
   engines/               registry (lazy, one chunk each) + contract.js; one folder per engine:
                          choice/ (+ SceneView, scenes.js), sequence/, tapcount/, trace/ (+ paths.js), judged/,
                          puzzle/, memory/, sort/, difference/, order/, vanish/, simon/, directions/
@@ -227,6 +228,39 @@ tiles float in one by one. `prefers-reduced-motion` switches all of it off.
   at the end of a game, a rising run on level-up, a shimmer for stickers. No files; unlocked on the first
   tap for iOS; soft enough not to cover Csillám. `config.sfx = { enabled, volume }`.
 - **Confetti** (`services/effects/confetti.js`) at the end of every game, a bigger burst on level-up.
+
+## Zoé kertje: the look and feel
+
+The whole module is one place, **Zoé's garden**, drawn in CSS and SVG (no image files; all original).
+
+- **The hub is the garden** (`components/garden/`). The simple games are stepping stones along a winding
+  trail through *A Rét* (the meadow), the advanced ones through *A Varázserdő* (the enchanted forest).
+  `trail.js` lays the stones out (a snake of 2–4 columns by width), draws the trail through them and
+  finds free spots between them. Medals bloom as flowers around a stone; a numbered flag marks today's
+  "Mai kaland" steps; the spotlight game glows. Tapping a stone, Csillám flies onto it
+  (`services/effects/fly.js`) and the game opens.
+- **The garden grows**: one plant per finished game (`summary.sessions`), always in the same spot. The
+  ones grown since the child's last visit (remembered on the device) sprout in front of them, and the
+  finish screen says a new plant is growing.
+- **Day and night** (`composables/useDaytime.js`): the child's clock sets `data-daytime` on the module
+  (morning, day, evening, night); the sky, the sun or the moon and stars, the grass and the fireflies
+  follow. At night the whole app uses the dark palette; dark mode is always night.
+- **Everything answers a touch** (`services/touch/feel.js`, one listener on the layout): every button
+  plays a soft note, stepping up a pentatonic scale while the child keeps tapping (random taps sound like
+  a tune), with a tiny buzz on Android. Buttons squish and spring back (`.bz-press`, `--bz-spring`).
+  Csillám's eyes follow the finger. Right answers in a row lift the chime a step each and grow a burst of
+  stars from the finger (`services/effects/burst.js`). Drums and choir pads opt out (`data-no-feel`).
+- **Drag with a magnet** (`composables/useDrag.js`): in Válogató, Kicsitől a nagyig, Mi történt előbb?
+  and Kirakó the pictures can be dragged; near a drop zone (`data-drop`) they are pulled in, let go there
+  they snap, a wrong place springs them back. A tap still works everywhere.
+- **A stage per game** (`components/game/GameStage.vue`, `stage` in `config/beszed.php`): meadow, beehive,
+  theatre (the curtains open), magic night (the magician's hat swoops over the pictures in "Mi tűnt el?"),
+  workshop (a wooden shelf for the nesting dolls), pond, forest, market and storybook.
+- **Csillám makes mistakes** (`app/Beszed/CsillamGuess.php`): in a few picture-choice rounds she has a go
+  first, points at an answer and asks "Igazam van?". Half the time she is wrong on purpose; the child says
+  yes or no (or taps what they think is right), and catching her, picks the right one. A wrong verdict
+  counts as a try. `config/beszed.php → guesses` (chance per round, at most per session); a game opts out
+  with `'guess' => false`.
 
 ## Offline play
 

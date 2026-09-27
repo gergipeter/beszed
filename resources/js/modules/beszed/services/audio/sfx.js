@@ -61,11 +61,21 @@ export function tone(freq, duration = 0.4) {
   play(() => note(freq, 0, duration, { type: 'triangle', gain: 0.4 }))
 }
 
-/** Right answer: two bright notes. */
-export function chime() {
+/** A soft plucked note (every touch in the app plays one; see services/touch/feel.js). */
+export function pluck(freq) {
+  play(() => note(freq, 0, 0.18, { gain: 0.1 }))
+}
+
+/**
+ * Right answer: two bright notes. `combo` (answers right at the first try in a
+ * row) lifts them a step each time, up to a fifth higher, so a streak sounds like it.
+ */
+export function chime(combo = 0) {
+  const lift = 2 ** (Math.min(combo, 5) * 1.4 / 12)
   play(() => {
-    note(1318.5, 0, 0.16, { gain: 0.18 }) // E6
-    note(1760, 0.08, 0.28, { gain: 0.16 }) // A6
+    note(1318.5 * lift, 0, 0.16, { gain: 0.18 }) // E6
+    note(1760 * lift, 0.08, 0.28, { gain: 0.16 }) // A6
+    if (combo >= 3) note(2637 * lift, 0.18, 0.3, { gain: 0.08 }) // a sparkle on top of a streak
   })
 }
 

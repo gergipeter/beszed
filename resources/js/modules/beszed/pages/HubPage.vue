@@ -2,9 +2,10 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { fetchDailyPath, fetchSpotlight } from '../api'
+import GardenMap from '../components/garden/GardenMap.vue'
+import GardenSky from '../components/garden/GardenSky.vue'
 import GuideBubble from '../components/guide/GuideBubble.vue'
 import DailyPath from '../components/hub/DailyPath.vue'
-import GameTile from '../components/hub/GameTile.vue'
 import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import StreakHistory from '../components/rewards/StreakHistory.vue'
@@ -14,6 +15,7 @@ import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
 import { config } from '../config/options'
 import { t } from '../i18n'
+import { flyTo } from '../services/effects/fly'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
 import { useRewardsStore } from '../stores/rewards'
@@ -57,23 +59,42 @@ onMounted(() => {
 })
 const spotlightGame = computed(() => (spotlightGameId.value ? meta.game(spotlightGameId.value) : null))
 
-/** The hub's game groups, simple ones first; `from` keeps the tiles' float-in running on across groups. */
-const TIERS = [
-  { id: 'simple', icon: ICONS.tierSimple },
-  { id: 'advanced', icon: ICONS.tierAdvanced },
-]
-const groups = computed(() => {
-  let from = 0
-  return TIERS.map(tier => {
-    const games = meta.games.filter(g => (g.tier ?? 'simple') === tier.id)
-    const group = { ...tier, games, from }
-    from += games.length
-    return group
-  }).filter(group => group.games.length)
-})
+/**
+ * The garden grows one plant per finished game. What the child saw last time is
+ * remembered on this device, so the plants grown since then sprout in front of them.
+ */
+const plants = computed(() => rewards.summary?.sessions ?? 0)
+const sproutFrom = ref(Infinity)
+const seenKey = () => `beszed.garden.${childId.value}`
+watch(
+  plants,
+  now => {
+    if (!rewards.summary || sproutFrom.value !== Infinity) return
+    let seen = null
+    try {
+      seen = localStorage.getItem(seenKey())
+      localStorage.setItem(seenKey(), String(now))
+    } catch {
+      /* private mode: no sprouting, the garden still shows */
+    }
+    sproutFrom.value = seen === null ? now : Math.min(Number(seen), now)
+  },
+  { immediate: true },
+)
+const newPlants = computed(() => (sproutFrom.value === Infinity ? 0 : plants.value - sproutFrom.value))
 
-function play(game) {
+const header = ref(null)
+let flying = false
+
+/** Csillám flies to the game's stone, then the game opens. */
+async function play(game, stone) {
+  if (flying) return
   guide.unlock() // inside the tap, so iOS allows audio in the game
+  flying = true
+  const target = stone ?? document.querySelector(`[data-game="${game}"] .stone`)
+  const visible = target && target.getBoundingClientRect().bottom > 0 && target.getBoundingClientRect().top < innerHeight
+  await flyTo(header.value?.$el.querySelector('.csillam'), visible ? target : null)
+  flying = false
   router.push({ name: 'beszed.play', params: { childId: childId.value, game } })
 }
 </script>
@@ -102,7 +123,16 @@ function play(game) {
     <p style="margin: 8px 0 0; font-size: 10px; color: #888;">ℹ️ Refresh page after changes</p>
   </div>
 
-  <GuideBubble tag="header" size="lg" :name="guideName" :avatar-label="t('hub.greetLabel', { guide: guideName })" @press="greet">
+  <GardenSky />
+
+  <GuideBubble
+    ref="header"
+    tag="header"
+    size="lg"
+    :name="guideName"
+    :avatar-label="t('hub.greetLabel', { guide: guideName })"
+    @press="greet"
+  >
     <h1 class="hello">{{ childName ? t('hub.helloNamed', { child: childName }) : t('hub.hello') }}</h1>
     <p class="intro">{{ t('hub.intro', { guide: guideName }) }}</p>
   </GuideBubble>
@@ -119,23 +149,19 @@ function play(game) {
 
   <DailyPath v-if="path && meta.games.length" :path="path" :games="meta.games" @play="play" />
 
-  <section v-for="group in groups" :key="group.id" class="group" :aria-labelledby="`hub-group-${group.id}`">
-    <header class="group-head">
-      <EmojiArt class="group-icon" :char="group.icon" />
-      <h2 :id="`hub-group-${group.id}`" class="group-title">{{ t(`hub.tiers.${group.id}.title`) }}</h2>
-      <p class="group-hint">{{ t(`hub.tiers.${group.id}.hint`) }}</p>
-    </header>
-    <div class="tiles">
-      <GameTile
-        v-for="(game, i) in group.games"
-        :key="game.id"
-        :game="game"
-        :medal="rewards.medal(game.id)"
-        :style="{ '--i': group.from + i }"
-        @click="play(game.id)"
-      />
-    </div>
-  </section>
+  <p v-if="newPlants > 0" class="grew" role="status">
+    <EmojiArt :char="ICONS.sprout" /> {{ t(newPlants === 1 ? 'hub.grewOne' : 'hub.grewMany', { count: newPlants }) }}
+  </p>
+
+  <GardenMap
+    :games="meta.games"
+    :medals="rewards.summary?.medals ?? {}"
+    :path="path"
+    :spotlight="spotlightGameId"
+    :plants="plants"
+    :sprout-from="sproutFrom"
+    @play="play"
+  />
 
   <nav class="parents" :aria-label="t('hub.forParents')">
     <BzButton :to="{ name: 'beszed.recordings', params: { childId } }" :icon="ICONS.mic">
@@ -164,37 +190,25 @@ function play(game) {
   line-height: 1.25;
   color: var(--bz-muted);
 }
-.group + .group {
-  margin-top: 26px;
-}
-.group-head {
+.grew {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  column-gap: 10px;
-  margin: 0 4px 12px;
-}
-.group-icon {
-  font-size: 30px;
-}
-.group-title {
-  margin: 0;
-  font-size: var(--bz-text-lg);
+  gap: 8px;
+  width: fit-content;
+  margin: 0 auto 14px;
+  padding: 8px 16px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  font-size: var(--bz-text-md);
   font-weight: 800;
-  line-height: 1.1;
+  box-shadow: var(--bz-shadow);
+  animation: grew 0.6s var(--bz-spring) 0.4s backwards;
 }
-.group-hint {
-  flex-basis: 100%;
-  margin: 2px 0 0;
-  font-size: var(--bz-text-sm);
-  line-height: 1.25;
-  color: var(--bz-muted);
-}
-/* at least two columns, even on the narrowest phone (the tiles scale their text to fit) */
-.tiles {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(170px, calc(50% - 8px)), 1fr));
-  gap: 16px;
+@keyframes grew {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.8);
+  }
 }
 .parents {
   display: flex;

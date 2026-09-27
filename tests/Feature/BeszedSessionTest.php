@@ -1,5 +1,6 @@
 <?php
 
+use App\Beszed\CsillamGuess;
 use App\Beszed\Rounds\KirakoRounds;
 use App\Beszed\Rounds\KulonbsegRounds;
 use App\Beszed\Rounds\NagysagRounds;
@@ -303,11 +304,37 @@ it('csináld, amit mondok: every direction has exactly one right way to follow i
     }
 })->with([1, 2, 3]);
 
+it('lets Csillám have a go in a few choice rounds: never the first, never Brumi and Nyuszi, at most max', function () {
+    $choice = fn (array $extra = []) => ['engine' => 'choice', 'data' => $extra + [
+        'options' => [['id' => 'a'], ['id' => 'b'], ['id' => 'c']], 'answer' => 'b',
+    ]];
+    $rounds = [$choice(), $choice(), ['engine' => 'sort', 'data' => []], $choice(['variant' => 'speakers']), $choice(), $choice()];
+
+    $guessed = collect(CsillamGuess::apply($rounds, ['chance' => 1.0, 'max' => 2]))
+        ->filter(fn ($r) => isset($r['data']['guess']));
+
+    expect($guessed->keys()->all())->toBe([1, 4]) // round 0, the sort and the speakers round are left alone
+        ->and($guessed->every(fn ($r) => in_array($r['data']['guess']['id'], ['a', 'b', 'c'], true)))->toBeTrue()
+        ->and($guessed->first()['data']['guess'])->toHaveKeys(['ask', 'confirmed', 'caught', 'agreedWrong', 'deniedRight']);
+    expect(collect(CsillamGuess::apply($rounds, ['chance' => 0.0]))->filter(fn ($r) => isset($r['data']['guess'])))->toBeEmpty();
+});
+
+it('makes Csillám wrong about half the time', function () {
+    $round = ['engine' => 'choice', 'data' => ['options' => [['id' => 'a'], ['id' => 'b']], 'answer' => 'b']];
+    $wrong = collect(range(1, 400))
+        ->map(fn () => CsillamGuess::apply([$round, $round], ['chance' => 1.0])[1]['data']['guess']['id'])
+        ->filter(fn ($id) => $id !== 'b')->count();
+
+    expect($wrong)->toBeGreaterThan(140)->toBeLessThan(260);
+});
+
 it('puts every game in the simple or the advanced group of the hub', function () {
     $games = collect(actingAs($this->user)->getJson('/api/beszed/meta')->assertOk()->json('games'));
 
     expect($games->pluck('tier')->unique()->sort()->values()->all())->toBe(['advanced', 'simple'])
-        ->and($games->every(fn ($g) => in_array($g['tier'], ['simple', 'advanced'], true)))->toBeTrue();
+        ->and($games->every(fn ($g) => in_array($g['tier'], ['simple', 'advanced'], true)))->toBeTrue()
+        // every game is played in one of the scenes GameStage.vue draws
+        ->and($games->pluck('stage')->diff(['meadow', 'hive', 'theatre', 'magic', 'workshop', 'pond', 'forest', 'market', 'storybook'])->all())->toBe([]);
 });
 
 it('levels papagáj up after two clean wins and down after a skip', function () {

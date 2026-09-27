@@ -21,6 +21,7 @@ class MetaController extends Controller
             'skill' => $g['skill'],
             'color' => $g['color'],
             'tier' => $g['tier'] ?? 'simple',
+            'stage' => $g['stage'] ?? 'meadow',
             'rounds' => $g['rounds'],
             'noIdle' => (bool) ($g['no_idle'] ?? false),
         ])->values();

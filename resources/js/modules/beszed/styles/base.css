@@ -9,10 +9,42 @@
   max-width: 860px;
   margin: 0 auto;
   padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(40px + env(safe-area-inset-bottom, 0px));
-  background: var(--bz-sky);
+  /* the hub's sky is window-wide; it must not make the page scroll sideways */
+  overflow-x: clip;
   color: var(--bz-ink);
   font-family: var(--bz-font);
   -webkit-tap-highlight-color: transparent;
+}
+
+/* The sky behind every page, edge to edge of the window (the page itself is at most 860px). */
+.bz-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, var(--bz-sky-top), var(--bz-sky-bottom) 70%);
+}
+
+/*
+ * Every tappable thing presses in and springs back a little past its size
+ * (transform only). Components add .bz-press instead of their own :active shift.
+ */
+.bz-press {
+  transition: transform 0.38s var(--bz-spring);
+}
+.bz-press:active:not(:disabled) {
+  transform: scale(0.92);
+  transition-duration: 0.07s;
+  transition-timing-function: ease-out;
+}
+
+/* A picture the child can drag (composables/useDrag.js): the page must not scroll under the finger. */
+.bz-draggable {
+  touch-action: none;
+  cursor: grab;
+}
+.bz-dragging {
+  cursor: grabbing;
+  filter: drop-shadow(0 14px 10px rgba(59, 31, 74, 0.25));
 }
 
 :where(.bz) *,
@@ -58,8 +90,26 @@
   position: absolute;
   top: -4vh;
 }
+/* A burst of stars from the child's finger on a right answer (services/effects/burst.js). */
+.bz-burst {
+  position: fixed;
+  z-index: 1001;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.bz-burst i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 20px;
+  font-style: normal;
+  line-height: 1;
+  text-shadow: 0 1px 0 rgba(59, 31, 74, 0.25);
+}
 @media (prefers-reduced-motion: reduce) {
-  .bz-confetti {
+  .bz-confetti,
+  .bz-burst {
     display: none;
   }
 }
@@ -102,7 +152,8 @@
     background: #fff;
     color: #000;
   }
-  .bz-noprint {
+  .bz-noprint,
+  .bz-backdrop {
     display: none !important;
   }
 }

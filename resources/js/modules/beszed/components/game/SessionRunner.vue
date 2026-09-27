@@ -12,6 +12,7 @@ import BzButton from '../ui/BzButton.vue'
 import BzNotice from '../ui/BzNotice.vue'
 import EmojiArt from '../ui/EmojiArt.vue'
 import FinishScreen from './FinishScreen.vue'
+import GameStage from './GameStage.vue'
 import GameHud from './GameHud.vue'
 
 /** Plays one game: HUD, Csillám with the caption, and the current round's engine. */
@@ -98,7 +99,7 @@ onMounted(load)
           <p class="caption" aria-live="polite">{{ guide.caption }}</p>
         </GuideBubble>
 
-        <div v-if="round" class="stage">
+        <GameStage v-if="round" class="stage" :stage="info?.stage">
           <Transition name="round" mode="out-in">
             <div :key="round.key" class="round">
               <component
@@ -118,7 +119,7 @@ onMounted(load)
               </BzNotice>
             </div>
           </Transition>
-        </div>
+        </GameStage>
       </div>
     </Transition>
   </div>

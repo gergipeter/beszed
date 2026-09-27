@@ -1,12 +1,14 @@
 <script setup>
-import { onBeforeUnmount, onMounted, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import '../styles/index.css'
 import { flushOutbox, pendingCount } from '../api'
 import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
 import { useAsync } from '../composables/useAsync'
+import { useDaytime } from '../composables/useDaytime'
 import { createModuleContext, provideModuleContext } from '../composables/useModuleContext'
 import { t } from '../i18n'
+import { installTouchFeel } from '../services/touch/feel'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
 import { useRecordingsStore } from '../stores/recordings'
@@ -36,12 +38,20 @@ const { error, run: boot } = useAsync(() => Promise.all([meta.load(), recordings
 // Rewards belong to the child; never blocking (a game works without them).
 watch(() => props.childId, id => rewards.load(id), { immediate: true })
 
+/** Morning, day, evening or night in Zoé's garden (the sky, the scene colours). */
+const daytime = useDaytime()
+
 // iOS only plays audio after a tap. Pages unlock on their own buttons too; this
 // covers opening a game URL directly.
 const unlock = () => guide.unlock()
 
+/** Every touch answers with a soft note and a tiny buzz (services/touch/feel.js). */
+const root = ref(null)
+let uninstallFeel = () => {}
+
 onMounted(async () => {
   boot()
+  uninstallFeel = installTouchFeel(root.value)
   document.addEventListener('click', unlock, { capture: true, once: true })
   // Results played offline earlier: upload them, then show the updated rewards.
   if (pendingCount()) {
@@ -51,13 +61,15 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  uninstallFeel()
   document.removeEventListener('click', unlock, { capture: true })
   guide.reset()
 })
 </script>
 
 <template>
-  <main class="bz">
+  <main ref="root" class="bz" :data-daytime="daytime">
+    <div class="bz-backdrop" aria-hidden="true" />
     <BzNotice v-if="error" tone="warn">
       {{ error }}
       <BzButton size="sm" @click="boot">{{ t('common.retry') }}</BzButton>

@@ -104,7 +104,7 @@ function tap(pad) {
     <template v-else>&nbsp;</template>
   </p>
 
-  <div class="pads">
+  <div class="pads" data-no-feel>
     <button
       v-for="(pad, i) in data.pads"
       :key="pad.id"

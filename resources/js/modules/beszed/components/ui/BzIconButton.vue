@@ -26,9 +26,11 @@ defineProps({
   background: var(--bz-card);
   font-size: 28px;
   box-shadow: 0 4px 0 var(--bz-shadow-color);
-  transition: transform 0.08s;
+  transition: transform 0.38s var(--bz-spring);
 }
 .icon-btn:active {
-  transform: translateY(2px);
+  transform: scale(0.9);
+  transition-duration: 0.07s;
+  transition-timing-function: ease-out;
 }
 </style>

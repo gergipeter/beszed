@@ -12,50 +12,52 @@ return [
     | - no_idle:  Csillám does not jump in with help after 20 s (parent is talking)
     | - tier:     hub group: simple (one tap, little to remember) or advanced
     |             (sounds, rhymes, memory, reasoning: more attention needed)
+    | - stage:    the scene it's played in (GameStage.vue): meadow, hive, theatre,
+    |             magic, workshop, pond, forest, market, storybook
     */
     'games' => [
         'zs' => [
-            'name' => 'Zümi vagy Susi?', 'emoji' => '🐝', 'skill' => 'Hallod a zs-t és az s-t?', 'color' => '#FFE27A', 'tier' => 'advanced',
+            'name' => 'Zümi vagy Susi?', 'emoji' => '🐝', 'skill' => 'Hallod a zs-t és az s-t?', 'color' => '#FFE27A', 'tier' => 'advanced', 'stage' => 'hive',
             'factory' => Rounds\ZsRounds::class, 'rounds' => 8,
             'intro' => 'Most hangokat figyelünk! A zs úgy zümmög, mint a méhecske. Az s úgy susog, mint amikor csendet kérünk. Figyelj jól! Kezdjük!',
         ],
         'szotag' => [
-            'name' => 'Dobolós szavak', 'emoji' => '🥁', 'skill' => 'Szótagolás dobbal', 'color' => '#FFB8A8', 'tier' => 'simple',
+            'name' => 'Dobolós szavak', 'emoji' => '🥁', 'skill' => 'Szótagolás dobbal', 'color' => '#FFB8A8', 'tier' => 'simple', 'stage' => 'theatre',
             'factory' => Rounds\SzotagRounds::class, 'rounds' => 8,
             'intro' => 'Dobolni fogunk! Minden szótagra üss egyet a dobra. Például: ci… ca… Ez két dobbanás! Kezdjük!',
         ],
         'kezdo' => [
-            'name' => 'Első hang', 'emoji' => '👂', 'skill' => 'Mivel kezdődik a szó?', 'color' => '#BDE7C5', 'tier' => 'advanced',
+            'name' => 'Első hang', 'emoji' => '👂', 'skill' => 'Mivel kezdődik a szó?', 'color' => '#BDE7C5', 'tier' => 'advanced', 'stage' => 'meadow',
             'factory' => Rounds\KezdoRounds::class, 'rounds' => 8,
             'intro' => 'Most a szavak elejét figyeljük. Hallgasd jól, melyik szó kezdődik ugyanúgy!',
         ],
         'hol' => [
-            'name' => 'Hol van?', 'emoji' => '🧸', 'skill' => 'Alatt, fölött, mögött…', 'color' => '#C9D7FF', 'tier' => 'simple',
+            'name' => 'Hol van?', 'emoji' => '🧸', 'skill' => 'Alatt, fölött, mögött…', 'color' => '#C9D7FF', 'tier' => 'simple', 'stage' => 'forest',
             'factory' => Rounds\HolRounds::class, 'rounds' => 8,
             'intro' => 'Bújócskázunk! Keresd meg, hol bújt el a kis barátunk!',
         ],
         'szamol' => [
-            'name' => 'Számolós', 'emoji' => '🍎', 'skill' => 'Több, kevesebb, pont ennyi', 'color' => '#FFD1E8', 'tier' => 'simple',
+            'name' => 'Számolós', 'emoji' => '🍎', 'skill' => 'Több, kevesebb, pont ennyi', 'color' => '#FFD1E8', 'tier' => 'simple', 'stage' => 'market',
             'factory' => Rounds\SzamolRounds::class, 'rounds' => 8,
             'intro' => 'Számoljunk együtt! Egy, kettő, három… Készen állsz?',
         ],
         'okoska' => [
-            'name' => 'Okoska', 'emoji' => '💡', 'skill' => 'Mi jön ezután? Mi nem illik?', 'color' => '#D8C8FF', 'tier' => 'advanced',
+            'name' => 'Okoska', 'emoji' => '💡', 'skill' => 'Mi jön ezután? Mi nem illik?', 'color' => '#D8C8FF', 'tier' => 'advanced', 'stage' => 'workshop',
             'factory' => Rounds\OkoskaRounds::class, 'rounds' => 8,
             'intro' => 'Most okoskodunk! Nézd meg jól a képeket!',
         ],
         'hallgasd' => [
-            'name' => 'Hallgasd meg!', 'emoji' => '🎧', 'skill' => 'Szavak jelentése, hallás alapján', 'color' => '#A8E6CF', 'tier' => 'simple',
+            'name' => 'Hallgasd meg!', 'emoji' => '🎧', 'skill' => 'Szavak jelentése, hallás alapján', 'color' => '#A8E6CF', 'tier' => 'simple', 'stage' => 'meadow',
             'factory' => Rounds\HallgasdRounds::class, 'rounds' => 8,
             'intro' => 'Most figyelj jól! Kimondok egy szót, te pedig megkeresed a hozzá illő képet. Kezdjük!',
         ],
         'ikerhangok' => [
-            'name' => 'Ikerhangok', 'emoji' => '👯', 'skill' => 'Hasonló szavak megkülönböztetése', 'color' => '#FFB8D9', 'tier' => 'advanced',
+            'name' => 'Ikerhangok', 'emoji' => '👯', 'skill' => 'Hasonló szavak megkülönböztetése', 'color' => '#FFB8D9', 'tier' => 'advanced', 'stage' => 'pond',
             'factory' => Rounds\IkerhangokRounds::class, 'rounds' => 8,
             'intro' => 'Most nagyon hasonló szavakat hallasz! Figyelj jól, melyiket mondtam, és koppints a jó képre!',
         ],
         'papagaj' => [
-            'name' => 'Papagáj', 'emoji' => '🦜', 'skill' => 'Szavak sorban visszamondva', 'color' => '#B8ECE6', 'tier' => 'advanced',
+            'name' => 'Papagáj', 'emoji' => '🦜', 'skill' => 'Szavak sorban visszamondva', 'color' => '#B8ECE6', 'tier' => 'advanced', 'stage' => 'forest',
             'factory' => Rounds\PapagajRounds::class, 'rounds' => 6,
             'adaptive' => [
                 'min' => 2, 'max' => 6, 'start' => 3, 'up_after' => 2,
@@ -64,7 +66,7 @@ return [
             'intro' => 'Játsszunk papagájosat! Én mondok szavakat, te pedig visszamondod, pont úgy, mint egy papagáj. Utána megmutatod a képeken!',
         ],
         'mondd' => [
-            'name' => 'Mondd utánam', 'emoji' => '🗣️', 'skill' => 'Mondatismétlés, szülővel', 'color' => '#FFC9A8', 'tier' => 'simple',
+            'name' => 'Mondd utánam', 'emoji' => '🗣️', 'skill' => 'Mondatismétlés, szülővel', 'color' => '#FFC9A8', 'tier' => 'simple', 'stage' => 'storybook',
             'factory' => Rounds\MonddRounds::class, 'rounds' => 6, 'no_idle' => true,
             'adaptive' => [
                 'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
@@ -73,17 +75,17 @@ return [
             'intro' => 'Most mondatokat mondok. Figyelj jól, és mondd utánam! Anya vagy apa is segít.',
         ],
         'melyik' => [
-            'name' => 'Melyik mondja szépen?', 'emoji' => '🐻', 'skill' => 'Magyaros mondatok', 'color' => '#E3F0A8', 'tier' => 'advanced',
+            'name' => 'Melyik mondja szépen?', 'emoji' => '🐻', 'skill' => 'Magyaros mondatok', 'color' => '#E3F0A8', 'tier' => 'advanced', 'stage' => 'theatre',
             'factory' => Rounds\MelyikRounds::class, 'rounds' => 8,
             'intro' => 'Brumi és Nyuszi mesél. Az egyikük szépen mondja, a másik kicsit összekeveri. Segíts eldönteni, ki mondta szépen!',
         ],
         'ceruza' => [
-            'name' => 'Méhecske útja', 'emoji' => '✏️', 'skill' => 'Vonalvezetés ujjal', 'color' => '#FFE0B8', 'tier' => 'simple',
+            'name' => 'Méhecske útja', 'emoji' => '✏️', 'skill' => 'Vonalvezetés ujjal', 'color' => '#FFE0B8', 'tier' => 'simple', 'stage' => 'meadow',
             'factory' => Rounds\CeruzaRounds::class, 'rounds' => 4,
             'intro' => 'A méhecske virágot keres. Segíts neki az ujjaddal!',
         ],
         'kirako' => [
-            'name' => 'Kirakó', 'emoji' => '🧩', 'skill' => 'Képkirakó, formaérzék', 'color' => '#FFDAC1', 'tier' => 'simple',
+            'name' => 'Kirakó', 'emoji' => '🧩', 'skill' => 'Képkirakó, formaérzék', 'color' => '#FFDAC1', 'tier' => 'simple', 'stage' => 'workshop',
             'factory' => Rounds\KirakoRounds::class, 'rounds' => 3,
             // level = grid: 1 → 2×2, 2 → 3×2, 3 → 3×3 pieces
             'adaptive' => [
@@ -93,7 +95,7 @@ return [
             'intro' => 'Összekeveredtek a kép darabjai! Koppints két darabra, és helyet cserélnek. Rakd ki a képet!',
         ],
         'parkereso' => [
-            'name' => 'Párkereső', 'emoji' => '🃏', 'skill' => 'Emlékezet és szókincs', 'color' => '#C7E9FF', 'tier' => 'simple',
+            'name' => 'Párkereső', 'emoji' => '🃏', 'skill' => 'Emlékezet és szókincs', 'color' => '#C7E9FF', 'tier' => 'simple', 'stage' => 'magic',
             'factory' => Rounds\ParkeresoRounds::class, 'rounds' => 2,
             // level = number of pairs; can also include difficulty: easy, medium, hard
             'adaptive' => [
@@ -103,7 +105,7 @@ return [
             'intro' => 'Kártyázzunk! Fordíts fel két kártyát. Ha egyformák, megtaláltad a párt. Jegyezd meg, mi hol van!',
         ],
         'rimparok' => [
-            'name' => 'Rímpárok', 'emoji' => '🎶', 'skill' => 'Rímelő szavak megjegyzése', 'color' => '#F0D9FF', 'tier' => 'advanced',
+            'name' => 'Rímpárok', 'emoji' => '🎶', 'skill' => 'Rímelő szavak megjegyzése', 'color' => '#F0D9FF', 'tier' => 'advanced', 'stage' => 'pond',
             'factory' => Rounds\RimparokRounds::class, 'rounds' => 2,
             // level = number of rhyme pairs
             'adaptive' => [
@@ -113,17 +115,17 @@ return [
             'intro' => 'Kártyázzunk! De most nem ugyanaz a párja egy kártyának, hanem az, amelyik rímel rá. Fordíts fel kettőt, és figyelj a hangjukra!',
         ],
         'arnyek' => [
-            'name' => 'Árnyékkereső', 'emoji' => '👤', 'skill' => 'Alak és forma felismerése', 'color' => '#D6DCE4', 'tier' => 'simple',
+            'name' => 'Árnyékkereső', 'emoji' => '👤', 'skill' => 'Alak és forma felismerése', 'color' => '#D6DCE4', 'tier' => 'simple', 'stage' => 'forest',
             'factory' => Rounds\ArnyekRounds::class, 'rounds' => 8,
             'intro' => 'Nézd, csak az árnyékuk látszik! Találd ki, kinek az árnyéka!',
         ],
         'rimelo' => [
-            'name' => 'Rímelő', 'emoji' => '🎵', 'skill' => 'Rímek, a szavak vége', 'color' => '#F8C8DC', 'tier' => 'advanced',
+            'name' => 'Rímelő', 'emoji' => '🎵', 'skill' => 'Rímek, a szavak vége', 'color' => '#F8C8DC', 'tier' => 'advanced', 'stage' => 'pond',
             'factory' => Rounds\RimeloRounds::class, 'rounds' => 8,
             'intro' => 'Rímeljünk! A ló és a hó rímel, mert ugyanúgy végződik. Figyelj a szavak végére!',
         ],
         'valogato' => [
-            'name' => 'Válogató', 'emoji' => '🧺', 'skill' => 'Csoportosítás, fogalmak', 'color' => '#D4F0C0', 'tier' => 'simple',
+            'name' => 'Válogató', 'emoji' => '🧺', 'skill' => 'Csoportosítás, fogalmak', 'color' => '#D4F0C0', 'tier' => 'simple', 'stage' => 'market',
             'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
             // level = pictures per round: 1 → 4, 2 → 6, 3 → 8
             'adaptive' => [
@@ -133,7 +135,7 @@ return [
             'intro' => 'Rendet rakunk! Minden kép a saját kosarába kerül. Koppints a jó kosárra!',
         ],
         'kulonbseg' => [
-            'name' => 'Mi a különbség?', 'emoji' => '🔍', 'skill' => 'Két kép, egy különbség', 'color' => '#CDE7FF', 'tier' => 'simple',
+            'name' => 'Mi a különbség?', 'emoji' => '🔍', 'skill' => 'Két kép, egy különbség', 'color' => '#CDE7FF', 'tier' => 'simple', 'stage' => 'meadow',
             'factory' => Rounds\KulonbsegRounds::class, 'rounds' => 6,
             // level = grid on each panel: 1 → 2×2, 2 → 3×2, 3 → 3×3 (and a look-alike swapped in)
             'adaptive' => [
@@ -143,7 +145,7 @@ return [
             'intro' => 'Nézd, két kép! Majdnem egyformák, de egy helyen más van rajtuk. Keresd meg, és koppints rá!',
         ],
         'nagysag' => [
-            'name' => 'Kicsitől a nagyig', 'emoji' => '🪆', 'skill' => 'Sorba rendezés nagyság szerint', 'color' => '#FFE9A8', 'tier' => 'simple',
+            'name' => 'Kicsitől a nagyig', 'emoji' => '🪆', 'skill' => 'Sorba rendezés nagyság szerint', 'color' => '#FFE9A8', 'tier' => 'simple', 'stage' => 'workshop',
             'factory' => Rounds\NagysagRounds::class, 'rounds' => 6,
             // level = sizes to order: 1 → 3, 2 → 4, 3 → 5 (and every other round biggest first)
             'adaptive' => [
@@ -153,12 +155,12 @@ return [
             'intro' => 'Rakjunk rendet! Koppints a képekre sorban: először a legkisebbre, a végén a legnagyobbra!',
         ],
         'erzelmek' => [
-            'name' => 'Hogy érzi magát?', 'emoji' => '😊', 'skill' => 'Érzelmek felismerése', 'color' => '#FFD6C9', 'tier' => 'simple',
+            'name' => 'Hogy érzi magát?', 'emoji' => '😊', 'skill' => 'Érzelmek felismerése', 'color' => '#FFD6C9', 'tier' => 'simple', 'stage' => 'storybook',
             'factory' => Rounds\ErzelmekRounds::class, 'rounds' => 8,
             'intro' => 'Az arcunk megmutatja, hogy érezzük magunkat: vidámak vagyunk, szomorúak, vagy éppen mérgesek. Segíts kitalálni!',
         ],
         'mitunt' => [
-            'name' => 'Mi tűnt el?', 'emoji' => '🎩', 'skill' => 'Képek megjegyzése', 'color' => '#E6D9FF', 'tier' => 'advanced',
+            'name' => 'Mi tűnt el?', 'emoji' => '🎩', 'skill' => 'Képek megjegyzése', 'color' => '#E6D9FF', 'tier' => 'advanced', 'stage' => 'magic',
             'factory' => Rounds\MituntRounds::class, 'rounds' => 6,
             // level = pictures to remember (3–6)
             'adaptive' => [
@@ -168,7 +170,7 @@ return [
             'intro' => 'Varázsoljunk! Jegyezd meg jól a képeket. Utána az egyik eltűnik, te pedig kitalálod, melyik volt az!',
         ],
         'tortenet' => [
-            'name' => 'Mi történt előbb?', 'emoji' => '🐣', 'skill' => 'Történetek sorrendje', 'color' => '#D2F2DF', 'tier' => 'advanced',
+            'name' => 'Mi történt előbb?', 'emoji' => '🐣', 'skill' => 'Történetek sorrendje', 'color' => '#D2F2DF', 'tier' => 'advanced', 'stage' => 'storybook',
             'factory' => Rounds\TortenetRounds::class, 'rounds' => 5,
             // level = steps of a story: 1 → 3, 2 → 4
             'adaptive' => [
@@ -178,7 +180,7 @@ return [
             'intro' => 'Mesélek neked! Nézd meg a képeket, és rakd őket sorba: mi történt először, és mi a végén?',
         ],
         'korus' => [
-            'name' => 'Állatkórus', 'emoji' => '🎼', 'skill' => 'Nézd, hallgasd, ismételd!', 'color' => '#C4EEF7', 'tier' => 'advanced',
+            'name' => 'Állatkórus', 'emoji' => '🎼', 'skill' => 'Nézd, hallgasd, ismételd!', 'color' => '#C4EEF7', 'tier' => 'advanced', 'stage' => 'theatre',
             'factory' => Rounds\KorusRounds::class, 'rounds' => 5,
             // level = notes the choir sings (2–7)
             'adaptive' => [
@@ -188,7 +190,7 @@ return [
             'intro' => 'Az állatok egymás után énekelnek. Figyeld, ki énekel, aztán koppints rájuk ugyanabban a sorrendben!',
         ],
         'utasitas' => [
-            'name' => 'Csináld, amit mondok!', 'emoji' => '👆', 'skill' => 'Utasítások követése', 'color' => '#FFDDEE', 'tier' => 'advanced',
+            'name' => 'Csináld, amit mondok!', 'emoji' => '👆', 'skill' => 'Utasítások követése', 'color' => '#FFDDEE', 'tier' => 'advanced', 'stage' => 'meadow',
             'factory' => Rounds\UtasitasRounds::class, 'rounds' => 6,
             // level = kind of direction: 1 → one step, 2 → two steps / "all", 3 → three steps, "before", "not"
             'adaptive' => [
@@ -198,6 +200,14 @@ return [
             'intro' => 'Most jól figyelj! Mondok valamit, te pedig pontosan azt csinálod. Várd meg, amíg végigmondom, és csak utána koppints!',
         ],
     ],
+
+    /*
+    | "Csillám makes mistakes" (App\Beszed\CsillamGuess): in picture-choice rounds
+    | she sometimes has a go first and asks the child if she's right; half the time
+    | she's wrong on purpose. `chance` per round, at most `max` per session. A game
+    | can opt out with 'guess' => false.
+    */
+    'guesses' => ['chance' => 0.25, 'max' => 2],
 
     'praise' => [
         'Hűha! Ügyes vagy!', 'Igen! Megcsináltad!', 'Ez az! Pacsi!',

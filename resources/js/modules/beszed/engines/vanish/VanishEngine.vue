@@ -13,7 +13,7 @@ import { engineEmits, engineProps } from '../contract'
 /**
  * "Mi tűnt el?" (Kim's game). Look: the pictures stay for `lookMs` after the
  * prompt (a picture says its name when tapped; "Megvan!" skips the wait).
- * Hide: a sparkle cloud covers them. Guess: they come back with one gap; the
+ * Hide: the magician's hat swoops down over them in a puff of sparkles. Guess: they come back with one gap; the
  * child picks the missing one from the choices.
  * data: VanishData
  */
@@ -84,6 +84,7 @@ function choose(id) {
       </button>
     </template>
     <EmojiArt class="cloud" :char="ICONS.sparkles" aria-hidden="true" />
+    <EmojiArt class="hat" :char="ICONS.magicHat" aria-hidden="true" />
   </div>
 
   <BzButton v-if="phase === 'look'" :icon="ICONS.thumbsUp" @click="hide">{{ t('vanish.ready') }}</BzButton>
@@ -144,7 +145,41 @@ function choose(id) {
   border-color: var(--bz-leaf);
   background: color-mix(in srgb, var(--bz-leaf) 16%, var(--bz-card));
 }
-/* hide: the pictures shrink away under a sparkle cloud (transform/opacity only) */
+/*
+ * hide: the magician's hat drops over the pictures, wobbles, and they shrink away
+ * in a puff of sparkles; it lifts off again when they come back (transform/opacity only)
+ */
+.hat {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  font-size: clamp(110px, 32vw, 170px);
+  line-height: 1;
+  translate: -50% -50%;
+  opacity: 0;
+  transform: translateY(-140%) rotate(-12deg);
+  transition:
+    transform 0.4s cubic-bezier(0.5, 0, 0.75, 0),
+    opacity 0.2s 0.2s;
+  pointer-events: none;
+}
+.board--hide .hat {
+  opacity: 1;
+  transform: translateY(-8%) rotate(0deg);
+  transition:
+    transform 0.42s cubic-bezier(0.3, 1.5, 0.5, 1),
+    opacity 0.12s;
+  animation: wobble 0.5s 0.42s ease-in-out 2;
+}
+@keyframes wobble {
+  25% {
+    rotate: -7deg;
+  }
+  75% {
+    rotate: 7deg;
+  }
+}
 .cloud {
   position: absolute;
   inset: 0;

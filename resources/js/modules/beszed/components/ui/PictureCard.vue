@@ -43,10 +43,12 @@ defineProps({
   font-size: 110px;
   line-height: 1;
   box-shadow: var(--bz-shadow-lg);
-  transition: transform 0.08s;
+  transition: transform 0.38s var(--bz-spring);
 }
 button.picture:active {
-  transform: translateY(4px);
+  transform: scale(0.94);
+  transition-duration: 0.07s;
+  transition-timing-function: ease-out;
 }
 .picture--highlight {
   background: var(--bz-sun);

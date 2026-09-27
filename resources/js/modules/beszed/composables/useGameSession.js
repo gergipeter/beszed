@@ -10,6 +10,8 @@ import { useRecordingsStore } from '../stores/recordings'
 import { useRewardsStore } from '../stores/rewards'
 import { sleep } from '../utils/async'
 import { chime } from '../services/audio/sfx'
+import { burst } from '../services/effects/burst'
+import { buzz, lastTouch } from '../services/touch/feel'
 import { errorMessage } from '../utils/errors'
 import { pick } from '../utils/random'
 import { useIdleHelp } from './useIdleHelp'
@@ -72,6 +74,8 @@ export function useGameSession(childId, game) {
   let startedAt = 0
   let gameStartedAt = 0
   let active = true
+  /** Rounds in a row solved at the first try. */
+  let combo = 0
 
   const round = computed(() => session.value?.rounds[index.value] ?? null)
   const total = computed(() => session.value?.rounds.length ?? 0)
@@ -104,6 +108,7 @@ export function useGameSession(childId, game) {
       stars.value = fresh.stars
       index.value = 0
       solved.value = 0
+      combo = 0
       firstTry.value = 0
       result.value = null
       savedLater.value = false
@@ -160,6 +165,8 @@ export function useGameSession(childId, game) {
     // Self-graded wins (puzzle, memory, sort) replace the count of wrong answers.
     tries.value = correct && graded ? graded : tries.value + 1
     if (!correct) {
+      combo = 0
+      buzz([18, 60, 18])
       guide.comfort()
       guide.speak(feedback('retry', say))
       return
@@ -169,8 +176,12 @@ export function useGameSession(childId, game) {
     stars.value++
     solved.value++
     if (tries.value === 1) firstTry.value++
+    // Right at the first try again and again: the chime climbs and the burst grows.
+    combo = tries.value === 1 ? combo + 1 : 0
     guide.celebrate()
-    chime()
+    chime(combo)
+    buzz([12, 50, 20])
+    burst(lastTouch(), combo >= 3 ? { pieces: 18, reach: 110 } : undefined)
     const saved = saveAttempt(true)
     await Promise.all([guide.speak(feedback('praise', say)), sleep(config.timing.praisePauseMs), saved])
     next()

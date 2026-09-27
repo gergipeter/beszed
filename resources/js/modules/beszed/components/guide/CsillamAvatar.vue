@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { config } from '../../config/options'
 import { t } from '../../i18n'
 import { useGuideStore } from '../../stores/guide'
@@ -51,10 +51,52 @@ const classes = computed(() => [
   { talking: guide.talking, party: guide.party },
 ])
 const label = computed(() => t('guide.avatarLabel', { name: props.name || config.guideName }))
+
+/**
+ * Her eyes follow the child's finger (or mouse): the pupils glide a few units
+ * towards it, and back to the middle after a while without a touch. At most
+ * one measurement per frame; a small repaint of the eyes only.
+ */
+const el = ref(null)
+const gaze = reactive({ x: 0, y: 0 })
+const GAZE_X = 4
+const GAZE_Y = 3.5
+const REST_MS = 2500
+let frame = 0
+let rest = 0
+let point = null
+
+function look(event) {
+  point = { x: event.clientX, y: event.clientY }
+  frame ||= requestAnimationFrame(aim)
+}
+function aim() {
+  frame = 0
+  const box = el.value?.getBoundingClientRect()
+  if (!box || !point) return
+  const dx = point.x - (box.left + box.width / 2)
+  const dy = point.y - (box.top + box.height * 0.42) // the eyes, not the middle of the body
+  const distance = Math.hypot(dx, dy) || 1
+  const reach = Math.min(1, distance / 160)
+  gaze.x = (dx / distance) * GAZE_X * reach
+  gaze.y = (dy / distance) * GAZE_Y * reach
+  clearTimeout(rest)
+  rest = setTimeout(() => Object.assign(gaze, { x: 0, y: 0 }), REST_MS)
+}
+onMounted(() => {
+  window.addEventListener('pointermove', look, { passive: true })
+  window.addEventListener('pointerdown', look, { passive: true })
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('pointermove', look)
+  window.removeEventListener('pointerdown', look)
+  cancelAnimationFrame(frame)
+  clearTimeout(rest)
+})
 </script>
 
 <template>
-  <span :class="classes" role="img" :aria-label="label">
+  <span ref="el" :class="classes" role="img" :aria-label="label">
     <svg class="uni" viewBox="0 0 200 222" aria-hidden="true">
       <defs>
         <linearGradient :id="gradientId" x1="0" y1="0" x2="0" y2="1">
@@ -98,7 +140,7 @@ const label = computed(() => t('guide.avatarLabel', { name: props.name || config
         <circle cx="64" cy="114" r="9" fill="#FFB3D1" opacity=".75" />
         <circle cx="136" cy="114" r="9" fill="#FFB3D1" opacity=".75" />
         <!-- eyes: open / happy / sad -->
-        <g class="e-open">
+        <g class="e-open" :style="{ transform: `translate(${gaze.x.toFixed(1)}px, ${gaze.y.toFixed(1)}px)` }">
           <ellipse cx="80" cy="94" rx="8.5" ry="11.5" fill="#3B1F4A" />
           <ellipse cx="120" cy="94" rx="8.5" ry="11.5" fill="#3B1F4A" />
           <circle cx="83" cy="89" r="3.2" fill="#fff" />
@@ -191,6 +233,11 @@ const label = computed(() => t('guide.avatarLabel', { name: props.name || config
   width: 100%;
   height: auto;
   overflow: visible;
+}
+
+/* her gaze following the finger glides instead of jumping */
+.e-open {
+  transition: transform 0.14s ease-out;
 }
 
 /* which face parts show per mood (discrete switches, no per-frame cost) */

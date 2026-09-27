@@ -2,14 +2,17 @@
 import { computed, reactive, ref } from 'vue'
 import EmojiArt from '../../components/ui/EmojiArt.vue'
 import PictureCard from '../../components/ui/PictureCard.vue'
+import { useDrag } from '../../composables/useDrag'
 import { useShake } from '../../composables/useShake'
 import { t } from '../../i18n'
 import { beep } from '../../services/audio/sfx'
 import { engineEmits, engineProps } from '../contract'
 
 /**
- * Sorting (Válogató): one picture at a time goes into one of two baskets.
- * A wrong basket shakes and Csillám says why. The win is graded by mistakes.
+ * Sorting (Válogató): one picture at a time goes into one of two baskets:
+ * dragged there (the basket pulls it in like a magnet) or by tapping the basket.
+ * A wrong basket shakes, Csillám says why and the picture springs back.
+ * The win is graded by mistakes.
  * data: SortData
  */
 const props = defineProps(engineProps)
@@ -24,14 +27,15 @@ const { shaking, shake } = useShake()
 const current = computed(() => props.data.items[index.value] ?? null)
 const grade = () => (mistakes === 0 ? 1 : mistakes <= 2 ? 2 : 3)
 
+/** @returns {boolean} the picture went in */
 function drop(bin) {
   const item = current.value
-  if (props.locked || !item) return
+  if (props.locked || !item) return false
   if (item.bin !== bin.id) {
     mistakes++
     shake(bin.id)
     emit('say', item.wrong)
-    return
+    return false
   }
   placed[bin.id].push(item)
   beep(640, 0.08)
@@ -39,7 +43,15 @@ function drop(bin) {
   if (index.value === props.data.items.length) {
     emit('answer', { correct: true, say: props.data.onCorrect, tries: grade() })
   }
+  return true
 }
+
+// dropped into a basket: it stays where it fell and fades into it
+const bins = ref(null)
+const drag = useDrag({
+  root: bins,
+  onDrop: (item, id) => (drop(props.data.bins.find(b => b.id === id)) ? 'keep' : false),
+})
 </script>
 
 <template>
@@ -52,17 +64,20 @@ function drop(bin) {
       :emoji="current.emoji"
       :label="current.label"
       pressable
+      class="bz-draggable"
+      @pointerdown="drag.start($event, current)"
       @click="emit('say', current.label)"
     />
   </Transition>
 
-  <div class="bins">
+  <div ref="bins" class="bins">
     <button
       v-for="bin in data.bins"
       :key="bin.id"
       type="button"
       class="bin"
-      :class="{ 'bin--shake': shaking === bin.id }"
+      :class="{ 'bin--shake': shaking === bin.id, 'bin--over': drag.over.value === bin.id }"
+      :data-drop="bin.id"
       :aria-label="t('sort.basket', { label: bin.label })"
       @click="drop(bin)"
     >
@@ -103,6 +118,13 @@ function drop(bin) {
 }
 .bin:active {
   transform: translateY(4px);
+}
+/* a picture dragged near: the basket opens up for it */
+.bin--over {
+  border-style: solid;
+  border-color: var(--bz-leaf);
+  transform: scale(1.05);
+  transition: transform 0.25s var(--bz-spring);
 }
 .bin--shake {
   animation: shake 0.45s;

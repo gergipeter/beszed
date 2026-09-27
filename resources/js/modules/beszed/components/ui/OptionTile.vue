@@ -42,10 +42,12 @@ defineProps({
   font-size: 30px;
   font-weight: 800;
   box-shadow: var(--bz-shadow-lg);
-  transition: transform 0.08s;
+  transition: transform 0.38s var(--bz-spring);
 }
 .option:active {
-  transform: translateY(4px);
+  transform: scale(0.93);
+  transition-duration: 0.07s;
+  transition-timing-function: ease-out;
 }
 .option--good {
   border-color: var(--bz-leaf);

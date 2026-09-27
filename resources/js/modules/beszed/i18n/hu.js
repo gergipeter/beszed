@@ -31,6 +31,9 @@ export default {
     forParents: 'Szülőknek',
     loadFailed: 'Nem sikerült betölteni a játékokat.',
     exit: 'Gyerekek',
+    zones: { meadow: 'A Rét', forest: 'A Varázserdő' },
+    grewOne: 'Új növény nőtt a kertedben!',
+    grewMany: '{count} új növény nőtt a kertedben!',
     tiers: {
       simple: { title: 'Egyszerű játékok', hint: 'Kezdésnek és a legkisebbeknek: egy koppintás, kevés megjegyezni való.' },
       advanced: { title: 'Haladó játékok', hint: 'Nagyobbaknak: hangok, rímek, emlékezet és gondolkodás.' },
@@ -73,6 +76,7 @@ export default {
     newSticker: 'Új matrica!',
     unlocked: 'Új kincs Csillámnak: {name}',
     savedLater: 'Most nincs internet: az eredményt elmentjük, amint újra lesz.',
+    gardenGrew: 'Egy új növény nőtt a kertedben!',
     again: 'Még egyszer',
     otherGame: 'Másik játék',
     unsupported: 'Ezt a feladatot most nem tudom megmutatni.',
@@ -82,6 +86,8 @@ export default {
     answer: 'válasz',
     sequence: 'sor',
     pickSpeaker: '{label} – ez a szép',
+    agree: 'Igen, jó!',
+    disagree: 'Nem, tévedsz!',
   },
 
   sequence: {
