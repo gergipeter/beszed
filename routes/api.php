@@ -113,3 +113,14 @@ Route::prefix('content')->name('content.')->group(function () {
 // The read-only report behind a therapist's share link: no sign-in, just the token.
 Route::get('share/{token}', [ShareController::class, 'show'])
     ->where('token', '[A-Za-z0-9]{40}')->middleware('throttle:30,1,share-view')->name('share.show');
+
+// Language API (no auth required)
+Route::prefix('language')->name('language.')->group(function () {
+    Route::get('/', [LanguageController::class, 'index'])->name('index');
+    Route::get('current', [LanguageController::class, 'current'])->name('current');
+    Route::post('switch', [LanguageController::class, 'switch'])->name('switch');
+    Route::get('{language}/translations', [LanguageController::class, 'getTranslations'])->name('translations');
+});
+
+// Admin: Add new language
+Route::post('language/add', [LanguageController::class, 'add'])->middleware('auth:sanctum')->name('language.add');
