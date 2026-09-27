@@ -298,7 +298,9 @@ return [
         | email: true → a milestone worth mailing the parent about (MilestoneEarned),
         |   if they haven't turned that off. Left off the common, small ones on purpose.
         */
-        'badges' => [
+        // Generate 1000 unique stickers progressively from gameplay
+        'badges' => array_merge([
+            // Original achievement stickers (26)
             'first_game' => ['name' => 'Első játék', 'emoji' => '🎈', 'hint' => 'Játssz végig egy játékot!', 'rule' => ['sessions', 1]],
             'daily_goal' => ['name' => 'Napi cél', 'emoji' => '🎯', 'hint' => 'Játssz :goal játékot egy nap alatt!', 'rule' => ['daily_goal']],
             'perfect' => ['name' => 'Hibátlan', 'emoji' => '💎', 'hint' => 'Oldj meg egy egész játékot elsőre!', 'rule' => ['perfect', 1]],
@@ -324,7 +326,8 @@ return [
             'stories' => ['name' => 'Mesemondó', 'emoji' => '📖', 'hint' => 'Játssz ötször a „Mi történt előbb?” játékkal!', 'rule' => ['game', 'tortenet', 5]],
             'choir' => ['name' => 'Kórusmester', 'emoji' => '🎼', 'hint' => 'Játssz ötször az Állatkórussal!', 'rule' => ['game', 'korus', 5]],
             'listener' => ['name' => 'Figyelmes', 'emoji' => '🦉', 'hint' => 'Játssz ötször a „Csináld, amit mondok!” játékkal!', 'rule' => ['game', 'utasitas', 5]],
-        ],
+        ], self::generateCollectorStickers()),
+
 
         /*
         | Csillám's wardrobe, unlocked at these player levels (about two a level,
