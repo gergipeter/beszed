@@ -23,17 +23,20 @@ class GameContentController extends Controller
     {
         $this->validateGame($game);
 
-        $items = BeszedContentItem::where('game', $game)
+        $query = BeszedContentItem::where('game', $game)
             ->where('active', true)
             ->where('status', 'live')
             ->orderBy('level')
-            ->orderBy('id')
-            ->get();
+            ->orderBy('id');
+
+        $total = $query->count();
+        $items = $query->limit(100)->get();
 
         return response()->json([
             'game' => $game,
+            'total' => $total,
             'count' => $items->count(),
-            'items' => $items->map(fn ($item) => $this->format($item)),
+            'items' => $items->map(function ($item) { return $this->format($item); }),
         ]);
     }
 
