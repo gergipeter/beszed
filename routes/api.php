@@ -30,6 +30,25 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('pet/sleep', [\App\Http\Controllers\Beszed\PetController::class, 'sleep'])->name('sleep');
         Route::get('pet/history', [\App\Http\Controllers\Beszed\PetController::class, 'history'])->name('history');
     });
+
+    // Speech Analysis API
+    Route::prefix('beszed/children/{child}/speech')->name('beszed.speech.')->group(function () {
+        Route::post('analyze', [\App\Http\Controllers\Beszed\SpeechController::class, 'analyze'])->name('analyze');
+        Route::get('history', [\App\Http\Controllers\Beszed\SpeechController::class, 'history'])->name('history');
+        Route::get('{recording}', [\App\Http\Controllers\Beszed\SpeechController::class, 'show'])->name('show');
+        Route::get('phonemes/progress', [\App\Http\Controllers\Beszed\SpeechController::class, 'phonemeProgress'])->name('phoneme-progress');
+        Route::get('trends', [\App\Http\Controllers\Beszed\SpeechController::class, 'trends'])->name('trends');
+    });
+
+    // Adaptive Learning API
+    Route::prefix('beszed/children/{child}/adaptive')->name('beszed.adaptive.')->group(function () {
+        Route::get('recommendations', [\App\Http\Controllers\Beszed\AdaptiveController::class, 'recommendGames'])->name('recommendations');
+        Route::get('games/{game}/skill-level', [\App\Http\Controllers\Beszed\AdaptiveController::class, 'gameSkillLevel'])->name('game-skill');
+        Route::get('predict/pronunciation', [\App\Http\Controllers\Beszed\AdaptiveController::class, 'predictPronunciation'])->name('predict-pronunciation');
+        Route::get('predict/fluency', [\App\Http\Controllers\Beszed\AdaptiveController::class, 'predictFluency'])->name('predict-fluency');
+        Route::get('predict/games/{game}', [\App\Http\Controllers\Beszed\AdaptiveController::class, 'predictGameProgress'])->name('predict-game');
+        Route::get('summary', [\App\Http\Controllers\Beszed\AdaptiveController::class, 'progressSummary'])->name('summary');
+    });
 });
 
 // Content editor, for the parents listed in ADMIN_EMAILS.
