@@ -1,0 +1,52 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "kind": "tale",
+      "name": "Hamupipőke",
+      "prop": "👠",
+      "emoji": "👑",
+      "scene": "castle"
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "kind": "tale",
+      "name": "Pinocchio",
+      "prop": "🪵",
+      "emoji": "👃",
+      "scene": "forest"
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "kind": "picture",
+      "name": "Otthon",
+      "prop": "🏠",
+      "emoji": "🏠",
+      "scene": "home"
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "kind": "picture",
+      "name": "Iskola",
+      "prop": "📚",
+      "emoji": "🏫",
+      "scene": "school"
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "kind": "tale",
+      "name": "A nagy kaland",
+      "prop": "🗺️",
+      "emoji": "🧭",
+      "scene": "adventure"
+    }
+  }
+]

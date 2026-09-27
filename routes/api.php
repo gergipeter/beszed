@@ -37,6 +37,15 @@ Route::middleware(['auth:sanctum', 'can:edit-content'])->prefix('admin/content')
 // Public: serve uploaded content images.
 Route::get('content-images/{id}', \App\Http\Controllers\ContentImageController::class)->name('content-images.show');
 
+// Public API: populate game content via API (no auth required).
+Route::prefix('content')->name('content.')->group(function () {
+    Route::get('{game}', [\App\Http\Controllers\Api\Content\GameContentController::class, 'index'])->name('index');
+    Route::post('{game}', [\App\Http\Controllers\Api\Content\GameContentController::class, 'store'])->name('store');
+    Route::post('{game}/bulk', [\App\Http\Controllers\Api\Content\GameContentController::class, 'bulk'])->name('bulk');
+    Route::put('{game}/{id}', [\App\Http\Controllers\Api\Content\GameContentController::class, 'update'])->name('update');
+    Route::delete('{game}/{id}', [\App\Http\Controllers\Api\Content\GameContentController::class, 'destroy'])->name('destroy');
+});
+
 // The read-only report behind a therapist's share link: no sign-in, just the token.
 Route::get('share/{token}', [ShareController::class, 'show'])
     ->where('token', '[A-Za-z0-9]{40}')->middleware('throttle:30,1,share-view')->name('share.show');
