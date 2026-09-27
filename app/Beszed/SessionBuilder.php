@@ -18,7 +18,7 @@ class SessionBuilder
         $cfg = config("beszed.games.$game");
         abort_unless($cfg, 404);
 
-        $items = BeszedContentItem::forGame($game)->get();
+        $items = BeszedContentItem::forGame($game)->limit(1000)->get();
         abort_if($items->isEmpty(), 422, "No content for '$game'. Run: php artisan db:seed --class=BeszedContentSeeder");
 
         $level = $this->leveler->current($child, $game);
