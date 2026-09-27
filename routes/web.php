@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\PictogramController;
 use App\Http\Controllers\SpaController;
+use App\Http\Controllers\WeeklyReportUnsubscribeController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -24,6 +25,11 @@ Route::get('/pictograms/{id}.png', PictogramController::class)
     ->withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, AddQueuedCookiesToResponse::class, EncryptCookies::class, ValidateCsrfToken::class])
     ->name('pictogram');
 
+// The one-click unsubscribe in the weekly report e-mail (signed link).
+Route::get('/email/heti-beszamolo/leiratkozas/{user}', WeeklyReportUnsubscribeController::class)
+    ->middleware(['signed', 'throttle:10,1,unsubscribe'])
+    ->name('weekly-report.unsubscribe');
+
 // Every other page URL is the Vue app; it decides between sign-in and the games.
 Route::get('/login', SpaController::class)->name('login');
-Route::get('/{path?}', SpaController::class)->where('path', '^(?!api/|auth/|up$|build/|storage/|pictograms/).*')->name('spa');
+Route::get('/{path?}', SpaController::class)->where('path', '^(?!api/|auth/|up$|build/|storage/|pictograms/|email/).*')->name('spa');

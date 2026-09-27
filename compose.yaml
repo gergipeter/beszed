@@ -26,6 +26,14 @@ services:
       # Parent sign-in with Google; leave empty to use the local demo sign-in only.
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      # E-mail (weekly reports, milestones). "log" writes them to the log; set smtp + the rest in .env to send.
+      MAIL_MAILER: ${MAIL_MAILER:-log}
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-csillam@example.test}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-Csillám}
       # Content editor (/tartalom) access, comma-separated e-mails. Nobody by default: through the
       # tunnel anyone can sign in as the demo parent. Set ADMIN_EMAILS=parent@example.test in .env
       # to edit content again while the app is not public.

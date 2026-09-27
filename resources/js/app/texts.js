@@ -39,6 +39,12 @@ export const texts = {
   exportData: 'Adataim letöltése',
   milestoneEmails: 'E-mail, ha a gyerek elér egy mérföldkövet',
   milestoneEmailsSaveFailed: 'Nem sikerült elmenteni ezt a beállítást.',
+  weeklyReport: 'Heti beszámoló e-mailben vasárnap este, PDF-fel',
+  weeklySample: 'Küldd el most a heti beszámolót',
+  weeklySampleSending: 'Küldjük…',
+  weeklySampleSent: 'Elküldtük ({count} levél) ide: {email}',
+  weeklySampleNone: 'Ezen a héten még senki nem játszott, így nincs miről beszámolni.',
+  weeklySampleWait: 'Most küldtünk egyet, próbáld újra pár perc múlva!',
   deleteAccount: 'Fiók törlése',
   deletePrompt:
     'A fiókod, az összes gyerek, minden eredmény, matrica és hangfelvétel véglegesen törlődik. Ha biztos vagy benne, írd be: TÖRLÉS',

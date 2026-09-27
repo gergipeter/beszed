@@ -26,6 +26,7 @@ class User extends Authenticatable
         'google_id',
         'avatar',
         'milestone_emails_enabled',
+        'weekly_report_enabled',
     ];
 
     /**
@@ -51,6 +52,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'consented_at' => 'datetime',
             'milestone_emails_enabled' => 'boolean',
+            'weekly_report_enabled' => 'boolean',
         ];
     }
 

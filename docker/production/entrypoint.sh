@@ -16,4 +16,6 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+# the scheduler (the Sunday weekly report e-mails), next to the web server
+php artisan schedule:work >/dev/null 2>&1 &
 exec "$@"

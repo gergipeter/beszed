@@ -16,4 +16,6 @@ fi
 
 php artisan migrate --force
 php artisan db:seed --force
+# the scheduler (the Sunday weekly report e-mails), next to the web server
+php artisan schedule:work >/dev/null 2>&1 &
 exec php artisan serve --host=0.0.0.0 --port=8000

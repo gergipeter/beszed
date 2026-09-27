@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { BzButton, BzNotice, CsillamAvatar, EmojiArt } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
+import { http } from '../http'
 import { useSessionStore } from '../stores/session'
 import { fill, texts } from '../texts'
 
@@ -86,6 +87,27 @@ async function deleteAccount() {
     router.replace({ name: 'login' })
   } catch (e) {
     error.value = e.response?.data?.message || texts.deleteFailed
+  }
+}
+
+/** The Sunday e-mail with each child's week and its PDF. */
+async function toggleWeeklyReport(event) {
+  const enabled = event.target.checked
+  try {
+    await session.savePreferences({ weekly_report_enabled: enabled })
+  } catch {
+    event.target.checked = !enabled
+    error.value = texts.milestoneEmailsSaveFailed
+  }
+}
+const sample = ref('')
+async function sendSample() {
+  sample.value = texts.weeklySampleSending
+  try {
+    const { data } = await http.post('/api/me/weekly-report')
+    sample.value = data.sent ? fill(texts.weeklySampleSent, { count: data.sent, email: session.user?.email ?? '' }) : texts.weeklySampleNone
+  } catch (e) {
+    sample.value = e.response?.status === 429 ? texts.weeklySampleWait : texts.saveFailed
   }
 }
 
@@ -193,6 +215,14 @@ async function toggleMilestoneEmails(event) {
       <input type="checkbox" :checked="session.user?.milestone_emails_enabled" @change="toggleMilestoneEmails" />
       <span>{{ texts.milestoneEmails }}</span>
     </label>
+    <label class="milestone-toggle">
+      <input type="checkbox" :checked="session.user?.weekly_report_enabled" @change="toggleWeeklyReport" />
+      <span>{{ texts.weeklyReport }}</span>
+    </label>
+    <p class="weekly-sample">
+      <BzButton size="sm" variant="soft" @click="sendSample">{{ texts.weeklySample }}</BzButton>
+      <small v-if="sample" role="status">{{ sample }}</small>
+    </p>
 
     <footer class="account">
       <RouterLink :to="{ name: 'privacy' }">{{ texts.privacyLink }}</RouterLink>
@@ -252,6 +282,16 @@ async function toggleMilestoneEmails(event) {
   background: var(--bz-soft);
   color: var(--bz-ink);
   font: inherit;
+}
+.weekly-sample {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 4px 0 0;
+}
+.weekly-sample small {
+  color: var(--bz-muted);
 }
 .milestone-toggle {
   display: flex;

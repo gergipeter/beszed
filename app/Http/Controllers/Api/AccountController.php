@@ -10,6 +10,7 @@ use App\Models\BeszedRecording;
 use App\Models\BeszedSession;
 use App\Models\BeszedShare;
 use App\Models\BeszedSkillLevel;
+use App\Beszed\Reports\WeeklyReportSender;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -31,15 +32,24 @@ class AccountController extends Controller
         return response()->json(['consent' => ['required' => false, 'version' => $user->consent_version]]);
     }
 
-    /** Whether an email is sent when a child hits a milestone (see MilestoneEarned). */
+    /** The parent's e-mails: a note on each milestone (MilestoneEarned), and the weekly report. */
     public function preferences(Request $request): JsonResponse
     {
-        $data = $request->validate(['milestone_emails_enabled' => ['required', 'boolean']]);
+        $data = $request->validate([
+            'milestone_emails_enabled' => ['sometimes', 'boolean'],
+            'weekly_report_enabled' => ['sometimes', 'boolean'],
+        ]);
 
         $user = $request->user();
         $user->forceFill($data)->save();
 
-        return response()->json(['milestone_emails_enabled' => $user->milestone_emails_enabled]);
+        return response()->json($user->only('milestone_emails_enabled', 'weekly_report_enabled'));
+    }
+
+    /** This week's report for every child who played, e-mailed now (a sample; the real one comes on Sunday). */
+    public function weeklyReportSample(Request $request, WeeklyReportSender $sender): JsonResponse
+    {
+        return response()->json(['sent' => $sender->sendFor($request->user(), force: true)]);
     }
 
     /** Everything stored about the parent and their children, as a JSON download. */

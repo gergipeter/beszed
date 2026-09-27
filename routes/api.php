@@ -13,6 +13,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', MeController::class)->name('me');
     Route::post('me/consent', [AccountController::class, 'consent'])->name('me.consent');
     Route::put('me/preferences', [AccountController::class, 'preferences'])->name('me.preferences');
+    // "Küldj most egy mintát": this week's report e-mailed right away
+    Route::post('me/weekly-report', [AccountController::class, 'weeklyReportSample'])->middleware('throttle:3,10,weekly-sample')->name('me.weekly-report');
     Route::get('me/export', [AccountController::class, 'export'])->middleware('throttle:10,1,export')->name('me.export');
     Route::delete('me', [AccountController::class, 'destroy'])->name('me.destroy');
 

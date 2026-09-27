@@ -307,6 +307,24 @@ Every child can pick their kindergarten picture sign (36 of them, `config/beszed
 *Ki játszik ma?* page; it shows big on their tile, so they find themselves before they can read, and by
 their name on the hub.
 
+### The weekly report e-mail
+
+Every Sunday at 18:00 (`BESZED_TIMEZONE`) each parent gets one e-mail per child who played that week
+(`php artisan beszed:weekly-reports`, scheduled in `routes/console.php`; the containers run
+`schedule:work` next to the web server). It is a styled HTML letter (`resources/views/emails/weekly-report`:
+the week in numbers, Csillám's summary, each skill area with its trend against the week before, the games
+played most with their levels, new stickers, a tip for next week) with the same report as an A4 PDF
+attached (`resources/views/pdf/weekly-report`, dompdf; pictures drawn from the Twemoji SVGs). At most one
+per child per week; weeks without play send nothing.
+
+- Parents turn it off on *Ki játszik ma?* or with the one-click signed *Leiratkozás* link in the e-mail;
+  *Küldd el most a heti beszámolót* sends this week's right away.
+- `php artisan beszed:weekly-reports --preview=<child id>` writes the PDF and HTML to
+  `storage/app/weekly-preview/` instead of sending.
+- Mail goes to the log until SMTP is set: `MAIL_MAILER=smtp`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`,
+  `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME` in `.env` (compose forwards them) or
+  `.env.production`.
+
 ## Offline play
 
 `public/sw.js` (a small hand-written service worker, no build plugin) makes the app work without a
