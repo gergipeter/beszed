@@ -19,6 +19,7 @@ const loaders = {
   order: () => import('./order/OrderEngine.vue'),
   simon: () => import('./simon/SimonEngine.vue'),
   directions: () => import('./directions/DirectionsEngine.vue'),
+  tamagotchi: () => import('./TamagotchiEngine.vue'),
 }
 
 /** Engines already downloaded, as plain components (render with no async gap). */
