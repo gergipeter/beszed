@@ -9,6 +9,7 @@ import { useDaytime } from '../composables/useDaytime'
 import { createModuleContext, provideModuleContext } from '../composables/useModuleContext'
 import { t } from '../i18n'
 import { installTouchFeel } from '../services/touch/feel'
+import { installPeek } from '../services/touch/peek'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
 import { useRecordingsStore } from '../stores/recordings'
@@ -21,6 +22,8 @@ import { useRewardsStore } from '../stores/rewards'
 const props = defineProps({
   childId: { type: Number, required: true },
   childName: { type: String, default: '' },
+  /** The child's óvodai jel (an emoji), shown by their name. */
+  childSign: { type: String, default: '' },
   guideName: { type: String, default: '' },
 })
 
@@ -51,7 +54,12 @@ let uninstallFeel = () => {}
 
 onMounted(async () => {
   boot()
-  uninstallFeel = installTouchFeel(root.value)
+  const uninstallTouch = installTouchFeel(root.value)
+  const uninstallPeek = installPeek(root.value)
+  uninstallFeel = () => {
+    uninstallTouch()
+    uninstallPeek()
+  }
   document.addEventListener('click', unlock, { capture: true, once: true })
   // Results played offline earlier: upload them, then show the updated rewards.
   if (pendingCount()) {

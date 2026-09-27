@@ -80,6 +80,7 @@ const drag = useDrag({ root: row, onDrop: item => tap(item) })
       :key="item.id"
       type="button"
       class="piece bz-draggable"
+      data-peek
       :class="{ 'piece--gone': placed.includes(item.id), 'piece--shake': shaking === item.id }"
       :disabled="placed.includes(item.id)"
       :aria-label="item.label || t('order.piece')"

@@ -35,6 +35,7 @@
  * @property {string} stage  The scene it's played in (components/game/GameStage.vue).
  * @property {number} rounds
  * @property {boolean} noIdle
+ * @property {{ id: string, name: string, emoji: string }[]} [categories]  picture themes to pick before playing (Kirakó)
  *
  * @typedef {{ key: string, label: string, text: string }} Line  A line a parent can record.
  *
@@ -113,6 +114,10 @@
  * @property {number} cols
  * @property {number} rows
  * @property {number[]} pieces  pieces[position] = piece lying there; solved when pieces[i] === i.
+ * @property {string} [prop]       a fairy tale's thing beside the figure (Hófehérke's apple)
+ * @property {string} [scene]      the drawn scene behind it (SceneBackdrop)
+ * @property {number} [previewMs]  high levels: the example fades after this long
+ * @property {string} [levelLabel] "12. pálya"
  * @property {string} [onCorrect]
  *
  * @typedef {{ id: string, pair: string, emoji: string, label: string }} MemoryCard

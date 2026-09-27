@@ -7,6 +7,7 @@ const KEY = Symbol('beszed')
  * @typedef {object} ModuleContext
  * @property {import('vue').ComputedRef<number>} childId
  * @property {import('vue').ComputedRef<string>} childName
+ * @property {import('vue').ComputedRef<string>} childSign  the child's óvodai jel (a picture), if chosen
  * @property {import('vue').ComputedRef<string>} guideName
  */
 
@@ -26,5 +27,6 @@ export function useModuleContext() {
 export const createModuleContext = props => ({
   childId: computed(() => props.childId),
   childName: computed(() => props.childName),
+  childSign: computed(() => props.childSign ?? ''),
   guideName: computed(() => props.guideName || config.guideName),
 })

@@ -24,6 +24,8 @@ class MetaController extends Controller
             'stage' => $g['stage'] ?? 'meadow',
             'rounds' => $g['rounds'],
             'noIdle' => (bool) ($g['no_idle'] ?? false),
+            // picture themes to pick from before playing (Kirakó)
+            'categories' => collect($g['categories'] ?? [])->map(fn ($c, $id) => ['id' => $id, 'name' => $c['name'], 'emoji' => $c['emoji']])->values(),
         ])->values();
 
         $voices = collect(config('tts.voices'))->map(fn ($v, $id) => [

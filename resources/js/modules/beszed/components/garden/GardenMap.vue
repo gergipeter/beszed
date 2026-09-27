@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ICONS } from '../../config/icons'
+import { buzz } from '../../services/touch/feel'
 import { t } from '../../i18n'
 import EmojiArt from '../ui/EmojiArt.vue'
 import GameStop from './GameStop.vue'
@@ -37,13 +38,58 @@ const FIREFLIES = [
 ]
 
 const root = ref(null)
+const frame = ref(null)
 const width = ref(0)
+const height = ref(0)
 let observer = null
 onMounted(() => {
-  observer = new ResizeObserver(([entry]) => (width.value = Math.round(entry.contentRect.width)))
+  observer = new ResizeObserver(([entry]) => {
+    width.value = Math.round(entry.contentRect.width)
+    height.value = Math.round(entry.contentRect.height)
+  })
   observer.observe(root.value)
+  frame.value.addEventListener('wheel', onWheel, { passive: false })
 })
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  frame.value?.removeEventListener('wheel', onWheel)
+})
+
+/**
+ * Pinch the garden like a map: fingers together → the whole garden on one
+ * screen (a map to pick from), apart → back up close. A trackpad pinch
+ * (ctrl + wheel) does the same, and so does the button, for one finger.
+ * The browser's own page zoom is off here (touch-action), so the pinch is ours.
+ */
+const overview = ref(false)
+const scale = computed(() =>
+  overview.value && height.value ? Math.min(1, Math.max(0.3, (window.innerHeight - 150) / height.value)) : 1,
+)
+let pinch = null
+const spread = touches => Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY)
+
+function setOverview(on) {
+  if (overview.value === on) return
+  overview.value = on
+  buzz(10)
+  if (on) requestAnimationFrame(() => frame.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+}
+function onTouchStart(event) {
+  pinch = event.touches.length === 2 ? { start: spread(event.touches), done: false } : null
+}
+function onTouchMove(event) {
+  if (!pinch || pinch.done || event.touches.length !== 2) return
+  const ratio = spread(event.touches) / (pinch.start || 1)
+  if (ratio < 0.8) setOverview(true)
+  else if (ratio > 1.25) setOverview(false)
+  else return
+  pinch.done = true // one step per pinch
+}
+function onWheel(event) {
+  if (!event.ctrlKey) return // an ordinary scroll
+  event.preventDefault() // not the browser's zoom
+  setOverview(event.deltaY > 0)
+}
 
 /** Deterministic shuffle, so each plant keeps its spot from visit to visit. */
 function scatter(list, seed) {
@@ -89,55 +135,88 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 </script>
 
 <template>
-  <div ref="root" class="garden">
-    <section v-for="zone in zones" :key="zone.id" class="zone" :class="`zone--${zone.id}`" :aria-labelledby="`zone-${zone.id}`">
-      <header class="zone-head">
-        <EmojiArt class="zone-icon" :char="zone.icon" />
-        <div>
-          <h2 :id="`zone-${zone.id}`" class="zone-title">{{ t(`hub.zones.${zone.id}`) }}</h2>
-          <p class="zone-hint">
-            <b>{{ t(`hub.tiers.${zone.tier}.title`) }}</b> · {{ t(`hub.tiers.${zone.tier}.hint`) }}
-          </p>
+  <button type="button" class="map-toggle" :aria-pressed="overview" @click="setOverview(!overview)">
+    <EmojiArt :char="overview ? ICONS.zoomIn : ICONS.map" /> {{ t(overview ? 'hub.closer' : 'hub.wholeGarden') }}
+  </button>
+  <div
+    ref="frame"
+    class="garden-frame"
+    :style="{ height: overview ? `${Math.round(height * scale)}px` : null }"
+    @touchstart.passive="onTouchStart"
+    @touchmove.passive="onTouchMove"
+  >
+    <div ref="root" class="garden" :style="{ transform: scale < 1 ? `scale(${scale})` : null }">
+      <section v-for="zone in zones" :key="zone.id" class="zone" :class="`zone--${zone.id}`" :aria-labelledby="`zone-${zone.id}`">
+        <header class="zone-head">
+          <EmojiArt class="zone-icon" :char="zone.icon" />
+          <div>
+            <h2 :id="`zone-${zone.id}`" class="zone-title">{{ t(`hub.zones.${zone.id}`) }}</h2>
+            <p class="zone-hint">
+              <b>{{ t(`hub.tiers.${zone.tier}.title`) }}</b> · {{ t(`hub.tiers.${zone.tier}.hint`) }}
+            </p>
+          </div>
+        </header>
+  
+        <div class="field" :style="{ height: `${zone.layout.height}px` }">
+          <svg class="trail" :width="width" :height="zone.layout.height" aria-hidden="true">
+            <path class="trail-bed" :d="zone.d" />
+            <path class="trail-stones" :d="zone.d" />
+          </svg>
+  
+          <span v-if="zone.id === 'forest'" class="fireflies" aria-hidden="true">
+            <i v-for="([x, y], i) in FIREFLIES" :key="i" :style="{ left: `${x}%`, top: `${y}%`, '--i': i }" />
+          </span>
+  
+          <EmojiArt
+            v-for="p in zone.grown"
+            :key="p.n"
+            class="plant"
+            :class="{ 'plant--sprout': p.sprout }"
+            :char="p.char"
+            :style="{ left: `${p.x}px`, top: `${p.y}px`, '--n': p.delay }"
+          />
+  
+          <GameStop
+            v-for="(game, i) in zone.games"
+            :key="game.id"
+            :game="game"
+            :index="i"
+            :medal="medals[game.id] ?? 0"
+            :step="stepOf(game.id)"
+            :step-done="doneOf(game.id)"
+            :spotlight="spotlight === game.id"
+            :style="{ left: `${zone.layout.points[i].x}px`, top: `${zone.layout.points[i].y}px` }"
+            @click="emit('play', game.id, $event.currentTarget.querySelector('.stone'))"
+          />
         </div>
-      </header>
-
-      <div class="field" :style="{ height: `${zone.layout.height}px` }">
-        <svg class="trail" :width="width" :height="zone.layout.height" aria-hidden="true">
-          <path class="trail-bed" :d="zone.d" />
-          <path class="trail-stones" :d="zone.d" />
-        </svg>
-
-        <span v-if="zone.id === 'forest'" class="fireflies" aria-hidden="true">
-          <i v-for="([x, y], i) in FIREFLIES" :key="i" :style="{ left: `${x}%`, top: `${y}%`, '--i': i }" />
-        </span>
-
-        <EmojiArt
-          v-for="p in zone.grown"
-          :key="p.n"
-          class="plant"
-          :class="{ 'plant--sprout': p.sprout }"
-          :char="p.char"
-          :style="{ left: `${p.x}px`, top: `${p.y}px`, '--n': p.delay }"
-        />
-
-        <GameStop
-          v-for="(game, i) in zone.games"
-          :key="game.id"
-          :game="game"
-          :index="i"
-          :medal="medals[game.id] ?? 0"
-          :step="stepOf(game.id)"
-          :step-done="doneOf(game.id)"
-          :spotlight="spotlight === game.id"
-          :style="{ left: `${zone.layout.points[i].x}px`, top: `${zone.layout.points[i].y}px` }"
-          @click="emit('play', game.id, $event.currentTarget.querySelector('.stone'))"
-        />
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
 <style scoped>
+/* "Az egész kert": the map view on and off (the pinch does the same) */
+.map-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px auto;
+  padding: 6px 14px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  font-weight: 800;
+  font-size: var(--bz-text-sm);
+  box-shadow: var(--bz-shadow-sm);
+}
+/* the pinch belongs to the map here, not to the browser's page zoom */
+.garden-frame {
+  touch-action: pan-x pan-y;
+  transition: height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.garden {
+  transform-origin: top center;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 .garden {
   display: flex;
   flex-direction: column;

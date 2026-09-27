@@ -1,7 +1,9 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useGameSession } from '../../composables/useGameSession'
 import { useModuleContext } from '../../composables/useModuleContext'
+import { useWakeLock } from '../../composables/useWakeLock'
+import { ICONS } from '../../config/icons'
 import { resolveEngine } from '../../engines'
 import { t } from '../../i18n'
 import { useGuideStore } from '../../stores/guide'
@@ -11,6 +13,7 @@ import GuideBubble from '../guide/GuideBubble.vue'
 import BzButton from '../ui/BzButton.vue'
 import BzNotice from '../ui/BzNotice.vue'
 import EmojiArt from '../ui/EmojiArt.vue'
+import CategoryPicker from './CategoryPicker.vue'
 import FinishScreen from './FinishScreen.vue'
 import GameStage from './GameStage.vue'
 import GameHud from './GameHud.vue'
@@ -26,6 +29,35 @@ const { childId, guideName } = useModuleContext()
 const guide = useGuideStore()
 const meta = useMetaStore()
 const rewards = useRewardsStore()
+
+/**
+ * Games with picture themes (Kirakó) start with the theme picker; the choice is
+ * remembered on the device and can be changed from the theme chip on the stage.
+ */
+const themes = computed(() => meta.game(props.game)?.categories ?? [])
+const themeKey = `beszed.theme.${props.game}`
+const readTheme = () => {
+  try {
+    return localStorage.getItem(themeKey)
+  } catch {
+    return null
+  }
+}
+const category = ref(null)
+const lastTheme = readTheme()
+const picking = ref(themes.value.length > 0)
+const themeName = computed(() => themes.value.find(c => c.id === category.value)?.name ?? '')
+function pickTheme(id) {
+  category.value = id
+  try {
+    localStorage.setItem(themeKey, id)
+  } catch {
+    /* not kept on this device */
+  }
+  picking.value = false
+  load()
+}
+
 const {
   session,
   round,
@@ -43,7 +75,9 @@ const {
   speakPrompt,
   answer,
   skip,
-} = useGameSession(childId, props.game)
+} = useGameSession(childId, props.game, { category })
+// the phone must not dim and lock while the child listens to Csillám
+useWakeLock()
 
 const info = computed(() => meta.game(props.game))
 const engine = computed(() => (round.value ? resolveEngine(round.value.engine) : null))
@@ -58,7 +92,9 @@ function exit() {
   emit('exit')
 }
 
-onMounted(load)
+onMounted(() => {
+  if (!picking.value) load()
+})
 </script>
 
 <template>
@@ -93,13 +129,19 @@ onMounted(load)
         @exit="exit"
       />
 
-      <div v-else key="play">
+      <div v-else key="play" class="play">
         <GuideBubble :name="guideName" :avatar-label="t('game.repeatLabel', { guide: guideName })" @press="replay">
           <b v-if="info" class="game-name"><EmojiArt :char="info.emoji" /> {{ info.name }}</b>
           <p class="caption" aria-live="polite">{{ guide.caption }}</p>
         </GuideBubble>
 
-        <GameStage v-if="round" class="stage" :stage="info?.stage">
+        <CategoryPicker v-if="picking" :categories="themes" :last="lastTheme" @pick="pickTheme" />
+        <template v-else>
+          <button v-if="themes.length && themeName" type="button" class="theme-chip" @click="picking = true">
+            <EmojiArt :char="ICONS.picture" /> {{ t('game.theme', { name: themeName }) }}
+          </button>
+        </template>
+        <GameStage v-if="round && !picking" class="stage" :stage="info?.stage">
           <Transition name="round" mode="out-in">
             <div :key="round.key" class="round">
               <component
@@ -126,6 +168,53 @@ onMounted(load)
 </template>
 
 <style scoped>
+/* "Téma: Állatok": back to the theme picker */
+.theme-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -6px auto 10px;
+  padding: 5px 14px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  font-weight: 800;
+  font-size: var(--bz-text-sm);
+  box-shadow: var(--bz-shadow-sm);
+}
+/* room the stage leaves for the rest (HUD, Csillám): engines size big boards with it (Kirakó) */
+.runner {
+  --bz-stage-room: 330px;
+}
+/*
+ * a phone held sideways: Csillám and her words on the left, the game on the right,
+ * so the round fits the short screen without scrolling
+ */
+@media (orientation: landscape) and (max-height: 600px) {
+  .runner {
+    --bz-stage-room: 120px;
+  }
+  .play {
+    display: grid;
+    grid-template-columns: minmax(170px, 28%) 1fr;
+    align-items: start;
+    gap: 14px;
+  }
+  .play :deep(.guide) {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0;
+  }
+  .play :deep(.guide .avatar) {
+    align-self: center;
+    width: clamp(90px, 16vh, 130px);
+  }
+  .play :deep(.guide .bubble::before) {
+    display: none;
+  }
+  .play :deep(.scene) {
+    min-height: calc(100dvh - 110px);
+  }
+}
 .game-name {
   display: block;
   font-size: 17px;

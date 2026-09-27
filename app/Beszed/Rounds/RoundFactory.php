@@ -16,6 +16,17 @@ abstract class RoundFactory
     /** @var array<int, float> item id => weight (SessionBuilder: missed lately → heavier) */
     protected array $weights = [];
 
+    /** @var array{category?: ?string} what the child chose before playing */
+    protected array $options = [];
+
+    /** @param  array{category?: ?string}  $options */
+    public function choose(array $options): static
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
     /** @param  array<int, float>  $weights */
     public function weigh(array $weights): static
     {

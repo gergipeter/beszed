@@ -1,10 +1,11 @@
 <script setup>
-import { computed, nextTick, ref } from 'vue'
-import EmojiArt from '../../components/ui/EmojiArt.vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useDrag } from '../../composables/useDrag'
+import { useTimers } from '../../composables/useTimers'
 import { t } from '../../i18n'
 import { beep } from '../../services/audio/sfx'
 import { engineEmits, engineProps } from '../contract'
+import PuzzleArt from './PuzzleArt.vue'
 
 /**
  * Picture puzzle (Kirakó): drag a piece onto another, or tap two pieces, to
@@ -21,7 +22,33 @@ const selected = ref(null)
 let wasted = 0
 
 const solved = computed(() => order.value.every((piece, pos) => piece === pos))
-const grade = () => (wasted <= 1 ? 1 : wasted <= 3 ? 2 : 3)
+/** Wasted swaps allowed grow with the pieces: a 5×5 board takes more moves than a 2×2 one. */
+const grade = () => {
+  const n = props.data.cols * props.data.rows
+  return wasted <= Math.max(1, Math.round(n / 5)) ? 1 : wasted <= Math.max(3, Math.round(n / 2.5)) ? 2 : 3
+}
+
+/**
+ * High levels: the example picture fades after previewMs (once Csillám has
+ * spoken); tapping it shows it again for a moment.
+ */
+const { later } = useTimers()
+const faded = ref(false)
+let fadeTimer = 0
+function fadeLater(ms) {
+  clearTimeout(fadeTimer)
+  if (props.data.previewMs) fadeTimer = later(() => (faded.value = true), ms)
+}
+watch(
+  () => props.promptDone,
+  done => done && fadeLater(props.data.previewMs),
+  { immediate: true },
+)
+function showPreview() {
+  if (!props.data.previewMs) return
+  faded.value = false
+  fadeLater(2000)
+}
 
 function tap(pos) {
   if (props.locked || solved.value || order.value[pos] === pos) return
@@ -82,7 +109,13 @@ function slice(piece) {
 </script>
 
 <template>
-  <div class="preview" role="img" :aria-label="t('puzzle.preview')"><EmojiArt :char="data.emoji" /></div>
+  <div class="top">
+    <button type="button" class="preview" :class="{ 'preview--faded': faded }" data-peek :aria-label="t('puzzle.preview')" @click="showPreview">
+      <PuzzleArt :emoji="data.emoji" :prop="data.prop" :scene="data.scene" />
+      <b v-if="faded" class="peek" aria-hidden="true">?</b>
+    </button>
+    <b v-if="data.levelLabel" class="level">{{ data.levelLabel }} <small>/ 100</small></b>
+  </div>
 
   <div ref="board" class="board-wrap">
     <TransitionGroup tag="div" :name="slide ? 'swap' : 'none'" class="board" :style="{ '--cols': data.cols, '--rows': data.rows }">
@@ -98,28 +131,61 @@ function slice(piece) {
         @pointerdown="grab($event, pos)"
         @click="tap(pos)"
       >
-        <span class="slice" :style="slice(piece)"><EmojiArt :char="data.emoji" /></span>
+        <span class="slice" :style="slice(piece)"><PuzzleArt :emoji="data.emoji" :prop="data.prop" :scene="data.scene" /></span>
       </button>
     </TransitionGroup>
     <!-- Solved: the whole picture fades in over the pieces (opacity/transform only). -->
     <Transition name="reveal">
-      <div v-if="solved" class="reveal" aria-hidden="true"><EmojiArt :char="data.emoji" /></div>
+      <div v-if="solved" class="reveal" aria-hidden="true"><PuzzleArt :emoji="data.emoji" :prop="data.prop" :scene="data.scene" /></div>
     </Transition>
   </div>
 </template>
 
 <style scoped>
+.top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+/* the example picture: small, and fading on the high levels */
 .preview {
-  padding: 6px 14px;
+  position: relative;
+  width: 84px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 4px solid var(--bz-card);
   border-radius: var(--bz-radius);
   background: var(--bz-card);
-  font-size: 54px;
-  line-height: 1;
+  box-shadow: var(--bz-shadow-sm);
+  transition: opacity 0.6s;
+}
+.preview--faded {
+  opacity: 0.25;
+}
+.peek {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  color: var(--bz-coral);
+}
+.level {
+  padding: 6px 14px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-sun);
+  color: var(--bz-on-bright);
+  font-size: var(--bz-text-md);
   box-shadow: var(--bz-shadow-sm);
 }
+.level small {
+  opacity: 0.7;
+}
+/* as big as the screen allows: the stage's width, and short enough to fit under Csillám and the picture */
 .board-wrap {
   position: relative;
-  width: min(100%, 380px);
+  width: min(100%, 600px, calc(100dvh - var(--bz-stage-room, 330px)));
+  min-width: min(100%, 260px);
   aspect-ratio: 1;
   /* cq units below are relative to the board */
   container-type: size;
@@ -183,6 +249,7 @@ function slice(piece) {
   inset: 8px;
   display: grid;
   place-items: center;
+  overflow: hidden;
   border-radius: 20px;
   background: var(--bz-soft);
   font-size: 80cqmin;

@@ -6,6 +6,7 @@ import GardenMap from '../components/garden/GardenMap.vue'
 import GardenSky from '../components/garden/GardenSky.vue'
 import GuideBubble from '../components/guide/GuideBubble.vue'
 import DailyPath from '../components/hub/DailyPath.vue'
+import InstallApp from '../components/hub/InstallApp.vue'
 import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import StreakHistory from '../components/rewards/StreakHistory.vue'
@@ -20,7 +21,7 @@ import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
 import { useRewardsStore } from '../stores/rewards'
 
-const { childId, childName, guideName } = useModuleContext()
+const { childId, childName, childSign, guideName } = useModuleContext()
 const meta = useMetaStore()
 const rewards = useRewardsStore()
 const guide = useGuideStore()
@@ -133,7 +134,10 @@ async function play(game, stone) {
     :avatar-label="t('hub.greetLabel', { guide: guideName })"
     @press="greet"
   >
-    <h1 class="hello">{{ childName ? t('hub.helloNamed', { child: childName }) : t('hub.hello') }}</h1>
+    <h1 class="hello">
+      {{ childName ? t('hub.helloNamed', { child: childName }) : t('hub.hello') }}
+      <EmojiArt v-if="childSign" class="sign" :char="childSign" :label="t('hub.sign')" />
+    </h1>
     <p class="intro">{{ t('hub.intro', { guide: guideName }) }}</p>
   </GuideBubble>
 
@@ -173,6 +177,7 @@ async function play(game, stone) {
     <BzButton :to="{ name: 'beszed.settings', params: { childId } }" :icon="ICONS.settings">
       {{ t('settings.title') }}
     </BzButton>
+    <InstallApp />
     <BzButton v-if="config.exitTo" :to="config.exitTo" :icon="ICONS.family">{{ t('hub.exit') }}</BzButton>
   </nav>
 </template>
@@ -183,6 +188,19 @@ async function play(game, stone) {
   font-size: clamp(30px, 6.5vw, 46px);
   font-weight: 800;
   line-height: 1.05;
+}
+/* the child's óvodai jel by their name, like on their towel and cup */
+.sign {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.85em;
+  vertical-align: -0.08em;
+  animation: sign-wave 2.6s ease-in-out infinite;
+}
+@keyframes sign-wave {
+  50% {
+    transform: rotate(-10deg) scale(1.08);
+  }
 }
 .intro {
   margin: 2px 0 0;

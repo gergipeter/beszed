@@ -20,7 +20,7 @@ import { errorMessage } from '../utils/errors'
  * "Matricáim": the child's treasure room. The sticker book (new stickers arrive
  * as packs to open), Csillám's dressing room, and the sticker picture.
  */
-const { childId, guideName } = useModuleContext()
+const { childId, childName, guideName } = useModuleContext()
 const rewards = useRewardsStore()
 const guide = useGuideStore()
 const failed = ref(false)
@@ -102,6 +102,7 @@ onMounted(load)
           :scene="rewards.scene"
           :earned-badges="rewards.earnedBadges"
           :backgrounds="rewards.backgrounds"
+          :child-name="childName"
           @change="onSceneChange"
           @say="text => guide.speak([text])"
         />

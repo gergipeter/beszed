@@ -19,7 +19,10 @@ export const router = createRouter({
     // Never rendered: the guard sends "/" to the right place.
     { path: '/', name: 'home', component: { render: () => null } },
     ...createBeszedRoutes({
-      props: route => ({ childName: useSessionStore().child(route.params.childId)?.name ?? '' }),
+      props: route => {
+        const child = useSessionStore().child(route.params.childId)
+        return { childName: child?.name ?? '', childSign: child?.sign_emoji ?? '' }
+      },
     }),
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],

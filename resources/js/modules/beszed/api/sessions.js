@@ -2,7 +2,9 @@ import { http } from './client'
 import { postOrQueue } from './outbox'
 
 /** @returns {Promise<import('../types').Session>} */
-export const fetchSession = (childId, game) => http.get(`/children/${childId}/session`, { params: { game } })
+/** `category`: the picture theme picked before playing (Kirakó), if any. */
+export const fetchSession = (childId, game, { category } = {}) =>
+  http.get(`/children/${childId}/session`, { params: { game, ...(category ? { category } : {}) } })
 
 /**
  * @param {number} childId

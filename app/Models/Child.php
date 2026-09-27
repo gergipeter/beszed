@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /** Skip this file if Betűvarázs already has a Child model — just add the beszed* relations. */
 class Child extends Model
 {
-    protected $fillable = ['user_id', 'name', 'birth_date'];
+    protected $fillable = ['user_id', 'name', 'sign', 'birth_date'];
 
     protected $casts = ['birth_date' => 'date'];
 

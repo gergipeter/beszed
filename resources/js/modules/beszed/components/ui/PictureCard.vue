@@ -21,12 +21,13 @@ defineProps({
     type="button"
     class="picture"
     :class="{ 'picture--highlight': highlight, 'picture--silhouette': silhouette }"
+    :data-peek="silhouette ? undefined : ''"
     :aria-label="label || t('common.picture')"
   >
     <EmojiArt class="art" :char="emoji" />
     <small v-if="label" class="label">{{ label }}</small>
   </button>
-  <div v-else class="picture" :class="{ 'picture--highlight': highlight, 'picture--silhouette': silhouette }" aria-hidden="true">
+  <div v-else class="picture" :class="{ 'picture--highlight': highlight, 'picture--silhouette': silhouette }" :data-peek="silhouette ? undefined : ''" aria-hidden="true">
     <EmojiArt class="art" :char="emoji" />
     <small v-if="label" class="label">{{ label }}</small>
   </div>

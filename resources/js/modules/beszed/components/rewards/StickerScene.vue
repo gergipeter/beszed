@@ -8,6 +8,7 @@ import { burst } from '../../services/effects/burst'
 import { buzz } from '../../services/touch/feel'
 import EmojiArt from '../ui/EmojiArt.vue'
 import SceneBackdrop from './SceneBackdrop.vue'
+import { renderScene, sharePicture } from '../../services/share/scenePicture'
 
 /**
  * The sticker picture: pick a drawn background, then put earned stickers on it.
@@ -25,6 +26,8 @@ const props = defineProps({
   /** @type {import('vue').PropType<import('../../types').Background[]>} */
   backgrounds: { type: Array, required: true },
   maxStickers: { type: Number, default: 24 },
+  /** For the shared picture's caption. */
+  childName: { type: String, default: '' },
 })
 const emit = defineEmits(['change', 'say'])
 const { later } = useTimers()
@@ -221,6 +224,24 @@ function endDrag(event) {
   if (badge) emit('say', badge.name)
 }
 
+/** "Megosztás": the picture as an image, to the phone's share sheet (or a download). */
+const sharing = ref(false)
+async function share() {
+  if (sharing.value || !keyed.value.length) return
+  sharing.value = true
+  try {
+    const blob = await renderScene({
+      colors: props.backgrounds.find(b => b.id === background.value)?.colors,
+      stickers: keyed.value,
+      emojiOf: id => badgeById.value[id]?.emoji ?? '⭐',
+      caption: props.childName ? t('rewards.shareCaptionNamed', { name: props.childName }) : t('rewards.shareCaption'),
+    })
+    await sharePicture(blob, { title: t('rewards.shareTitle') })
+  } finally {
+    sharing.value = false
+  }
+}
+
 /** "Életre kel!": every sticker dances, one after another, and the picture sparkles. */
 function bringToLife() {
   if (alive.value || !keyed.value.length) return
@@ -318,6 +339,9 @@ function bringToLife() {
     <div class="scene-actions">
       <button type="button" class="alive-btn" :disabled="!keyed.length || alive" @click="bringToLife">
         <EmojiArt :char="ICONS.magic" /> {{ t('rewards.bringToLife') }}
+      </button>
+      <button type="button" class="share-btn" :disabled="!keyed.length || sharing" @click="share">
+        <EmojiArt :char="ICONS.shareBox" /> {{ t('rewards.share') }}
       </button>
     </div>
     <p class="tray-hint">{{ full ? t('rewards.sceneFull') : t('rewards.sceneHint') }}</p>
@@ -463,7 +487,28 @@ function bringToLife() {
 }
 .scene-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  gap: 10px;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  font-size: var(--bz-text-md);
+  font-weight: 800;
+  box-shadow: var(--bz-shadow);
+  transition: transform 0.38s var(--bz-spring);
+}
+.share-btn:active:not(:disabled) {
+  transform: scale(0.92);
+  transition-duration: 0.07s;
+}
+.share-btn:disabled {
+  opacity: 0.5;
 }
 .alive-btn {
   display: inline-flex;

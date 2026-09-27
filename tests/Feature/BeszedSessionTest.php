@@ -53,7 +53,7 @@ it('seeds content for every game', function () {
 
 it('kirakó: shuffled, never solved, grid follows the level', function (int $level) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'kirako', 'level' => $level]);
-    [$cols, $rows] = KirakoRounds::GRIDS[$level];
+    [$cols, $rows] = KirakoRounds::grid($level);
 
     foreach (gameSession('kirako')['rounds'] as $round) {
         $pieces = $round['data']['pieces'];
@@ -61,7 +61,7 @@ it('kirakó: shuffled, never solved, grid follows the level', function (int $lev
             ->and(collect($pieces)->sort()->values()->all())->toBe(range(0, $cols * $rows - 1))
             ->and($pieces)->not->toBe(range(0, $cols * $rows - 1));
     }
-})->with([1, 2, 3]);
+})->with([1, 7, 20, 50, 100]);
 
 it('rímpárok: cards pair by rhyme, never by identical word, pairs = level', function (int $level) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'rimparok', 'level' => $level]);

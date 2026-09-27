@@ -279,6 +279,34 @@ The whole module is one place, **Zoé's garden**, drawn in CSS and SVG (no image
   falling snow, enchanted forest). Drag stickers from the tray straight onto it; a tapped sticker
   wiggles and says its name; *Életre kel!* makes the picture dance.
 
+### On the phone
+
+- **Install**: *Telepítés a telefonra* on the hub (Android: Chrome's own dialog, caught in
+  `services/device/install.js`; iPhone/iPad: how to add it by hand), with the parents' tip for Guided
+  Access / screen pinning. Installed, it runs full screen; the sky reaches under the iPhone's status bar.
+- **The screen stays on** during a game (`useWakeLock`), and a swipe can't pull-to-refresh it.
+- **Gestures**: pinch the garden to see all of it as a map (and back; also ctrl + wheel and a button);
+  press and hold a picture in a game to see it big (`services/touch/peek.js`, never a shadow); drag with
+  a magnet; pinch and turn stickers. The browser's own zoom stays on for the parent pages.
+- **Held sideways**, a game puts Csillám on the left and the round on the right.
+- **Share the sticker picture** (*Megosztás*): drawn as a PNG and handed to the phone's share sheet, or
+  downloaded.
+
+### Kirakó: 100 levels and picture themes
+
+A clean win moves to the next *pálya* (1–100): the grid grows 2×2 → 5×5, from level 4 the picture stands
+in a drawn scene (so every piece shows something), every other level has a fairy-tale figure
+(Hófehérke, Hamupipőke, a kis hableány… from the public-domain tales, drawn with Twemoji), and from
+level 36 the example fades (tap it to see it again). Before playing, the child picks a theme
+(`categories` in the game's config: animals, princesses and tales, vehicles, food, toys, nature, home, or
+everything); the choice is remembered on the device.
+
+### Óvodai jel
+
+Every child can pick their kindergarten picture sign (36 of them, `config/beszed.php → signs`) on the
+*Ki játszik ma?* page; it shows big on their tile, so they find themselves before they can read, and by
+their name on the hub.
+
 ## Offline play
 
 `public/sw.js` (a small hand-written service worker, no build plugin) makes the app work without a

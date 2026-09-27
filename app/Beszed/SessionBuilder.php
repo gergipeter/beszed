@@ -12,7 +12,8 @@ class SessionBuilder
 {
     public function __construct(private Leveler $leveler) {}
 
-    public function build(Child $child, string $game): array
+    /** @param  array{category?: ?string}  $options  what the child chose before playing (Kirakó's picture theme) */
+    public function build(Child $child, string $game, array $options = []): array
     {
         $cfg = config("beszed.games.$game");
         abort_unless($cfg, 404);
@@ -23,6 +24,7 @@ class SessionBuilder
         $level = $this->leveler->current($child, $game);
         $rounds = app($cfg['factory'])
             ->weigh($this->weights($child, $game, $items, isset($cfg['adaptive']), $cfg['rounds']))
+            ->choose($options)
             ->build($items, $level, $cfg['rounds']);
         // now and then Csillám has a go first, sometimes wrongly on purpose, and the child judges her
         if ($cfg['guess'] ?? true) {

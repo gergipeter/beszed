@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 
 /** A parent's children: the players. */
 class ChildController extends Controller
@@ -55,6 +56,9 @@ class ChildController extends Controller
         return [
             'id' => $child->id,
             'name' => $child->name,
+            // the óvodai jel: a picture the child finds themselves by (config beszed.signs)
+            'sign' => $child->sign,
+            'sign_emoji' => config("beszed.signs.{$child->sign}.emoji"),
             'birth_date' => $child->birth_date?->toDateString(),
         ];
     }
@@ -63,6 +67,7 @@ class ChildController extends Controller
     {
         return $request->validate([
             'name' => ['required', 'string', 'max:40'],
+            'sign' => ['nullable', Rule::in(array_keys(config('beszed.signs')))],
             'birth_date' => ['nullable', 'date', 'before:today', 'after:2010-01-01'],
         ]);
     }

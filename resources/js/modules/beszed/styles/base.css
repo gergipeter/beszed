@@ -90,6 +90,47 @@
   position: absolute;
   top: -4vh;
 }
+/* Press and hold a picture to see it big (services/touch/peek.js). */
+.bz-peek {
+  position: fixed;
+  inset: 0;
+  z-index: 1002;
+  display: grid;
+  place-items: center;
+  background: rgba(30, 20, 60, 0.45);
+  pointer-events: none;
+  animation: bz-peek-in 0.18s ease-out;
+}
+.bz-peek-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  width: min(78vw, 78vh, 420px);
+  aspect-ratio: 1;
+  border-radius: 40px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(30, 20, 60, 0.35);
+  font-size: min(60vw, 60vh, 320px);
+  line-height: 1;
+  animation: bz-peek-pop 0.3s cubic-bezier(0.3, 1.6, 0.45, 1);
+}
+@keyframes bz-peek-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes bz-peek-pop {
+  from {
+    transform: scale(0.4);
+  }
+}
+
+/* No pull-to-refresh or rubber-band bounce: a child's swipe must not reload the game. */
+html:has(.bz) {
+  overscroll-behavior: none;
+}
+
 /* A sticker carried from the tray to the sticker picture (StickerScene.vue): it follows the finger. */
 .bz-sticker-ghost {
   position: fixed;

@@ -89,11 +89,9 @@ const PROPS = {
   z-index: -1;
   pointer-events: none;
 }
+/* a plain block: the round (SessionRunner .round) spans the whole stage and centres its own parts */
 .content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
+  position: relative;
 }
 .prop {
   position: absolute;

@@ -80,7 +80,17 @@ return [
                 'steps' => 'Lépcső', 'hills' => 'Dombok',
             ]],
         ]],
-        'kirako' => ['title' => 'name', 'fields' => ['name' => $text('Mi van a képen?'), 'emoji' => $emoji()]],
+        'kirako' => ['title' => 'name', 'fields' => [
+            'name' => $text('Mi van a képen?'),
+            'emoji' => $emoji(),
+            // a fairy-tale figure: "Kész a kép: Hófehérke!", with a picture beside it and its own scene
+            'kind' => ['type' => 'select', 'label' => 'Fajta', 'required' => false, 'options' => ['thing' => 'Tárgy, állat (Ez egy …)', 'tale' => 'Mesealak (Kész a kép: …)']],
+            'prop' => ['type' => 'emoji', 'label' => 'Kép mellette (pl. alma)', 'required' => false],
+            'scene' => ['type' => 'select', 'label' => 'Háttér', 'required' => false, 'options' => [
+                'meadow' => 'Rét', 'beach' => 'Tengerpart', 'castle' => 'Kastély', 'underwater' => 'Víz alatt',
+                'snow' => 'Havas táj', 'forest' => 'Varázserdő', 'sky' => 'Éjszakai ég',
+            ]],
+        ]],
         'parkereso' => ['title' => 'word', 'fields' => ['word' => $text('Szó'), 'emoji' => $emoji()]],
         'rimparok' => ['title' => 'word', 'fields' => [
             'word' => $text('Szó'),

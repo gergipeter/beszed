@@ -18,6 +18,8 @@ export const useSessionStore = defineStore('app/session', {
     user: null,
     /** @type {{ id: number, name: string, birth_date: string | null }[]} */
     children: [],
+    /** @type {{ id: string, name: string, emoji: string }[]} óvodai jelek to pick from */
+    signs: [],
     loaded: false,
     /** The server couldn't be reached on the last check. */
     unreachable: false,
@@ -38,6 +40,7 @@ export const useSessionStore = defineStore('app/session', {
         const { data } = await http.get('/api/me', { quiet401: true })
         this.user = data.user
         this.children = data.children
+        this.signs = data.signs ?? []
         this.consentRequired = Boolean(data.consent?.required)
         this.unreachable = false
       } catch (e) {

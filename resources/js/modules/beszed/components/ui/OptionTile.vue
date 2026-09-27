@@ -17,7 +17,8 @@ defineProps({
 </script>
 
 <template>
-  <button type="button" class="option" :class="[`option--${variant}`, { 'option--good': good, 'option--shake': shake }]">
+  <!-- press and hold: the picture opens big (services/touch/peek.js) -->
+  <button type="button" class="option" :class="[`option--${variant}`, { 'option--good': good, 'option--shake': shake }]" data-peek>
     <slot>
       <EmojiArt v-if="emoji" class="art" :char="emoji" />
       <small v-if="label" class="label">{{ label }}</small>

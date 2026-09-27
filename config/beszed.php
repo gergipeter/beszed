@@ -87,12 +87,27 @@ return [
         'kirako' => [
             'name' => 'Kirakó', 'emoji' => '🧩', 'skill' => 'Képkirakó, formaérzék', 'color' => '#FFDAC1', 'tier' => 'simple', 'stage' => 'workshop',
             'factory' => Rounds\KirakoRounds::class, 'rounds' => 3,
-            // level = grid: 1 → 2×2, 2 → 3×2, 3 → 3×3 pieces
+            // level = "pálya" 1–100: the grid grows 2×2 → 5×5, scenes and princesses come, the example fades (KirakoRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 1,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 8, '7+' => 16],
             ],
-            'intro' => 'Összekeveredtek a kép darabjai! Koppints két darabra, és helyet cserélnek. Rakd ki a képet!',
+            /*
+            | Picture themes the child picks before playing. `lexicon`: word-bank categories
+            | (database/lexicon/hu.json → c); `emojis`: pictures that belong too; `tales`:
+            | the fairy-tale rows (kind: tale). "mix" is everything.
+            */
+            'categories' => [
+                'mix' => ['name' => 'Mindenféle', 'emoji' => '🎲'],
+                'tales' => ['name' => 'Hercegnők és mesék', 'emoji' => '👸', 'tales' => true, 'emojis' => ['🧚', '🧜', '🧙', '🧝', '🦄', '🐉', '👼', '🧞']],
+                'animals' => ['name' => 'Állatok', 'emoji' => '🦁', 'lexicon' => ['animal']],
+                'vehicles' => ['name' => 'Járművek', 'emoji' => '🚒', 'lexicon' => ['vehicle']],
+                'food' => ['name' => 'Finomságok', 'emoji' => '🍓', 'lexicon' => ['fruit', 'vegetable', 'food']],
+                'toys' => ['name' => 'Játékok, hangszerek', 'emoji' => '🧸', 'lexicon' => ['toy', 'instrument']],
+                'nature' => ['name' => 'Természet', 'emoji' => '🌻', 'lexicon' => ['nature', 'weather', 'flower']],
+                'home' => ['name' => 'Otthon', 'emoji' => '🏠', 'lexicon' => ['house', 'kitchen', 'thing', 'tool', 'clothing', 'school', 'building']],
+            ],
+            'intro' => 'Összekeveredtek a kép darabjai! Koppints két darabra, vagy húzd az egyiket a másikra, és helyet cserélnek. Rakd ki a képet! Minden kép után jön a következő pálya.',
         ],
         'parkereso' => [
             'name' => 'Párkereső', 'emoji' => '🃏', 'skill' => 'Emlékezet és szókincs', 'color' => '#C7E9FF', 'tier' => 'simple', 'stage' => 'magic',
@@ -199,6 +214,32 @@ return [
             ],
             'intro' => 'Most jól figyelj! Mondok valamit, te pedig pontosan azt csinálod. Várd meg, amíg végigmondom, és csak utána koppints!',
         ],
+    ],
+
+    /*
+    | Óvodai jelek: the picture signs Hungarian kindergartens give each child (on
+    | their towel, cup and cubby). A child picks theirs and finds themselves by it
+    | on the "Ki játszik ma?" screen, before they can read their name.
+    */
+    'signs' => [
+        'alma' => ['name' => 'Alma', 'emoji' => '🍎'], 'korte' => ['name' => 'Körte', 'emoji' => '🍐'],
+        'cseresznye' => ['name' => 'Cseresznye', 'emoji' => '🍒'], 'eper' => ['name' => 'Eper', 'emoji' => '🍓'],
+        'szolo' => ['name' => 'Szőlő', 'emoji' => '🍇'], 'banan' => ['name' => 'Banán', 'emoji' => '🍌'],
+        'repa' => ['name' => 'Répa', 'emoji' => '🥕'], 'gomba' => ['name' => 'Gomba', 'emoji' => '🍄'],
+        'napraforgo' => ['name' => 'Napraforgó', 'emoji' => '🌻'], 'tulipan' => ['name' => 'Tulipán', 'emoji' => '🌷'],
+        'rozsa' => ['name' => 'Rózsa', 'emoji' => '🌹'], 'fenyo' => ['name' => 'Fenyőfa', 'emoji' => '🌲'],
+        'level' => ['name' => 'Falevél', 'emoji' => '🍁'], 'makk' => ['name' => 'Makk', 'emoji' => '🌰'],
+        'katica' => ['name' => 'Katica', 'emoji' => '🐞'], 'pillango' => ['name' => 'Pillangó', 'emoji' => '🦋'],
+        'csiga' => ['name' => 'Csiga', 'emoji' => '🐌'], 'mehecske' => ['name' => 'Méhecske', 'emoji' => '🐝'],
+        'hal' => ['name' => 'Halacska', 'emoji' => '🐟'], 'beka' => ['name' => 'Béka', 'emoji' => '🐸'],
+        'cica' => ['name' => 'Cica', 'emoji' => '🐱'], 'kutya' => ['name' => 'Kutya', 'emoji' => '🐶'],
+        'nyuszi' => ['name' => 'Nyuszi', 'emoji' => '🐰'], 'sun' => ['name' => 'Süni', 'emoji' => '🦔'],
+        'mokus' => ['name' => 'Mókus', 'emoji' => '🐿️'], 'bagoly' => ['name' => 'Bagoly', 'emoji' => '🦉'],
+        'maci' => ['name' => 'Maci', 'emoji' => '🧸'], 'labda' => ['name' => 'Labda', 'emoji' => '⚽'],
+        'lufi' => ['name' => 'Léggömb', 'emoji' => '🎈'], 'dob' => ['name' => 'Dob', 'emoji' => '🥁'],
+        'auto' => ['name' => 'Autó', 'emoji' => '🚗'], 'vonat' => ['name' => 'Vonat', 'emoji' => '🚂'],
+        'hajo' => ['name' => 'Hajó', 'emoji' => '⛵'], 'csillag' => ['name' => 'Csillag', 'emoji' => '⭐'],
+        'hold' => ['name' => 'Hold', 'emoji' => '🌙'], 'esernyo' => ['name' => 'Esernyő', 'emoji' => '☂️'],
     ],
 
     /*

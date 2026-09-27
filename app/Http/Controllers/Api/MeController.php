@@ -17,6 +17,8 @@ class MeController extends Controller
             'user' => $user->only('id', 'name', 'email', 'avatar', 'milestone_emails_enabled') + ['can_edit_content' => $user->can('edit-content')],
             'consent' => ['required' => $user->needsConsent(), 'version' => config('privacy.version')],
             'children' => ChildController::present($user->children()->orderBy('id')->get()),
+            // the óvodai jelek a child can pick from
+            'signs' => collect(config('beszed.signs'))->map(fn ($s, $id) => ['id' => $id, 'name' => $s['name'], 'emoji' => $s['emoji']])->values(),
         ]);
     }
 }

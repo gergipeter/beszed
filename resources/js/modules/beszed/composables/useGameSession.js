@@ -47,8 +47,9 @@ function rewardSpeech(/** @type {import('../types').RewardResult | null} */ resu
  *
  * @param {import('vue').MaybeRefOrGetter<number>} childId
  * @param {string} game
+ * @param {{ category?: import('vue').MaybeRefOrGetter<string | null> }} [options]  the picture theme picked (Kirakó)
  */
-export function useGameSession(childId, game) {
+export function useGameSession(childId, game, { category } = {}) {
   const guide = useGuideStore()
   const meta = useMetaStore()
   const recordings = useRecordingsStore()
@@ -101,7 +102,7 @@ export function useGameSession(childId, game) {
     loading.value = true
     guide.party = false
     try {
-      const fresh = await fetchSession(toValue(childId), game)
+      const fresh = await fetchSession(toValue(childId), game, { category: toValue(category) })
       await preloadEngines(fresh.rounds.map(r => r.engine))
       if (!active) return
       session.value = { ...fresh, rounds: stamp(fresh.rounds) }
@@ -213,7 +214,7 @@ export function useGameSession(childId, game) {
       stars.value = saved.stars
       const remaining = current.rounds.length - index.value - 1
       if (saved.level !== current.level && remaining > 0) {
-        const fresh = await fetchSession(toValue(childId), game)
+        const fresh = await fetchSession(toValue(childId), game, { category: toValue(category) })
         await preloadEngines(fresh.rounds.map(r => r.engine))
         // From the new session's second round on: its first one carries the how-to, already heard.
         current.rounds.splice(index.value + 1, remaining, ...stamp(fresh.rounds.slice(1, remaining + 1)))

@@ -39,6 +39,7 @@ function tap(side, i) {
         :key="i"
         type="button"
         class="cell"
+        data-peek
         :class="{ 'cell--found': found && i === data.diff, 'cell--shake': shaking === `${side}-${i}` }"
         :aria-label="t('difference.cell', { n: i + 1 })"
         @click="tap(side, i)"

@@ -46,7 +46,7 @@ class Rewards
             'worn' => (object) ($child->beszedProfile?->accessories ?? []),
             'accessories' => $this->accessories($level['number']),
             'scene' => $child->beszedProfile?->scene ?? ['background' => null, 'stickers' => []],
-            'backgrounds' => collect($cfg['backgrounds'])->map(fn ($b, $id) => ['id' => $id, 'name' => $b['name'], 'emoji' => $b['emoji']])->values(),
+            'backgrounds' => collect($cfg['backgrounds'])->map(fn ($b, $id) => ['id' => $id, 'name' => $b['name'], 'emoji' => $b['emoji'], 'colors' => $b['colors']])->values(),
         ];
     }
 
