@@ -43,4 +43,9 @@ class Child extends Model
     {
         return $this->hasOne(BeszedProfile::class);
     }
+
+    public function pets(): HasMany
+    {
+        return $this->hasMany(BeszedPet::class);
+    }
 }

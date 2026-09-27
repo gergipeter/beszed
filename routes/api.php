@@ -19,6 +19,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('me', [AccountController::class, 'destroy'])->name('me.destroy');
 
     Route::apiResource('children', ChildController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // Pet Tamagotchi API
+    Route::prefix('beszed/children/{child}')->name('beszed.pet.')->group(function () {
+        Route::get('pet', [\App\Http\Controllers\Beszed\PetController::class, 'show'])->name('show');
+        Route::post('pet', [\App\Http\Controllers\Beszed\PetController::class, 'store'])->name('store');
+        Route::post('pet/feed', [\App\Http\Controllers\Beszed\PetController::class, 'feed'])->name('feed');
+        Route::post('pet/play', [\App\Http\Controllers\Beszed\PetController::class, 'play'])->name('play');
+        Route::post('pet/clean', [\App\Http\Controllers\Beszed\PetController::class, 'clean'])->name('clean');
+        Route::post('pet/sleep', [\App\Http\Controllers\Beszed\PetController::class, 'sleep'])->name('sleep');
+        Route::get('pet/history', [\App\Http\Controllers\Beszed\PetController::class, 'history'])->name('history');
+    });
 });
 
 // Content editor, for the parents listed in ADMIN_EMAILS.
