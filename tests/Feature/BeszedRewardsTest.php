@@ -53,7 +53,7 @@ it('awards the first sticker, a perfect sticker and a level-up on the first flaw
         ->and($again['result'])->toMatchArray(['medal' => 1, 'level_up' => true])
         ->and($again['result']['level_before']['number'])->toBe(1)
         ->and($again['level']['number'])->toBe(2)
-        ->and(collect($again['result']['unlocked'])->pluck('id')->all())->toBe(['bow'])
+        ->and(collect($again['result']['unlocked'])->pluck('id')->all())->toBe(['cap', 'bow']) // level 2 brings two new things for Csillám
         ->and($again['medals']['zs'])->toBe(3); // the best session counts
 });
 
@@ -131,6 +131,24 @@ it('only lets Csillám wear unlocked accessories', function () {
     $wear('head', 'crown')->assertStatus(422); // level 7
     $wear('extra', null)->assertOk()->assertJsonMissingPath('worn.extra');
     $wear('extra', 'nope')->assertStatus(422);
+    $wear('tail', 'bow')->assertStatus(422); // no such slot
+});
+
+it('dresses Csillám in every slot at once, her mane in a new colour too', function () {
+    foreach (range(1, 4) as $i) {
+        finish(correct: 8); // 32 stars → level 3
+    }
+    $wear = fn (string $slot, string $a) => actingAs($this->user)
+        ->putJson("/api/beszed/children/{$this->child->id}/profile", ['slot' => $slot, 'accessory' => $a])->assertOk();
+
+    $wear('head', 'cap');
+    $wear('face', 'glasses');
+    $wear('extra', 'bow');
+    $worn = $wear('mane', 'mane_candy')->json('worn');
+
+    expect($worn)->toBe(['head' => 'cap', 'face' => 'glasses', 'extra' => 'bow', 'mane' => 'mane_candy']);
+    actingAs($this->user)->putJson("/api/beszed/children/{$this->child->id}/profile", ['slot' => 'neck', 'accessory' => 'scarf'])
+        ->assertStatus(422); // the scarf comes at level 4
 });
 
 it('rejects impossible results and other families', function () {
@@ -160,8 +178,10 @@ it('has a valid rule for every sticker and a level for every accessory', functio
             expect(config('beszed.games'))->toHaveKey($badge['rule'][1]);
         }
     }
-    foreach (config('beszed.rewards.accessories') as $a) {
-        expect($a['level'])->toBeGreaterThan(1);
+    foreach (config('beszed.rewards.accessories') as $id => $a) {
+        expect($a['level'])->toBeGreaterThan(1)
+            // the slots Csillám's drawing knows (CsillamAvatar.vue, accessories.js)
+            ->and($a['slot'])->toBeIn(['head', 'face', 'neck', 'extra', 'mane'], $id);
     }
 });
 

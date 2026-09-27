@@ -286,23 +286,51 @@ return [
         ],
 
         /*
-        | Csillám's wardrobe, unlocked at these player levels. Grouped into slots
-        | (head, face, extra) so the child can wear one item per slot at once —
-        | e.g. a hat AND glasses AND a flower, but not a hat and a crown together.
+        | Csillám's wardrobe, unlocked at these player levels (about two a level,
+        | so every level-up brings something). Grouped into slots so the child can
+        | wear one item per slot at once: a hat AND glasses AND a scarf AND a
+        | balloon, and her mane in a new colour, but not a hat and a crown together.
+        | Where each sits on her: components/guide/accessories.js.
         */
         'accessories' => [
-            'bow' => ['name' => 'Masni', 'emoji' => '🎀', 'level' => 2, 'slot' => 'extra'],
-            'glasses' => ['name' => 'Napszemüveg', 'emoji' => '🕶️', 'level' => 3, 'slot' => 'face'],
-            'flower' => ['name' => 'Virág', 'emoji' => '🌸', 'level' => 4, 'slot' => 'extra'],
+            // on her head
+            'cap' => ['name' => 'Baseballsapka', 'emoji' => '🧢', 'level' => 2, 'slot' => 'head'],
             'hat' => ['name' => 'Varázskalap', 'emoji' => '🎩', 'level' => 5, 'slot' => 'head'],
             'crown' => ['name' => 'Korona', 'emoji' => '👑', 'level' => 7, 'slot' => 'head'],
+            'sunhat' => ['name' => 'Virágos kalap', 'emoji' => '👒', 'level' => 8, 'slot' => 'head'],
+            'gradcap' => ['name' => 'Okoskalap', 'emoji' => '🎓', 'level' => 10, 'slot' => 'head'],
+            // on her face
+            'glasses' => ['name' => 'Napszemüveg', 'emoji' => '🕶️', 'level' => 3, 'slot' => 'face'],
+            'goggles' => ['name' => 'Búvárszemüveg', 'emoji' => '🥽', 'level' => 6, 'slot' => 'face'],
+            'specs' => ['name' => 'Okosszemüveg', 'emoji' => '👓', 'level' => 12, 'slot' => 'face'],
+            // round her neck
+            'scarf' => ['name' => 'Sál', 'emoji' => '🧣', 'level' => 4, 'slot' => 'neck'],
+            'medal' => ['name' => 'Aranyérem', 'emoji' => '🏅', 'level' => 8, 'slot' => 'neck'],
+            'ribbon' => ['name' => 'Díszszalag', 'emoji' => '🎗️', 'level' => 11, 'slot' => 'neck'],
+            // in her hoof or at her side
+            'bow' => ['name' => 'Masni', 'emoji' => '🎀', 'level' => 2, 'slot' => 'extra'],
+            'flower' => ['name' => 'Virág', 'emoji' => '🌸', 'level' => 4, 'slot' => 'extra'],
+            'balloon' => ['name' => 'Lufi', 'emoji' => '🎈', 'level' => 6, 'slot' => 'extra'],
+            'wand' => ['name' => 'Varázspálca', 'emoji' => '🪄', 'level' => 9, 'slot' => 'extra'],
+            'butterfly' => ['name' => 'Pillangó', 'emoji' => '🦋', 'level' => 10, 'slot' => 'extra'],
+            // her mane in a new colour (the palettes are in accessories.js)
+            'mane_candy' => ['name' => 'Rózsaszín sörény', 'emoji' => '🩷', 'level' => 3, 'slot' => 'mane'],
+            'mane_ocean' => ['name' => 'Tengerkék sörény', 'emoji' => '💙', 'level' => 5, 'slot' => 'mane'],
+            'mane_sunset' => ['name' => 'Naplemente sörény', 'emoji' => '🧡', 'level' => 7, 'slot' => 'mane'],
+            'mane_mint' => ['name' => 'Mentazöld sörény', 'emoji' => '💚', 'level' => 9, 'slot' => 'mane'],
+            'mane_galaxy' => ['name' => 'Csillagos sörény', 'emoji' => '💜', 'level' => 11, 'slot' => 'mane'],
+            'mane_gold' => ['name' => 'Arany sörény', 'emoji' => '💛', 'level' => 12, 'slot' => 'mane'],
         ],
 
-        // Scene backgrounds for the sticker board; the child picks one, then places earned stickers on it.
+        // Scene backgrounds for the sticker picture, drawn by SceneBackdrop.vue; `colors` is the plain fallback.
         'backgrounds' => [
             'meadow' => ['name' => 'Rét', 'emoji' => '🌼', 'colors' => ['#CDEFAE', '#EAF7C9']],
             'sky' => ['name' => 'Éjszakai ég', 'emoji' => '🌙', 'colors' => ['#2B2A5C', '#4B3F80']],
             'castle' => ['name' => 'Kastély', 'emoji' => '🏰', 'colors' => ['#FFD9EA', '#D8C8FF']],
+            'beach' => ['name' => 'Tengerpart', 'emoji' => '🏖️', 'colors' => ['#9ED8FF', '#F6DFA6']],
+            'underwater' => ['name' => 'Víz alatt', 'emoji' => '🐠', 'colors' => ['#5FC3E8', '#1F6FA8']],
+            'snow' => ['name' => 'Havas táj', 'emoji' => '⛄', 'colors' => ['#DCEFFF', '#FFFFFF']],
+            'forest' => ['name' => 'Varázserdő', 'emoji' => '🌲', 'colors' => ['#BFE6B0', '#4F9E6A']],
         ],
         // Stickers placed on the scene at once.
         'scene_max_stickers' => 24,

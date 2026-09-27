@@ -1,8 +1,9 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import CsillamAvatar from '../components/guide/CsillamAvatar.vue'
+import DressUp from '../components/rewards/DressUp.vue'
 import LevelBar from '../components/rewards/LevelBar.vue'
-import StickerCard from '../components/rewards/StickerCard.vue'
+import StickerBook from '../components/rewards/StickerBook.vue'
 import StickerScene from '../components/rewards/StickerScene.vue'
 import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
@@ -11,39 +12,28 @@ import PageHeader from '../components/ui/PageHeader.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
 import { t } from '../i18n'
-import { sparkle } from '../services/audio/sfx'
 import { useGuideStore } from '../stores/guide'
 import { useRewardsStore } from '../stores/rewards'
 import { errorMessage } from '../utils/errors'
 
-/** The child's sticker album, level, streak, Csillám's wardrobe and their sticker scene. */
+/**
+ * "Matricáim": the child's treasure room. The sticker book (new stickers arrive
+ * as packs to open), Csillám's dressing room, and the sticker picture.
+ */
 const { childId, guideName } = useModuleContext()
 const rewards = useRewardsStore()
 const guide = useGuideStore()
 const failed = ref(false)
-const message = ref('')
 const sceneMessage = ref('')
+const TABS = [
+  { id: 'album', icon: ICONS.book },
+  { id: 'dressup', icon: ICONS.dress },
+  { id: 'scene', icon: ICONS.picture },
+]
 const tab = ref('album')
 
 async function load() {
   failed.value = !(await rewards.load(childId.value))
-}
-
-function sayBadge(badge) {
-  guide.speak([badge.earned_at ? badge.name : badge.hint])
-}
-
-/** Tapping a worn item takes it off; tapping another in the same slot swaps it. */
-async function wear(item) {
-  message.value = ''
-  const next = rewards.worn[item.slot] === item.id ? null : item.id
-  try {
-    await rewards.wear(childId.value, item.slot, next)
-    guide.celebrate()
-    sparkle()
-  } catch (e) {
-    message.value = errorMessage(e, t('rewards.wearFailed'))
-  }
 }
 
 async function onSceneChange(scene) {
@@ -54,19 +44,6 @@ async function onSceneChange(scene) {
     sceneMessage.value = errorMessage(e, t('rewards.sceneSaveFailed'))
   }
 }
-
-const slots = computed(() => {
-  const groups = { head: [], face: [], extra: [] }
-  for (const item of rewards.accessories) groups[item.slot]?.push(item)
-  return groups
-})
-
-/** Earned first (most recent catch first), then the ones still to find. */
-const sortedBadges = computed(() => {
-  const earned = rewards.badges.filter(b => b.earned_at).sort((a, b) => b.earned_at.localeCompare(a.earned_at))
-  const locked = rewards.badges.filter(b => !b.earned_at)
-  return { earned, locked }
-})
 
 onMounted(load)
 </script>
@@ -80,8 +57,8 @@ onMounted(load)
   </BzNotice>
 
   <template v-else-if="rewards.summary">
-    <section class="hero">
-      <div class="hero-avatar"><CsillamAvatar :name="guideName" /></div>
+    <section class="hero" :class="{ 'hero--slim': tab === 'dressup' }">
+      <div v-if="tab !== 'dressup'" class="hero-avatar"><CsillamAvatar :name="guideName" /></div>
       <div class="hero-body">
         <LevelBar :level="rewards.summary.level" />
         <p class="facts">
@@ -101,66 +78,35 @@ onMounted(load)
     </section>
 
     <div class="tabs" role="tablist">
-      <button type="button" class="tab" :class="{ 'tab--on': tab === 'album' }" role="tab" :aria-selected="tab === 'album'" @click="tab = 'album'">
-        {{ t('rewards.tabAlbum') }}
-      </button>
-      <button type="button" class="tab" :class="{ 'tab--on': tab === 'dressup' }" role="tab" :aria-selected="tab === 'dressup'" @click="tab = 'dressup'">
-        {{ t('rewards.tabDressUp') }}
-      </button>
-      <button type="button" class="tab" :class="{ 'tab--on': tab === 'scene' }" role="tab" :aria-selected="tab === 'scene'" @click="tab = 'scene'">
-        {{ t('rewards.tabScene') }}
+      <button
+        v-for="item in TABS"
+        :key="item.id"
+        type="button"
+        class="tab"
+        :class="{ 'tab--on': tab === item.id }"
+        role="tab"
+        :aria-selected="tab === item.id"
+        @click="tab = item.id"
+      >
+        <EmojiArt class="tab-icon" :char="item.icon" />
+        <span class="tab-name">{{ t(`rewards.tabs.${item.id}`) }}</span>
       </button>
     </div>
 
-    <template v-if="tab === 'album'">
-      <h2 class="heading">{{ t('rewards.stickers', { count: rewards.earnedCount, total: rewards.badges.length }) }}</h2>
-
-      <template v-if="sortedBadges.earned.length">
-        <h3 class="group-heading">{{ t('rewards.albumEarned') }}</h3>
-        <div class="album">
-          <StickerCard v-for="badge in sortedBadges.earned" :key="badge.id" :badge="badge" earned @click="sayBadge(badge)" />
-        </div>
-      </template>
-
-      <template v-if="sortedBadges.locked.length">
-        <h3 class="group-heading">{{ t('rewards.albumLocked') }}</h3>
-        <div class="album">
-          <StickerCard v-for="badge in sortedBadges.locked" :key="badge.id" :badge="badge" :earned="false" @click="sayBadge(badge)" />
-        </div>
-      </template>
-    </template>
-
-    <template v-else-if="tab === 'dressup'">
-      <p class="hint">{{ t('rewards.wardrobeHint') }}</p>
-      <BzNotice v-if="message" tone="warn">{{ message }}</BzNotice>
-      <div v-for="(items, slot) in slots" :key="slot" class="wardrobe">
-        <button
-          v-for="item in items"
-          :key="item.id"
-          type="button"
-          class="outfit"
-          :class="{ 'outfit--on': rewards.worn[slot] === item.id, 'outfit--locked': !item.unlocked }"
-          :disabled="!item.unlocked"
-          :aria-pressed="rewards.worn[slot] === item.id"
-          @click="wear(item)"
-        >
-          <EmojiArt class="outfit-art" :char="item.emoji" />
-          <small>{{ item.unlocked ? item.name : t('rewards.unlockAt', { level: item.level }) }}</small>
-          <EmojiArt v-if="!item.unlocked" class="lock" :char="ICONS.lock" />
-        </button>
+    <Transition name="tab" mode="out-in">
+      <StickerBook v-if="tab === 'album'" key="album" :badges="rewards.badges" />
+      <DressUp v-else-if="tab === 'dressup'" key="dressup" />
+      <div v-else key="scene">
+        <BzNotice v-if="sceneMessage" tone="warn">{{ sceneMessage }}</BzNotice>
+        <StickerScene
+          :scene="rewards.scene"
+          :earned-badges="rewards.earnedBadges"
+          :backgrounds="rewards.backgrounds"
+          @change="onSceneChange"
+          @say="text => guide.speak([text])"
+        />
       </div>
-    </template>
-
-    <template v-else>
-      <p class="hint">{{ t('rewards.tabScene') }}</p>
-      <BzNotice v-if="sceneMessage" tone="warn">{{ sceneMessage }}</BzNotice>
-      <StickerScene
-        :scene="rewards.scene"
-        :earned-badges="rewards.earnedBadges"
-        :backgrounds="rewards.backgrounds"
-        @change="onSceneChange"
-      />
-    </template>
+    </Transition>
   </template>
 
   <p v-else class="bz-loading" aria-busy="true">{{ t('common.loading') }}</p>
@@ -171,15 +117,18 @@ onMounted(load)
   display: flex;
   align-items: center;
   gap: 16px;
-  margin: 8px 0 20px;
+  margin: 8px 0 16px;
   padding: 14px 18px;
   border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   box-shadow: var(--bz-shadow);
 }
+.hero--slim {
+  padding: 10px 16px;
+}
 .hero-avatar {
   flex: none;
-  width: clamp(100px, 26vw, 150px);
+  width: clamp(90px, 24vw, 140px);
 }
 .hero-body {
   flex: 1;
@@ -198,87 +147,54 @@ onMounted(load)
   align-items: center;
   gap: 4px;
 }
+/* three big picture tabs: the book, the wardrobe, the picture */
 .tabs {
-  display: flex;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   margin-bottom: 16px;
 }
 .tab {
-  padding: 9px 18px;
-  border-radius: var(--bz-radius-pill);
-  background: var(--bz-card);
-  color: var(--bz-muted);
-  font-weight: 700;
-  font-size: var(--bz-text-sm);
-  box-shadow: var(--bz-shadow-sm);
-}
-.tab--on {
-  background: var(--bz-leaf);
-  color: var(--bz-on-accent);
-}
-.heading {
-  margin: 0 0 10px;
-  font-size: 24px;
-}
-.group-heading {
-  margin: 18px 0 10px;
-  font-size: var(--bz-text-sm);
-  font-weight: 800;
-  color: var(--bz-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-.group-heading:first-of-type {
-  margin-top: 0;
-}
-.album {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 12px;
-}
-.hint {
-  margin: -4px 0 12px;
-  color: var(--bz-muted);
-}
-.wardrobe {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.outfit {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  width: 104px;
-  padding: 12px 6px 10px;
+  padding: 10px 6px 8px;
   border: 4px solid transparent;
-  border-radius: var(--bz-radius-lg);
+  border-radius: 22px 24px 20px 26px;
   background: var(--bz-card);
   box-shadow: var(--bz-shadow);
-  font-weight: 700;
+  transition: transform 0.38s var(--bz-spring);
 }
-.outfit--on {
-  border-color: var(--bz-leaf);
-  background: color-mix(in srgb, var(--bz-leaf) 16%, var(--bz-card));
+.tab:active {
+  transform: scale(0.94);
+  transition-duration: 0.07s;
 }
-.outfit--locked {
-  cursor: default;
-  opacity: 0.55;
+.tab--on {
+  border-color: var(--bz-sun);
+  background: color-mix(in srgb, var(--bz-sun) 22%, var(--bz-card));
+  transform: translateY(-3px);
 }
-.outfit--locked .outfit-art {
-  filter: var(--bz-silhouette);
-  opacity: 0.4;
+.tab-icon {
+  font-size: 34px;
 }
-.outfit-art {
-  font-size: 44px;
+.tab-name {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
 }
-.lock {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 18px;
+.tab-enter-active {
+  transition: opacity 0.2s, transform 0.25s var(--bz-spring);
+}
+.tab-leave-active {
+  transition: opacity 0.12s;
+}
+.tab-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.tab-leave-to {
+  opacity: 0;
 }
 </style>

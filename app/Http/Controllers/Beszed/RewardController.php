@@ -45,7 +45,7 @@ class RewardController extends Controller
         $this->authorizeChild($request, $child);
 
         $data = $request->validate([
-            'slot' => ['required', Rule::in(['head', 'face', 'extra'])],
+            'slot' => ['required', Rule::in(collect(config('beszed.rewards.accessories'))->pluck('slot')->unique()->values()->all())],
             'accessory' => ['present', 'nullable', Rule::in(array_keys(config('beszed.rewards.accessories')))],
         ]);
 

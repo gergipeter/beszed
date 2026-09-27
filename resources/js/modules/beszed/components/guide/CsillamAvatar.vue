@@ -5,7 +5,7 @@ import { t } from '../../i18n'
 import { useGuideStore } from '../../stores/guide'
 import { useRewardsStore } from '../../stores/rewards'
 import { emojiAssetName } from '../../utils/emoji'
-import { ACCESSORY_ART } from './accessories'
+import { ACCESSORY_ART, MANE_DEFAULT } from './accessories'
 
 /**
  * Csillám the unicorn. The drawing is inline SVG; the moods (talking, happy,
@@ -33,12 +33,17 @@ const SPARKS = [
 
 const guide = useGuideStore()
 const rewards = useRewardsStore()
-/** Every worn slot resolved to its art, e.g. [{ slot: 'head', art: {...} }, ...]. */
-const wornArt = computed(() => {
-  const ids = props.worn === undefined ? rewards.worn : props.worn
-  return Object.entries(ids ?? {})
+const wornIds = computed(() => (props.worn === undefined ? rewards.worn : props.worn) ?? {})
+/** Every worn picture resolved to its art, e.g. [{ slot: 'head', art: {...} }, ...] (not the mane colour). */
+const wornArt = computed(() =>
+  Object.entries(wornIds.value)
     .map(([slot, id]) => ({ slot, art: ACCESSORY_ART[id] ?? null }))
-    .filter(w => w.art)
+    .filter(w => w.art?.char),
+)
+/** Her mane and tail colours: a worn mane palette, else her own rainbow. */
+const maneStyle = computed(() => {
+  const palette = ACCESSORY_ART[wornIds.value.mane]?.palette ?? MANE_DEFAULT
+  return Object.fromEntries(palette.map((c, i) => [`--mane-${i + 1}`, c]))
 })
 /** Same picture set as the rest of the app (config.emoji); otherwise the device's emoji as SVG text. */
 const base = config.emoji.baseUrl
@@ -96,7 +101,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <span ref="el" :class="classes" role="img" :aria-label="label">
+  <span ref="el" :class="classes" :style="maneStyle" role="img" :aria-label="label">
     <svg class="uni" viewBox="0 0 200 222" aria-hidden="true">
       <defs>
         <linearGradient :id="gradientId" x1="0" y1="0" x2="0" y2="1">
@@ -106,10 +111,10 @@ onBeforeUnmount(() => {
       </defs>
       <!-- tail -->
       <g>
-        <circle cx="158" cy="180" r="14" fill="#FF9EC7" />
-        <circle cx="169" cy="165" r="11" fill="#FFD36E" />
-        <circle cx="174" cy="151" r="9" fill="#9EE6C9" />
-        <circle cx="172" cy="139" r="7" fill="#B9A6FF" />
+        <circle cx="158" cy="180" r="14" style="fill: var(--mane-1)" />
+        <circle cx="169" cy="165" r="11" style="fill: var(--mane-2)" />
+        <circle cx="174" cy="151" r="9" style="fill: var(--mane-3)" />
+        <circle cx="172" cy="139" r="7" style="fill: var(--mane-4)" />
       </g>
       <!-- body + feet -->
       <ellipse cx="100" cy="174" rx="54" ry="40" fill="#FFF7FC" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
@@ -118,11 +123,11 @@ onBeforeUnmount(() => {
 
       <g class="u-head">
         <!-- mane -->
-        <circle cx="56" cy="72" r="20" fill="#FF9EC7" />
-        <circle cx="48" cy="100" r="17" fill="#FFD36E" />
-        <circle cx="54" cy="127" r="14" fill="#9EE6C9" />
-        <circle cx="144" cy="70" r="18" fill="#B9A6FF" />
-        <circle cx="152" cy="96" r="14" fill="#FF9EC7" />
+        <circle cx="56" cy="72" r="20" style="fill: var(--mane-1)" />
+        <circle cx="48" cy="100" r="17" style="fill: var(--mane-2)" />
+        <circle cx="54" cy="127" r="14" style="fill: var(--mane-3)" />
+        <circle cx="144" cy="70" r="18" style="fill: var(--mane-4)" />
+        <circle cx="152" cy="96" r="14" style="fill: var(--mane-1)" />
         <!-- ears -->
         <path d="M64 64 L58 30 L88 50 Z" fill="#FFF7FC" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
         <path d="M136 64 L142 30 L112 50 Z" fill="#FFF7FC" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
@@ -130,9 +135,9 @@ onBeforeUnmount(() => {
         <path d="M134 58 L137 40 L122 51 Z" fill="#FFC2DC" />
         <!-- face -->
         <ellipse cx="100" cy="98" rx="54" ry="50" fill="#FFF7FC" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
-        <circle cx="78" cy="54" r="15" fill="#FF9EC7" />
-        <circle cx="92" cy="46" r="10" fill="#FFD36E" />
-        <circle cx="123" cy="52" r="12" fill="#9EE6C9" />
+        <circle cx="78" cy="54" r="15" style="fill: var(--mane-1)" />
+        <circle cx="92" cy="46" r="10" style="fill: var(--mane-2)" />
+        <circle cx="123" cy="52" r="12" style="fill: var(--mane-3)" />
         <!-- horn -->
         <path d="M90 52 L100 6 L110 52 Z" :fill="`url(#${gradientId})`" stroke="#5A3D6E" stroke-width="3" stroke-linejoin="round" />
         <path d="M93 40 L107 34 M95 28 L105 24" stroke="#D8962A" stroke-width="2.5" stroke-linecap="round" />
@@ -233,6 +238,11 @@ onBeforeUnmount(() => {
   width: 100%;
   height: auto;
   overflow: visible;
+}
+
+/* a new mane colour flows in instead of snapping */
+.uni circle {
+  transition: fill 0.6s ease;
 }
 
 /* her gaze following the finger glides instead of jumping */

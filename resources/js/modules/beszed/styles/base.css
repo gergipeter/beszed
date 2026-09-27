@@ -90,6 +90,18 @@
   position: absolute;
   top: -4vh;
 }
+/* A sticker carried from the tray to the sticker picture (StickerScene.vue): it follows the finger. */
+.bz-sticker-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  font-size: 40px;
+  pointer-events: none;
+  filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+    drop-shadow(0 10px 8px rgba(0, 0, 0, 0.3));
+}
+
 /* A burst of stars from the child's finger on a right answer (services/effects/burst.js). */
 .bz-burst {
   position: fixed;

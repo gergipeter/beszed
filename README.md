@@ -262,6 +262,23 @@ The whole module is one place, **Zoé's garden**, drawn in CSS and SVG (no image
   counts as a try. `config/beszed.php → guesses` (chance per round, at most per session); a game opts out
   with `'guess' => false`.
 
+### Matricáim: the treasure room
+
+- **The sticker book** (`components/rewards/StickerBook.vue`): every sticker has its own place on a
+  page; the pages swipe sideways. A missing one is a dashed shadow with its hint. A sticker earned since
+  the child last looked arrives as a shiny wrapped pack: tap it, it rattles, bursts open, and after
+  *Beragasztom!* it flies into its place (unwrapped ones are remembered on the device). A stuck sticker
+  peels up and wiggles when tapped while Csillám says its name.
+- **The dressing room** (`DressUp.vue`): Csillám stands big in front of a golden mirror; round tabs pick a
+  rack (head, face, neck, things to hold, mane colour). Drag an item up onto her (the mirror pulls it
+  in) or tap it; she hops, sparkles and says how she likes it. *Meglepetés!* dresses her in a surprise
+  outfit, *Mindent le* takes everything off. 22 items unlock about two a level (levels 2–12); mane
+  colours repaint her mane and tail (`accessories.js`). Locked items say at which level they come.
+- **The sticker picture** (`StickerScene.vue`, `SceneBackdrop.vue`): seven drawn backgrounds (meadow,
+  night sky with a shooting star, castle under a rainbow, beach, underwater with bubbles, snowy land with
+  falling snow, enchanted forest). Drag stickers from the tray straight onto it; a tapped sticker
+  wiggles and says its name; *Életre kel!* makes the picture dance.
+
 ## Offline play
 
 `public/sw.js` (a small hand-written service worker, no build plugin) makes the app work without a
