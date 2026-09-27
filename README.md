@@ -482,9 +482,21 @@ docker compose up --build
 ```
 
 Open [http://localhost:8000](http://localhost:8000). The local app creates a demo parent and child,
-migrates SQLite, and seeds all game content automatically. Use Ctrl+C to stop it; Docker keeps
-progress and recordings in the `beszed-storage` volume. The local-only demo sign-in is disabled
+migrates the database, and seeds all game content automatically. Use Ctrl+C to stop it. The local-only demo sign-in is disabled
 outside `APP_ENV=local`; with Google keys set (see *Sign-in*) you get the sign-in page instead.
+
+**Database: MySQL.** The app uses the `beszed` database on the shared dev MySQL server `horizon-mysql`
+(Docker network `global-network`, which the app joins; from the host: `localhost:10000`), with its own
+user `beszed` that has rights on `beszed.*` only. Create them once on a new machine:
+
+```sql
+CREATE DATABASE beszed CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE USER 'beszed'@'%' IDENTIFIED BY 'beszed';
+GRANT ALL PRIVILEGES ON beszed.* TO 'beszed'@'%';
+```
+
+Recordings, TTS audio and pictograms stay in the `beszed-storage` volume. The tests still run on an
+in-memory SQLite database (`phpunit.xml`), never on MySQL.
 
 Run the feature tests with:
 

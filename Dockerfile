@@ -30,8 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 FROM php:8.4-cli
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libonig-dev libsqlite3-dev libxml2-dev lame \
-    && docker-php-ext-install dom mbstring pdo_sqlite xml xmlwriter \
+    && apt-get install -y --no-install-recommends libonig-dev libsqlite3-dev libxml2-dev libpq-dev lame \
+    && docker-php-ext-install dom mbstring pdo_sqlite pdo_mysql xml xmlwriter \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=piper /opt/piper /opt/piper
 WORKDIR /var/www/html

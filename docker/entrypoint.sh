@@ -2,7 +2,8 @@
 set -eu
 
 mkdir -p storage/app/private storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
-touch "$DB_DATABASE"
+# SQLite needs its file; MySQL's database is on the server
+if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then touch "$DB_DATABASE"; fi
 
 if [ -z "${APP_KEY:-}" ]; then
     if [ -f storage/app/app-key ]; then
