@@ -138,7 +138,7 @@ class GameContentController extends Controller
 
         $errors = [];
         foreach ($schema['fields'] as $field => $spec) {
-            if (!isset($payload[$field]) && $spec['required'] ?? false) {
+            if (!isset($payload[$field]) && ($spec['required'] ?? false)) {
                 $errors[$field] = 'This field is required.';
             }
         }
