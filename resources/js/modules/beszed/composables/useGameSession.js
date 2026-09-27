@@ -15,6 +15,7 @@ import { buzz, lastTouch } from '../services/touch/feel'
 import { errorMessage } from '../utils/errors'
 import { pick } from '../utils/random'
 import { useIdleHelp } from './useIdleHelp'
+import { preloadSessionEmojis } from './useEmojiPreload'
 
 /** @typedef {import('../types').Round} Round */
 
@@ -103,7 +104,10 @@ export function useGameSession(childId, game, { category } = {}) {
     guide.party = false
     try {
       const fresh = await fetchSession(toValue(childId), game, { category: toValue(category) })
-      await preloadEngines(fresh.rounds.map(r => r.engine))
+      await Promise.all([
+        preloadEngines(fresh.rounds.map(r => r.engine)),
+        preloadSessionEmojis(fresh.rounds),
+      ])
       if (!active) return
       session.value = { ...fresh, rounds: stamp(fresh.rounds) }
       stars.value = fresh.stars

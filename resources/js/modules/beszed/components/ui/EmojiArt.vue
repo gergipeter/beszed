@@ -55,6 +55,7 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
     :aria-hidden="label ? undefined : 'true'"
     draggable="false"
     decoding="async"
+    loading="eager"
     @error="pictoFailed = true"
   />
   <img
@@ -65,6 +66,7 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
     :aria-hidden="label ? undefined : 'true'"
     draggable="false"
     decoding="async"
+    loading="eager"
     @error="uploadFailed = true"
   />
   <img
@@ -75,6 +77,7 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
     :aria-hidden="label ? undefined : 'true'"
     draggable="false"
     decoding="async"
+    loading="eager"
     @error="failed.add(single.ch)"
   />
   <span v-else-if="base && parts.length > 1" class="emoji emoji--group" v-bind="a11y">
@@ -86,6 +89,7 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
         alt=""
         draggable="false"
         decoding="async"
+        loading="eager"
         @error="failed.add(p.ch)"
       />
       <span v-else>{{ p.ch }}</span>
