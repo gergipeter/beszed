@@ -1,7 +1,8 @@
 # ARASAAC pictograms and a paid launch
 
-**Status (2026-10-01):** the app still shows ARASAAC pictograms, which are licensed for non-commercial
-use only. Do not charge for the app (or run ads) while they are on, unless ARASAAC has agreed in writing.
+**Status (2026-10-01):** the app shows ARASAAC pictograms, which are licensed for non-commercial use only.
+Do not charge for the app (or run ads) while they are on, unless ARASAAC has agreed in writing. Set
+`BESZED_PICTOGRAMS=false` to launch without them (Mulberry Symbols fill in for 209 of the 385 words that only exist as pictograms).
 
 ## What the licence says
 
@@ -24,36 +25,56 @@ The app keeps its own copy of every pictogram it uses (`storage/app/private/pict
 | | |
 |---|---|
 | Word bank (`database/lexicon/hu.json`) | 781 words: 712 have a pictogram, 396 have an emoji, **385 have a pictogram and no emoji** |
-| Seed content | 8 games hold pictogram references directly: 2,277 of the 5,915 items (38%), about half the items in each of those games |
-| Without ARASAAC | 3,638 items still play (165 to 372 per affected game), so every game stays playable |
+| Mulberry replacements (`database/lexicon/mulberry.json`) | **209 of those 385 words** (205 symbols, 1.4 MB in `public/symbols/`), each checked by eye |
+| Still without a picture if ARASAAC is off | 176 words: buildings, landscapes, many jobs, instruments, some animals |
 
-The games with pictograms: Árnyékkereső, Első hang, Kirakó, Papagáj, Párkereső, Rímelő, Dobolós szavak,
-Zümi vagy Susi.
+Seven games draw on pictograms. Each session picks from the first 1,000 items of its game; with ARASAAC off:
+
+| Game | Pool today | Pool with ARASAAC off | Of which pictogram items |
+|---|---|---|---|
+| Kirakó | 1,000 | 824 | 208 of 384 kept as Mulberry |
+| Papagáj | 1,000 | 824 | 209 of 385 |
+| Párkereső | 1,000 | 824 | 209 of 385 |
+| Dobolós szavak | 1,000 | 825 | 208 of 383 |
+| Árnyékkereső | 1,000 | 850 | 129 of 210 |
+| Rímelő | 1,000 | 783 | 262 of 469 |
+| Zümi vagy Susi | 1,000 | 783 | 262 of 469 |
+
+So every game stays fully playable; about 15 to 22% of its picture items are left out until they are replaced.
+(Measured on the live database, which holds about 1.25 million generated items; the seed files hold 5,915.)
 
 ## The switch: `BESZED_PICTOGRAMS=false`
 
 Set it in the environment (default is `true`). Then:
 
-- sessions leave out every item that needs a pictogram (no emoji fallback), and nothing swaps emojis for pictograms
+- a pictogram that has a Mulberry symbol is shown as that symbol (`mulberry:badger`, drawn from `/symbols/badger.svg`)
+- an item with any pictogram that has no symbol is not played
 - `/pictograms/{id}.png` answers 404 and downloads nothing from ARASAAC
 - the content editor rejects new `arasaac:` pictures
 
 Everything else uses emoji, drawn with Twemoji (CC BY 4.0, commercial use allowed with credit).
 Tested in `tests/Feature/PictogramSwitchTest.php`.
 
+## Mulberry Symbols
+
+[Mulberry Symbols](https://mulberrysymbols.org/), by Steve Lee, CC BY-SA 4.0 (the licence text is in `public/symbols/LICENSE.txt`).
+Commercial use is allowed. The conditions: credit them (done on the privacy page), share adaptations of the
+symbols under the same licence (the app shows the SVGs unchanged), and do not charge for the symbols
+themselves (the app is what is sold). Read the licence again before launch.
+
+Matching was done by English name, then every match was looked at; 42 wrong ones were dropped (for example
+"bat" the animal for a racket, "wood" shown as a log, "date" as a calendar date). Female roles use the
+female variants (`teacher_2a`). To add or change one, edit `database/lexicon/mulberry.json` (pictogram id
+→ symbol name) and copy the SVG into `public/symbols/`.
+
 ## Options before a paid launch
 
-1. **Ask ARASAAC for commercial permission** (draft below). Free of effort, but the answer and any terms are theirs.
-2. **Launch with the switch off.** Works today; 38% of the picture content is hidden until it is replaced.
-3. **Replace the 385 pictogram-only words** with a commercially licensed set, then switch off ARASAAC for good:
-   - [Mulberry Symbols](https://mulberrysymbols.org/) — AAC-style symbols, CC BY-SA 4.0: commercial use allowed with credit, adaptations
-     must be shared alike, and the symbols themselves cannot be sold (the product can).
-   - [OpenMoji](https://openmoji.org/) — CC BY-SA 4.0, covers everyday objects and animals, not abstract AAC words.
-   - Commissioned illustrations: full control, costs money.
-   Check each licence again before relying on it, and keep the credits in the privacy page.
+1. **Ask ARASAAC for commercial permission** (draft below). Then the switch can stay on and nothing is lost.
+2. **Launch with the switch off.** Works today with 76 to 85% of the picture pool. The 176 uncovered words
+   could be filled with more Mulberry-style symbols, OpenMoji, or commissioned illustrations.
+3. Both: ask ARASAAC, and keep the switch ready.
 
-Recommended: send the request (1) now, and in parallel look at (3) for the words that matter most. Decide
-between (1) and (3) when ARASAAC answers.
+Recommended: send the request now; launch with the switch off if the answer is slow.
 
 ## Draft request (English)
 

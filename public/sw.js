@@ -2,7 +2,7 @@
  * Beszéd & DIFER service worker: offline play after the first visit.
  *
  *   /build/*, /icons/*        cache-first; the whole Vite build is precached on install
- *   /pictograms/*              cache-first (ARASAAC pictures never change under their id)
+ *   /pictograms/*, /symbols/*  cache-first (ARASAAC / Mulberry pictures never change under their id)
  *   TTS + recording audio      cache-first (URLs never change their content)
  *   GET /api/*                 network-first, falls back to the last answer (offline play)
  *   page navigations           network-first, falls back to the cached app shell
@@ -11,7 +11,7 @@
  * Personal API data is wiped on sign-out (message "clear-user-data").
  * Bump VERSION when this file's logic changes.
  */
-const VERSION = 'v1'
+const VERSION = 'v2'
 const ASSETS = `beszed-assets-${VERSION}`
 const SHELL = `beszed-shell-${VERSION}`
 const AUDIO = 'beszed-audio'
@@ -74,7 +74,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(networkFirst(request, SHELL, '/__shell'))
   } else if (url.pathname.startsWith('/build/') || url.pathname.startsWith('/icons/')) {
     event.respondWith(cacheFirst(request, ASSETS))
-  } else if (url.pathname.startsWith('/pictograms/')) {
+  } else if (url.pathname.startsWith('/pictograms/') || url.pathname.startsWith('/symbols/')) {
     event.respondWith(cacheFirst(request, PICTOGRAMS))
   } else if (url.pathname === '/api/beszed/tts' || /^\/api\/beszed\/recordings\/[^/]+\/audio$/.test(url.pathname)) {
     event.respondWith(cacheFirst(request, AUDIO))

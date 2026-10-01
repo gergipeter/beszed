@@ -22,6 +22,16 @@ export function pictogram(text) {
 }
 
 /**
+ * A Mulberry symbol reference: "mulberry:badger", or "mulberry:badger~🦡" with the emoji to show if the
+ * picture can't load. Null for anything else.
+ * @returns {{ name: string, fallback: string } | null}
+ */
+export function symbol(text) {
+  const m = /^mulberry:([a-z0-9_]+)(?:~(.+))?$/.exec(text ?? '')
+  return m ? { name: m[1], fallback: m[2] ?? '' } : null
+}
+
+/**
  * An uploaded image reference: "upload:123". Null for anything else.
  * @returns {{ id: string } | null}
  */

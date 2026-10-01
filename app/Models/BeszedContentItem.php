@@ -17,10 +17,12 @@ class BeszedContentItem extends Model
         return $q->where('game', $game)->where('active', true)->where('status', 'live');
     }
 
-    /** The item shows an ARASAAC pictogram that has no emoji to fall back on. */
-    public function needsPictogram(): bool
+    /** The ARASAAC pictograms (ids) the item shows with no emoji to fall back on. @return list<int> */
+    public function arasaacIds(): array
     {
-        return str_contains(json_encode($this->payload), 'arasaac:');
+        preg_match_all('/arasaac:(\d+)/', json_encode($this->payload), $m);
+
+        return array_map('intval', array_unique($m[1]));
     }
 
     /** Stable id of a seed payload (same encoding as the array cast, so stored rows hash the same). */

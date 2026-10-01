@@ -34,6 +34,12 @@ const defaults = {
    */
   pictograms: { baseUrl: '/pictograms/' },
 
+  /**
+   * Mulberry symbols ("mulberry:badger"), served by the app from public/symbols/. Mulberry Symbols by Steve Lee,
+   * mulberrysymbols.org, CC BY-SA 4.0: used where ARASAAC pictograms are off.
+   */
+  symbols: { baseUrl: '/symbols/' },
+
   /** Browser Web Speech fallback voice. */
   voice: { lang: 'hu-HU', rate: 0.85, pitch: 1.15 },
 

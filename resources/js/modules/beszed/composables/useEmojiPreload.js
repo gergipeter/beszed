@@ -1,5 +1,5 @@
 import { config } from '../config/options'
-import { emojiAssetName, pictogram, upload, splitEmoji } from '../utils/emoji'
+import { emojiAssetName, pictogram, symbol, upload, splitEmoji } from '../utils/emoji'
 
 /**
  * Preload emoji SVGs before they're rendered.
@@ -15,9 +15,12 @@ export function preloadEmojis(chars) {
   chars.forEach(char => {
     const picto = pictogram(char)
     const uploaded = upload(char)
+    const sym = symbol(char)
 
     if (picto) {
       urls.add(`${config.pictograms.baseUrl.replace(/\/?$/, '/')}${picto.id}.png`)
+    } else if (sym) {
+      urls.add(`${config.symbols.baseUrl.replace(/\/?$/, '/')}${sym.name}.svg`)
     } else if (uploaded) {
       urls.add(`/api/content-images/${uploaded.id}`)
     } else if (config.emoji.baseUrl) {

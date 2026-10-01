@@ -83,6 +83,12 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
         <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.hu" rel="noopener" target="_blank">CC BY-NC-SA 4.0</a>.
       </p>
       <p class="credits">
+        Szimbólumok: Mulberry Symbols – © Steve Lee,
+        <a href="https://mulberrysymbols.org" rel="noopener" target="_blank">mulberrysymbols.org</a>, licenc:
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.hu" rel="noopener" target="_blank">CC BY-SA 4.0</a>.
+        A jeleket változtatás nélkül jelenítjük meg.
+      </p>
+      <p class="credits">
         Képek: <a href="https://github.com/jdecked/twemoji" rel="noopener" target="_blank">Twemoji</a> – © Twitter, Inc.
         és közreműködők,
         <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC-BY 4.0</a>.

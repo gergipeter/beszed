@@ -1,14 +1,15 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { config } from '../../config/options'
-import { emojiAssetName, pictogram, upload, splitEmoji } from '../../utils/emoji'
+import { emojiAssetName, pictogram, symbol, upload, splitEmoji } from '../../utils/emoji'
 
 /**
  * The one place emojis are drawn. Sized by font-size like text, so callers style
  * it the same either way. With `config.emoji.baseUrl` set it shows that image set
  * (same look on every device); a sequence like "🐱📦" becomes one image per emoji,
  * and any missing file falls back to the native emoji. An ARASAAC pictogram
- * ("arasaac:2462~🍎") is drawn as its picture, with the emoji as the fallback.
+ * ("arasaac:2462~🍎") is drawn as its picture, with the emoji as the fallback; so is a Mulberry symbol
+ * ("mulberry:badger").
  */
 const props = defineProps({
   char: { type: String, required: true },
@@ -19,10 +20,13 @@ const props = defineProps({
 const failed = reactive(new Set())
 const picto = computed(() => pictogram(props.char))
 const uploaded = computed(() => upload(props.char))
+const mulberry = computed(() => symbol(props.char))
+const symbolFailed = ref(false)
 const pictoFailed = ref(false)
 const uploadFailed = ref(false)
 const shown = computed(() => {
   if (picto.value) return pictoFailed.value ? picto.value.fallback : ''
+  if (mulberry.value) return symbolFailed.value ? mulberry.value.fallback || ' ' : ''
   if (uploaded.value) return uploadFailed.value ? ' ' : ''
   return props.char
 })
@@ -31,6 +35,7 @@ watch(
   () => {
     failed.clear()
     pictoFailed.value = false
+    symbolFailed.value = false
     uploadFailed.value = false
   },
 )
@@ -57,6 +62,17 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
     decoding="async"
     loading="eager"
     @error="pictoFailed = true"
+  />
+  <img
+    v-else-if="mulberry && !symbolFailed"
+    class="emoji emoji--img emoji--picto"
+    :src="`${config.symbols.baseUrl.replace(/\/?$/, '/')}${mulberry.name}.svg`"
+    :alt="label"
+    :aria-hidden="label ? undefined : 'true'"
+    draggable="false"
+    decoding="async"
+    loading="eager"
+    @error="symbolFailed = true"
   />
   <img
     v-else-if="uploaded && !uploadFailed"

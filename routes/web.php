@@ -36,4 +36,4 @@ Route::get('/email/heti-beszamolo/leiratkozas/{user}', WeeklyReportUnsubscribeCo
 
 // Every other page URL is the Vue app; it decides between sign-in and the games.
 Route::get('/login', SpaController::class)->name('login');
-Route::get('/{path?}', SpaController::class)->where('path', '^(?!api/|auth/|up$|build/|storage/|pictograms/|email/).*')->name('spa');
+Route::get('/{path?}', SpaController::class)->where('path', '^(?!api/|auth/|up$|build/|storage/|pictograms/|symbols/|email/).*')->name('spa');
