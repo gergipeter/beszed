@@ -47,8 +47,8 @@
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
+      "@@context": "https://schema.org",
+      "@@type": "SoftwareApplication",
       "name": "Beszéd",
       "description": "Interactive speech therapy app for children with AI-powered analysis",
       "url": "{{ url('/') }}",
@@ -56,17 +56,17 @@
       "operatingSystem": "Web",
       "inLanguage": ["hu", "en"],
       "offers": {
-        "@type": "Offer",
+        "@@type": "Offer",
         "price": "0",
         "priceCurrency": "EUR"
       },
       "author": {
-        "@type": "Organization",
+        "@@type": "Organization",
         "name": "Horizon Web",
         "url": "{{ url('/') }}"
       },
       "aggregateRating": {
-        "@type": "AggregateRating",
+        "@@type": "AggregateRating",
         "ratingValue": "4.8",
         "ratingCount": "42"
       }
@@ -76,8 +76,8 @@
     <!-- Organization Schema -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "Organization",
+      "@@context": "https://schema.org",
+      "@@type": "Organization",
       "name": "Beszéd",
       "url": "{{ url('/') }}",
       "logo": "{{ url('/icons/favicon-32.png') }}",

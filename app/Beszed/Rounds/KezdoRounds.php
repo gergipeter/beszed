@@ -8,6 +8,7 @@ class KezdoRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
+        $this->favorLevel($items, $level);
         $bySound = $items->groupBy(fn ($i) => $i->payload['sound']);
         $targets = $bySound->filter(fn ($g) => $g->count() >= 2)->keys()->all();
         $rounds = [];

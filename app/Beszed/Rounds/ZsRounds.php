@@ -8,6 +8,8 @@ class ZsRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
+        $this->favorLevel($items, $level);
+
         return $this->cycle($items, $count)->map(function ($it) {
             $p = $it->payload;
             $w = $p['word'];

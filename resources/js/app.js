@@ -29,5 +29,5 @@ app.mount('#app')
 
 // Offline play after the first visit (public/sw.js). Service workers need HTTPS (or localhost).
 if (import.meta.env.PROD && 'serviceWorker' in navigator && window.isSecureContext) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}))
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => { }))
 }

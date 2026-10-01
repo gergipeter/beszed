@@ -32,6 +32,10 @@ export default {
     loadFailed: 'Nem sikerült betölteni a játékokat.',
     exit: 'Gyerekek',
     zones: { meadow: 'A Rét', forest: 'A Varázserdő' },
+    views: { folders: 'Mappák', garden: 'Kert' },
+    folderBack: 'Vissza a mappákhoz',
+    folderGames: '{count} játék',
+    folderMedals: '{done}/{total} érem',
     wholeGarden: 'Az egész kert',
     sign: 'az óvodai jeled',
     closer: 'Közelebb',
@@ -53,6 +57,34 @@ export default {
     tipIos: 'az Irányított hozzáféréssel (Beállítások → Kisegítő lehetőségek → Irányított hozzáférés) a gyerek nem tud véletlenül kilépni a játékból.',
     tipAndroid: 'a Képernyő rögzítésével (Beállítások → Biztonság) a gyerek nem tud véletlenül kilépni a játékból.',
     close: 'Rendben',
+  },
+
+  journey: {
+    title: 'Utazás',
+    lead: 'Minden készségnek van egy útja. Lépésről lépésre haladunk, mindig a következő a kiemelt.',
+    leadNamed: '{child} útja: minden készségnek van egy útja, lépésről lépésre haladunk.',
+    next: 'Ezt játsszuk legközelebb',
+    count: '{done}/{total} kész',
+    level: '{level}. szint a {max}-ból',
+    held: 'a további szintek a prémium csomagban vannak',
+    loadFailed: 'Nem sikerült betölteni az utazást.',
+    state: { new: 'még nem játszottátok', learning: 'gyakorlás alatt', mastered: 'biztosan megy' },
+    note: 'Ez nem teszt: csak azt mutatja, hogyan mentek a játékok.',
+  },
+
+  premium: {
+    title: 'Prémium csomag',
+    lead: 'Minden játékot kipróbálhattok, korlátlanul, az első {level} szintig. A magasabb szintekhez a prémium csomag kell.',
+    benefitsTitle: 'A prémium csomaggal',
+    benefits: {
+      b1: 'Minden játék, minden szinten',
+      b2: 'Teljes haladási jelentés és szakértői összefoglaló (PDF)',
+      b3: 'Megosztás a logopédussal',
+      b4: 'Új játékok és tartalmak folyamatosan',
+    },
+    upgrade: 'Prémium csomag megnézése',
+    soon: 'A prémium csomag hamarosan elérhető. Addig is játsszatok a kipróbálható játékokkal!',
+    tryFree: 'Vissza a játékokhoz',
   },
 
   daily: {
@@ -183,6 +215,47 @@ export default {
     tooHard: 'Semmi baj, próbáljunk egy rövidebbet!',
   },
 
+  hop: {
+    watch: 'Figyelj…',
+    whichPad: 'Melyik számra érkezett?',
+    hops: '{count} ugrás',
+    jump: 'Ugrás!',
+    ready: 'Kész',
+    wrongCount: 'Nem pont ennyit ugrottál. Próbáld újra!',
+    tooHard: 'Semmi baj, próbáljunk egy másikat!',
+  },
+
+  balance: {
+    tray: 'Koppints, és a jobb serpenyőbe kerül',
+    add: 'Tedd a mérlegre',
+    takeBack: 'Koppints, hogy levegyél egyet',
+  },
+
+  split: {
+    plate: '{n}. tányér',
+    hint: 'Koppints egy tányérra! Ha az ételre koppintasz, visszamegy a kosárba.',
+  },
+
+  rhythm: {
+    watch: 'Figyelj…',
+    yourTurn: 'Most te jössz!',
+    wrong: 'Hoppá, ez másképp szólt.',
+    tooHard: 'Semmi baj, próbáljunk egy másikat!',
+    progress: '{done} / {total} ütés',
+    drum: 'Dob',
+    again: 'Hallgasd meg újra',
+  },
+
+  piano: {
+    watch: 'Figyelj…',
+    yourTurn: 'Most te jössz!',
+    wrong: 'Hoppá, ez másik hang volt.',
+    tooHard: 'Semmi baj, próbáljunk egy másikat!',
+    first: '1. hang',
+    second: '2. hang',
+    again: 'Hallgasd meg újra',
+  },
+
   directions: {
     listen: 'Figyelj, mit mondok…',
     tooHard: 'Semmi baj, próbáljunk egy könnyebbet!',
@@ -256,6 +329,7 @@ export default {
       skill: 'Mit gyakorol',
       sessions: 'Végigjátszva',
       rounds: 'Körök',
+      stars: 'Csillag',
       firstTry: 'Elsőre jó',
       solved: 'Megoldva',
       level: 'Szint',
@@ -266,6 +340,9 @@ export default {
     charts: {
       games: 'Végigjátszott játékok hetente',
       rate: 'Elsőre jó válaszok aránya',
+      stars: 'Csillagok területenként',
+      starsSubtitle: 'ebben az időszakban',
+      starsCount: '{count} csillag',
       weeks: 'utolsó {count} hét',
       weekOf: '{date} hete',
       empty: 'Ebben az időszakban még nem volt játék.',

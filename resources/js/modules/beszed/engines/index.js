@@ -19,6 +19,11 @@ const loaders = {
   order: () => import('./order/OrderEngine.vue'),
   simon: () => import('./simon/SimonEngine.vue'),
   directions: () => import('./directions/DirectionsEngine.vue'),
+  hop: () => import('./hop/HopEngine.vue'),
+  balance: () => import('./balance/BalanceEngine.vue'),
+  share: () => import('./share/ShareEngine.vue'),
+  rhythm: () => import('./rhythm/RhythmEngine.vue'),
+  piano: () => import('./piano/PianoEngine.vue'),
   tamagotchi: () => import('./TamagotchiEngine.vue'),
 }
 

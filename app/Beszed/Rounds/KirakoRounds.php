@@ -5,7 +5,7 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Picture puzzle: swap pieces until the picture is whole. 100 levels ("pályák"):
+ * Picture puzzle: swap pieces until the picture is whole. 200 levels ("pályák"):
  * the grid grows from 2×2 to 5×5, from level 4 on the picture stands in one of
  * the drawn scenes (so every piece shows something), every other level has a
  * fairy-tale princess among its pictures, and on the high levels the example
@@ -13,10 +13,10 @@ use Illuminate\Support\Collection;
  */
 class KirakoRounds extends RoundFactory
 {
-    public const LEVELS = 100;
+    public const LEVELS = 200;
 
     /** [from level, columns, rows] */
-    private const BANDS = [[1, 2, 2], [7, 3, 2], [16, 3, 3], [31, 4, 3], [46, 4, 4], [66, 5, 4], [86, 5, 5]];
+    private const BANDS = [[1, 2, 2], [7, 3, 2], [16, 3, 3], [31, 4, 3], [46, 4, 4], [66, 5, 4], [86, 5, 5], [101, 6, 5], [121, 6, 6], [141, 7, 6], [166, 7, 7], [186, 8, 7]];
 
     /** The drawn scenes (SceneBackdrop.vue), taken in turn from level to level. */
     private const SCENES = ['meadow', 'beach', 'castle', 'underwater', 'snow', 'forest', 'sky'];
@@ -34,13 +34,15 @@ class KirakoRounds extends RoundFactory
         return $grid;
     }
 
-    /** How long the example picture stays: always (null) up to level 35, then 5 s, and 2.5 s from level 71. */
+    /** How long the example picture stays: always (null) up to level 35, then 5 s, 2.5 s from level 71, 1.5 s from 121, 0.8 s from 161. */
     public static function previewMs(int $level): ?int
     {
         return match (true) {
             $level <= 35 => null,
             $level <= 70 => 5000,
-            default => 2500,
+            $level <= 120 => 2500,
+            $level <= 160 => 1500,
+            default => 800,
         };
     }
 
@@ -75,6 +77,7 @@ class KirakoRounds extends RoundFactory
                 'pieces' => $this->shuffled($cols * $rows),
                 'previewMs' => self::previewMs($level),
                 'levelLabel' => "$level. pálya",
+                'levelMax' => self::LEVELS,
                 'onCorrect' => $tale
                     ? "Hurrá! Kész a kép: {$it->payload['name']}!"
                     : "Hurrá! Kész a kép! Ez egy {$it->payload['name']}!",

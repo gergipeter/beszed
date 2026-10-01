@@ -98,7 +98,7 @@ function sayStimulus() {
 
   <div v-if="data.sequence" class="sequence" role="img" :aria-label="t('choice.sequence')">
     <EmojiArt v-for="(char, i) in data.sequence" :key="i" :char="char" />
-    <span class="missing">?</span>
+    <span v-if="!data.noMissing" class="missing">?</span>
   </div>
 
   <OptionGrid :columns="COLUMNS[data.layout] ?? 3">

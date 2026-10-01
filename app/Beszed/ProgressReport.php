@@ -36,10 +36,14 @@ class ProgressReport
                 'skill' => $g['skill'],
                 'sessions' => (int) ($sessions[$id] ?? 0),
                 'rounds' => $rounds,
+                'stars' => (int) ($s->solved ?? 0),
                 'firstTryRate' => $rounds ? round($s->first_try / $rounds, 2) : null,
                 'solvedRate' => $rounds ? round($s->solved / $rounds, 2) : null,
                 'level' => isset($g['adaptive']) ? ($levels[$id] ?? $g['adaptive']['start']) : null,
                 'maxLevel' => $g['adaptive']['max'] ?? null,
+                'levelProgress' => isset($g['adaptive'])
+                    ? round((($levels[$id] ?? $g['adaptive']['start']) - $g['adaptive']['min']) / max(1, $g['adaptive']['max'] - $g['adaptive']['min']), 2)
+                    : null,
                 'lastPlayed' => $s->last_played ?? null,
             ];
         })->values();
@@ -83,6 +87,7 @@ class ProgressReport
                 'games' => $ids,
                 'sessions' => collect($ids)->sum(fn ($id) => $byId[$id]['sessions']),
                 'rounds' => $rounds,
+                'stars' => collect($ids)->sum(fn ($id) => $byId[$id]['stars']),
                 'firstTryRate' => $now,
                 'previousRate' => $before,
                 'trend' => $this->trend($now, $before, $cfg['trend_delta']),

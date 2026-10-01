@@ -25,6 +25,10 @@
  * @property {number} stars
  * @property {Round[]} rounds
  *
+ * @typedef {{ id: string, name: string, emoji: string, color: string, level: number | null, maxLevel: number | null, firstTryRate: number | null, state: 'new' | 'learning' | 'mastered', held: boolean, lastPlayed: string | null }} JourneyStep
+ * @typedef {{ key: string, label: string, emoji: string, steps: JourneyStep[], mastered: number, total: number, next: string | null }} JourneyArea
+ * @typedef {{ areas: JourneyArea[], recommended: { area: string, game: string } | null }} Journey
+ *
  * @typedef {object} GameMeta
  * @property {string} id
  * @property {string} name
@@ -47,6 +51,7 @@
  * @property {boolean} serverTts
  * @property {boolean} serverStt
  * @property {VoiceOption[]} voices
+ * @property {number | null} freeMaxLevel  the free plan's top game level; null = no cap
  * @property {{ min: number, max: number }} rateRange
  * @property {{ min: number, max: number }} pitchRange
  *
@@ -185,10 +190,12 @@
  * @property {string} skill
  * @property {number} sessions  Games finished in the period.
  * @property {number} rounds
+ * @property {number} stars   correct answers this period
  * @property {number | null} firstTryRate
  * @property {number | null} solvedRate
  * @property {number | null} level
  * @property {number | null} maxLevel
+ * @property {number | null} levelProgress   0-1 through [min, max] of the game's adaptive difficulty
  * @property {string | null} lastPlayed
  *
  * @typedef {{ number: number, stars: number, from: number, to: number, progress: number }} PlayerLevel
@@ -256,6 +263,7 @@
  * @property {string[]} games
  * @property {number} sessions
  * @property {number} rounds
+ * @property {number} stars   correct answers across the area's games, this period
  * @property {number|null} firstTryRate   null below the minimum number of answers
  * @property {number|null} previousRate   the same-length period before
  * @property {'up'|'flat'|'down'|null} trend

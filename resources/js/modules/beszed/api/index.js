@@ -1,5 +1,6 @@
 export { setHttpClient } from './client'
 export { fetchDailyPath } from './dailyPath'
+export { fetchJourney } from './journey'
 export { fetchMeta } from './meta'
 export { assessPronunciation } from './pronunciation'
 export { fetchProgress, fetchProgressHistory } from './progress'

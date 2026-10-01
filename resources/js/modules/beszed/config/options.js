@@ -16,6 +16,12 @@ const defaults = {
   exitTo: null,
 
   /**
+   * Where the premium page's upgrade button leads (a route location or URL), e.g. the host's checkout.
+   * null = no button yet (the page says it is coming soon).
+   */
+  upgradeTo: null,
+
+  /**
    * Optional emoji image set, so pictures look the same on every device.
    * Twemoji-style file names (`1f41d.svg`), e.g. `{ baseUrl: '/vendor/twemoji/svg/' }`.
    * `null` = the device's own emoji font. Missing images fall back to it too.

@@ -48,9 +48,9 @@ function rewardSpeech(/** @type {import('../types').RewardResult | null} */ resu
  *
  * @param {import('vue').MaybeRefOrGetter<number>} childId
  * @param {string} game
- * @param {{ category?: import('vue').MaybeRefOrGetter<string | null> }} [options]  the picture theme picked (Kirakó)
+ * @param {{ category?: import('vue').MaybeRefOrGetter<string | null>, level?: import('vue').Ref<number | null> }} [options]  the picture theme picked (Kirakó); a pálya picked by hand, used by the next load only
  */
-export function useGameSession(childId, game, { category } = {}) {
+export function useGameSession(childId, game, { category, level } = {}) {
   const guide = useGuideStore()
   const meta = useMetaStore()
   const recordings = useRecordingsStore()
@@ -103,7 +103,10 @@ export function useGameSession(childId, game, { category } = {}) {
     loading.value = true
     guide.party = false
     try {
-      const fresh = await fetchSession(toValue(childId), game, { category: toValue(category) })
+      // a hand-picked level applies to this load only; after that the adaptive level carries on from it
+      const picked = toValue(level)
+      if (level) level.value = null
+      const fresh = await fetchSession(toValue(childId), game, { category: toValue(category), level: picked })
       await Promise.all([
         preloadEngines(fresh.rounds.map(r => r.engine)),
         preloadSessionEmojis(fresh.rounds),

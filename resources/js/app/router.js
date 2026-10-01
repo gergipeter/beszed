@@ -21,7 +21,7 @@ export const router = createRouter({
     ...createBeszedRoutes({
       props: route => {
         const child = useSessionStore().child(route.params.childId)
-        return { childName: child?.name ?? '', childSign: child?.sign_emoji ?? '' }
+        return { childName: child?.name ?? '', childSign: child?.sign_emoji ?? '', premium: Boolean(useSessionStore().user?.premium) }
       },
     }),
     { path: '/:pathMatch(.*)*', redirect: '/' },

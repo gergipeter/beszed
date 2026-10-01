@@ -2,6 +2,7 @@
 
 namespace App\Beszed;
 
+use App\Models\BeszedAttempt;
 use App\Models\BeszedSkillLevel;
 use App\Models\Child;
 
@@ -12,11 +13,36 @@ use App\Models\Child;
  */
 class Leveler
 {
+    public function __construct(private Entitlements $plans) {}
+
+    /** The level to play now; a free account stops at the plan's cap (the stored level is kept for when they upgrade). */
     public function current(Child $child, string $game): int
     {
         $cfg = config("beszed.games.$game.adaptive");
 
-        return $cfg ? $this->row($child, $game, $cfg)->level : 1;
+        return $cfg ? $this->capped($child, $this->row($child, $game, $cfg)->level) : 1;
+    }
+
+    /** Highest level the child's parent has unlocked; null = all of them. */
+    public function cap(Child $child): ?int
+    {
+        return $this->plans->levelCap($child->user);
+    }
+
+    /** A level picked by hand (Kirakó's pálya chooser): stored, clamped to the game's range, then play goes on from there. */
+    public function set(Child $child, string $game, int $level): int
+    {
+        $cfg = config("beszed.games.$game.adaptive");
+        if (! $cfg) {
+            return 1;
+        }
+
+        $row = $this->row($child, $game, $cfg);
+        $row->level = max($cfg['min'], min($cfg['max'], $this->capped($child, $level)));
+        $row->streak = 0;
+        $row->save();
+
+        return $row->level;
     }
 
     public function record(Child $child, string $game, bool $correct, int $tries): int
@@ -30,7 +56,7 @@ class Leveler
 
         if ($correct && $tries === 1) {
             $row->streak++;
-            if ($row->streak >= $cfg['up_after'] && $row->level < $cfg['max']) {
+            if ($row->streak >= ($this->placing($child, $game) ? 1 : $cfg['up_after']) && $row->level < min($cfg['max'], $this->cap($child) ?? PHP_INT_MAX)) {
                 $row->level++;
                 $row->streak = 0;
             }
@@ -43,7 +69,22 @@ class Leveler
 
         $row->save();
 
-        return $row->level;
+        return $this->capped($child, $row->level);
+    }
+
+    /** The game's first few answers (this one included): a quick search for the child's level. */
+    private function placing(Child $child, string $game): bool
+    {
+        $n = (int) config('beszed_skills.placement_answers');
+
+        return $n > 0 && BeszedAttempt::where('child_id', $child->id)->where('game', $game)->limit($n + 1)->pluck('id')->count() <= $n;
+    }
+
+    private function capped(Child $child, int $level): int
+    {
+        $cap = $this->cap($child);
+
+        return $cap === null ? $level : min($level, $cap);
     }
 
     private function row(Child $child, string $game, array $cfg): BeszedSkillLevel

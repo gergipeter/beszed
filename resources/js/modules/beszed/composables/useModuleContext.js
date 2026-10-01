@@ -9,6 +9,7 @@ const KEY = Symbol('beszed')
  * @property {import('vue').ComputedRef<string>} childName
  * @property {import('vue').ComputedRef<string>} childSign  the child's óvodai jel (a picture), if chosen
  * @property {import('vue').ComputedRef<string>} guideName
+ * @property {import('vue').ComputedRef<boolean>} premium  false: only the games marked `free` can be played
  */
 
 /** Called by BeszedLayout, so every page below it knows whose session this is. */
@@ -29,4 +30,5 @@ export const createModuleContext = props => ({
   childName: computed(() => props.childName),
   childSign: computed(() => props.childSign ?? ''),
   guideName: computed(() => props.guideName || config.guideName),
+  premium: computed(() => props.premium),
 })

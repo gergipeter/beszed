@@ -16,6 +16,7 @@ class HallgasdRounds extends RoundFactory
 
         $optionCount = min($items->count(), self::OPTIONS);
         $layout = [2 => 'two', 3 => 'three', 4 => 'four'][$optionCount];
+        $this->favorLevel($items, $level);
 
         return $this->cycle($items, $count)->map(function ($target) use ($items, $optionCount, $layout) {
             $w = $target->payload['word'];

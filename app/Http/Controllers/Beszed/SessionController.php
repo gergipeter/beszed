@@ -20,10 +20,12 @@ class SessionController extends Controller
             'game' => ['required', Rule::in(array_keys(config('beszed.games')))],
             // a game with picture themes (Kirakó): which one the child picked
             'category' => ['nullable', 'string', 'max:30'],
+            // a level (pálya) picked by hand instead of the adaptive one
+            'level' => ['nullable', 'integer', 'min:1', 'max:1000'],
         ]);
         $categories = config("beszed.games.{$data['game']}.categories", []);
         $category = isset($categories[$data['category'] ?? '']) ? $data['category'] : null;
 
-        return response()->json($builder->build($child, $data['game'], ['category' => $category]));
+        return response()->json($builder->build($child, $data['game'], ['category' => $category], isset($data['level']) ? (int) $data['level'] : null));
     }
 }

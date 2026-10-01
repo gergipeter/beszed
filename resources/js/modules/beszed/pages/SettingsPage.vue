@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import LanguageSwitcher from '../../../components/LanguageSwitcher.vue'
 import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
 import PageHeader from '../components/ui/PageHeader.vue'
@@ -55,7 +56,9 @@ onMounted(load)
 </script>
 
 <template>
-  <PageHeader :title="t('settings.title')" :back-to="{ name: 'beszed.hub', params: { childId } }" />
+  <PageHeader :title="t('settings.title')" :back-to="{ name: 'beszed.hub', params: { childId } }">
+    <LanguageSwitcher />
+  </PageHeader>
 
   <BzNotice v-if="failed" tone="warn">
     {{ t('settings.loadFailed') }}

@@ -9,6 +9,8 @@ class ArnyekRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
+        $this->favorLevel($items, $level);
+
         return $this->cycle($items, $count)->map(function ($it) use ($items) {
             $others = $items->reject(fn ($o) => $o->id === $it->id)->shuffle()->take(2);
             $opts = $others->push($it)->shuffle()->values();

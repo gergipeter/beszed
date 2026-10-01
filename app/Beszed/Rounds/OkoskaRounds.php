@@ -7,23 +7,28 @@ use Illuminate\Support\Collection;
 /** Pattern continuation + odd one out. */
 class OkoskaRounds extends RoundFactory
 {
+    /** Pattern kinds by how hard they are to continue: two alternating, a doubled beat, then three-part sequences. */
+    private const PATTERNS_BY_LEVEL = [1 => ['AB'], 2 => ['AB', 'AAB', 'ABB'], 3 => ['AB', 'AAB', 'ABB', 'ABC']];
+
     public function build(Collection $items, int $level, int $count): array
     {
         $symbols = $items->first(fn ($i) => $i->payload['kind'] === 'symbols')?->payload['emojis'] ?? [];
         $cats = $items->filter(fn ($i) => $i->payload['kind'] === 'category')->values();
+        $this->favorLevel($cats, $level);
+        $types = self::PATTERNS_BY_LEVEL[$level] ?? self::PATTERNS_BY_LEVEL[3];
         $rounds = [];
 
         for ($r = 0; $r < $count; $r++) {
             $pattern = count($symbols) >= 3 && ($cats->count() < 2 || $r % 2 === 0);
-            $rounds[] = $pattern ? $this->pattern($symbols) : $this->oddOneOut($cats);
+            $rounds[] = $pattern ? $this->pattern($symbols, $types) : $this->oddOneOut($cats);
         }
 
         return $rounds;
     }
 
-    private function pattern(array $symbols): array
+    private function pattern(array $symbols, array $types): array
     {
-        $type = ['AB', 'AAB', 'ABB', 'ABC'][array_rand(['AB', 'AAB', 'ABB', 'ABC'])];
+        $type = $types[array_rand($types)];
         $syms = collect($symbols)->shuffle()->take(3)->values()->all();
         $unit = array_map(fn ($c) => $syms[ord($c) - 65], str_split($type));
         $len = count($unit);

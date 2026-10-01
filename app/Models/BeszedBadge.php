@@ -9,6 +9,8 @@ class BeszedBadge extends Model
 {
     protected $table = 'beszed_badges';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'child_id',
         'badge',

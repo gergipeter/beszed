@@ -9,6 +9,7 @@ class RimeloRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
+        $this->favorLevel($items, $level);
         $byRhyme = $items->groupBy(fn ($i) => $i->payload['rhyme']);
         $targets = $byRhyme->filter(fn ($g) => $g->count() >= 2)->keys()->all();
         $rounds = [];

@@ -3,8 +3,9 @@ import { postOrQueue } from './outbox'
 
 /** @returns {Promise<import('../types').Session>} */
 /** `category`: the picture theme picked before playing (Kirakó), if any. */
-export const fetchSession = (childId, game, { category } = {}) =>
-  http.get(`/children/${childId}/session`, { params: { game, ...(category ? { category } : {}) } })
+/** `level`: a pálya picked by hand, instead of the adaptive one. */
+export const fetchSession = (childId, game, { category, level } = {}) =>
+  http.get(`/children/${childId}/session`, { params: { game, ...(category ? { category } : {}), ...(level ? { level } : {}) } })
 
 /**
  * @param {number} childId

@@ -10,7 +10,6 @@ import { useAsync } from '../composables/useAsync'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
 import { formatDate, formatDay, formatPercent, t } from '../i18n'
-import { downloadClinicalReport } from '../services/reports/clinicalReport'
 import { useRewardsStore } from '../stores/rewards'
 
 /** Weekly trends + per-game summary; printable for the speech therapist (logopédus). */
@@ -44,8 +43,23 @@ const points = key =>
 const gamePoints = computed(() => points('games'))
 const ratePoints = computed(() => points('firstTryRate'))
 
+/** Stars earned per skill area this period: one bar per area, not a time series. */
+const starPoints = computed(
+  () =>
+    report.value?.areas.map(a => ({
+      key: a.key,
+      label: a.emoji,
+      long: `${a.label}: ${t('progress.charts.starsCount', { count: a.stars })}`,
+      value: a.stars,
+    })) ?? [],
+)
+
 const print = () => window.print()
-const exportPdf = () => downloadClinicalReport(report.value)
+// jsPDF (+ html2canvas/purify) is ~400 KB — only fetch it when the PDF is requested.
+const exportPdf = async () => {
+  const { downloadClinicalReport } = await import('../services/reports/clinicalReport')
+  downloadClinicalReport(report.value)
+}
 
 onMounted(load)
 watch(days, load)
@@ -106,6 +120,13 @@ watch(days, load)
         :format="formatPercent"
         :empty-text="t('progress.charts.empty')"
       />
+      <TrendChart
+        :title="t('progress.charts.stars')"
+        :subtitle="t('progress.charts.starsSubtitle')"
+        :points="starPoints"
+        kind="bar"
+        :empty-text="t('progress.charts.empty')"
+      />
     </div>
     <details class="weekly">
       <summary>{{ t('progress.charts.table') }}</summary>
@@ -141,6 +162,7 @@ watch(days, load)
             <th>{{ t('progress.columns.skill') }}</th>
             <th>{{ t('progress.columns.sessions') }}</th>
             <th>{{ t('progress.columns.rounds') }}</th>
+            <th>{{ t('progress.columns.stars') }}</th>
             <th>{{ t('progress.columns.firstTry') }}</th>
             <th>{{ t('progress.columns.solved') }}</th>
             <th>{{ t('progress.columns.level') }}</th>
@@ -153,9 +175,18 @@ watch(days, load)
             <td>{{ g.skill }}</td>
             <td>{{ g.sessions }}</td>
             <td>{{ g.rounds }}</td>
+            <td>⭐ {{ g.stars }}</td>
             <td>{{ formatPercent(g.firstTryRate) }}</td>
             <td>{{ formatPercent(g.solvedRate) }}</td>
-            <td>{{ g.level ? `${g.level} / ${g.maxLevel}` : '–' }}</td>
+            <td>
+              <span v-if="g.level" class="level-cell">
+                <span class="level-meter" role="meter" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(g.levelProgress * 100)">
+                  <span class="level-fill" :style="{ '--p': g.levelProgress }" />
+                </span>
+                {{ g.level }} / {{ g.maxLevel }}
+              </span>
+              <span v-else>–</span>
+            </td>
             <td>{{ formatDate(g.lastPlayed) }}</td>
           </tr>
         </tbody>
@@ -240,6 +271,34 @@ watch(days, load)
   border-bottom: 1px solid var(--bz-soft);
   text-align: left;
   white-space: nowrap;
+}
+.level-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.level-meter {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 8px;
+  overflow: hidden;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-chart-grid);
+}
+.level-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--bz-chart);
+  transform: scaleX(var(--p));
+  transform-origin: left;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .level-fill {
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
 }
 @media print {
   .table-wrap {

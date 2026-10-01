@@ -21,7 +21,7 @@ class AttemptController extends Controller
         $data = $request->validate([
             'game' => ['required', Rule::in(array_keys(config('beszed.games')))],
             'content_item_id' => ['nullable', 'integer', 'exists:beszed_content_items,id'],
-            'level' => ['required', 'integer', 'min:1', 'max:10'],
+            'level' => ['required', 'integer', 'min:1', 'max:500'],
             'correct' => ['required', 'boolean'],
             'tries' => ['required', 'integer', 'min:1', 'max:50'],
             'duration_ms' => ['nullable', 'integer', 'min:0', 'max:3600000'],

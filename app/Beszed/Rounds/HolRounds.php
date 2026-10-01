@@ -20,18 +20,26 @@ class HolRounds extends RoundFactory
     /** Pairs that look too similar to be shown side by side. */
     private const CONFLICT = ['folott' => 'mogott', 'mogott' => 'folott', 'alatt' => 'elott', 'elott' => 'alatt'];
 
+    /** Relations unlocked by level: up/down first, then front/back, then left/right and "between" (harder — no fixed visual cue). */
+    private const RELATIONS_BY_LEVEL = [
+        1 => ['folott', 'alatt'],
+        2 => ['folott', 'alatt', 'mogott', 'elott'],
+        3 => ['folott', 'alatt', 'mogott', 'elott', 'jobb', 'bal', 'kozott'],
+    ];
+
     public function build(Collection $items, int $level, int $count): array
     {
-        $keys = array_keys(self::RELATIONS);
+        $keys = self::RELATIONS_BY_LEVEL[$level] ?? self::RELATIONS_BY_LEVEL[3];
+        $optionCount = $level === 1 ? 2 : 3;
         $last = null;
 
-        return $this->cycle($items, $count)->map(function ($it) use ($keys, &$last) {
+        return $this->cycle($items, $count)->map(function ($it) use ($keys, $optionCount, &$last) {
             $obj = $it->payload;
             $t = $last = $this->pickNot($keys, $last);
 
             $others = [];
             foreach (collect($keys)->shuffle() as $k) {
-                if (count($others) === 2) {
+                if (count($others) === $optionCount - 1) {
                     break;
                 }
                 if ($k === $t || (self::CONFLICT[$t] ?? null) === $k) {
@@ -46,7 +54,7 @@ class HolRounds extends RoundFactory
             $a = $this->art($obj['name']);
 
             return $this->round('choice', "Melyik képen van {$a} {$obj['name']} ".self::RELATIONS[$t].'?', [
-                'layout' => 'three',
+                'layout' => $opts->count() > 2 ? 'three' : 'two',
                 'options' => $opts->map(fn ($k) => ['id' => $k, 'scene' => $k, 'emoji' => $obj['emoji']])->all(),
                 'answer' => $t,
                 'onCorrect' => 'Igen! '.$this->ucfirst($a)." {$obj['name']} ".self::RELATIONS[$t].' van!',

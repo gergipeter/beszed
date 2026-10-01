@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { fetchDailyPath, fetchSpotlight } from '../api'
+import GameFolders from '../components/hub/GameFolders.vue'
 import GardenMap from '../components/garden/GardenMap.vue'
 import GardenSky from '../components/garden/GardenSky.vue'
 import GuideBubble from '../components/guide/GuideBubble.vue'
@@ -21,7 +22,7 @@ import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
 import { useRewardsStore } from '../stores/rewards'
 
-const { childId, childName, childSign, guideName } = useModuleContext()
+const { childId, childName, childSign, guideName, premium } = useModuleContext()
 const meta = useMetaStore()
 const rewards = useRewardsStore()
 const guide = useGuideStore()
@@ -75,6 +76,25 @@ watch(
 )
 const newPlants = computed(() => (sproutFrom.value === Infinity ? 0 : plants.value - sproutFrom.value))
 
+/** Folders (games grouped by what they develop) or the garden map; the choice is remembered on this device. */
+const VIEW_KEY = 'beszed.hub.view'
+const readView = () => {
+  try {
+    return localStorage.getItem(VIEW_KEY) === 'garden' ? 'garden' : 'folders'
+  } catch {
+    return 'folders'
+  }
+}
+const view = ref(readView())
+function setView(v) {
+  view.value = v
+  try {
+    localStorage.setItem(VIEW_KEY, v)
+  } catch {
+    /* not kept */
+  }
+}
+
 const header = ref(null)
 let flying = false
 
@@ -125,7 +145,31 @@ async function play(game, stone) {
     <EmojiArt :char="ICONS.sprout" /> {{ t(newPlants === 1 ? 'hub.grewOne' : 'hub.grewMany', { count: newPlants }) }}
   </p>
 
+  <div class="views" role="tablist">
+    <button
+      v-for="v in ['folders', 'garden']"
+      :key="v"
+      type="button"
+      role="tab"
+      class="view"
+      :class="{ 'view--on': view === v }"
+      :aria-selected="view === v"
+      @click="setView(v)"
+    >
+      <EmojiArt :char="v === 'folders' ? '🗂️' : '🌳'" /> {{ t(`hub.views.${v}`) }}
+    </button>
+  </div>
+
+  <GameFolders
+    v-if="view === 'folders' && meta.meta?.folders?.length"
+    :folders="meta.meta.folders"
+    :games="meta.games"
+    :medals="rewards.summary?.medals ?? {}"
+    :path-games="path?.games ?? []"
+    @play="play"
+  />
   <GardenMap
+    v-else
     :games="meta.games"
     :medals="rewards.summary?.medals ?? {}"
     :path="path"
@@ -139,11 +183,17 @@ async function play(game, stone) {
     <BzButton :to="{ name: 'beszed.recordings', params: { childId } }" :icon="ICONS.mic">
       {{ t('recordings.title') }}
     </BzButton>
+    <BzButton :to="{ name: 'beszed.journey', params: { childId } }" :icon="ICONS.map">
+      {{ t('journey.title') }}
+    </BzButton>
     <BzButton :to="{ name: 'beszed.progress', params: { childId } }" :icon="ICONS.chart">
       {{ t('progress.title') }}
     </BzButton>
     <BzButton :to="{ name: 'beszed.settings', params: { childId } }" :icon="ICONS.settings">
       {{ t('settings.title') }}
+    </BzButton>
+    <BzButton v-if="!premium" :to="{ name: 'beszed.premium', params: { childId } }" :icon="ICONS.star">
+      {{ t('premium.title') }}
     </BzButton>
     <InstallApp />
     <BzButton v-if="config.exitTo" :to="config.exitTo" :icon="ICONS.family">{{ t('hub.exit') }}</BzButton>
@@ -195,6 +245,25 @@ async function play(game, stone) {
     opacity: 0;
     transform: translateY(12px) scale(0.8);
   }
+}
+.views {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 4px 0 16px;
+}
+.view {
+  padding: 8px 18px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  font-weight: 800;
+  font-size: var(--bz-text-md);
+  box-shadow: var(--bz-shadow-sm);
+  transition: transform 0.3s var(--bz-spring), background 0.2s;
+}
+.view--on {
+  background: var(--bz-sun);
+  transform: scale(1.06);
 }
 .parents {
   display: flex;

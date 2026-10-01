@@ -11,6 +11,8 @@ class MelyikRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
+        $this->favorLevel($items, $level);
+
         return $this->cycle($items, $count)->map(function ($it) {
             ['good' => $good, 'bad' => $bad, 'emoji' => $emoji] = $it->payload;
             $lines = random_int(0, 1) ? [$good, $bad] : [$bad, $good];

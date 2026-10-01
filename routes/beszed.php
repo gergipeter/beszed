@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Beszed\AttemptController;
 use App\Http\Controllers\Beszed\DailyPathController;
+use App\Http\Controllers\Beszed\JourneyController;
 use App\Http\Controllers\Beszed\MetaController;
 use App\Http\Controllers\Beszed\ProgressController;
 use App\Http\Controllers\Beszed\PronunciationController;
@@ -26,6 +27,7 @@ Route::name('beszed.')->group(function () {
     Route::post('children/{child}/shares', [ShareController::class, 'store'])->middleware('throttle:10,1,shares')->name('shares.store');
     Route::delete('children/{child}/shares/{share}', [ShareController::class, 'destroy'])->name('shares.destroy');
     Route::get('children/{child}/daily-path', [DailyPathController::class, 'show'])->name('daily-path');
+    Route::get('children/{child}/journey', [JourneyController::class, 'show'])->name('journey');
     Route::get('children/{child}/spotlight', [SpotlightController::class, 'show'])->name('spotlight');
 
     Route::get('children/{child}/rewards', [RewardController::class, 'show'])->name('rewards');

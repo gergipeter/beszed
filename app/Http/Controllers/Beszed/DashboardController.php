@@ -27,15 +27,22 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get therapist dashboard (multiple children)
+     * Get therapist dashboard (multiple children). There is no separate therapist
+     * role yet, so this stays scoped to the caller's own children, same as every
+     * other endpoint here — never trust the id list in the request body.
      */
     public function therapistDashboard(Request $request): JsonResponse
     {
-        $childIds = $request->input('children', []);
+        $requested = $request->input('children', []);
 
-        if (empty($childIds)) {
+        if (empty($requested)) {
             return response()->json(['error' => 'No children specified'], 400);
         }
+
+        $childIds = Child::where('user_id', $request->user()->id)
+            ->whereIn('id', $requested)
+            ->pluck('id')
+            ->all();
 
         $dashboard = $this->dashboardService->getTherapistDashboard($childIds);
 

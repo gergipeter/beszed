@@ -114,7 +114,7 @@ function slice(piece) {
       <PuzzleArt :emoji="data.emoji" :prop="data.prop" :scene="data.scene" />
       <b v-if="faded" class="peek" aria-hidden="true">?</b>
     </button>
-    <b v-if="data.levelLabel" class="level">{{ data.levelLabel }} <small>/ 100</small></b>
+    <b v-if="data.levelLabel" class="level">{{ data.levelLabel }} <small>/ {{ data.levelMax ?? 100 }}</small></b>
   </div>
 
   <div ref="board" class="board-wrap">

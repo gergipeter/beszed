@@ -36,7 +36,7 @@ it('builds a playable session for every game', function (string $game) {
     expect($session['rounds'])->toHaveCount(config("beszed.games.$game.rounds"));
 
     foreach ($session['rounds'] as $round) {
-        expect($round['engine'])->toBeIn(['choice', 'sequence', 'tapcount', 'trace', 'judged', 'puzzle', 'memory', 'sort', 'difference', 'vanish', 'order', 'simon', 'directions'])
+        expect($round['engine'])->toBeIn(['choice', 'sequence', 'tapcount', 'trace', 'judged', 'puzzle', 'memory', 'sort', 'difference', 'vanish', 'order', 'simon', 'directions', 'piano', 'rhythm', 'hop', 'balance', 'share'])
             ->and($round['prompt']['text'])->not->toBeEmpty();
 
         if ($round['engine'] === 'choice') {

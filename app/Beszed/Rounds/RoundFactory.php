@@ -97,4 +97,19 @@ abstract class RoundFactory
 
         return $candidates[array_rand($candidates)];
     }
+
+    /**
+     * Bias $this->weights (SessionBuilder's missed-item review weights) towards
+     * items at or below the child's adaptive level: items past it are heavily
+     * discouraged — so the pool never runs dry the moment a level has few
+     * items — but not excluded. Call once at the top of build(), before any
+     * weightedShuffle()/cycle().
+     */
+    protected function favorLevel(Collection $items, int $level): void
+    {
+        foreach ($items as $item) {
+            $gap = ($item->level ?? 1) - $level;
+            $this->weights[$item->id] = ($this->weights[$item->id] ?? 1.0) * ($gap <= 0 ? 1.0 : 0.35 ** $gap);
+        }
+    }
 }

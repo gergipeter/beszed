@@ -17,6 +17,7 @@ class ErzelmekRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
+        $this->favorLevel($items, $level);
         $face = fn ($i) => collect($i->payload['faces'] ?? [])->push($i->payload['emoji'])->unique()->random();
         $rounds = [];
 

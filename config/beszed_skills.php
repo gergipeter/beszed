@@ -19,11 +19,11 @@ return [
         ],
         'relacioszokincs' => [
             'label' => 'Relációszókincs', 'emoji' => '📦', 'difer' => true,
-            'games' => ['hol', 'nagysag'],
+            'games' => ['hol', 'nagysag', 'irany'],
         ],
         'szamolas' => [
             'label' => 'Elemi számolás', 'emoji' => '🔢', 'difer' => true,
-            'games' => ['szamol'],
+            'games' => ['szamol', 'szamok', 'beka', 'merleg', 'osztozas'],
         ],
         'kovetkeztetes' => [
             'label' => 'Tapasztalati következtetés', 'emoji' => '🧠', 'difer' => true,
@@ -37,11 +37,19 @@ return [
             'label' => 'Vizuális észlelés', 'emoji' => '👀', 'difer' => false,
             'games' => ['arnyek', 'kirako', 'kulonbseg'],
         ],
+        'zene' => [
+            'label' => 'Zenei hallás', 'emoji' => '🎹', 'difer' => false,
+            'games' => ['zongora', 'ritmus'],
+        ],
         'erzelmek' => [
             'label' => 'Érzelmek felismerése', 'emoji' => '😊', 'difer' => false,
             'games' => ['erzelmek'],
         ],
     ],
+
+    // A game's first answers find the child's level quickly: while it has at most this many answers,
+    // every clean first-try win moves up a level (instead of `up_after` in a row). 0 = off.
+    'placement_answers' => 8,
 
     // Fewer answers than this in the period: "not enough data" instead of a band.
     'min_answers' => 5,

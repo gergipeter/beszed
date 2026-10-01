@@ -8,6 +8,8 @@ class CeruzaRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
+        $this->favorLevel($items, $level);
+
         return $this->cycle($items, $count)->map(fn ($it) => $this->round(
             'trace',
             'Vezesd el a méhecskét a virágig! Kövesd a pöttyöket az ujjaddal!',

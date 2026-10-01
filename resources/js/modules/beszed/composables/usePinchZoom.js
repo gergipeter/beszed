@@ -48,7 +48,8 @@ export const usePinchZoom = (element) => {
       el.addEventListener('touchstart', handleTouchStart, { passive: false })
       el.addEventListener('touchmove', handleTouchMove, { passive: false })
       el.addEventListener('touchend', handleTouchEnd)
-      el.style.touchAction = 'none'
+      // one finger still scrolls; the two-finger pinch is ours (preventDefault above)
+      el.style.touchAction = 'pan-x pan-y'
     }
   })
 

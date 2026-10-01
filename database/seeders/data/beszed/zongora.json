@@ -1,0 +1,10 @@
+[
+  {"level": 1, "payload": {"name": "do", "note": 0}},
+  {"level": 1, "payload": {"name": "re", "note": 1}},
+  {"level": 1, "payload": {"name": "mi", "note": 2}},
+  {"level": 1, "payload": {"name": "fa", "note": 3}},
+  {"level": 1, "payload": {"name": "szó", "note": 4}},
+  {"level": 1, "payload": {"name": "la", "note": 5}},
+  {"level": 1, "payload": {"name": "ti", "note": 6}},
+  {"level": 1, "payload": {"name": "magas do", "note": 7}}
+]

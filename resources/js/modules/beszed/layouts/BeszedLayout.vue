@@ -26,6 +26,8 @@ const props = defineProps({
   /** The child's óvodai jel (an emoji), shown by their name. */
   childSign: { type: String, default: '' },
   guideName: { type: String, default: '' },
+  /** The plan unlocks every game; false = the free demo games only. A module used on its own has no plans. */
+  premium: { type: Boolean, default: true },
 })
 
 provideModuleContext(createModuleContext(props))

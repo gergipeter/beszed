@@ -60,6 +60,7 @@ const TREND = { up: '↗', flat: '→', down: '↘' }
           <span v-if="a.trend" class="trend">
             <span aria-hidden="true">{{ TREND[a.trend] }}</span> {{ t(`skills.trend.${a.trend}`) }}
           </span>
+          <span v-if="a.stars" class="stars"><EmojiArt char="⭐" /> {{ a.stars }}</span>
         </div>
       </li>
     </ul>
@@ -182,11 +183,22 @@ const TREND = { up: '↗', flat: '→', down: '↘' }
   font-variant-numeric: tabular-nums;
 }
 .band,
-.trend {
+.trend,
+.stars {
   font-size: 13px;
 }
 .trend {
   color: var(--bz-muted);
+}
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 700;
+  color: var(--bz-muted);
+}
+.stars :deep(.emoji) {
+  font-size: 13px;
 }
 .area--empty .value {
   color: var(--bz-muted);

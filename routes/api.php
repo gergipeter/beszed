@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Admin\ContentImageController;
 use App\Http\Controllers\Api\ChildController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Beszed\ShareController;
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 // Account-level API for the SPA (session cookie auth via Sanctum). Games live under /api/beszed.

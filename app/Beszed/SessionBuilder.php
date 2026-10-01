@@ -13,7 +13,7 @@ class SessionBuilder
     public function __construct(private Leveler $leveler) {}
 
     /** @param  array{category?: ?string}  $options  what the child chose before playing (Kirakó's picture theme) */
-    public function build(Child $child, string $game, array $options = []): array
+    public function build(Child $child, string $game, array $options = [], ?int $pickedLevel = null): array
     {
         $cfg = config("beszed.games.$game");
         abort_unless($cfg, 404);
@@ -21,7 +21,7 @@ class SessionBuilder
         $items = BeszedContentItem::forGame($game)->limit(1000)->get();
         abort_if($items->isEmpty(), 422, "No content for '$game'. Run: php artisan db:seed --class=BeszedContentSeeder");
 
-        $level = $this->leveler->current($child, $game);
+        $level = $pickedLevel !== null ? $this->leveler->set($child, $game, $pickedLevel) : $this->leveler->current($child, $game);
         $rounds = app($cfg['factory'])
             ->weigh($this->weights($child, $game, $items, isset($cfg['adaptive']), $cfg['rounds']))
             ->choose($options)
@@ -31,9 +31,13 @@ class SessionBuilder
             $rounds = CsillamGuess::apply($rounds, config('beszed.guesses', []));
         }
 
+        $cap = $this->leveler->cap($child);
+
         return [
             'game' => $game,
             'level' => $level,
+            // the free plan's top level when the game has more levels behind it (null = nothing is held back)
+            'level_cap' => $cap !== null && ($cfg['adaptive']['max'] ?? 0) > $cap ? $cap : null,
             'intro' => $cfg['intro'],
             // Csillám introduces a game only the first time; after that the first question comes right away.
             'first_time' => ! $child->beszedAttempts()->where('game', $game)->exists(),

@@ -14,6 +14,7 @@ import BzButton from '../ui/BzButton.vue'
 import BzNotice from '../ui/BzNotice.vue'
 import EmojiArt from '../ui/EmojiArt.vue'
 import CategoryPicker from './CategoryPicker.vue'
+import LevelPicker from './LevelPicker.vue'
 import FinishScreen from './FinishScreen.vue'
 import GameStage from './GameStage.vue'
 import GameHud from './GameHud.vue'
@@ -25,7 +26,7 @@ const props = defineProps({
 
 const emit = defineEmits(['exit'])
 
-const { childId, guideName } = useModuleContext()
+const { childId, guideName, premium } = useModuleContext()
 const guide = useGuideStore()
 const meta = useMetaStore()
 const rewards = useRewardsStore()
@@ -44,6 +45,18 @@ const readTheme = () => {
   }
 }
 const category = ref(null)
+/** A pálya picked by hand (games with a long level range): the next load starts there. */
+const pickedLevel = ref(null)
+const maxLevel = computed(() => meta.game(props.game)?.maxLevel ?? 0)
+/** The free plan stops at its top level; the server holds the line, this only keeps the chooser honest. */
+const pickMax = computed(() => {
+  const cap = meta.meta?.freeMaxLevel
+  return premium.value || !cap ? maxLevel.value : Math.min(maxLevel.value, cap)
+})
+function pickLevel(n) {
+  pickedLevel.value = n
+  if (!picking.value) load()
+}
 const lastTheme = readTheme()
 const picking = ref(themes.value.length > 0)
 const themeName = computed(() => themes.value.find(c => c.id === category.value)?.name ?? '')
@@ -75,7 +88,7 @@ const {
   speakPrompt,
   answer,
   skip,
-} = useGameSession(childId, props.game, { category })
+} = useGameSession(childId, props.game, { category, level: pickedLevel })
 // the phone must not dim and lock while the child listens to Csillám
 useWakeLock()
 
@@ -135,6 +148,7 @@ onMounted(() => {
           <p class="caption" aria-live="polite">{{ guide.caption }}</p>
         </GuideBubble>
 
+        <LevelPicker v-if="maxLevel > 10" :max="pickMax" :current="session?.level ?? null" @pick="pickLevel" />
         <CategoryPicker v-if="picking" :categories="themes" :last="lastTheme" @pick="pickTheme" />
         <template v-else>
           <button v-if="themes.length && themeName" type="button" class="theme-chip" @click="picking = true">

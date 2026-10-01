@@ -1,0 +1,14 @@
+[
+  {"level": 1, "payload": {"name": "ta ta ta", "pattern": [1, 1, 1]}},
+  {"level": 1, "payload": {"name": "ta ta táá", "pattern": [1, 1, 2]}},
+  {"level": 1, "payload": {"name": "táá ta ta", "pattern": [2, 1, 1]}},
+  {"level": 1, "payload": {"name": "ta táá ta", "pattern": [1, 2, 1]}},
+  {"level": 2, "payload": {"name": "ta ta ta ta", "pattern": [1, 1, 1, 1]}},
+  {"level": 2, "payload": {"name": "táá ta ta ta", "pattern": [2, 1, 1, 1]}},
+  {"level": 2, "payload": {"name": "ta ta táá ta", "pattern": [1, 1, 2, 1]}},
+  {"level": 2, "payload": {"name": "ta táá ta táá", "pattern": [1, 2, 1, 2]}},
+  {"level": 3, "payload": {"name": "ta ta táá ta ta", "pattern": [1, 1, 2, 1, 1]}},
+  {"level": 3, "payload": {"name": "táá ta ta táá ta", "pattern": [2, 1, 1, 2, 1]}},
+  {"level": 3, "payload": {"name": "ta ta ta táá ta", "pattern": [1, 1, 1, 2, 1]}},
+  {"level": 3, "payload": {"name": "ta táá ta ta ta", "pattern": [1, 2, 1, 1, 1]}}
+]
