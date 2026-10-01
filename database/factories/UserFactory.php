@@ -29,8 +29,16 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            // Tests play any game by default; use ->free() for the demo-only account real sign-ups start as.
             'remember_token' => Str::random(10),
+            'subscription_plan' => 'premium',
         ];
+    }
+
+    /** A free account: only the demo games. */
+    public function free(): static
+    {
+        return $this->state(['subscription_plan' => 'free']);
     }
 
     /**
