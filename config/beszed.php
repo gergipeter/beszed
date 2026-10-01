@@ -49,9 +49,10 @@ function generateCollectorStickers() {
     ];
 
     $stickers = [];
-    $emojiIdx = 0;
+    $emojiIdx = 1; // sticker #2 keeps the picture it had when the numbering started at #1
 
-    for ($i = 1; $i <= 974; $i++) { // 26 existing + 974 new = 1000
+    // From the second game on: the first game already earns the "first_game" sticker.
+    for ($i = 2; $i <= 975; $i++) { // 26 existing + 974 new = 1000
         $emoji = $emojis[$emojiIdx % count($emojis)];
         $emojiIdx++;
 
