@@ -30,6 +30,8 @@ export default {
     greetingNamed: "Hi {child}! I'm {guide}. I'm so happy you're here! What shall we play today?",
     greetLabel: '{guide} says hi',
     forParents: 'For parents',
+    menu: 'Menu',
+    closeMenu: 'Close the menu',
     gamesTitle: 'Games',
     loadFailed: 'Could not load the games.',
     exit: 'Kids',

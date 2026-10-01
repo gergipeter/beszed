@@ -7,22 +7,20 @@ import GardenMap from '../components/garden/GardenMap.vue'
 import GardenSky from '../components/garden/GardenSky.vue'
 import GuideBubble from '../components/guide/GuideBubble.vue'
 import DailyPath from '../components/hub/DailyPath.vue'
-import InstallApp from '../components/hub/InstallApp.vue'
+import ParentMenu from '../components/hub/ParentMenu.vue'
 import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import StreakHistory from '../components/rewards/StreakHistory.vue'
-import BzButton from '../components/ui/BzButton.vue'
 import EmojiArt from '../components/ui/EmojiArt.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { ICONS } from '../config/icons'
-import { config } from '../config/options'
 import { t } from '../i18n'
 import { flyTo } from '../services/effects/fly'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
 import { useRewardsStore } from '../stores/rewards'
 
-const { childId, childName, childSign, guideName, premium } = useModuleContext()
+const { childId, childName, childSign, guideName } = useModuleContext()
 const meta = useMetaStore()
 const rewards = useRewardsStore()
 const guide = useGuideStore()
@@ -113,6 +111,7 @@ async function play(game, stone) {
 
 <template>
   <GardenSky />
+  <ParentMenu />
 
   <GuideBubble
     ref="header"
@@ -188,24 +187,6 @@ async function play(game, stone) {
     :sprout-from="sproutFrom"
     @play="play"
   />
-
-  <nav class="parents" :aria-label="t('hub.forParents')">
-    <h2 class="parents-title"><EmojiArt :char="ICONS.family" /> {{ t('hub.forParents') }}</h2>
-    <BzButton variant="soft" size="sm" :to="{ name: 'beszed.recordings', params: { childId } }" :icon="ICONS.mic">
-      {{ t('recordings.title') }}
-    </BzButton>
-    <BzButton variant="soft" size="sm" :to="{ name: 'beszed.progress', params: { childId } }" :icon="ICONS.chart">
-      {{ t('progress.title') }}
-    </BzButton>
-    <BzButton variant="soft" size="sm" :to="{ name: 'beszed.settings', params: { childId } }" :icon="ICONS.settings">
-      {{ t('settings.title') }}
-    </BzButton>
-    <BzButton v-if="!premium" variant="soft" size="sm" :to="{ name: 'beszed.premium', params: { childId } }" :icon="ICONS.star">
-      {{ t('premium.title') }}
-    </BzButton>
-    <InstallApp />
-    <BzButton v-if="config.exitTo" variant="soft" size="sm" :to="config.exitTo" :icon="ICONS.family">{{ t('hub.exit') }}</BzButton>
-  </nav>
 </template>
 
 <style scoped>
@@ -315,28 +296,5 @@ async function play(game, stone) {
 .journey-go {
   font-size: 34px;
   line-height: 1;
-}
-/* the parents' menu: a quiet panel apart from the games, so it never reads as one */
-.parents {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-top: 36px;
-  padding: 12px 14px 14px;
-  border-radius: var(--bz-radius);
-  background: rgba(59, 31, 74, 0.14);
-}
-.parents-title {
-  flex: 1 1 100%;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0 0 2px;
-  font-size: var(--bz-text-sm);
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  opacity: 0.8;
 }
 </style>

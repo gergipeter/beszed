@@ -29,6 +29,8 @@ export default {
     greetingNamed: 'Szia {child}! Én vagyok {guide}. Úgy örülök, hogy itt vagy! Mit játsszunk ma?',
     greetLabel: '{guide} köszön',
     forParents: 'Szülőknek',
+    menu: 'Menü',
+    closeMenu: 'Menü bezárása',
     gamesTitle: 'Játékok',
     loadFailed: 'Nem sikerült betölteni a játékokat.',
     exit: 'Gyerekek',
