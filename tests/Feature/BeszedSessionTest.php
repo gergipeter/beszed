@@ -7,6 +7,7 @@ use App\Beszed\Rounds\NagysagRounds;
 use App\Beszed\Rounds\TortenetRounds;
 use App\Beszed\Rounds\UtasitasRounds;
 use App\Beszed\Rounds\ValogatoRounds;
+use App\Models\BeszedAttempt;
 use App\Models\BeszedContentItem;
 use App\Models\BeszedSkillLevel;
 use App\Models\Child;
@@ -36,7 +37,7 @@ it('builds a playable session for every game', function (string $game) {
     expect($session['rounds'])->toHaveCount(config("beszed.games.$game.rounds"));
 
     foreach ($session['rounds'] as $round) {
-        expect($round['engine'])->toBeIn(['choice', 'sequence', 'tapcount', 'trace', 'judged', 'puzzle', 'memory', 'sort', 'difference', 'vanish', 'order', 'simon', 'directions', 'piano', 'rhythm', 'hop', 'balance', 'share'])
+        expect($round['engine'])->toBeIn(['choice', 'sequence', 'tapcount', 'trace', 'judged', 'puzzle', 'memory', 'sort', 'difference', 'vanish', 'order', 'simon', 'directions', 'piano', 'rhythm', 'hop', 'balance', 'share', 'tamagotchi'])
             ->and($round['prompt']['text'])->not->toBeEmpty();
 
         if ($round['engine'] === 'choice') {
@@ -338,6 +339,12 @@ it('puts every game in the simple or the advanced group of the hub', function ()
 });
 
 it('levels papagáj up after two clean wins and down after a skip', function () {
+    // past the first answers, where every clean win moves up (beszed_skills.placement_answers)
+    foreach (range(1, config('beszed_skills.placement_answers')) as $i) {
+        BeszedAttempt::create(['child_id' => $this->child->id, 'game' => 'papagaj', 'level' => 3, 'correct' => false, 'tries' => 3]);
+    }
+    BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'papagaj', 'level' => 3, 'streak' => 0]);
+
     $post = fn (bool $ok, int $tries) => actingAs($this->user)
         ->postJson("/api/beszed/children/{$this->child->id}/attempts",
             ['game' => 'papagaj', 'level' => 3, 'correct' => $ok, 'tries' => $tries])

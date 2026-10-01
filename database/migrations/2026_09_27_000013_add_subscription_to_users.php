@@ -9,7 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('subscription_plan', ['free', 'premium', 'family'])->default('free')->after('language');
+            if (! Schema::hasColumn('users', 'subscription_plan')) {
+                $table->enum('subscription_plan', ['free', 'premium', 'family'])->default('free')->after('language');
+            }
             $table->boolean('is_admin')->default(false)->after('subscription_plan');
             $table->integer('games_played_this_week')->default(0)->after('is_admin');
             $table->integer('games_limit_weekly')->default(5)->after('games_played_this_week');

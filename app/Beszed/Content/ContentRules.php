@@ -73,6 +73,11 @@ final class ContentRules
             'select' => in_array($value, array_keys($spec['options']), true) ? null : 'Válassz a listából.',
             'list' => self::stringList($value, $spec['min'] ?? 1) ? null : 'Legalább '.($spec['min'] ?? 1).' elem kell.',
             'emoji_list' => self::stringList($value, $spec['min'] ?? 1) && collect($value)->every(fn ($e) => self::isPicture($e)) ? null : 'Legalább '.($spec['min'] ?? 1).' kép kell (emoji vagy arasaac:szám).',
+            'int' => is_int($value) && $value >= ($spec['range'][0] ?? PHP_INT_MIN) && $value <= ($spec['range'][1] ?? PHP_INT_MAX)
+                ? null : 'Egész számot adj meg ('.($spec['range'][0] ?? '').'–'.($spec['range'][1] ?? '').').',
+            'int_list' => is_array($value) && array_is_list($value) && count($value) >= ($spec['min'] ?? 1)
+                && collect($value)->every(fn ($n) => is_int($n) && $n >= ($spec['range'][0] ?? PHP_INT_MIN) && $n <= ($spec['range'][1] ?? PHP_INT_MAX))
+                ? null : 'Legalább '.($spec['min'] ?? 1).' szám kell ('.($spec['range'][0] ?? '').'–'.($spec['range'][1] ?? '').').',
             'pairs' => is_array($value) && count($value) >= ($spec['min'] ?? 1)
                 && collect($value)->every(fn ($p) => is_array($p) && count($p) === 2 && is_string($p[1]) && $p[1] !== '' && self::isPicture($p[0]))
                 ? null : 'Legalább '.($spec['min'] ?? 1).' „emoji név” pár kell.',
@@ -123,7 +128,7 @@ final class ContentRules
             // two identical pictures would make the order ambiguous
             'tortenet' => count(array_unique(array_column($p['steps'], 0))) === count($p['steps']) ? [] : ['steps' => 'Egy képet csak egyszer használj a történetben.'],
             // Same start, ignoring vowel length: ló → lovat, kéz → kezet, kő → követ.
-            'szamol' => str_ends_with($lower($p['accusative']), 't') && mb_substr(Hungarian::fold($p['accusative']), 0, 2) === mb_substr(Hungarian::fold($p['name']), 0, 2)
+            'szamol', 'merleg', 'osztozas', 'szamok' => str_ends_with($lower($p['accusative']), 't') && mb_substr(Hungarian::fold($p['accusative']), 0, 2) === mb_substr(Hungarian::fold($p['name']), 0, 2)
                 ? [] : ['accusative' => 'A tárgyrag -t végű alakja kell (pl. alma → almát).'],
             default => [],
         };

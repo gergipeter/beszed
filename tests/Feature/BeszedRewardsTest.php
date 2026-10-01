@@ -40,16 +40,16 @@ it('computes player levels from stars', function () {
 it('awards the first sticker, a perfect sticker and a level-up on the first flawless game', function () {
     $res = finish(correct: 8);
 
-    expect(collect($res['result']['new_badges'])->pluck('id')->all())->toBe(['first_game', 'perfect'])
+    expect(collect($res['result']['new_badges'])->pluck('id')->all())->toBe(['first_game', 'perfect', 'collector_1']) // collector_N: the generated sticker for the Nth finished game
         ->and($res['result'])->toMatchArray(['stars' => 8, 'medal' => 3, 'level_up' => false])
         ->and($res['level']['number'])->toBe(1)
         ->and($res['medals']['zs'])->toBe(3)
         ->and($res['daily'])->toBe(['done' => 1, 'goal' => 3])
         ->and($res['streak'])->toMatchArray(['days' => 1, 'today' => true]);
 
-    // Stickers are only new once.
+    // Stickers are only new once: only the next collector sticker is new on the second game.
     $again = finish(rounds: 4, correct: 4, firstTry: 2);
-    expect($again['result']['new_badges'])->toBe([])
+    expect(collect($again['result']['new_badges'])->pluck('id')->all())->toBe(['collector_2'])
         ->and($again['result'])->toMatchArray(['medal' => 1, 'level_up' => true])
         ->and($again['result']['level_before']['number'])->toBe(1)
         ->and($again['level']['number'])->toBe(2)

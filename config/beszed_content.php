@@ -51,6 +51,35 @@ return [
             'accusative' => $text('Tárgyeset (tegyél … a kosárba)', ['hint' => 'almát']),
             'emoji' => $emoji(),
         ]],
+        // Counting games share Számolós's shape: a noun and its -t form.
+        'merleg' => ['title' => 'name', 'fields' => [
+            'name' => $text('Név', ['hint' => 'alma']),
+            'accusative' => $text('Tárgyeset', ['hint' => 'almát']),
+            'emoji' => $emoji(),
+        ]],
+        'osztozas' => ['title' => 'name', 'fields' => [
+            'name' => $text('Név', ['hint' => 'alma']),
+            'accusative' => $text('Tárgyeset', ['hint' => 'almát']),
+            'emoji' => $emoji(),
+        ]],
+        'szamok' => ['title' => 'name', 'fields' => [
+            'name' => $text('Név', ['hint' => 'alma']),
+            'accusative' => $text('Tárgyeset', ['hint' => 'almát']),
+            'emoji' => $emoji(),
+        ]],
+        'beka' => ['title' => 'name', 'fields' => ['name' => $text('Mi van a képen?'), 'emoji' => $emoji()]],
+        'irany' => ['title' => 'name', 'fields' => ['name' => $text('Mi van a képen?'), 'emoji' => $emoji()]],
+        // Rhythm: 1 = a short beat (ta), 2 = a long one (táá).
+        'ritmus' => ['title' => 'name', 'fields' => [
+            'name' => $text('Ritmus (ta/táá)', ['hint' => 'tatatáá']),
+            'pattern' => ['type' => 'int_list', 'label' => 'Ütemek (1 = ta, 2 = táá)', 'min' => 2, 'range' => [1, 2], 'hint' => 'szóközzel: 1 1 2'],
+        ]],
+        // Piano: the note's place on the scale, 0 = do … 7 = a higher do.
+        'zongora' => ['title' => 'name', 'fields' => [
+            'name' => $text('Hang neve', ['hint' => 'do']),
+            'note' => ['type' => 'int', 'label' => 'Hang helye (0 = do … 7 = magas do)', 'range' => [0, 12]],
+        ]],
+        'tamagotchi' => ['title' => 'petName', 'fields' => ['petName' => $text('A kedvenc neve', ['max' => 30])]],
         'okoska' => ['title' => 'category', 'fields' => [
             'kind' => ['type' => 'select', 'label' => 'Fajta', 'options' => ['category' => 'Csoport (mi nem illik?)', 'symbols' => 'Jelek a mintázatokhoz']],
             'category' => $text('Csoport neve', ['when' => ['kind', 'category'], 'hint' => 'állat']),

@@ -19,9 +19,6 @@ return new class extends Migration
             // Encryption (Phase 5)
             $table->text('public_encryption_key')->nullable();
             $table->text('secret_encryption_key')->nullable(); // Encrypted by Laravel
-
-            // Classroom (Phase 4)
-            $table->foreignId('classroom_id')->nullable()->constrained('classrooms')->onDelete('set null');
         });
     }
 
@@ -36,7 +33,6 @@ return new class extends Migration
                 'allowed_games',
                 'public_encryption_key',
                 'secret_encryption_key',
-                'classroom_id',
             ]);
         });
     }

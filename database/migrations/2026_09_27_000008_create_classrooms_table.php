@@ -21,10 +21,23 @@ return new class extends Migration
             $table->index('teacher_id');
             $table->index('code');
         });
+
+        // Needs the classrooms table, so it lives here and not with the other parental controls (000007).
+        if (! Schema::hasColumn('children', 'classroom_id')) {
+            Schema::table('children', function (Blueprint $table) {
+                $table->foreignId('classroom_id')->nullable()->constrained('classrooms')->onDelete('set null');
+            });
+        }
     }
 
     public function down(): void
     {
+        if (Schema::hasColumn('children', 'classroom_id')) {
+            Schema::table('children', function (Blueprint $table) {
+                $table->dropConstrainedForeignId('classroom_id');
+            });
+        }
+
         Schema::dropIfExists('classrooms');
     }
 };

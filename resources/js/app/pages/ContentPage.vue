@@ -70,7 +70,7 @@ const shown = spec => !spec.when || form.value.payload[spec.when[0]] === spec.wh
 function toText(spec, value) {
   if (value == null) return ''
   if (spec.type === 'list') return value.join(spec.separator === '|' ? ' | ' : spec.separator)
-  if (spec.type === 'emoji_list') return value.join(' ')
+  if (spec.type === 'emoji_list' || spec.type === 'int_list') return value.join(' ')
   if (spec.type === 'pairs') return value.map(([e, n]) => `${e} ${n}`).join('\n')
   return String(value)
 }
@@ -78,6 +78,8 @@ function fromText(spec, text) {
   const s = text.trim()
   if (spec.type === 'list') return s ? s.split(spec.separator).map(x => x.trim()).filter(Boolean) : []
   if (spec.type === 'emoji_list') return splitEmoji(s.replace(/\s+/g, ''))
+  if (spec.type === 'int') return s === '' ? null : Number(s)
+  if (spec.type === 'int_list') return s ? s.split(/[\s,]+/).map(Number) : []
   if (spec.type === 'pairs') {
     return s
       .split('\n')
