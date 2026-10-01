@@ -10,7 +10,7 @@ class PictogramController extends Controller
 {
     public function __invoke(int $id): BinaryFileResponse
     {
-        abort_unless($id > 0 && PictogramStore::fetch($id), 404);
+        abort_unless(config('beszed_content.pictograms') && $id > 0 && PictogramStore::fetch($id), 404);
 
         return response()->file(PictogramStore::path($id), [
             'Content-Type' => 'image/png',

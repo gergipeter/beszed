@@ -19,6 +19,10 @@ class SessionBuilder
         abort_unless($cfg, 404);
 
         $items = BeszedContentItem::forGame($game)->limit(1000)->get();
+        // Without ARASAAC (config beszed_content.pictograms = false) nothing that depends on a pictogram is played.
+        if (! config('beszed_content.pictograms')) {
+            $items = $items->reject(fn ($item) => $item->needsPictogram())->values();
+        }
         abort_if($items->isEmpty(), 422, "No content for '$game'. Run: php artisan db:seed --class=BeszedContentSeeder");
 
         $level = $pickedLevel !== null ? $this->leveler->set($child, $game, $pickedLevel) : $this->leveler->current($child, $game);

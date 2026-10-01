@@ -20,6 +20,9 @@ return [
 
     // ARASAAC pictograms instead of emojis wherever the word bank has one
     // (Sergio Palao, ARASAAC, Government of Aragón, CC BY-NC-SA 4.0: non-commercial use).
+    // Set BESZED_PICTOGRAMS=false before charging for the app, unless ARASAAC has agreed to commercial use:
+    // it then plays only content that works with emojis, serves no pictogram and accepts no new one.
+    // See docs/pictogram-licensing.md.
     'pictograms' => (bool) env('BESZED_PICTOGRAMS', true),
 
     // Games without an adaptive level: which item level suits each age band

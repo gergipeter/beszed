@@ -90,7 +90,7 @@ final class ContentRules
     {
         return is_string($value) && (
             (mb_strlen($value) <= 24 && preg_match('/\p{Extended_Pictographic}/u', $value))
-            || preg_match('/^arasaac:\d{1,6}$/', $value)
+            || (config('beszed_content.pictograms') && preg_match('/^arasaac:\d{1,6}$/', $value))
             || preg_match('/^upload:\d+$/', $value)
         );
     }
