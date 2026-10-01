@@ -6,8 +6,9 @@ import EmojiArt from '../ui/EmojiArt.vue'
 
 /**
  * The hub's folders: the games grouped by what they develop (config/beszed_folders.php).
- * A grid of folder cards; tapping one opens it (the card's colour floods the header,
- * its games pop in one after another). Each card shows how many medals are won in it.
+ * Made for children who cannot read yet (4–5 years): big round "sticker" bubbles, a huge picture,
+ * a short name and a star count; no descriptions on screen (they are there for screen readers and
+ * parents). Tapping a bubble opens it; its games pop in one after another.
  */
 const props = defineProps({
   /** @type {import('vue').PropType<{ id: string, name: string, emoji: string, color: string, develops: string, games: string[] }[]>} */
@@ -22,7 +23,6 @@ const props = defineProps({
 const emit = defineEmits(['play'])
 
 const openId = ref(null)
-const open = computed(() => props.folders.find(f => f.id === openId.value) ?? null)
 const byId = computed(() => Object.fromEntries(props.games.map(g => [g.id, g])))
 
 const cards = computed(() =>
@@ -58,33 +58,26 @@ const medalsOf = id => props.medals[id] ?? 0
           type="button"
           class="folder"
           :style="{ '--c': f.color, '--i': i }"
+          :aria-label="`${f.name}. ${f.develops}. ${t('hub.folderMedals', { done: f.won, total: f.total })}`"
           @click="openFolder(f.id)"
         >
-          <span class="tab" aria-hidden="true" />
-          <span class="body">
+          <span class="blob" aria-hidden="true" />
+          <span v-if="f.won" class="badge" aria-hidden="true">⭐ {{ f.won }}</span>
+          <span class="face" aria-hidden="true">
             <EmojiArt class="icon" :char="f.emoji" />
-            <b class="name">{{ f.name }}</b>
-            <small class="develops">{{ f.develops }}</small>
-            <span class="meta">
-              <span>{{ t('hub.folderGames', { count: f.list.length }) }}</span>
-              <span class="bar" :aria-label="t('hub.folderMedals', { done: f.won, total: f.total })">
-                <i :style="{ width: `${f.total ? (f.won / f.total) * 100 : 0}%` }" />
-              </span>
-            </span>
           </span>
+          <b class="name" aria-hidden="true">{{ f.name }}</b>
         </button>
       </div>
 
       <div v-else :key="current.id" class="open" :style="{ '--c': current.color }">
         <header class="open-head">
-          <button type="button" class="back" @click="close">← {{ t('hub.folderBack') }}</button>
-          <div class="title">
-            <EmojiArt class="icon" :char="current.emoji" />
-            <div>
-              <h2>{{ current.name }}</h2>
-              <p>{{ current.develops }}</p>
-            </div>
-          </div>
+          <button type="button" class="back" :aria-label="t('hub.folderBack')" @click="close">
+            <span aria-hidden="true">⬅</span>
+          </button>
+          <EmojiArt class="head-icon" :char="current.emoji" />
+          <h2>{{ current.name }}</h2>
+          <p class="sr-only">{{ current.develops }}</p>
         </header>
 
         <div class="games">
@@ -96,13 +89,13 @@ const medalsOf = id => props.medals[id] ?? 0
             :class="{ 'game--today': pathGames.includes(g.id) }"
             :style="{ '--g': g.color, '--i': i }"
             :data-game="g.id"
+            :aria-label="`${g.name}. ${g.skill}`"
             @click="emit('play', g.id, $event.currentTarget.querySelector('.tile'))"
           >
-            <span class="tile">
+            <span class="tile" aria-hidden="true">
               <EmojiArt class="art" :char="g.emoji" />
             </span>
-            <b class="gname">{{ g.name }}</b>
-            <small class="skill">{{ g.skill }}</small>
+            <b class="gname" aria-hidden="true">{{ g.name }}</b>
             <span class="stars" aria-hidden="true">
               <i v-for="n in 3" :key="n" :class="{ on: n <= medalsOf(g.id) }">★</i>
             </span>
@@ -117,201 +110,241 @@ const medalsOf = id => props.medals[id] ?? 0
 .folders {
   margin-top: 6px;
 }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
-  gap: 22px 16px;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-/* ---- a folder card: a tab on top, the coloured body below ---- */
+/* ---- the folders: big round stickers, two to a row ---- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 18px;
+  padding: 8px 6px 14px;
+}
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px 24px;
+  }
+}
 .folder {
-  position: relative;
-  display: block;
-  padding-top: 18px;
-  text-align: left;
-  animation: folder-in 0.5s var(--bz-spring) backwards;
-  animation-delay: calc(var(--i) * 55ms);
-  transition: transform 0.38s var(--bz-spring);
-}
-.folder:active {
-  transform: scale(0.95);
-  transition-duration: 0.07s;
-}
-.tab {
-  position: absolute;
-  top: 0;
-  left: 14px;
-  width: 44%;
-  height: 26px;
-  border-radius: 14px 14px 0 0;
-  background: color-mix(in srgb, var(--c) 82%, #000);
-}
-.body {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-height: 176px;
-  padding: 16px 16px 14px;
-  border-radius: 6px 26px 26px 26px;
-  background: linear-gradient(160deg, var(--c), color-mix(in srgb, var(--c) 78%, #fff));
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 190px;
+  padding: 14px 8px 16px;
+  text-align: center;
   color: #3b1f4a;
-  box-shadow: 0 6px 0 color-mix(in srgb, var(--c) 70%, #000), var(--bz-shadow-lg);
+  transform: rotate(var(--tilt, 0deg));
+  animation: folder-in 0.55s var(--bz-spring) backwards;
+  animation-delay: calc(var(--i) * 60ms);
+  transition: transform 0.38s var(--bz-spring);
+}
+/* every sticker sits a little crooked, and not the same way */
+.folder:nth-child(4n + 1) { --tilt: -2.5deg; --shape: 46% 54% 52% 48% / 54% 46% 54% 46%; }
+.folder:nth-child(4n + 2) { --tilt: 2deg; --shape: 54% 46% 48% 52% / 48% 54% 46% 52%; }
+.folder:nth-child(4n + 3) { --tilt: 1.5deg; --shape: 48% 52% 54% 46% / 52% 48% 52% 48%; }
+.folder:nth-child(4n) { --tilt: -2deg; --shape: 52% 48% 46% 54% / 46% 52% 48% 54%; }
+.folder:hover,
+.folder:focus-visible {
+  animation: wiggle 0.6s ease-in-out;
+}
+.folder:active {
+  transform: scale(0.92) rotate(var(--tilt, 0deg));
+  transition-duration: 0.07s;
+}
+/* the coloured shape, a thick white edge like a sticker; a touch more vivid than the palette */
+.blob {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--shape, 50%);
+  background: linear-gradient(160deg, var(--c), color-mix(in srgb, var(--c) 70%, #fff));
+  filter: saturate(1.7);
+  box-shadow:
+    0 0 0 6px #fff,
+    0 12px 0 6px rgba(0, 0, 0, 0.18),
+    0 18px 28px rgba(0, 0, 0, 0.25);
+}
+.face {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.08);
 }
 .icon {
-  font-size: 46px;
+  font-size: 62px;
   line-height: 1;
-  transition: transform 0.5s var(--bz-spring);
-}
-.folder:hover .icon,
-.folder:focus-visible .icon {
-  transform: rotate(-8deg) scale(1.12);
+  animation: bob 2.8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.4s);
 }
 .name {
-  font-size: 20px;
-  line-height: 1.15;
+  position: relative;
+  max-width: 96%;
+  font-size: clamp(20px, 5.4vw, 24px);
+  line-height: 1.1;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.55);
+  overflow-wrap: anywhere;
 }
-.develops {
-  font-size: 13.5px;
-  line-height: 1.25;
-  font-weight: 600;
-  opacity: 0.8;
-}
-.meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: auto;
-  padding-top: 8px;
-  font-size: 13px;
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  z-index: 1;
+  padding: 4px 12px 5px;
+  border-radius: var(--bz-radius-pill);
+  background: #ffd23f;
+  box-shadow:
+    0 0 0 4px #fff,
+    0 4px 0 4px rgba(0, 0, 0, 0.15);
+  font-size: 18px;
   font-weight: 800;
-}
-.bar {
-  flex: 1;
-  max-width: 90px;
-  height: 9px;
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.55);
-  overflow: hidden;
-}
-.bar i {
-  display: block;
-  height: 100%;
-  border-radius: 9px;
-  background: #3b1f4a;
-  transition: width 0.8s var(--bz-spring);
+  line-height: 1.1;
+  transform: rotate(8deg);
 }
 
 /* ---- an open folder ---- */
 .open-head {
   position: relative;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 12px;
-  padding: 14px 16px 16px;
-  border-radius: 26px;
-  background: linear-gradient(160deg, var(--c), color-mix(in srgb, var(--c) 78%, #fff));
+  padding: 14px 16px;
+  border-radius: 40px;
+  background: linear-gradient(160deg, var(--c), color-mix(in srgb, var(--c) 70%, #fff));
   color: #3b1f4a;
-  box-shadow: var(--bz-shadow-lg);
+  box-shadow:
+    0 0 0 5px #fff,
+    0 10px 0 5px rgba(0, 0, 0, 0.16);
+  filter: saturate(1.5);
   animation: head-in 0.45s var(--bz-spring) backwards;
 }
+.open-head > * {
+  filter: saturate(0.67); /* keep the text and pictures themselves at their normal colour */
+}
 .back {
-  align-self: flex-start;
-  padding: 6px 14px;
-  border-radius: var(--bz-radius-pill);
-  background: rgba(255, 255, 255, 0.7);
-  font-weight: 800;
-  font-size: 15px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.18);
+  font-size: 32px;
+  line-height: 1;
+  transition: transform 0.3s var(--bz-spring);
 }
-.title {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.back:active {
+  transform: scale(0.88);
 }
-.title .icon {
-  font-size: 52px;
+.head-icon {
+  flex: none;
+  font-size: 56px;
+  line-height: 1;
   animation: bob 2.6s ease-in-out infinite;
 }
 h2 {
   margin: 0;
-  font-size: clamp(22px, 5vw, 30px);
-  line-height: 1.1;
-}
-.title p {
-  margin: 3px 0 0;
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.85;
+  font-size: clamp(24px, 6vw, 32px);
+  line-height: 1.05;
 }
 .games {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(150px, 46%), 1fr));
-  gap: 16px 12px;
-  margin-top: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 16px;
+  margin-top: 26px;
+  padding: 0 4px 10px;
+}
+@media (min-width: 640px) {
+  .games {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 .game {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 14px 8px 12px;
-  border-radius: 26px;
+  gap: 6px;
+  padding: 16px 8px 14px;
+  border-radius: 38px;
   background: var(--bz-card);
-  box-shadow: var(--bz-shadow-lg);
+  box-shadow:
+    0 0 0 4px var(--g),
+    0 10px 0 4px color-mix(in srgb, var(--g) 65%, #000),
+    0 16px 24px rgba(0, 0, 0, 0.2);
   text-align: center;
-  animation: game-in 0.5s var(--bz-spring) backwards;
-  animation-delay: calc(0.12s + var(--i) * 70ms);
+  animation: game-in 0.55s var(--bz-spring) backwards;
+  animation-delay: calc(0.12s + var(--i) * 80ms);
   transition: transform 0.38s var(--bz-spring);
 }
+.game:hover,
+.game:focus-visible {
+  animation: wiggle 0.6s ease-in-out;
+}
 .game:active {
-  transform: scale(0.93);
+  transform: scale(0.9);
   transition-duration: 0.07s;
 }
+/* today's adventure: a bouncing star on the corner (the flag was too small to see) */
 .game--today::after {
-  content: '🚩';
+  content: '⭐';
   position: absolute;
-  top: -8px;
-  right: 6px;
-  font-size: 22px;
+  top: -16px;
+  right: -8px;
+  font-size: 34px;
+  line-height: 1;
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.2));
+  animation: hop 1.1s ease-in-out infinite;
 }
 .tile {
   display: grid;
   place-items: center;
-  width: 78px;
+  width: 108px;
   aspect-ratio: 1;
   border-radius: 46% 54% 50% 50% / 52% 48% 52% 48%;
   background: var(--g);
-  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 -7px 0 rgba(0, 0, 0, 0.12);
+  animation: bob 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.5s);
 }
 .art {
-  font-size: 44px;
+  font-size: 64px;
   line-height: 1;
 }
 .gname {
-  margin-top: 4px;
-  font-size: 16px;
-  line-height: 1.15;
-}
-.skill {
-  font-size: 12.5px;
-  line-height: 1.2;
-  color: var(--bz-muted);
+  font-size: clamp(18px, 4.8vw, 21px);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 .stars {
   display: flex;
-  gap: 2px;
-  margin-top: 4px;
-  font-size: 18px;
+  gap: 4px;
+  font-size: 28px;
   line-height: 1;
 }
 .stars i {
   font-style: normal;
-  color: rgba(120, 100, 140, 0.25);
+  color: rgba(120, 100, 140, 0.22);
 }
 .stars i.on {
   color: #ffb400;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
   animation: star-pop 0.6s var(--bz-spring) backwards;
 }
 
@@ -333,7 +366,7 @@ h2 {
 @keyframes folder-in {
   from {
     opacity: 0;
-    transform: translateY(22px) scale(0.9);
+    transform: translateY(26px) scale(0.7) rotate(-8deg);
   }
 }
 @keyframes head-in {
@@ -346,12 +379,28 @@ h2 {
 @keyframes game-in {
   from {
     opacity: 0;
-    transform: translateY(26px) scale(0.8) rotate(-4deg);
+    transform: translateY(30px) scale(0.7) rotate(-6deg);
   }
 }
 @keyframes bob {
   50% {
-    transform: translateY(-5px) rotate(-5deg);
+    transform: translateY(-6px) rotate(-4deg);
+  }
+}
+@keyframes hop {
+  50% {
+    transform: translateY(-8px) rotate(10deg) scale(1.1);
+  }
+}
+@keyframes wiggle {
+  20% {
+    transform: rotate(calc(var(--tilt, 0deg) - 3deg)) scale(1.04);
+  }
+  50% {
+    transform: rotate(calc(var(--tilt, 0deg) + 3deg)) scale(1.04);
+  }
+  80% {
+    transform: rotate(calc(var(--tilt, 0deg) - 1.5deg)) scale(1.02);
   }
 }
 @keyframes star-pop {
@@ -363,7 +412,10 @@ h2 {
   .folder,
   .game,
   .open-head,
-  .title .icon,
+  .icon,
+  .head-icon,
+  .tile,
+  .game--today::after,
   .stars i.on {
     animation: none;
   }
