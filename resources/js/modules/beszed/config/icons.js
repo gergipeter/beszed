@@ -35,6 +35,8 @@ export const ICONS = Object.freeze({
   fire: '🔥',
   target: '🎯',
   lock: '🔒',
+  games: '🎮',
+  journey: '🧭',
   party: '🎉',
   gift: '🎁',
   family: '👪',

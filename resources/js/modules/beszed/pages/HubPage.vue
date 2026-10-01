@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { fetchDailyPath, fetchSpotlight } from '../api'
 import GameFolders from '../components/hub/GameFolders.vue'
 import GardenMap from '../components/garden/GardenMap.vue'
@@ -141,10 +141,20 @@ async function play(game, stone) {
 
   <DailyPath v-if="path && meta.games.length" :path="path" :games="meta.games" @play="play" />
 
+  <RouterLink class="journey" :to="{ name: 'beszed.journey', params: { childId } }">
+    <EmojiArt class="journey-icon" :char="ICONS.journey" />
+    <span class="journey-text">
+      <b>{{ t('journey.title') }}</b>
+      <small>{{ t('journey.cardSub') }}</small>
+    </span>
+    <span class="journey-go" aria-hidden="true">›</span>
+  </RouterLink>
+
   <p v-if="newPlants > 0" class="grew" role="status">
     <EmojiArt :char="ICONS.sprout" /> {{ t(newPlants === 1 ? 'hub.grewOne' : 'hub.grewMany', { count: newPlants }) }}
   </p>
 
+  <h2 class="zone"><EmojiArt :char="ICONS.games" /> {{ t('hub.gamesTitle') }}</h2>
   <div class="views" role="tablist">
     <button
       v-for="v in ['folders', 'garden']"
@@ -180,23 +190,21 @@ async function play(game, stone) {
   />
 
   <nav class="parents" :aria-label="t('hub.forParents')">
-    <BzButton :to="{ name: 'beszed.recordings', params: { childId } }" :icon="ICONS.mic">
+    <h2 class="parents-title"><EmojiArt :char="ICONS.family" /> {{ t('hub.forParents') }}</h2>
+    <BzButton variant="soft" size="sm" :to="{ name: 'beszed.recordings', params: { childId } }" :icon="ICONS.mic">
       {{ t('recordings.title') }}
     </BzButton>
-    <BzButton :to="{ name: 'beszed.journey', params: { childId } }" :icon="ICONS.map">
-      {{ t('journey.title') }}
-    </BzButton>
-    <BzButton :to="{ name: 'beszed.progress', params: { childId } }" :icon="ICONS.chart">
+    <BzButton variant="soft" size="sm" :to="{ name: 'beszed.progress', params: { childId } }" :icon="ICONS.chart">
       {{ t('progress.title') }}
     </BzButton>
-    <BzButton :to="{ name: 'beszed.settings', params: { childId } }" :icon="ICONS.settings">
+    <BzButton variant="soft" size="sm" :to="{ name: 'beszed.settings', params: { childId } }" :icon="ICONS.settings">
       {{ t('settings.title') }}
     </BzButton>
-    <BzButton v-if="!premium" :to="{ name: 'beszed.premium', params: { childId } }" :icon="ICONS.star">
+    <BzButton v-if="!premium" variant="soft" size="sm" :to="{ name: 'beszed.premium', params: { childId } }" :icon="ICONS.star">
       {{ t('premium.title') }}
     </BzButton>
     <InstallApp />
-    <BzButton v-if="config.exitTo" :to="config.exitTo" :icon="ICONS.family">{{ t('hub.exit') }}</BzButton>
+    <BzButton v-if="config.exitTo" variant="soft" size="sm" :to="config.exitTo" :icon="ICONS.family">{{ t('hub.exit') }}</BzButton>
   </nav>
 </template>
 
@@ -265,10 +273,70 @@ async function play(game, stone) {
   background: var(--bz-sun);
   transform: scale(1.06);
 }
+/* the games zone: a heading, then the folders or the garden */
+.zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0 8px;
+  font-size: var(--bz-text-lg, 26px);
+  font-weight: 800;
+}
+/* Utazás: a feature of its own, bigger than a menu button and not a game card */
+.journey {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 12px 18px;
+  border-radius: var(--bz-radius);
+  background: #5aa86a;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: var(--bz-shadow);
+}
+.journey-icon {
+  font-size: 34px;
+}
+.journey-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.journey-text b {
+  font-size: var(--bz-text-md);
+}
+.journey-text small {
+  font-size: var(--bz-text-sm);
+  opacity: 0.95;
+}
+.journey-go {
+  font-size: 34px;
+  line-height: 1;
+}
+/* the parents' menu: a quiet panel apart from the games, so it never reads as one */
 .parents {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 28px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 36px;
+  padding: 12px 14px 14px;
+  border-radius: var(--bz-radius);
+  background: rgba(59, 31, 74, 0.14);
+}
+.parents-title {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 2px;
+  font-size: var(--bz-text-sm);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.8;
 }
 </style>
