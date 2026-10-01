@@ -10,6 +10,8 @@ export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/login', name: 'login', component: () => import('./pages/LoginPage.vue'), meta: { guest: true } },
+    { path: '/jelszo-visszaallitas', name: 'reset-password', component: () => import('./pages/ResetPasswordPage.vue'), meta: { public: true } },
+    { path: '/felhasznalasi-feltetelek', name: 'terms', component: () => import('./pages/TermsPage.vue'), meta: { public: true } },
     { path: '/adatvedelem', name: 'privacy', component: () => import('./pages/PrivacyPage.vue'), meta: { public: true } },
     // A therapist's read-only report: no sign-in, the link is the key.
     { path: '/megosztas/:token', name: 'share', component: () => import('./pages/SharePage.vue'), meta: { public: true } },

@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, ref } from 'vue'
+import { ref } from 'vue'
 import { useModuleContext } from '../../composables/useModuleContext'
 import { ICONS } from '../../config/icons'
 import { config } from '../../config/options'
@@ -8,13 +8,14 @@ import { buzz } from '../../services/touch/feel'
 import BzButton from '../ui/BzButton.vue'
 import EmojiArt from '../ui/EmojiArt.vue'
 import InstallApp from './InstallApp.vue'
+import ParentGate from './ParentGate.vue'
 
 /**
  * The parents' menu behind a ☰ button in the corner: recordings, progress, settings, the premium
  * page, the child picker. Children see one small button instead of a row of grown-up links.
  *
- * It opens on a press-and-hold (about a second, a ring fills meanwhile), so a small child tapping at random
- * does not get in; a quick tap only shows a hint. A keyboard (or screen reader) activation opens it directly.
+ * It opens behind a parental gate (read a three-digit number written in words and type it), so a small child
+ * tapping at random cannot get in. The same gate guards purchases and links out (App Store guideline 1.3).
  *
  * A modal <dialog> (top layer): it covers the whole screen whatever the page is scrolled to, closes
  * with Escape or a tap outside, and keeps keyboard focus inside while it is open.
@@ -24,48 +25,16 @@ const { childId, premium } = useModuleContext()
 const dialog = ref(null)
 const trigger = ref(null)
 
-const HOLD_MS = 900
-const holding = ref(false)
-const hint = ref(false)
-let holdTimer = null
-let hintTimer = null
-let opened = false
+const gate = ref(null)
 
+/** The menu is for parents: a three-digit number to read and type first (ParentGate). */
+async function ask() {
+  if (await gate.value.ask()) open()
+}
 function open() {
   buzz(10)
-  hint.value = false
   dialog.value?.showModal()
 }
-
-function startHold() {
-  opened = false
-  holding.value = true
-  clearTimeout(holdTimer)
-  holdTimer = setTimeout(() => {
-    holding.value = false
-    opened = true
-    open()
-  }, HOLD_MS)
-}
-function endHold() {
-  clearTimeout(holdTimer)
-  holding.value = false
-}
-/** A click without a finished hold: a tap shows the hint; a keyboard activation (detail 0) opens directly. */
-function onClick(event) {
-  if (event.detail === 0) return open()
-  if (opened) {
-    opened = false
-    return
-  }
-  hint.value = true
-  clearTimeout(hintTimer)
-  hintTimer = setTimeout(() => (hint.value = false), 2600)
-}
-onBeforeUnmount(() => {
-  clearTimeout(holdTimer)
-  clearTimeout(hintTimer)
-})
 function close() {
   dialog.value?.close()
   trigger.value?.focus()
@@ -73,26 +42,12 @@ function close() {
 </script>
 
 <template>
-  <button
-    ref="trigger"
-    type="button"
-    class="menu-btn"
-    :class="{ 'menu-btn--holding': holding }"
-    :aria-label="t('hub.menu')"
-    aria-haspopup="dialog"
-    @pointerdown="startHold"
-    @pointerup="endHold"
-    @pointerleave="endHold"
-    @pointercancel="endHold"
-    @contextmenu.prevent
-    @click="onClick"
-  >
-    <svg class="ring" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" /></svg>
+  <button ref="trigger" type="button" class="menu-btn" :aria-label="t('hub.menu')" aria-haspopup="dialog" @click="ask">
     <span class="bars" aria-hidden="true"><i /><i /><i /></span>
   </button>
-  <p v-if="hint" class="hint" role="status">{{ t('hub.menuHint') }}</p>
+  <ParentGate ref="gate" />
 
-  <dialog ref="dialog" class="drawer" :aria-label="t('hub.forParents')" @click.self="close" @close="opened = false">
+  <dialog ref="dialog" class="drawer" :aria-label="t('hub.forParents')" @click.self="close">
     <header class="head">
       <h2 class="title"><EmojiArt :char="ICONS.family" /> {{ t('hub.forParents') }}</h2>
       <button type="button" class="close" :aria-label="t('hub.closeMenu')" @click="close">
@@ -147,57 +102,6 @@ function close() {
 }
 .menu-btn:active {
   transform: scale(0.88);
-}
-/* a long press must not select text or open the browser's own menu */
-.menu-btn {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-  touch-action: manipulation;
-}
-/* the ring that fills while the button is held */
-.ring {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-  pointer-events: none;
-}
-.ring circle {
-  fill: none;
-  stroke: var(--bz-leaf, #3aa76d);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 151;
-  stroke-dashoffset: 151;
-}
-.menu-btn--holding .ring circle {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 0.9s linear;
-}
-.hint {
-  position: absolute;
-  top: calc(68px + env(safe-area-inset-top, 0px));
-  right: 14px;
-  z-index: 5;
-  max-width: 220px;
-  margin: 0;
-  padding: 8px 14px;
-  border-radius: 16px;
-  background: var(--bz-card);
-  color: var(--bz-ink);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.2;
-  box-shadow: var(--bz-shadow);
-  animation: hint-in 0.3s var(--bz-spring);
-}
-@keyframes hint-in {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
 }
 .bars {
   display: grid;

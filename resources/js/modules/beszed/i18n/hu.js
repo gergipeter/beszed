@@ -29,8 +29,7 @@ export default {
     greetingNamed: 'Szia {child}! Én vagyok {guide}. Úgy örülök, hogy itt vagy! Mit játsszunk ma?',
     greetLabel: '{guide} köszön',
     forParents: 'Szülőknek',
-    menu: 'Menü (szülőknek, tartsd nyomva)',
-    menuHint: 'Szülőknek: tartsd nyomva a menü gombot',
+    menu: 'Menü (szülőknek)',
     closeMenu: 'Menü bezárása',
     gamesTitle: 'Játékok',
     loadFailed: 'Nem sikerült betölteni a játékokat.',
@@ -61,6 +60,17 @@ export default {
     tipIos: 'az Irányított hozzáféréssel (Beállítások → Kisegítő lehetőségek → Irányított hozzáférés) a gyerek nem tud véletlenül kilépni a játékból.',
     tipAndroid: 'a Képernyő rögzítésével (Beállítások → Biztonság) a gyerek nem tud véletlenül kilépni a játékból.',
     close: 'Rendben',
+  },
+
+  gate: {
+    title: 'Szülőknek',
+    ask: 'Írd be számmal ezt a számot:',
+    wrong: 'Nem jó. Próbáld újra!',
+    locked: 'Túl sok próba. Várj {seconds} másodpercet.',
+    cancel: 'Mégse',
+    ok: 'Kész',
+    backspace: 'Törlés',
+    empty: 'még üres',
   },
 
   journey: {

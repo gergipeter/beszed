@@ -13,6 +13,31 @@ export const texts = {
     server: 'A szerver most nem érhető el. Próbáld újra kicsit később!',
     demo: 'Nem sikerült a demó belépés.',
   },
+  auth: {
+    login: 'Belépés',
+    register: 'Új fiók',
+    name: 'Neved',
+    email: 'E-mail-cím',
+    password: 'Jelszó',
+    newPassword: 'Új jelszó',
+    passwordHint: 'Legalább 10 karakter, betűk és számok.',
+    loginSubmit: 'Belépek',
+    registerSubmit: 'Fiók létrehozása',
+    forgot: 'Elfelejtett jelszó',
+    forgotSubmit: 'Küldd el a linket',
+    forgotSent: 'Ha van fiók ezzel az e-mail-címmel, elküldtük a jelszó-visszaállító linket. Nézd meg a postaládád!',
+    or: 'vagy',
+    backToLogin: 'Vissza a belépéshez',
+    resetTitle: 'Új jelszó',
+    resetSubmit: 'Új jelszó mentése',
+    resetNoToken: 'Ez a link nem érvényes. Kérj új jelszó-visszaállító levelet a belépésnél!',
+    resetFailed: 'Nem sikerült az új jelszót beállítani.',
+    failed: 'Nem sikerült. Próbáld újra!',
+    agree: 'A fiók létrehozásával elfogadod a',
+    terms: 'Felhasználási feltételeket',
+    and: 'és az',
+    privacy: 'Adatkezelési tájékoztatót',
+  },
   whoPlays: 'Ki játszik ma?',
   addChild: 'Új gyerek',
   childName: 'Hogy hívják a gyereket?',
@@ -67,6 +92,13 @@ export const texts = {
     accept: 'Elfogadom',
     failed: 'Nem sikerült menteni. Próbáld újra!',
   },
+}
+
+/** The server's first validation message (Laravel 422), else the fallback. */
+export const firstError = (e, fallback) => {
+  const errors = e?.response?.data?.errors
+  const first = errors ? Object.values(errors)[0]?.[0] : null
+  return first || e?.response?.data?.message || fallback
 }
 
 export const fill = (text, params) => text.replace(/\{(\w+)\}/g, (m, k) => (k in params ? params[k] : m))

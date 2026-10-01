@@ -6,6 +6,6 @@ const node = typeof document !== 'undefined' ? document.getElementById('app-conf
 
 export const appConfig = {
   name: 'Beszéd & DIFER',
-  auth: { google: false, demo: false },
+  auth: { google: false, demo: false, email: true },
   ...(node ? JSON.parse(node.textContent || '{}') : {}),
 }

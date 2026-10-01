@@ -5,7 +5,7 @@ import { BzButton, BzNotice, CsillamAvatar } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
 import { appConfig } from '../config'
 import { useSessionStore } from '../stores/session'
-import { texts } from '../texts'
+import { firstError, texts } from '../texts'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,9 +13,40 @@ const session = useSessionStore()
 const busy = ref(false)
 const demoError = ref('')
 
+/** 'login' · 'register' · 'forgot' */
+const mode = ref('login')
+const form = ref({ name: '', email: '', password: '' })
+const notice = ref('')
+
 const error = computed(
   () => demoError.value || texts.errors[route.query.error] || (session.unreachable ? texts.errors.server : ''),
 )
+
+async function submitEmail() {
+  busy.value = true
+  demoError.value = ''
+  notice.value = ''
+  try {
+    if (mode.value === 'forgot') {
+      await session.forgotPassword(form.value.email)
+      notice.value = texts.auth.forgotSent
+      return
+    }
+    if (mode.value === 'register') await session.emailRegister(form.value.name, form.value.email, form.value.password)
+    else await session.emailLogin(form.value.email, form.value.password)
+    router.replace({ name: 'home' })
+  } catch (e) {
+    demoError.value = firstError(e, texts.auth.failed)
+  } finally {
+    busy.value = false
+  }
+}
+
+function setMode(next) {
+  mode.value = next
+  demoError.value = ''
+  notice.value = ''
+}
 
 async function demo() {
   busy.value = true
@@ -39,6 +70,46 @@ async function demo() {
       <p class="tagline">{{ texts.tagline }}</p>
 
       <BzNotice v-if="error" tone="warn">{{ error }}</BzNotice>
+
+      <BzNotice v-if="notice" tone="info">{{ notice }}</BzNotice>
+
+      <form v-if="appConfig.auth.email" class="email" @submit.prevent="submitEmail">
+        <label v-if="mode === 'register'" class="field">
+          <span>{{ texts.auth.name }}</span>
+          <input v-model="form.name" type="text" autocomplete="name" maxlength="60" required />
+        </label>
+        <label class="field">
+          <span>{{ texts.auth.email }}</span>
+          <input v-model="form.email" type="email" autocomplete="email" required />
+        </label>
+        <label v-if="mode !== 'forgot'" class="field">
+          <span>{{ texts.auth.password }}</span>
+          <input
+            v-model="form.password"
+            type="password"
+            :autocomplete="mode === 'register' ? 'new-password' : 'current-password'"
+            :minlength="mode === 'register' ? 10 : undefined"
+            required
+          />
+          <small v-if="mode === 'register'">{{ texts.auth.passwordHint }}</small>
+        </label>
+        <BzButton variant="primary" :disabled="busy" @click="submitEmail">
+          {{ mode === 'register' ? texts.auth.registerSubmit : mode === 'forgot' ? texts.auth.forgotSubmit : texts.auth.loginSubmit }}
+        </BzButton>
+
+        <div class="switch">
+          <button v-if="mode !== 'login'" type="button" @click="setMode('login')">{{ texts.auth.login }}</button>
+          <button v-if="mode !== 'register'" type="button" @click="setMode('register')">{{ texts.auth.register }}</button>
+          <button v-if="mode === 'login'" type="button" @click="setMode('forgot')">{{ texts.auth.forgot }}</button>
+        </div>
+        <p v-if="mode === 'register'" class="fine">
+          {{ texts.auth.agree }}
+          <RouterLink class="privacy-link" :to="{ name: 'terms' }">{{ texts.auth.terms }}</RouterLink>
+          {{ texts.auth.and }}
+          <RouterLink class="privacy-link" :to="{ name: 'privacy' }">{{ texts.auth.privacy }}</RouterLink>.
+        </p>
+        <p v-if="appConfig.auth.google || appConfig.auth.demo" class="or">{{ texts.auth.or }}</p>
+      </form>
 
       <div class="actions">
         <!-- Full page navigation: Google's consent screen, then back to /auth/google/callback. -->
@@ -130,6 +201,50 @@ async function demo() {
 .g {
   width: 22px;
   height: 22px;
+}
+.email {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 4px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  font-weight: 700;
+}
+.field input {
+  min-height: 48px;
+  padding: 8px 14px;
+  border: 2px solid color-mix(in srgb, var(--bz-ink) 25%, transparent);
+  border-radius: 16px;
+  background: #fff;
+  color: #1f1f1f;
+  font: inherit;
+  font-weight: 600;
+}
+.field small {
+  font-weight: 600;
+  color: var(--bz-muted);
+}
+.switch {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 16px;
+}
+.switch button {
+  font-weight: 700;
+  text-decoration: underline;
+  color: var(--bz-ink);
+}
+.or {
+  margin: 4px 0 0;
+  color: var(--bz-muted);
+  font-weight: 700;
 }
 .dev {
   margin: 4px 0 0;

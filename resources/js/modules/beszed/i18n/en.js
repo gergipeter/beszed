@@ -30,8 +30,7 @@ export default {
     greetingNamed: "Hi {child}! I'm {guide}. I'm so happy you're here! What shall we play today?",
     greetLabel: '{guide} says hi',
     forParents: 'For parents',
-    menu: 'Menu (for parents, press and hold)',
-    menuHint: 'For parents: press and hold the menu button',
+    menu: 'Menu (for parents)',
     closeMenu: 'Close the menu',
     gamesTitle: 'Games',
     loadFailed: 'Could not load the games.',
@@ -62,6 +61,17 @@ export default {
     tipIos: 'with Guided Access (Settings → Accessibility → Guided Access) your child can\'t accidentally leave the game.',
     tipAndroid: 'with Screen Pinning (Settings → Security) your child can\'t accidentally leave the game.',
     close: 'OK',
+  },
+
+  gate: {
+    title: 'For parents',
+    ask: 'Type this number in digits:',
+    wrong: 'Not right. Try again!',
+    locked: 'Too many tries. Wait {seconds} seconds.',
+    cancel: 'Cancel',
+    ok: 'Done',
+    backspace: 'Delete',
+    empty: 'empty',
   },
 
   journey: {

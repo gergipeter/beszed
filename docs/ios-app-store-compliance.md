@@ -9,6 +9,22 @@ Apple's reviewers decide, and some points below are judgement calls. Legend: ✅
 **Not ready to submit.** Nothing here is a dead end, but there are seven blockers (❌). The app's privacy basics are
 good (no ads, no trackers, no analytics, in-app account deletion, data export), which is the hardest part to retrofit.
 
+## Progress (updated the same day)
+
+| # | Blocker | Status |
+|---|---|---|
+| 1 | Google-only sign-in | **Done** for the web part: e-mail + password sign-up, sign-in, forgot / reset password (with brute-force limit), tested. Still to do: hide the Google button inside the native app build, and run `php artisan beszed:review-account` on the live server for the review notes. |
+| 2 | Purchases must use Apple in-app purchase | Open: needs the billing build (RevenueCat + StoreKit) and the store accounts. |
+| 3 | Terms of Use and subscription screen | **Terms of Use written (draft)** at `/felhasznalasi-feltetelek`, with the subscription / cancellation wording, linked from sign-up and consent. Needs a lawyer's read and the operator details. The paywall screen itself comes with the billing build. |
+| 4 | Parental gate | **Done**: the parents' menu opens only after reading a three-digit number written in words and typing it (3 wrong tries lock it for 30 s). The same component is to guard purchases and links out. |
+| 5 | Privacy notice blanks | **Placeholders added** (`[Adatkezelő neve és címe – kitöltendő]`); `php artisan beszed:preflight` fails while they are there. The real publisher details and a public URL are still needed. |
+| 6 | Child's voice to third parties | **Mostly done** (another session): the OpenAI speech route is switched off, and a self-hosted Whisper service keeps the child's voice on our server; `beszed:preflight` blocks `STT_DRIVER=azure`. |
+| 7 | ARASAAC licence | Open: permission request, or `BESZED_PICTOGRAMS=false` (preflight blocks until one of them). |
+
+New helpers: `php artisan beszed:preflight` (the settings above in one table, exit code 1 on a blocker) and
+`php artisan beszed:review-account` (the premium, consented account for Apple's reviewer). Premium pricing is decided in
+[pricing.md](pricing.md).
+
 ## The first decision: Kids Category or not
 
 The app is for 4–5-year-olds, so the **Kids Category** (guideline 1.3) fits and helps discovery. It also sets stricter rules:

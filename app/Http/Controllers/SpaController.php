@@ -16,12 +16,16 @@ class SpaController extends Controller
             'name' => config('app.name'),
             'auth' => [
                 'google' => GoogleController::enabled(),
+                'email' => true,
                 'demo' => DemoLoginController::enabled(),
             ],
             'privacy' => [
                 'version' => config('privacy.version'),
                 'controller' => config('privacy.controller'),
                 'contact' => config('privacy.contact'),
+                // which speech services are on, so the notice only names the ones that receive data
+                'stt' => config('stt.driver'),
+                'tts' => config('tts.driver'),
             ],
         ]]);
 

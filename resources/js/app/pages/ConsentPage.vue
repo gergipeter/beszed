@@ -43,7 +43,10 @@ async function logout() {
         <li v-for="item in texts.consent.storedItems" :key="item">{{ item }}</li>
       </ul>
       <p>{{ texts.consent.rights }}</p>
-      <p><RouterLink class="link" :to="{ name: 'privacy' }">{{ texts.privacyLink }} →</RouterLink></p>
+      <p>
+        <RouterLink class="link" :to="{ name: 'privacy' }">{{ texts.privacyLink }} →</RouterLink><br />
+        <RouterLink class="link" :to="{ name: 'terms' }">{{ texts.auth.terms }} →</RouterLink>
+      </p>
 
       <label class="check">
         <input v-model="agreed" type="checkbox" />

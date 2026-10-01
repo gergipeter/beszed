@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\DemoLoginController;
+use App\Http\Controllers\Auth\EmailAuthController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\PictogramController;
@@ -21,6 +22,12 @@ Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
 Route::post('/auth/demo', DemoLoginController::class)->middleware('throttle:10,1,demo')->name('auth.demo');
 Route::post('/logout', LogoutController::class)->name('logout');
+
+// Sign-in with an e-mail address and a password (the sign-in of the iOS / Android apps).
+Route::post('/auth/register', [EmailAuthController::class, 'register'])->middleware('throttle:10,1,register')->name('auth.register');
+Route::post('/auth/login', [EmailAuthController::class, 'login'])->middleware('throttle:30,1,login')->name('auth.login');
+Route::post('/auth/forgot-password', [EmailAuthController::class, 'forgot'])->middleware('throttle:5,1,forgot')->name('auth.forgot');
+Route::post('/auth/reset-password', [EmailAuthController::class, 'reset'])->middleware('throttle:10,1,reset')->name('auth.reset');
 
 // ARASAAC pictograms, from this server's copy (fetched once). Plain files: no session, no cookies.
 Route::get('/pictograms/{id}.png', PictogramController::class)

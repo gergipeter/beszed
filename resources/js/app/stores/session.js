@@ -56,6 +56,27 @@ export const useSessionStore = defineStore('app/session', {
       await this.load(true)
     },
 
+    /** Sign-in with an e-mail address and a password. */
+    async emailLogin(email, password) {
+      await http.post('/auth/login', { email, password })
+      this.loggedOut = false
+      await this.load(true)
+    },
+
+    async emailRegister(name, email, password) {
+      await http.post('/auth/register', { name, email, password })
+      this.loggedOut = false
+      await this.load(true)
+    },
+
+    async forgotPassword(email) {
+      await http.post('/auth/forgot-password', { email })
+    },
+
+    async resetPassword(fields) {
+      await http.post('/auth/reset-password', fields)
+    },
+
     async logout() {
       await http.post('/logout')
       this.signedOut()
