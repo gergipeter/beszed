@@ -39,6 +39,7 @@
  * @property {string} stage  The scene it's played in (components/game/GameStage.vue).
  * @property {number} rounds
  * @property {boolean} noIdle
+ * @property {number | null} [freeMaxLevel]  top level a free account plays in this game
  * @property {{ id: string, name: string, emoji: string }[]} [categories]  picture themes to pick before playing (Kirakó)
  *
  * @typedef {{ key: string, label: string, text: string }} Line  A line a parent can record.

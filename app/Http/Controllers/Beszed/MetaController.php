@@ -23,6 +23,8 @@ class MetaController extends Controller
             'tier' => $g['tier'] ?? 'simple',
             'stage' => $g['stage'] ?? 'meadow',
             'rounds' => $g['rounds'],
+            // top level a free account plays in this game (same for everyone, so the response stays cacheable)
+            'freeMaxLevel' => config("beszed_plans.free_max_level_by_game.$id") ?? config('beszed_plans.free_max_level'),
             'noIdle' => (bool) ($g['no_idle'] ?? false),
             // top of the adaptive level range; a game with a hand-picked level (Kirakó) shows a chooser up to it
             'maxLevel' => $g['adaptive']['max'] ?? null,

@@ -26,7 +26,6 @@ class LearningPath
     {
         $cfg = config('beszed_skills');
         $games = config('beszed.games');
-        $cap = $this->leveler->cap($child);
 
         $total = BeszedAttempt::where('child_id', $child->id)->groupBy('game')->selectRaw('game, COUNT(*) as n')->pluck('n', 'game');
         $recent = BeszedAttempt::where('child_id', $child->id)->where('created_at', '>=', now()->subDays(self::RECENT_DAYS))
@@ -35,9 +34,9 @@ class LearningPath
             ->get()->keyBy('game');
         $levels = $child->beszedLevels()->pluck('level', 'game');
 
-        $areas = collect($cfg['areas'])->map(function ($area, $key) use ($cfg, $games, $cap, $total, $recent, $levels) {
+        $areas = collect($cfg['areas'])->map(function ($area, $key) use ($child, $cfg, $games, $total, $recent, $levels) {
             $steps = collect($area['games'])->filter(fn ($id) => isset($games[$id]))->values()
-                ->map(fn ($id) => $this->step($id, $games[$id], $cfg, $cap, (int) ($total[$id] ?? 0), $recent->get($id), $levels[$id] ?? null));
+                ->map(fn ($id) => $this->step($id, $games[$id], $cfg, $this->leveler->cap($child, $id), (int) ($total[$id] ?? 0), $recent->get($id), $levels[$id] ?? null));
             $next = $steps->first(fn ($s) => $s['state'] !== 'mastered');
 
             return [

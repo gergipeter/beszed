@@ -5,7 +5,8 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Picture puzzle: swap pieces until the picture is whole. 200 levels ("pályák"):
+ * Picture puzzle: swap pieces until the picture is whole. A session is three puzzles, each one pálya harder than the
+ * one before (as the intro says: after every picture comes the next pálya), and never the same picture twice. 200 levels ("pályák"):
  * the grid grows from 2×2 to 5×5, from level 4 on the picture stands in one of
  * the drawn scenes (so every piece shows something), every other level has a
  * fairy-tale princess among its pictures, and on the high levels the example
@@ -48,23 +49,29 @@ class KirakoRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(self::LEVELS, $level));
-        [$cols, $rows] = self::grid($level);
+        $start = max(1, min(self::LEVELS, $level));
         $themed = $this->theme($items);
         if ($themed) {
             // a picture theme the child picked: only its pictures
-            $picked = $this->cycle($themed, $count)->values();
+            $picked = $this->cycle($this->onePerPicture($themed), $count)->values();
         } else {
             $tales = $items->filter(fn ($i) => ($i->payload['kind'] ?? null) === 'tale')->values();
             $things = $items->reject(fn ($i) => ($i->payload['kind'] ?? null) === 'tale')->values();
-            $picked = $this->cycle($things->isEmpty() ? $items : $things, $count)->values();
-            // every other level from 4 on: a princess (or another fairy-tale figure) in the middle round
-            if ($level >= 4 && $level % 2 === 0 && $tales->isNotEmpty() && $count > 1) {
-                $picked[1] = $this->weightedShuffle($tales)->first();
+            $picked = $this->cycle($this->onePerPicture($things->isEmpty() ? $items : $things), $count)->values();
+            // every other level from 4 on: a princess (or another fairy-tale figure) in the middle round, not one already in the session
+            if ($start >= 4 && $start % 2 === 0 && $tales->isNotEmpty() && $count > 1) {
+                $taken = $picked->map(fn ($i) => $i->payload['emoji'] ?? null);
+                $tale = $this->weightedShuffle($tales)->first(fn ($i) => ! $taken->contains($i->payload['emoji'] ?? null)) ?? $this->weightedShuffle($tales)->first();
+                $picked[1] = $tale;
             }
         }
 
-        return $picked->map(function ($it, $r) use ($level, $cols, $rows) {
+        $cap = $this->options['level_cap'] ?? null;
+
+        return $picked->map(function ($it, $r) use ($start, $cap) {
+            // each puzzle one pálya harder than the last, up to the top (or the free plan's last pálya)
+            $level = min(self::LEVELS, $cap ?? self::LEVELS, $start + $r);
+            [$cols, $rows] = self::grid($level);
             $tale = ($it->payload['kind'] ?? null) === 'tale';
             $scene = $it->payload['scene'] ?? ($level >= 4 ? self::SCENES[($level + $r) % count(self::SCENES)] : null);
 
@@ -83,6 +90,12 @@ class KirakoRounds extends RoundFactory
                     : "Hurrá! Kész a kép! Ez egy {$it->payload['name']}!",
             ], fn ($v) => $v !== null), $it->id);
         })->values()->all();
+    }
+
+    /** One item per picture (princesses and others come in many scene variants), the best-weighted of each: so a session never repeats a picture. */
+    private function onePerPicture(Collection $items): Collection
+    {
+        return $items->groupBy(fn ($i) => $i->payload['emoji'] ?? $i->id)->map(fn ($group) => $this->weightedShuffle($group)->first())->values();
     }
 
     /** The pictures of the theme the child picked (config kirako.categories), or null for all of them. */

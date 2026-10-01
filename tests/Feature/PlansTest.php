@@ -75,8 +75,9 @@ it('stops a free account from levelling up past the cap, but a premium one climb
 
 it('clamps a hand-picked level to the cap for a free account only', function () {
     $game = 'kirako';
+    $kirakoCap = config('beszed_plans.free_max_level_by_game.kirako');
 
-    expect(planSession($this->free, $this->freeChild, $game, '&level=50')['level'])->toBe($this->cap)
+    expect(planSession($this->free, $this->freeChild, $game, '&level=50')['level'])->toBe($kirakoCap)
         ->and(planSession($this->premium, $this->premiumChild, $game, '&level=50')['level'])->toBe(50);
 });
 
@@ -89,5 +90,6 @@ it('tells the app whether the account is premium and what the free cap is', func
 it('treats the content editors as premium', function () {
     config(['beszed_content.admins' => [strtolower($this->free->email)]]);
 
-    expect(app(Entitlements::class)->levelCap($this->free))->toBeNull();
+    expect(app(Entitlements::class)->levelCap($this->free))->toBeNull()
+        ->and(app(Entitlements::class)->levelCap($this->free, 'kirako'))->toBeNull();
 });

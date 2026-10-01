@@ -50,7 +50,7 @@ const pickedLevel = ref(null)
 const maxLevel = computed(() => meta.game(props.game)?.maxLevel ?? 0)
 /** The free plan stops at its top level; the server holds the line, this only keeps the chooser honest. */
 const pickMax = computed(() => {
-  const cap = meta.meta?.freeMaxLevel
+  const cap = meta.game(props.game)?.freeMaxLevel ?? meta.meta?.freeMaxLevel
   return premium.value || !cap ? maxLevel.value : Math.min(maxLevel.value, cap)
 })
 function pickLevel(n) {

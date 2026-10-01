@@ -20,13 +20,13 @@ class Leveler
     {
         $cfg = config("beszed.games.$game.adaptive");
 
-        return $cfg ? $this->capped($child, $this->row($child, $game, $cfg)->level) : 1;
+        return $cfg ? $this->capped($child, $game, $this->row($child, $game, $cfg)->level) : 1;
     }
 
-    /** Highest level the child's parent has unlocked; null = all of them. */
-    public function cap(Child $child): ?int
+    /** Highest level of a game the child's parent has unlocked; null = all of them. */
+    public function cap(Child $child, string $game): ?int
     {
-        return $this->plans->levelCap($child->user);
+        return $this->plans->levelCap($child->user, $game);
     }
 
     /** A level picked by hand (Kirakó's pálya chooser): stored, clamped to the game's range, then play goes on from there. */
@@ -38,7 +38,14 @@ class Leveler
         }
 
         $row = $this->row($child, $game, $cfg);
-        $row->level = max($cfg['min'], min($cfg['max'], $this->capped($child, $level)));
+        $wanted = max($cfg['min'], min($cfg['max'], $level));
+        $cap = $this->cap($child, $game);
+        if ($cap !== null && $wanted > $cap) {
+            // beyond the free levels: play the last free one, and keep the level the child has reached
+            return $cap;
+        }
+
+        $row->level = $wanted;
         $row->streak = 0;
         $row->save();
 
@@ -54,9 +61,10 @@ class Leveler
 
         $row = $this->row($child, $game, $cfg);
 
-        if ($correct && $tries === 1) {
+        // a game can count a slightly less tidy win as clean too (a puzzle graded 2: a few wasted swaps)
+        if ($correct && $tries <= ($cfg['clean_tries'] ?? 1)) {
             $row->streak++;
-            if ($row->streak >= ($this->placing($child, $game) ? 1 : $cfg['up_after']) && $row->level < min($cfg['max'], $this->cap($child) ?? PHP_INT_MAX)) {
+            if ($row->streak >= ($this->placing($child, $game) ? 1 : $cfg['up_after']) && $row->level < min($cfg['max'], $this->cap($child, $game) ?? PHP_INT_MAX)) {
                 $row->level++;
                 $row->streak = 0;
             }
@@ -69,7 +77,7 @@ class Leveler
 
         $row->save();
 
-        return $this->capped($child, $row->level);
+        return $this->capped($child, $game, $row->level);
     }
 
     /** The game's first few answers (this one included): a quick search for the child's level. */
@@ -80,9 +88,9 @@ class Leveler
         return $n > 0 && BeszedAttempt::where('child_id', $child->id)->where('game', $game)->limit($n + 1)->pluck('id')->count() <= $n;
     }
 
-    private function capped(Child $child, int $level): int
+    private function capped(Child $child, string $game, int $level): int
     {
-        $cap = $this->cap($child);
+        $cap = $this->cap($child, $game);
 
         return $cap === null ? $level : min($level, $cap);
     }

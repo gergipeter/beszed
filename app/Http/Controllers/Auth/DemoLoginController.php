@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-/** One-tap sign-in as the seeded demo parent. Local development only. */
+/** One-tap sign-in as the seeded demo parent (on the premium plan, so every level can be tried). Local development only. */
 class DemoLoginController extends Controller
 {
     public const EMAIL = 'parent@example.test';
@@ -23,7 +23,7 @@ class DemoLoginController extends Controller
     {
         abort_unless(self::enabled(), 404);
 
-        $user = User::firstOrCreate(['email' => self::EMAIL], ['name' => 'Demo szülő', 'password' => Str::random(40)]);
+        $user = User::firstOrCreate(['email' => self::EMAIL], ['name' => 'Demo szülő', 'password' => Str::random(40), 'subscription_plan' => 'premium']);
         Auth::login($user, remember: true);
         $request->session()->regenerate();
 

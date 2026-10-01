@@ -27,16 +27,15 @@ class SessionBuilder
         abort_if($items->isEmpty(), 422, "No content for '$game'. Run: php artisan db:seed --class=BeszedContentSeeder");
 
         $level = $pickedLevel !== null ? $this->leveler->set($child, $game, $pickedLevel) : $this->leveler->current($child, $game);
+        $cap = $this->leveler->cap($child, $game);
         $rounds = app($cfg['factory'])
             ->weigh($this->weights($child, $game, $items, isset($cfg['adaptive']), $cfg['rounds']))
-            ->choose($options)
+            ->choose($options + ['level_cap' => $cap])
             ->build($items, $level, $cfg['rounds']);
         // now and then Csillám has a go first, sometimes wrongly on purpose, and the child judges her
         if ($cfg['guess'] ?? true) {
             $rounds = CsillamGuess::apply($rounds, config('beszed.guesses', []));
         }
-
-        $cap = $this->leveler->cap($child);
 
         return [
             'game' => $game,
@@ -66,6 +65,9 @@ class SessionBuilder
      * right at the first try the last two times come up a bit less. Games
      * without an adaptive level also lean towards items that fit the child's age.
      *
+     * A game can opt out of the practise-again rule (`review` => false: a puzzle graded 2 or 3 is not a wrong answer) and ask
+     * for fresh pictures (`fresh` => N: a picture among the last N played comes up only when nothing else is left).
+     *
      * @return array<int, float>
      */
     private function weights(Child $child, string $game, Collection $items, bool $adaptive, int $rounds): array
@@ -75,11 +77,12 @@ class SessionBuilder
             ->latest('id')->limit(500)->get(['content_item_id', 'correct', 'tries'])
             ->groupBy('content_item_id');
         $ageLevel = $adaptive ? null : (config('beszed_content.age_levels')[AgeBands::of($child)] ?? null);
+        $review = (bool) config("beszed.games.$game.review", true);
 
         $missed = [];
-        $weights = $items->mapWithKeys(function ($item) use ($recent, $ageLevel, &$missed) {
+        $weights = $items->mapWithKeys(function ($item) use ($recent, $ageLevel, $review, &$missed) {
             $last = ($recent[$item->id] ?? collect())->take(3);
-            $misses = $last->reject(fn ($a) => $a->correct && (int) $a->tries === 1)->count();
+            $misses = $review ? $last->reject(fn ($a) => $a->correct && (int) $a->tries === 1)->count() : 0;
             if ($misses) {
                 $missed[$item->id] = $misses;
             }
@@ -90,6 +93,8 @@ class SessionBuilder
 
             return [$item->id => $weight];
         })->all();
+
+        $this->favorFresh($child, $game, $items, $weights);
 
         // The most-missed first; each gets its chance until a third of the rounds is practice.
         arsort($missed);
@@ -105,5 +110,25 @@ class SessionBuilder
         }
 
         return $weights;
+    }
+
+    /** Pictures among the child's last `fresh` plays of this game almost never come up again (several items can share a picture). */
+    private function favorFresh(Child $child, string $game, Collection $items, array &$weights): void
+    {
+        $window = (int) config("beszed.games.$game.fresh", 0);
+        if ($window <= 0) {
+            return;
+        }
+
+        $ids = BeszedAttempt::where('child_id', $child->id)->where('game', $game)->whereNotNull('content_item_id')
+            ->latest('id')->limit($window)->pluck('content_item_id')->unique();
+        $seen = BeszedContentItem::whereIn('id', $ids)->get(['id', 'payload'])
+            ->map(fn ($i) => $i->payload['emoji'] ?? null)->filter()->flip();
+
+        foreach ($items as $item) {
+            if (isset($seen[$item->payload['emoji'] ?? ''])) {
+                $weights[$item->id] *= 0.02;
+            }
+        }
     }
 }

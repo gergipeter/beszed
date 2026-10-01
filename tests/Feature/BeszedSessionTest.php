@@ -54,9 +54,9 @@ it('seeds content for every game', function () {
 
 it('kirakó: shuffled, never solved, grid follows the level', function (int $level) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'kirako', 'level' => $level]);
-    [$cols, $rows] = KirakoRounds::grid($level);
-
-    foreach (gameSession('kirako')['rounds'] as $round) {
+    foreach (gameSession('kirako')['rounds'] as $r => $round) {
+        // each puzzle of the session is one pálya harder than the one before
+        [$cols, $rows] = KirakoRounds::grid($level + $r);
         $pieces = $round['data']['pieces'];
         expect($round['data'])->toMatchArray(['cols' => $cols, 'rows' => $rows])
             ->and(collect($pieces)->sort()->values()->all())->toBe(range(0, $cols * $rows - 1))

@@ -14,9 +14,13 @@ class Entitlements
             || Gate::forUser($user)->allows('edit-content'); // the people who run the content always see all of it
     }
 
-    /** Highest game level this account plays; null = no limit. */
-    public function levelCap(User $user): ?int
+    /** Highest level of a game this account plays; null = no limit. */
+    public function levelCap(User $user, ?string $game = null): ?int
     {
-        return $this->premium($user) ? null : config('beszed_plans.free_max_level');
+        if ($this->premium($user)) {
+            return null;
+        }
+
+        return ($game ? config("beszed_plans.free_max_level_by_game.$game") : null) ?? config('beszed_plans.free_max_level');
     }
 }

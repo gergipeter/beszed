@@ -10,6 +10,10 @@ return [
     // Highest game level (the adaptive level, or Kirakó's pálya) a free account plays. null = no cap.
     'free_max_level' => 3,
 
+    // Games whose levels are small steps get more room: Kirakó has 200 "pálya" (each one a puzzle), so 3 of them
+    // would be three 2x2 puzzles. 15 reaches the 3x2 board and the first scenes.
+    'free_max_level_by_game' => ['kirako' => 15],
+
     // users.subscription_plan values that unlock everything.
     'premium_plans' => ['premium', 'family'],
 ];

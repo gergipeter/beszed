@@ -206,9 +206,13 @@ return [
             'factory' => Rounds\KirakoRounds::class, 'rounds' => 3,
             // level = "pálya" 1–200: the grid grows 2×2 → 8×7, scenes and princesses come, the example fades (KirakoRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 200, 'start' => 1, 'up_after' => 1,
+                // clean_tries 2: a puzzle graded 1 or 2 (few wasted swaps) moves on to the next pálya; only a messy one (3) steps back
+                'min' => 1, 'max' => 200, 'start' => 1, 'up_after' => 1, 'clean_tries' => 2,
                 'starts_by_age' => ['3-4' => 1, '5-6' => 8, '7+' => 16],
             ],
+            // A puzzle's grade is not a wrong answer: no "practise what was missed" repeats, and a picture is not shown
+            // again until the last 150 pictures have come by (SessionBuilder).
+            'review' => false, 'fresh' => 150,
             /*
             | Picture themes the child picks before playing. `lexicon`: word-bank categories
             | (database/lexicon/hu.json → c); `emojis`: pictures that belong too; `tales`:
