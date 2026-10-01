@@ -9,9 +9,9 @@ namespace App\Beszed\Content;
  * bank has a pictogram for, keeping the emoji as the fallback after "~"
  * ("arasaac:2462~🍎"), so the app still shows something offline.
  *
- * With pictograms off (ARASAAC is licensed for non-commercial use only) the pictograms that have a
- * Mulberry symbol (mulberrysymbols.org, CC BY-SA 4.0; database/lexicon/mulberry.json) are shown as
- * "mulberry:badger" instead.
+ * With pictograms off (ARASAAC is licensed for non-commercial use only) a pictogram is replaced by what
+ * database/lexicon/substitutes.json names for it: a Mulberry symbol (mulberrysymbols.org, CC BY-SA 4.0),
+ * shown as "mulberry:badger", or a plain emoji ("emoji:🏛️" in the file).
  */
 final class Pictures
 {
@@ -32,19 +32,19 @@ final class Pictures
         return self::$map;
     }
 
-    /** @var array<int, string>|null ARASAAC pictogram id => Mulberry symbol name */
-    private static ?array $symbols = null;
+    /** @var array<int, string>|null ARASAAC pictogram id => Mulberry symbol name, or "emoji:<emoji>" */
+    private static ?array $substitutes = null;
 
     /** @return array<int, string> */
-    public static function symbols(): array
+    public static function substitutes(): array
     {
-        return self::$symbols ??= array_map('strval', json_decode(file_get_contents(database_path('lexicon/mulberry.json')), true, flags: JSON_THROW_ON_ERROR));
+        return self::$substitutes ??= array_map('strval', json_decode(file_get_contents(database_path('lexicon/substitutes.json')), true, flags: JSON_THROW_ON_ERROR));
     }
 
-    /** Every pictogram in the list has a Mulberry symbol (true for an empty list). @param list<int> $ids */
-    public static function hasSymbols(array $ids): bool
+    /** Every pictogram in the list has something to show in its place (true for an empty list). @param list<int> $ids */
+    public static function hasSubstitutes(array $ids): bool
     {
-        return collect($ids)->every(fn ($id) => isset(self::symbols()[$id]));
+        return collect($ids)->every(fn ($id) => isset(self::substitutes()[$id]));
     }
 
     /**
@@ -54,10 +54,11 @@ final class Pictures
     public static function apply(array $rounds): array
     {
         if (! config('beszed_content.pictograms')) {
-            $symbols = self::symbols();
-            array_walk_recursive($rounds, function (&$value) use ($symbols) {
-                if (is_string($value) && preg_match('/^arasaac:(\d+)(~.*)?$/su', $value, $m) && isset($symbols[(int) $m[1]])) {
-                    $value = "mulberry:{$symbols[(int) $m[1]]}".($m[2] ?? '');
+            $substitutes = self::substitutes();
+            array_walk_recursive($rounds, function (&$value) use ($substitutes) {
+                if (is_string($value) && preg_match('/^arasaac:(\d+)(~.*)?$/su', $value, $m) && isset($substitutes[(int) $m[1]])) {
+                    $sub = $substitutes[(int) $m[1]];
+                    $value = str_starts_with($sub, 'emoji:') ? substr($sub, 6) : "mulberry:$sub".($m[2] ?? '');
                 }
             });
 

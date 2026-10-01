@@ -13,8 +13,8 @@ use function Pest\Laravel\get;
 use function Pest\Laravel\seed;
 
 // BESZED_PICTOGRAMS=false: the app plays and shows nothing from ARASAAC (CC BY-NC-SA, non-commercial), so
-// it can be sold without ARASAAC's agreement. Pictograms with a Mulberry symbol (CC BY-SA 4.0) are shown as
-// that symbol; items with a pictogram that has none are left out. See docs/pictogram-licensing.md.
+// it can be sold without ARASAAC's agreement. A pictogram is shown as its Mulberry symbol (CC BY-SA 4.0) or an
+// emoji; items with a pictogram that has neither are left out. See docs/pictogram-licensing.md.
 
 beforeEach(function () {
     seed(BeszedContentSeeder::class);
@@ -42,7 +42,7 @@ it('plays nothing from ARASAAC with pictograms off, and still builds full sessio
 
 it('swaps a pictogram for its Mulberry symbol, keeping the emoji fallback', function () {
     config(['beszed_content.pictograms' => false]);
-    $symbols = Pictures::symbols();
+    $symbols = array_filter(Pictures::substitutes(), fn ($s) => ! str_starts_with($s, 'emoji:'));
     $id = array_key_first($symbols);
     $name = $symbols[$id];
 
@@ -50,21 +50,33 @@ it('swaps a pictogram for its Mulberry symbol, keeping the emoji fallback', func
         ->toBe([['a' => "mulberry:$name", 'b' => "mulberry:$name~🍎", 'c' => '🍎', 'd' => 'arasaac:999999']]);
 });
 
-it('keeps items whose pictograms all have a symbol, and drops the others', function () {
+it('swaps a pictogram for a plain emoji where the substitutes name one', function () {
     config(['beszed_content.pictograms' => false]);
-    $mapped = array_key_first(Pictures::symbols());
+    $id = array_key_first(array_filter(Pictures::substitutes(), fn ($s) => str_starts_with($s, 'emoji:')));
+    $emoji = substr(Pictures::substitutes()[$id], 6);
 
-    expect(Pictures::hasSymbols([]))->toBeTrue()
-        ->and(Pictures::hasSymbols([$mapped]))->toBeTrue()
-        ->and(Pictures::hasSymbols([$mapped, 999999]))->toBeFalse();
+    expect(Pictures::apply([["arasaac:$id"]]))->toBe([[$emoji]]);
+});
 
-    $kept = BeszedContentItem::forGame('kezdo')->get()->filter(fn ($i) => Pictures::hasSymbols($i->arasaacIds()));
+it('keeps items whose pictograms all have a substitute, and drops the others', function () {
+    config(['beszed_content.pictograms' => false]);
+    $mapped = array_key_first(Pictures::substitutes());
+
+    expect(Pictures::hasSubstitutes([]))->toBeTrue()
+        ->and(Pictures::hasSubstitutes([$mapped]))->toBeTrue()
+        ->and(Pictures::hasSubstitutes([$mapped, 999999]))->toBeFalse();
+
+    $kept = BeszedContentItem::forGame('kezdo')->get()->filter(fn ($i) => Pictures::hasSubstitutes($i->arasaacIds()));
     expect($kept->filter(fn ($i) => $i->arasaacIds() !== []))->not->toBeEmpty(); // symbol-backed items still play
 });
 
-it('has an SVG for every symbol it maps to', function () {
-    foreach (array_unique(Pictures::symbols()) as $name) {
-        expect(public_path("symbols/$name.svg"))->toBeFile();
+it('has an SVG for every Mulberry symbol and a real emoji for every emoji it maps to', function () {
+    foreach (array_unique(Pictures::substitutes()) as $sub) {
+        if (str_starts_with($sub, 'emoji:')) {
+            expect(ContentRules::isPicture(substr($sub, 6)))->toBeTrue();
+        } else {
+            expect(public_path("symbols/$sub.svg"))->toBeFile();
+        }
     }
     expect(public_path('symbols/LICENSE.txt'))->toBeFile(); // Mulberry's licence travels with the files
 });

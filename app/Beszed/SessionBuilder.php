@@ -20,9 +20,9 @@ class SessionBuilder
 
         $items = BeszedContentItem::forGame($game)->limit(1000)->get();
         // Without ARASAAC (config beszed_content.pictograms = false) an item is only played when every pictogram
-        // in it has a Mulberry symbol to take its place; the rest is left out.
+        // in it has a substitute (a Mulberry symbol or an emoji); the rest is left out.
         if (! config('beszed_content.pictograms')) {
-            $items = $items->filter(fn ($item) => Pictures::hasSymbols($item->arasaacIds()))->values();
+            $items = $items->filter(fn ($item) => Pictures::hasSubstitutes($item->arasaacIds()))->values();
         }
         abort_if($items->isEmpty(), 422, "No content for '$game'. Run: php artisan db:seed --class=BeszedContentSeeder");
 

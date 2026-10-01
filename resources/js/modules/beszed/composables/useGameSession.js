@@ -107,10 +107,13 @@ export function useGameSession(childId, game, { category, level } = {}) {
       const picked = toValue(level)
       if (level) level.value = null
       const fresh = await fetchSession(toValue(childId), game, { category: toValue(category), level: picked })
-      await Promise.all([
-        preloadEngines(fresh.rounds.map(r => r.engine)),
-        preloadSessionEmojis(fresh.rounds),
-      ])
+      // Only the first round blocks the start; the later engines and pictures warm up while the child plays.
+      const [first, ...later] = fresh.rounds
+      if (first) {
+        await Promise.all([preloadEngines([first.engine]), preloadSessionEmojis([first])])
+        preloadEngines(later.map(r => r.engine)).catch(() => {})
+        preloadSessionEmojis(later.slice(0, 2))
+      }
       if (!active) return
       session.value = { ...fresh, rounds: stamp(fresh.rounds) }
       stars.value = fresh.stars
