@@ -13,7 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-/** Per-game and per-skill-area summary (printable for the logopédus) and weekly trend. */
+/** Per-game, per-skill-area and per-sound summary (printable for the logopédus) and weekly trend. */
 class ProgressController extends Controller
 {
     use AuthorizesChild;
@@ -83,6 +83,7 @@ class ProgressController extends Controller
         $data = $report->for($child, (int) $request->integer('days', 30));
         $data['narrative'] = $narrative->narrative($data['areas']);
         $data['recommendations'] = $narrative->recommendations($data['areas']);
+        $data['sounds'] += $narrative->sounds($data['sounds']);
 
         return response()->json($data);
     }

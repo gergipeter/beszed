@@ -3,6 +3,7 @@
     /** @var array $r  App\Beszed\Reports\WeeklyReport::for() */
     $bandColor = ['strong' => '#2f9e5b', 'growing' => '#f5b02e', 'practice' => '#ff6f61', 'noData' => '#c8bedb'];
     $trend = ['up' => ['▲', '#2f9e5b', 'jobb, mint múlt héten'], 'down' => ['▼', '#ff6f61', 'kicsit gyengébb'], 'flat' => ['■', '#6b5a77', 'mint múlt héten']];
+    $soundKind = ['start' => 'kezdőhang', 'contrast' => 'hangpár', 'rhyme' => 'rím'];
     $name = $r['child']['name'];
 @endphp
 <!doctype html>
@@ -26,6 +27,7 @@
     .area { width: 100%; margin: 0 0 5px; }
     .area td { padding: 0; }
     .area-name { font-weight: bold; font-size: 10.5pt; }
+    .kind { font-weight: normal; font-size: 8.5pt; color: #6b5a77; }
     .band { text-align: right; font-weight: bold; font-size: 9.5pt; }
     .track { width: 100%; height: 9px; background: #f1eef6; border-radius: 6px; margin-top: 4px; }
     .fill { height: 9px; border-radius: 6px; }
@@ -69,6 +71,23 @@
                 <div class="note">
                     @if ($a['firstTryRate'] !== null) elsőre jó: {{ $pct }}% @else még kevés válasz @endif
                     @if ($a['trend']) · <span style="color: {{ $trend[$a['trend']][1] }};">{{ $trend[$a['trend']][0] }} {{ $trend[$a['trend']][2] }}</span>@endif
+                </div>
+            </td></tr></table>
+        @endforeach
+    @endif
+
+    @if ($r['sounds']['items'])
+        <h2>Hangok</h2>
+        @foreach ($r['sounds']['items'] as $s)
+            @php $pct = (int) round($s['firstTryRate'] * 100); @endphp
+            <table class="area"><tr>
+                <td class="area-name">„{{ $s['label'] }}” <span class="kind">{{ $soundKind[$s['kind']] }}@if ($s['examples']) · {{ implode(', ', array_slice($s['examples'], 0, 2)) }}@endif</span></td>
+                <td class="band" style="color: {{ $bandColor[$s['band']] }};">{{ $r['bandLabels'][$s['band']] }}</td>
+            </tr><tr><td colspan="2">
+                <div class="track"><div class="fill" style="width: {{ max($pct, 2) }}%; background: {{ $bandColor[$s['band']] }};"></div></div>
+                <div class="note">
+                    elsőre jó: {{ $pct }}%
+                    @if ($s['trend']) · <span style="color: {{ $trend[$s['trend']][1] }};">{{ $trend[$s['trend']][0] }} {{ $trend[$s['trend']][2] }}</span>@endif
                 </div>
             </td></tr></table>
         @endforeach

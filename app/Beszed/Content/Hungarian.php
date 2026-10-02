@@ -110,6 +110,20 @@ final class Hungarian
         return self::isVowel(mb_substr(mb_strtolower($word), 0, 1)) ? 'az' : 'a';
     }
 
+    /**
+     * "a" or "az" before a letter or sound read by its name: "az s" (es), "az sz" (esz),
+     * "az m" (em), but "a k" (ká), "a zs" (zsé). Wrong with the plain rule, which looks
+     * only at the spelling. Takes the first letter of what it is given; a rhyme ending
+     * written with a hyphen ("-ó") works too.
+     */
+    public static function letterArticle(string $letters): string
+    {
+        $first = self::letters(preg_replace('/^[\s\-–]+/u', '', mb_strtolower($letters)))[0]['letter'] ?? '';
+
+        // Letters whose name starts with a vowel sound: f (ef), l (el), m (em), n (en), r (er), s (es), x (iksz), y (ipszilon) ...
+        return self::isVowel($first) || in_array($first, ['f', 'l', 'ly', 'm', 'n', 'ny', 'r', 's', 'sz', 'x', 'y'], true) ? 'az' : 'a';
+    }
+
     /** Long vowels made short (ó → o, ű → ü): ló / lovat, kéz / kezet share a stem. */
     public static function fold(string $text): string
     {

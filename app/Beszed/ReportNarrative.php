@@ -2,6 +2,8 @@
 
 namespace App\Beszed;
 
+use App\Beszed\Content\Hungarian;
+
 /**
  * Turns a ProgressReport's `areas` into a short narrative + recommendations for
  * the printable/PDF summary. Deliberately non-diagnostic: the app has no peer
@@ -76,5 +78,72 @@ class ReportNarrative
         $items[] = 'Ezt az összefoglalót érdemes elhozni a következő szűrővizsgálatra vagy szakemberi konzultációra.';
 
         return $items;
+    }
+
+    /**
+     * What a ProgressReport's `sounds` say in a few sentences (which sound improved
+     * most, which goes best, which to practise a little more), and one thing to do at
+     * home about the one to practise. Null where there is nothing to say.
+     *
+     * A sound is never given a suffix itself (s-sel, sz-szel, zs-vel all differ): it
+     * stands in quotes after its article (Hungarian::letterArticle: "az s", "a k") and
+     * the noun after it takes the ending ("az „s” kezdőhangnál", "az „s – sz” hangpárnál").
+     *
+     * @param  array{items: list<array<string, mixed>>, strongest: ?string, weakest: ?string, improved: ?string}  $sounds
+     * @return array{summary: ?string, tip: ?string}
+     */
+    public function sounds(array $sounds): array
+    {
+        $byKey = collect($sounds['items'])->keyBy('key');
+        $pick = fn (?string $key) => $key === null ? null : $byKey->get($key);
+        [$best, $weak, $up] = [$pick($sounds['strongest']), $pick($sounds['weakest']), $pick($sounds['improved'])];
+        $pct = fn (float $rate) => (int) round($rate * 100);
+
+        $parts = [];
+        if ($up) {
+            $parts[] = sprintf('Ebben az időszakban %s fejlődött a legtöbbet a gyermek: az elsőre jó válaszok aránya %d%%-ról %d%%-ra nőtt.',
+                $this->soundPhrase($up, 'at'), $pct($up['previousRate']), $pct($up['firstTryRate']));
+        }
+        if ($best && $best['key'] !== ($up['key'] ?? null)) {
+            $parts[] = sprintf('Legbiztosabban %s megy: az elsőre jó válaszok aránya %d%%.',
+                $this->soundPhrase($best, 'at'), $pct($best['firstTryRate']));
+        }
+        if ($weak) {
+            $parts[] = sprintf('Még érdemes egy kicsit gyakorolni %s (elsőre jó: %d%%).',
+                $this->soundPhrase($weak, 'acc'), $pct($weak['firstTryRate']));
+        }
+
+        return ['summary' => $parts ? implode(' ', $parts) : null, 'tip' => $weak ? $this->soundTip($weak) : null];
+    }
+
+    /** "az „s” kezdőhangnál" (at) or "az „s” kezdőhangot" (acc). */
+    private function soundPhrase(array $sound, string $case): string
+    {
+        $name = Hungarian::letterArticle($sound['label'])." „{$sound['label']}”";
+
+        return match ($sound['kind']) {
+            'start' => "$name ".($case === 'at' ? 'kezdőhangnál' : 'kezdőhangot'),
+            'rhyme' => "$name végű ".($case === 'at' ? 'rímeknél' : 'rímeket'),
+            default => "$name ".($case === 'at' ? 'hangpárnál' : 'hangpárt'),
+        };
+    }
+
+    /** One short, concrete thing to do at home, by the game the sound is mostly practised in. */
+    private function soundTip(array $sound): ?string
+    {
+        $examples = $sound['examples'];
+        $e = fn (int $from, int $n) => array_slice($examples, $from, $n);
+        $for = fn (array $words) => $words ? ' (például: '.implode(', ', $words).')' : '';
+
+        return match ($sound['games'][0] ?? null) {
+            'kezdo' => "Keressetek otthon három dolgot, aminek a neve ezzel a hanggal kezdődik: {$sound['label']}{$for($e(0, 2))}.",
+            'zs' => 'Keressetek otthon olyan szavakat, amelyekben zümmögő zs hallatszik (például: zsiráf, rúzs), '
+                .'és olyanokat, amelyekben csendes s (például: sajt, hús).',
+            'ikerhangok' => $examples
+                ? 'Mondjátok ki egymásnak lassan ezeket a szópárokat, és találja ki a másik, melyiket hallotta: '.implode('; ', $e(0, 2)).'.'
+                : "Találjatok ki otthon szópárokat, amelyek csak egy hangban különböznek ({$sound['label']}), mondjátok ki őket lassan, és találja ki a másik, melyiket hallotta.",
+            'rimelo' => "Rímjáték otthon: mondjatok egy szót{$for($e(0, 1))}, és keressetek hozzá együtt három rímelő szót{$for($e(1, 2))}.",
+            default => null,
+        };
     }
 }

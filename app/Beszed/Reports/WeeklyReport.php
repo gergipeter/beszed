@@ -10,13 +10,16 @@ use Carbon\CarbonImmutable;
 
 /**
  * A child's week, for the Sunday e-mail and its PDF: how much they played,
- * the stars and stickers they earned, how each skill area went (against the
- * week before), the games they played most, and a tip for the next week.
+ * the stars and stickers they earned, how each skill area and sound went (against
+ * the week before), the games they played most, and a tip for the next week.
  * Null when the child didn't play at all that week (no e-mail then).
  */
 final class WeeklyReport
 {
     private const DAYS = 7;
+
+    /** Sounds listed in the e-mail and its PDF (the most practised ones). */
+    private const SOUNDS_SHOWN = 6;
 
     public function __construct(
         private ProgressReport $progress,
@@ -37,6 +40,7 @@ final class WeeklyReport
         $summary = $this->rewards->summary($child);
         $areas = collect($report['areas'])->filter(fn ($a) => $a['sessions'] > 0 || $a['band'] !== 'noData')->values()->all();
         $sign = config("beszed.signs.{$child->sign}.emoji");
+        $sounds = $report['sounds'] + $this->narrative->sounds($report['sounds']);
 
         return [
             'child' => ['id' => $child->id, 'name' => $child->name, 'sign' => $sign, 'age' => $report['child']['age']],
@@ -55,8 +59,10 @@ final class WeeklyReport
             'games' => collect($report['games'])->where('sessions', '>', 0)->sortByDesc('sessions')->take(6)->values()->all(),
             'areas' => $areas,
             'bandLabels' => ReportNarrative::BAND_LABEL,
-            'narrative' => $this->narrative->narrative($report['areas']),
-            'tips' => $this->narrative->recommendations($report['areas']),
+            'sounds' => ['items' => array_slice($sounds['items'], 0, self::SOUNDS_SHOWN)] + $sounds,
+            'narrative' => trim($this->narrative->narrative($report['areas']).' '.$sounds['summary']),
+            // The one concrete thing to do at home comes first.
+            'tips' => array_values(array_filter([$sounds['tip'], ...$this->narrative->recommendations($report['areas'])])),
             'url' => url("/beszed/{$child->id}/haladas"),
         ];
     }

@@ -3,6 +3,7 @@
     $ink = '#3b1f4a'; $muted = '#6b5a77'; $sky = '#7cc8ff'; $soft = '#eaf7ff';
     $bandColor = ['strong' => '#2f9e5b', 'growing' => '#f5b02e', 'practice' => '#ff6f61', 'noData' => '#c8bedb'];
     $trend = ['up' => ['▲', '#2f9e5b', 'jobb, mint múlt héten'], 'down' => ['▼', '#ff6f61', 'kicsit gyengébb, mint múlt héten'], 'flat' => ['▬', '#6b5a77', 'mint múlt héten']];
+    $soundKind = ['start' => 'kezdőhang', 'contrast' => 'hangpár', 'rhyme' => 'rím'];
     $name = $r['child']['name'];
 @endphp
 <!doctype html>
@@ -65,6 +66,32 @@
                     <p style="margin:4px 0 0;font-size:13px;color:{{ $muted }};">
                         @if ($a['firstTryRate'] !== null) elsőre jó: {{ $pct }}% @else még kevés válasz @endif
                         @if ($a['trend']) · <span style="color:{{ $trend[$a['trend']][1] }};">{{ $trend[$a['trend']][0] }} {{ $trend[$a['trend']][2] }}</span>@endif
+                    </p>
+                </td></tr>
+            @endforeach
+        </table>
+    </td></tr>
+    @endif
+
+    {{-- sounds --}}
+    @if ($r['sounds']['items'])
+    <tr><td style="padding:18px 28px 4px;">
+        <h2 style="margin:0 0 10px;font-size:20px;">Hangok</h2>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+            @foreach ($r['sounds']['items'] as $s)
+                @php $pct = (int) round($s['firstTryRate'] * 100); @endphp
+                <tr><td style="padding:6px 0;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr>
+                        <td style="font-size:15px;font-weight:bold;">„{{ $s['label'] }}” <span style="font-size:13px;font-weight:normal;color:{{ $muted }};">{{ $soundKind[$s['kind']] }}@if ($s['examples']) · {{ implode(', ', array_slice($s['examples'], 0, 2)) }}@endif</span></td>
+                        <td align="right" style="font-size:14px;color:{{ $bandColor[$s['band']] }};font-weight:bold;white-space:nowrap;">{{ $r['bandLabels'][$s['band']] }}</td>
+                    </tr></table>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:5px;background:#f1eef6;border-radius:8px;"><tr>
+                        @if ($pct > 0)<td width="{{ $pct }}%" style="background:{{ $bandColor[$s['band']] }};height:12px;border-radius:8px;font-size:0;line-height:0;">&nbsp;</td>@endif
+                        <td style="height:12px;font-size:0;line-height:0;">&nbsp;</td>
+                    </tr></table>
+                    <p style="margin:4px 0 0;font-size:13px;color:{{ $muted }};">
+                        elsőre jó: {{ $pct }}%
+                        @if ($s['trend']) · <span style="color:{{ $trend[$s['trend']][1] }};">{{ $trend[$s['trend']][0] }} {{ $trend[$s['trend']][2] }}</span>@endif
                     </p>
                 </td></tr>
             @endforeach

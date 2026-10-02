@@ -59,7 +59,7 @@ class ShareController extends Controller
         return response()->json(['share' => $this->present($share)]);
     }
 
-    /** What the therapist sees. Deliberately small: first name, age band, the report. */
+    /** What the therapist sees. Deliberately small: first name, age band, the report (games, areas, sounds). */
     public function show(string $token, ProgressReport $report, ReportNarrative $narrative): JsonResponse
     {
         $share = BeszedShare::findByToken($token);
@@ -78,6 +78,8 @@ class ShareController extends Controller
                 'expiresAt' => $share->expires_at->toIso8601String(),
                 'games' => $data['games'],
                 'areas' => $data['areas'],
+                // The sounds' results and what they say; the home tip is for the parent.
+                'sounds' => $data['sounds'] + ['summary' => $narrative->sounds($data['sounds'])['summary']],
                 'narrative' => $narrative->narrative($data['areas']),
                 'recommendations' => $narrative->recommendations($data['areas']),
             ])

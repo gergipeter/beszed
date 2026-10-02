@@ -9,11 +9,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Per-game and per-skill-area summary of a period: the parent's progress page,
- * its printout and the read-only therapist share link all show this.
+ * Per-game, per-skill-area and per-sound summary of a period: the parent's progress
+ * page, its printout and the read-only therapist share link all show this.
  */
 class ProgressReport
 {
+    public function __construct(private SoundProgress $sounds) {}
+
     public function for(Child $child, int $days = 30): array
     {
         $days = max(1, min($days, 365));
@@ -54,6 +56,7 @@ class ProgressReport
             'days' => $days,
             'games' => $games,
             'areas' => $this->areas($games, $current, $previous),
+            'sounds' => $this->sounds->for($child, $days, $since),
         ];
     }
 
@@ -96,7 +99,7 @@ class ProgressReport
         })->values()->all();
     }
 
-    private function trend(?float $now, ?float $before, float $delta): ?string
+    public static function trend(?float $now, ?float $before, float $delta): ?string
     {
         if ($now === null || $before === null) {
             return null;
@@ -111,7 +114,7 @@ class ProgressReport
         };
     }
 
-    private function band(?float $rate, array $bands): string
+    public static function band(?float $rate, array $bands): string
     {
         if ($rate === null) {
             return 'noData';
