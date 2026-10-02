@@ -255,7 +255,8 @@ The whole module is one place, **Zoé's garden**, drawn in CSS and SVG (no image
   they snap, a wrong place springs them back. A tap still works everywhere.
 - **A stage per game** (`components/game/GameStage.vue`, `stage` in `config/beszed.php`): meadow, beehive,
   theatre (the curtains open), magic night (the magician's hat swoops over the pictures in "Mi tűnt el?"),
-  workshop (a wooden shelf for the nesting dolls), pond, forest, market and storybook.
+  workshop (a wooden shelf for the nesting dolls), pond, forest, market, storybook and table (a wooden
+  tabletop for Osztozkodás).
 - **Csillám makes mistakes** (`app/Beszed/CsillamGuess.php`): in a few picture-choice rounds she has a go
   first, points at an answer and asks "Igazam van?". Half the time she is wrong on purpose; the child says
   yes or no (or taps what they think is right), and catching her, picks the right one. A wrong verdict

@@ -5,9 +5,9 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Fair sharing: items wait in a basket; the child shares them out on plates so each
+ * Fair sharing: items wait on the table; the child shares them out on plates so each
  * plate gets the same. Level 1: 2 plates, 2–8 items · 2: 2 or 3 plates, up to 9 ·
- * 3: there may be one left over, which stays in the basket.
+ * 3: there may be one left over, which stays on the table.
  */
 class OsztozasRounds extends RoundFactory
 {
@@ -23,7 +23,7 @@ class OsztozasRounds extends RoundFactory
             $p = $it->payload;
 
             $prompt = $left
-                ? "Van {$n} {$p['name']}. Oszd szét {$plates} tányérra úgy, hogy mindegyiken ugyanannyi legyen. A maradék maradjon a kosárban!"
+                ? "Van {$n} {$p['name']}. Oszd szét {$plates} tányérra úgy, hogy mindegyiken ugyanannyi legyen. A maradék maradjon az asztalon!"
                 : "Van {$n} {$p['name']}. Oszd szét igazságosan {$plates} tányérra, hogy mindegyiken ugyanannyi legyen!";
 
             return $this->round('share', $prompt, [
@@ -33,7 +33,7 @@ class OsztozasRounds extends RoundFactory
                 'plates' => $plates,
                 'each' => $each,
                 'left' => $left,
-                'onCorrect' => "Igazságos! Mindegyik tányéron {$each} van".($left ? ', és egy maradt a kosárban!' : '!'),
+                'onCorrect' => "Igazságos! Mindegyik tányéron {$each} van".($left ? ', és egy maradt az asztalon!' : '!'),
             ], $it->id);
         })->values()->all();
     }

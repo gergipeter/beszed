@@ -315,7 +315,7 @@ export default {
 
   split: {
     plate: '{n}. tányér',
-    hint: 'Koppints egy tányérra! Ha az ételre koppintasz, visszamegy a kosárba.',
+    hint: 'Koppints egy tányérra! Ha egy darabra koppintasz a tányéron, visszamegy az asztalra.',
   },
 
   rhythm: {

@@ -47,6 +47,8 @@ const PROPS = {
     { char: '🥕', x: 94, y: 90, size: 28 },
   ],
   storybook: [{ char: '🔖', x: 92, y: 3, size: 30 }],
+  // the table is the whole scene; anything else around the edges would be mistaken for game pieces
+  table: [],
 }
 </script>
 
@@ -201,6 +203,18 @@ const PROPS = {
     radial-gradient(circle at 50% 0, #ff6f61 70%, transparent 71%) 0 30px / 40px 24px repeat-x,
     repeating-linear-gradient(90deg, #ff6f61 0 40px, #fff4ee 40px 80px) 0 0 / 100% 36px no-repeat,
     linear-gradient(to bottom, #fff9ef, #ffe7cf);
+}
+/* table: a wooden tabletop seen from above (Osztozkodás: plates and a tablecloth on it) */
+.scene--table {
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent 45%),
+    repeating-linear-gradient(90deg, #f0cf9c 0 64px, #e3bd84 64px 66px),
+    #f0cf9c;
+}
+.scene--table :deep(.hint) {
+  padding: 4px 14px;
+  border-radius: var(--bz-radius-pill);
+  background: rgba(255, 255, 255, 0.72);
 }
 /* storybook: a cream page with faint lines */
 .scene--storybook {

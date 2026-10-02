@@ -80,7 +80,7 @@ return [
     | - tier:     hub group: simple (one tap, little to remember) or advanced
     |             (sounds, rhymes, memory, reasoning: more attention needed)
     | - stage:    the scene it's played in (GameStage.vue): meadow, hive, theatre,
-    |             magic, workshop, pond, forest, market, storybook
+    |             magic, workshop, pond, forest, market, storybook, table
     */
     'games' => [
         'zs' => [
@@ -371,14 +371,14 @@ return [
             'intro' => 'Ez egy mérleg! Tegyél a jobb oldalra annyit, amennyi a bal oldalon van, hogy vízszintbe álljon!',
         ],
         'osztozas' => [
-            'name' => 'Osztozkodás', 'emoji' => '🍰', 'skill' => 'Egyenlő részekre osztás', 'color' => '#FFD3E4', 'tier' => 'simple', 'stage' => 'market',
+            'name' => 'Osztozkodás', 'emoji' => '🍰', 'skill' => 'Egyenlő részekre osztás', 'color' => '#FFD3E4', 'tier' => 'simple', 'stage' => 'table',
             'factory' => Rounds\OsztozasRounds::class, 'rounds' => 5, 'no_idle' => true, 'guess' => false,
             // level 1: 2 plates · 2: 2–3 plates · 3: one is left over (OsztozasRounds)
             'adaptive' => [
                 'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
                 'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
             ],
-            'intro' => 'Osszuk szét igazságosan! Koppints egy tányérra, és a kosárból odaugrik egy finomság. Mindegyik tányérra ugyanannyi kerüljön!',
+            'intro' => 'Osszuk szét igazságosan! Koppints egy tányérra, és az asztalról odaugrik egy darab. Mindegyik tányérra ugyanannyi kerüljön!',
         ],
         'szamok' => [
             'name' => 'Számok tízig', 'emoji' => '🔢', 'skill' => 'Számfogalom, sorozatok', 'color' => '#FFE8B8', 'tier' => 'simple', 'stage' => 'market',

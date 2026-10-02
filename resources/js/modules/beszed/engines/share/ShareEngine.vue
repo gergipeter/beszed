@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import EmojiArt from '../../components/ui/EmojiArt.vue'
 import { useTimers } from '../../composables/useTimers'
 import { t } from '../../i18n'
@@ -8,9 +8,9 @@ import { buzz } from '../../services/touch/feel'
 import { engineEmits, engineProps } from '../contract'
 
 /**
- * Osztozkodás: fair sharing. Items wait in a basket; tapping a plate sends one
+ * Osztozkodás: fair sharing. Items wait on a tablecloth; tapping a plate sends one
  * over with a flying arc, tapping an item on a plate sends it back. It is done
- * when every plate holds the same and only data.left items stay in the basket.
+ * when every plate holds the same and only data.left items stay on the table.
  * Only the win is reported, graded by the moves taken back (tries 1–3).
  * data: ShareData
  */
@@ -20,18 +20,26 @@ const emit = defineEmits(engineEmits)
 const FLY_MS = 520
 
 const plates = ref(Array.from({ length: props.data.plates }, () => 0))
-const basket = computed(() => props.data.count - plates.value.reduce((a, b) => a + b, 0))
+const table = computed(() => props.data.count - plates.value.reduce((a, b) => a + b, 0))
 const undone = ref(0)
 const done = ref(false)
 const flying = ref(false)
 const bounced = ref(null)
 const root = ref(null)
-const basketEl = ref(null)
+const tableEl = ref(null)
+const flierEl = ref(null)
 const plateEls = ref([])
 const { later } = useTimers()
 
-/** A copy of the item flies from `from` to `to` along an arc; both are elements inside the root. */
-function fly(from, to) {
+/**
+ * The item flies from `from` to `to` along an arc; both are elements inside the root. The flier is drawn
+ * by EmojiArt like the items on the table and plates, so a pictogram stays the same picture all the way.
+ */
+async function fly(from, to) {
+  flying.value = true
+  await nextTick()
+  const el = flierEl.value
+  if (!el) return
   const box = root.value.getBoundingClientRect()
   const a = from.getBoundingClientRect()
   const b = to.getBoundingClientRect()
@@ -40,26 +48,22 @@ function fly(from, to) {
   const y0 = a.top + a.height / 2 - box.top - size / 2
   const x1 = b.left + b.width / 2 - box.left - size / 2
   const y1 = b.top + b.height / 2 - box.top - size / 2
-  const el = document.createElement('span')
-  el.className = 'flier'
-  el.textContent = props.data.emoji
-  root.value.appendChild(el)
   const anim = el.animate(
     [
       { transform: `translate(${x0}px, ${y0}px) scale(1)` },
       { transform: `translate(${(x0 + x1) / 2}px, ${Math.min(y0, y1) - 70}px) scale(1.35) rotate(${x1 > x0 ? 18 : -18}deg)`, offset: 0.5 },
       { transform: `translate(${x1}px, ${y1}px) scale(1)` },
     ],
-    { duration: FLY_MS, easing: 'cubic-bezier(0.4, 0, 0.3, 1)' },
+    { duration: FLY_MS, easing: 'cubic-bezier(0.4, 0, 0.3, 1)', fill: 'forwards' },
   )
-  return anim.finished.catch(() => {}).finally(() => el.remove())
+  await anim.finished.catch(() => {})
 }
 
 async function give(i) {
-  if (props.locked || done.value || flying.value || basket.value <= 0) return
+  if (props.locked || done.value || flying.value || table.value <= 0) return
   flying.value = true
   beep(380 + i * 60, 0.08)
-  await fly(basketEl.value, plateEls.value[i])
+  await fly(tableEl.value, plateEls.value[i])
   plates.value[i]++
   bounced.value = i
   tone(440 + plates.value[i] * 45, 0.16)
@@ -74,13 +78,13 @@ async function back(i) {
   flying.value = true
   undone.value++
   plates.value[i]--
-  await fly(plateEls.value[i], basketEl.value)
+  await fly(plateEls.value[i], tableEl.value)
   flying.value = false
 }
 
 function check() {
   const equal = plates.value.every(n => n === plates.value[0])
-  if (!equal || basket.value !== props.data.left) return
+  if (!equal || table.value !== props.data.left) return
   done.value = true
   later(() => {
     tone(523.25, 0.4)
@@ -112,16 +116,17 @@ function check() {
       </div>
     </div>
 
-    <div class="basket" :class="{ 'basket--empty': basket === 0 }">
-      <span ref="basketEl" class="basket-mark" aria-hidden="true" />
-      <span class="weave" aria-hidden="true" />
-      <p class="basket-items">
-        <EmojiArt v-for="k in basket" :key="k" class="it it--basket" :char="data.emoji" />
+    <div class="cloth" :class="{ 'cloth--empty': table === 0 }">
+      <span ref="tableEl" class="cloth-mark" aria-hidden="true" />
+      <p class="cloth-items">
+        <EmojiArt v-for="k in table" :key="k" class="it it--cloth" :char="data.emoji" />
       </p>
-      <small class="basket-count">🧺 {{ basket }}</small>
+      <small class="cloth-count">{{ table }}</small>
     </div>
 
     <p class="hint">{{ t('split.hint') }}</p>
+
+    <span v-if="flying" ref="flierEl" class="flier" aria-hidden="true"><EmojiArt :char="data.emoji" /></span>
   </div>
 </template>
 
@@ -207,28 +212,32 @@ function check() {
   color: var(--bz-on-accent);
   transform: scale(1.15);
 }
-.basket {
+/* the table: a red-and-white checked tablecloth with a scalloped hem hanging over the front */
+.cloth {
   position: relative;
   width: min(100%, 420px);
   min-height: 110px;
-  padding: 16px 16px 26px;
-  border-radius: 14px 14px 40px 40px;
-  background: linear-gradient(180deg, #e6b877, #c98f4c);
-  box-shadow: 0 6px 0 rgba(120, 80, 30, 0.4), var(--bz-shadow-lg);
+  margin-bottom: 14px;
+  padding: 16px 16px 30px;
+  border-radius: 14px 14px 6px 6px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 111, 97, 0.18) 0 20px, transparent 20px 40px),
+    repeating-linear-gradient(0deg, rgba(255, 111, 97, 0.18) 0 20px, transparent 20px 40px), #fff;
+  box-shadow: 0 5px 0 rgba(150, 60, 50, 0.3), var(--bz-shadow-lg);
   transition: opacity 0.4s;
 }
-.basket--empty {
-  opacity: 0.8;
-}
-.weave {
+.cloth::after {
+  content: '';
   position: absolute;
-  inset: auto 0 0 0;
-  height: 26px;
-  border-radius: 0 0 40px 40px;
-  background: repeating-linear-gradient(90deg, rgba(120, 80, 30, 0.22) 0 6px, transparent 6px 14px);
+  inset: 100% 0 auto;
+  height: 14px;
+  background: radial-gradient(circle at 50% 0, #ff6f61 0 10px, transparent 11px) 0 0 / 22px 14px repeat-x;
   pointer-events: none;
 }
-.basket-mark {
+.cloth--empty {
+  opacity: 0.85;
+}
+.cloth-mark {
   position: absolute;
   left: 50%;
   top: 40%;
@@ -237,26 +246,33 @@ function check() {
   margin: -10px 0 0 -10px;
   pointer-events: none;
 }
-.basket-items {
+.cloth-items {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-content: center;
   gap: 2px;
-  min-height: 50px;
+  min-height: 64px;
   margin: 0;
-  font-size: clamp(24px, 7.5vw, 34px);
+  font-size: clamp(28px, 8.5vw, 40px);
   line-height: 1.05;
 }
-.it--basket {
+.it--cloth {
   animation: none;
 }
-.basket-count {
+.cloth-count {
   position: absolute;
-  right: 14px;
-  bottom: 5px;
+  right: 10px;
+  bottom: 6px;
+  min-width: 1.9em;
+  padding: 1px 8px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-card);
+  box-shadow: var(--bz-shadow-sm);
   font-size: 14px;
   font-weight: 900;
-  color: #5b3a12;
+  text-align: center;
+  color: var(--bz-ink);
 }
 .hint {
   margin: 0;
@@ -265,7 +281,7 @@ function check() {
   color: var(--bz-muted);
   text-align: center;
 }
-:deep(.flier) {
+.flier {
   position: absolute;
   left: 0;
   top: 0;

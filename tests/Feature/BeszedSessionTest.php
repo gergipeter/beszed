@@ -335,7 +335,7 @@ it('puts every game in the simple or the advanced group of the hub', function ()
     expect($games->pluck('tier')->unique()->sort()->values()->all())->toBe(['advanced', 'simple'])
         ->and($games->every(fn ($g) => in_array($g['tier'], ['simple', 'advanced'], true)))->toBeTrue()
         // every game is played in one of the scenes GameStage.vue draws
-        ->and($games->pluck('stage')->diff(['meadow', 'hive', 'theatre', 'magic', 'workshop', 'pond', 'forest', 'market', 'storybook'])->all())->toBe([]);
+        ->and($games->pluck('stage')->diff(['meadow', 'hive', 'theatre', 'magic', 'workshop', 'pond', 'forest', 'market', 'storybook', 'table'])->all())->toBe([]);
 });
 
 it('levels papagáj up after two clean wins and down after a skip', function () {

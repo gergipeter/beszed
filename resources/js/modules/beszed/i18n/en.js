@@ -316,7 +316,7 @@ export default {
 
   split: {
     plate: 'Plate {n}',
-    hint: 'Tap a plate! Tap the food on it to send it back to the basket.',
+    hint: 'Tap a plate! Tap a piece on it to send it back to the table.',
   },
 
   rhythm: {
