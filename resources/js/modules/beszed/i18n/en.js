@@ -9,6 +9,7 @@ export default {
 
   common: {
     back: 'Back',
+    new: 'New',
     retry: 'Retry',
     reset: 'Retry',
     done: 'Done',
@@ -23,12 +24,39 @@ export default {
   },
 
   hub: {
+    visitor: 'A little visitor came to the garden! Say hi!',
+    gift: {
+      ready: "Today's gift!",
+      open: 'Open it!',
+      opened: 'A new flower grew in your garden as a gift!',
+      tomorrow: 'A new gift is waiting tomorrow',
+      speech: "This is today's gift: a flower for your garden! There will be a new one tomorrow!",
+    },
+    legend: 'Categories in the garden',
+    legendItem: '{name}: flowers on {done} of {total} games',
     hello: 'Hi!',
     helloNamed: 'Hi, {child}!',
     intro: "I'm {guide}. Which one shall we play?",
     greeting: "Hi! I'm {guide}. I'm so happy you're here! What shall we play today?",
     greetingNamed: "Hi {child}! I'm {guide}. I'm so happy you're here! What shall we play today?",
     greetLabel: '{guide} says hi',
+    pet: 'friend',
+    welcome: {
+      again: "You're back already! I'm so happy, {child}!",
+      back: "Hi again, {child}! I was waiting for you! I'm so happy you're here!",
+      long: "Hi {child}! I missed you! I'm so happy you're back! Let's play!",
+      done: "You played so much today, {child}! Well done! I'll see you in the garden tomorrow!",
+    },
+    care: {
+      c1: 'Take care of yourself, okay? I take care of you too!',
+      c2: 'I love playing with you, {child}!',
+      c3: 'Did you drink some water today? Water is so healthy!',
+      c4: "You're my best friend, {child}!",
+      c5: 'How was your day? I hope it was a nice one!',
+      c6: 'Look how nicely your garden is growing! You did that!',
+      c7: "If you get tired, take a little rest. I'll be here when you feel like playing.",
+      c8: "I'm sending you a big hug!",
+    },
     forParents: 'For parents',
     menu: 'Menu (for parents)',
     closeMenu: 'Close the menu',
@@ -141,6 +169,18 @@ export default {
     savedLater: "No internet right now: we'll save the result as soon as there is.",
     gardenGrew: 'A new plant grew in your garden!',
     pickTheme: 'Which pictures shall we use today? Choose one!',
+    surprise: {
+      dance: 'Surprise! Csillám is dancing for you!',
+      rainbow: 'Surprise! A rainbow in the sky!',
+      flowers: 'Surprise! A shower of flowers!',
+    },
+    rest: {
+      title: "Let's rest a little!",
+      text: 'We played a lot. Have some water, look out of the window, then we can carry on!',
+      speech: "That was so much fun! Let's rest a little! Have some water!",
+      take: "I'll rest a bit",
+      more: 'One more game',
+    },
     theme: 'Theme: {name}',
     again: 'Again',
     otherGame: 'Another game',
@@ -161,6 +201,8 @@ export default {
     tooHard: "No worries, let's try a shorter one!",
   },
 
+    stoneBloomed: "The game's stone bloomed in the garden!",
+    tomorrow: "You played a lot today. We'll meet again tomorrow, I'll wait for you in the garden!",
   tapcount: {
     drum: 'Drum',
     help: 'Help',
@@ -299,6 +341,8 @@ export default {
     surprise: 'Surprise!',
     surpriseSpeech: 'Ta-da! How do you like my new outfit?',
     undress: 'Take everything off',
+    nextGift: 'Next gift: {name}, at level {level}',
+    daysTogether: 'Days we played together: {count}',
     undressSpeech: "Well, now I'm the old Csillám again!",
     unlockAt: 'From level {level}',
     wearFailed: 'Could not change Csillám\'s outfit.',
@@ -353,6 +397,9 @@ export default {
     },
     levelNote:
       'Papagáj level = this many words repeated back in order. Mondd utánam level: 1 short, 2 medium, 3 complex sentence.',
+    thisWeek: 'This week you played on {days} days and finished {games} games.',
+    thisWeekMore: 'That is more than last week ({prev}). Great work!',
+    thisWeekTip: 'Even a few minutes a day counts: a little, often, works best.',
     charts: {
       games: 'Games played through per week',
       rate: 'Share of right-first-try answers',
@@ -392,6 +439,8 @@ export default {
     title: 'Skill areas',
     subtitle: 'share of right-first-try answers',
     meterLabel: '{area}: share of right-first-try answers',
+    motionTitle: 'Movement',
+    reduceMotion: 'Less movement: a calmer garden, no confetti or floating',
     diferTitle: 'Practices a skill similar to one of the DIFER areas',
     previous: 'Previous period: {value}',
     legendNow: 'this period',
@@ -457,3 +506,5 @@ export default {
     pickFile: 'Choose an audio file',
   },
 }
+    loveVoice:
+      "Grandma's, grandpa's or a sibling's voice? Anyone the child loves can record the lines: the child will hear their favourite voice instead of Csillám's. It's the loveliest gift.",

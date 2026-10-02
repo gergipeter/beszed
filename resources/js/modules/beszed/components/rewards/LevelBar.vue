@@ -1,12 +1,15 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 import { t } from '../../i18n'
+import EmojiArt from '../ui/EmojiArt.vue'
 
 /** Player level badge + stars-to-next-level bar; fills up with a short animation. */
 const props = defineProps({
   /** @type {import('vue').PropType<import('../../types').PlayerLevel>} */
   level: { type: Object, required: true },
   compact: { type: Boolean, default: false },
+  /** The next present to look forward to (an accessory: emoji, name, level). */
+  next: { type: Object, default: null },
 })
 
 const shown = ref(0)
@@ -32,10 +35,37 @@ watch(() => props.level.progress, fill)
       </div>
       <small v-if="!compact" class="note">{{ t('rewards.toNext', { count: level.to - level.stars }) }}</small>
     </div>
+    <span
+      v-if="next"
+      class="next"
+      :title="t('rewards.nextGift', { name: next.name, level: next.level })"
+      :aria-label="t('rewards.nextGift', { name: next.name, level: next.level })"
+      role="img"
+    >
+      <EmojiArt :char="next.emoji" />
+    </span>
   </div>
 </template>
 
 <style scoped>
+/* the next present, waiting at the end of the bar */
+.next {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bz-soft);
+  font-size: 24px;
+  box-shadow: inset 0 0 0 2px var(--bz-sun);
+  animation: next-bob 2.4s ease-in-out infinite;
+}
+@keyframes next-bob {
+  50% {
+    transform: translateY(-3px);
+  }
+}
 .level {
   display: flex;
   align-items: center;

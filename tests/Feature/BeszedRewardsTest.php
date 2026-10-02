@@ -84,7 +84,7 @@ it('reaches the daily goal on the third game of the day', function () {
         ->and($third['daily']['done'])->toBe(3);
 });
 
-it('counts consecutive local days as a streak, and a missed day breaks it', function () {
+it('counts consecutive local days as a streak, and one day off is forgiven, two in a row end it', function () {
     $day = now();
     foreach ([0, 1, 2] as $offset) {
         travelTo($day->copy()->addDays($offset));
@@ -100,7 +100,12 @@ it('counts consecutive local days as a streak, and a missed day breaks it', func
         ->and($summary['streak']['recent'])->toHaveCount(14)
         ->and(collect($summary['streak']['recent'])->pluck('played')->all())->toBe([false, false, false, false, false, false, false, false, false, false, true, true, true, false]);
 
-    // A whole day missed: gone.
+    // One day off: the streak carries on.
+    travelTo($day->copy()->addDays(4));
+    $summary = actingAs($this->user)->getJson("/api/beszed/children/{$this->child->id}/rewards")->json();
+    expect($summary['streak']['days'])->toBe(3);
+
+    // Two days in a row off: it starts over (quietly).
     travelTo($day->copy()->addDays(5));
     $summary = actingAs($this->user)->getJson("/api/beszed/children/{$this->child->id}/rewards")->json();
     expect($summary['streak']['days'])->toBe(0);

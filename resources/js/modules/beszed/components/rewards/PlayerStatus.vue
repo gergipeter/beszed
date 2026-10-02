@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { ICONS } from '../../config/icons'
 import { t } from '../../i18n'
+import { useRewardsStore } from '../../stores/rewards'
 import EmojiArt from '../ui/EmojiArt.vue'
 import LevelBar from './LevelBar.vue'
 
@@ -14,13 +15,14 @@ const props = defineProps({
   earned: { type: Number, default: 0 },
 })
 
+const rewards = useRewardsStore()
 const goalReached = computed(() => props.summary.daily.done >= props.summary.daily.goal)
 </script>
 
 <template>
   <section class="status">
-    <LevelBar class="status-level" :level="summary.level" compact />
-    <span class="chip" :class="{ 'chip--off': !summary.streak.days }" :title="t('rewards.streak', { count: summary.streak.days })">
+    <LevelBar class="status-level" :level="summary.level" :next="rewards.nextGift" compact />
+    <span v-if="summary.streak.days" class="chip" :title="t('rewards.streak', { count: summary.streak.days })">
       <EmojiArt :char="ICONS.fire" :label="t('rewards.streak', { count: summary.streak.days })" /> {{ summary.streak.days }}
     </span>
     <span
@@ -62,9 +64,6 @@ const goalReached = computed(() => props.summary.daily.done >= props.summary.dai
   font-size: 19px;
   font-weight: 800;
   white-space: nowrap;
-}
-.chip--off {
-  opacity: 0.5;
 }
 .chip--done {
   background: color-mix(in srgb, var(--bz-leaf) 22%, var(--bz-card));

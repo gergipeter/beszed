@@ -1,29 +1,25 @@
 <script setup>
+import { computed } from 'vue'
+import { ICONS } from '../../config/icons'
 import { formatDay, t } from '../../i18n'
+import EmojiArt from '../ui/EmojiArt.vue'
 
-/** The last 14 days as little dots: filled when a game was finished that day. */
-defineProps({
+/**
+ * The days we played together, the last two weeks: a flower for every day a game was
+ * finished. Days off are simply not shown: it only ever counts what the child did.
+ */
+const props = defineProps({
   /** @type {import('vue').PropType<{ date: string, played: boolean }[]>} */
   days: { type: Array, required: true },
 })
 
-function label(day, isToday) {
-  const date = formatDay(day.date)
-  if (isToday) return t('rewards.streakDayToday', { date })
-  return t(day.played ? 'rewards.streakDayPlayed' : 'rewards.streakDayMissed', { date })
-}
+const played = computed(() => props.days.filter(d => d.played))
 </script>
 
 <template>
-  <ol class="history" :aria-label="t('rewards.streak', { count: days.filter(d => d.played).length })">
-    <li
-      v-for="(day, i) in days"
-      :key="day.date"
-      class="dot"
-      :class="{ 'dot--on': day.played, 'dot--today': i === days.length - 1 }"
-      :title="label(day, i === days.length - 1)"
-    >
-      <span class="bz-sr-only">{{ label(day, i === days.length - 1) }}</span>
+  <ol v-if="played.length" class="history" :aria-label="t('rewards.daysTogether', { count: played.length })">
+    <li v-for="day in played" :key="day.date" class="flower" :title="formatDay(day.date)">
+      <EmojiArt :char="ICONS.flower" :label="formatDay(day.date)" />
     </li>
   </ol>
 </template>
@@ -31,21 +27,24 @@ function label(day, isToday) {
 <style scoped>
 .history {
   display: flex;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 2px 6px;
   margin: 0 0 16px;
   padding: 0;
   list-style: none;
 }
-.dot {
-  flex: 1;
-  height: 10px;
-  border-radius: var(--bz-radius-pill);
-  background: var(--bz-soft);
+.flower {
+  font-size: 22px;
+  line-height: 1;
+  animation: pop 0.5s var(--bz-spring) backwards;
 }
-.dot--on {
-  background: var(--bz-leaf);
-}
-.dot--today {
-  box-shadow: 0 0 0 2px var(--bz-card), 0 0 0 3px var(--bz-guide);
+.flower:nth-child(2) { animation-delay: 0.06s; }
+.flower:nth-child(3) { animation-delay: 0.12s; }
+.flower:nth-child(4) { animation-delay: 0.18s; }
+.flower:nth-child(5) { animation-delay: 0.24s; }
+@keyframes pop {
+  from {
+    transform: scale(0);
+  }
 }
 </style>

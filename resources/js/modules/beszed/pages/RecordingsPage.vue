@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import RecordingRow from '../components/recordings/RecordingRow.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
+import EmojiArt from '../components/ui/EmojiArt.vue'
 import PageHeader from '../components/ui/PageHeader.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { useRecorder } from '../composables/useRecorder'
@@ -62,6 +63,9 @@ async function remove(key) {
 <template>
   <PageHeader :title="t('recordings.title')" :back-to="{ name: 'beszed.hub', params: { childId } }" />
 
+  <BzNotice class="love">
+    <EmojiArt :char="ICONS.family" /> {{ t('recordings.loveVoice') }}
+  </BzNotice>
   <BzNotice>{{ t('recordings.intro', { record: ICONS.record, stop: ICONS.stop }) }}</BzNotice>
   <BzNotice v-if="!supported" tone="warn">{{ t('recordings.unsupported', { folder: ICONS.folder }) }}</BzNotice>
   <BzNotice v-if="message" tone="warn">{{ message }}</BzNotice>

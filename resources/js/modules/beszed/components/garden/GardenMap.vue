@@ -5,6 +5,7 @@ import { buzz } from '../../services/touch/feel'
 import { t } from '../../i18n'
 import EmojiArt from '../ui/EmojiArt.vue'
 import GameStop from './GameStop.vue'
+import GardenWeather from './GardenWeather.vue'
 import { plantSpots, trailLayout, trailPath } from './trail'
 
 /**
@@ -25,6 +26,8 @@ const props = defineProps({
   plants: { type: Number, default: 0 },
   /** Plants from this index on are new since the last visit: they sprout. */
   sproutFrom: { type: Number, default: Infinity },
+  /** The categories (folders): each game's patch of ground takes its category's colour. */
+  folders: { type: Array, default: () => [] },
 })
 const emit = defineEmits(['play'])
 
@@ -104,12 +107,12 @@ function scatter(list, seed) {
 
 const zones = computed(() => {
   if (!width.value) return []
-  let enterX
+  let flip = false
   const laid = ZONES.map((zone, z) => {
     const games = props.games.filter(g => (g.tier ?? 'simple') === zone.tier)
-    const layout = trailLayout(games.length, width.value)
-    const d = trailPath(layout.points, layout.height, enterX)
-    enterX = layout.points.at(-1)?.x
+    const layout = trailLayout(games.length, width.value, flip)
+    const d = trailPath(layout.points, layout.height)
+    flip = (layout.points.at(-1)?.x ?? 0) > width.value / 2 // the next zone starts where this one ends
     return { ...zone, games, layout, d, spots: scatter(plantSpots(layout, width.value), 7 + z) }
   })
   // the child's plants: meadow and forest in turn; a full zone passes its plants to the other
@@ -130,6 +133,19 @@ const zones = computed(() => {
   return laid.map((zone, z) => ({ ...zone, grown: grown[z] })).filter(zone => zone.games.length)
 })
 
+const tints = computed(() =>
+  Object.fromEntries(props.folders.flatMap(f => f.games.map(id => [id, f.color]))),
+)
+/** Per category: how many of its games have a flower (a medal), as a progress ring. */
+const legend = computed(() =>
+  props.folders
+    .map(f => {
+      const ids = f.games.filter(id => props.games.some(g => g.id === id))
+      const done = ids.filter(id => (props.medals[id] ?? 0) > 0).length
+      return { id: f.id, emoji: f.emoji, color: f.color, name: f.name, done, total: ids.length, p: ids.length ? (done / ids.length) * 100 : 0 }
+    })
+    .filter(c => c.total),
+)
 const stepOf = id => (props.path?.games.indexOf(id) ?? -1) + 1
 const doneOf = id => Boolean(props.path?.done.includes(id))
 </script>
@@ -138,6 +154,20 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   <button type="button" class="map-toggle" :aria-pressed="overview" @click="setOverview(!overview)">
     <EmojiArt :char="overview ? ICONS.zoomIn : ICONS.map" /> {{ t(overview ? 'hub.closer' : 'hub.wholeGarden') }}
   </button>
+  <ul v-if="legend.length" class="legend" :aria-label="t('hub.legend')">
+    <li
+      v-for="c in legend"
+      :key="c.id"
+      class="cat"
+      :class="{ 'cat--full': c.done === c.total }"
+      :style="{ '--c': c.color, '--p': `${c.p}%` }"
+      :title="`${c.name}: ${c.done} / ${c.total}`"
+      :aria-label="t('hub.legendItem', { name: c.name, done: c.done, total: c.total })"
+    >
+      <span class="ring"><EmojiArt :char="c.emoji" /></span>
+      <b class="count">{{ c.done }}/{{ c.total }}</b>
+    </li>
+  </ul>
   <div
     ref="frame"
     class="garden-frame"
@@ -159,10 +189,13 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   
         <div class="field" :style="{ height: `${zone.layout.height}px` }">
           <svg class="trail" :width="width" :height="zone.layout.height" aria-hidden="true">
+            <path class="trail-edge" :d="zone.d" />
             <path class="trail-bed" :d="zone.d" />
             <path class="trail-stones" :d="zone.d" />
           </svg>
   
+          <GardenWeather :visitor="zone.id === 'meadow'" />
+
           <span v-if="zone.id === 'forest'" class="fireflies" aria-hidden="true">
             <i v-for="([x, y], i) in FIREFLIES" :key="i" :style="{ left: `${x}%`, top: `${y}%`, '--i': i }" />
           </span>
@@ -185,6 +218,7 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
             :step="stepOf(game.id)"
             :step-done="doneOf(game.id)"
             :spotlight="spotlight === game.id"
+            :tint="tints[game.id] ?? null"
             :style="{ left: `${zone.layout.points[i].x}px`, top: `${zone.layout.points[i].y}px` }"
             @click="emit('play', game.id, $event.currentTarget.querySelector('.stone'))"
           />
@@ -207,6 +241,49 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   font-weight: 800;
   font-size: var(--bz-text-sm);
   box-shadow: var(--bz-shadow-sm);
+}
+/* the categories, each a ring that fills as its games get their flowers (also the colour key of the stones) */
+.legend {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 2px 2px 8px;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.cat {
+  flex: none;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.ring {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  font-size: 26px;
+  /* the colour of the category inside, a ring of flowers-so-far around it */
+  background:
+    radial-gradient(circle closest-side, var(--c) 0 78%, transparent 80%),
+    conic-gradient(var(--bz-leaf) var(--p), rgba(255, 255, 255, 0.7) 0);
+  box-shadow: var(--bz-shadow-sm);
+}
+.cat--full .ring {
+  animation: full-pop 0.6s var(--bz-spring);
+  box-shadow: 0 0 0 3px #fff, var(--bz-shadow-sm);
+}
+.count {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--bz-ink);
+}
+@keyframes full-pop {
+  from {
+    transform: scale(0.7);
+  }
 }
 /* the pinch belongs to the map here, not to the browser's page zoom */
 .garden-frame {
@@ -287,21 +364,37 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   inset: 0;
   pointer-events: none;
 }
+.trail-edge,
 .trail-bed,
 .trail-stones {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+/* a chunky cartoon road: outlined, soft sand, a dashed white line that slowly walks along */
+.trail-edge {
+  stroke: color-mix(in srgb, var(--bz-trail) 55%, #8a5a2b);
+  stroke-width: 40;
+}
 .trail-bed {
   stroke: var(--bz-trail);
-  stroke-width: 30;
-  opacity: 0.95;
+  stroke-width: 32;
 }
 .trail-stones {
   stroke: var(--bz-trail-stone);
-  stroke-width: 11;
-  stroke-dasharray: 1 24;
+  stroke-width: 5;
+  stroke-dasharray: 12 16;
+  animation: walk 2.4s linear infinite;
+}
+@keyframes walk {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trail-stones {
+    animation: none;
+  }
 }
 .plant {
   position: absolute;

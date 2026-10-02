@@ -6,6 +6,7 @@ import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
 import { useAsync } from '../composables/useAsync'
 import { useDaytime } from '../composables/useDaytime'
+import { useMotionPref } from '../composables/useMotionPref'
 import { usePinchZoom } from '../composables/usePinchZoom'
 import { createModuleContext, provideModuleContext } from '../composables/useModuleContext'
 import { t } from '../i18n'
@@ -46,6 +47,7 @@ watch(() => props.childId, id => rewards.load(id), { immediate: true })
 
 /** Morning, day, evening or night in Zoé's garden (the sky, the scene colours). */
 const daytime = useDaytime()
+const { reduceMotion } = useMotionPref()
 
 // iOS only plays audio after a tap. Pages unlock on their own buttons too; this
 // covers opening a game URL directly.
@@ -80,7 +82,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main ref="root" class="bz" :data-daytime="daytime" :style="{ '--bz-global-scale': globalScale }">
+  <main ref="root" class="bz" :data-daytime="daytime" :data-motion="reduceMotion ? 'reduced' : null" :style="{ '--bz-global-scale': globalScale }">
     <div class="bz-backdrop" aria-hidden="true" />
     <BzNotice v-if="error" tone="warn">
       {{ error }}

@@ -19,16 +19,28 @@ const props = defineProps({
   spotlight: { type: Boolean, default: false },
   /** Order along the trail (the bob is out of step from stone to stone). */
   index: { type: Number, default: 0 },
+  /** The colour of the game's category (folder): the stone takes it. */
+  tint: { type: String, default: null },
 })
 
-/** Flowers around the stone, one per medal; their places around the rim. */
-const FLOWERS = ['🌼', '🌸', '🌷']
-const PLACES = [
-  { left: '78%', top: '72%', rotate: 12 },
-  { left: '-4%', top: '66%', rotate: -14 },
-  { left: '84%', top: '10%', rotate: 20 },
-]
-const flowers = computed(() => PLACES.slice(0, props.medal).map((p, i) => ({ ...p, char: FLOWERS[i] })))
+/**
+ * A finished game blooms: a wreath of flowers round the foot of the stone, more of
+ * them for every medal (3, 5, 7), each popping in and swaying a little out of step.
+ */
+const FLOWERS = ['🌼', '🌸', '🌷', '🌻', '🌺', '🌼', '🌸']
+const flowers = computed(() => {
+  const n = props.medal ? props.medal * 2 + 1 : 0
+  return Array.from({ length: n }, (_, i) => {
+    const angle = ((n === 1 ? 90 : -15 + (210 * i) / (n - 1)) * Math.PI) / 180
+    return {
+      char: FLOWERS[i % FLOWERS.length],
+      left: `${50 + 58 * Math.cos(angle)}%`,
+      top: `${50 + 56 * Math.sin(angle)}%`,
+      rotate: (i % 2 ? 1 : -1) * (10 + ((i * 7) % 12)),
+      delay: i * 0.12,
+    }
+  })
+})
 const label = computed(() =>
   [props.game.name, props.game.skill, props.medal ? t('rewards.medals', { count: props.medal }) : '']
     .filter(Boolean)
@@ -40,8 +52,8 @@ const label = computed(() =>
   <button
     type="button"
     class="stop"
-    :class="{ 'stop--spotlight': spotlight }"
-    :style="{ '--stop': game.color, '--i': index }"
+    :class="{ 'stop--spotlight': spotlight, 'stop--done': medal > 0 }"
+    :style="{ '--stop': tint ?? game.color, '--i': index }"
     :data-game="game.id"
     :aria-label="label"
   >
@@ -53,7 +65,7 @@ const label = computed(() =>
           :key="f.left"
           class="flower"
           :char="f.char"
-          :style="{ left: f.left, top: f.top, '--r': `${f.rotate}deg` }"
+          :style="{ left: f.left, top: f.top, '--r': `${f.rotate}deg`, '--d': `${f.delay}s` }"
         />
         <b v-if="step" class="flag" :class="{ 'flag--done': stepDone }" aria-hidden="true">{{ stepDone ? '✓' : step }}</b>
       </span>
@@ -104,9 +116,28 @@ const label = computed(() =>
 }
 .flower {
   position: absolute;
-  font-size: 26px;
-  transform: rotate(var(--r));
-  animation: sway 2.8s ease-in-out infinite alternate;
+  z-index: 2;
+  font-size: 24px;
+  line-height: 1;
+  margin: -12px 0 0 -12px;
+  filter: drop-shadow(0 2px 0 rgba(40, 60, 30, 0.25));
+  pointer-events: none;
+  animation:
+    bloom 0.6s var(--bz-spring) backwards,
+    sway 2.8s ease-in-out infinite alternate;
+  animation-delay: var(--d), calc(var(--d) + 0.6s);
+}
+/* a finished stone shines a little: a warm ring and a happy hop on hover */
+.stop--done .stone {
+  box-shadow:
+    inset 0 -6px 0 color-mix(in srgb, var(--stop) 60%, #3b1f4a),
+    0 0 0 5px rgba(255, 255, 255, 0.85),
+    0 10px 0 -2px rgba(40, 60, 30, 0.25);
+}
+@media (hover: hover) {
+  .stop:hover .stone {
+    transform: scale(1.08) rotate(-3deg);
+  }
 }
 .flag {
   position: absolute;
@@ -155,6 +186,11 @@ const label = computed(() =>
 @keyframes bob {
   50% {
     transform: translateY(-6px);
+  }
+}
+@keyframes bloom {
+  from {
+    transform: rotate(var(--r)) scale(0);
   }
 }
 @keyframes sway {

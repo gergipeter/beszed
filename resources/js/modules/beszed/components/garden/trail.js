@@ -17,23 +17,24 @@ export function columnsFor(width) {
 }
 
 /** @returns {{ points: {x: number, y: number}[], height: number, rowHeight: number, cols: number }} */
-export function trailLayout(count, width) {
+/** `flip`: the first row runs right → left (the zone before it ended on the right, so the road carries on from there). */
+export function trailLayout(count, width, flip = false) {
   const cols = columnsFor(width)
   const rowHeight = width < 520 ? 150 : 168
   const rows = Math.max(1, Math.ceil(count / cols))
   const points = Array.from({ length: count }, (_, i) => {
     const row = Math.floor(i / cols)
-    const col = row % 2 ? cols - 1 - (i % cols) : i % cols
+    const col = (row + Number(flip)) % 2 ? cols - 1 - (i % cols) : i % cols
     return { x: ((col + 0.5) / cols) * width, y: TOP + row * rowHeight + rowHeight / 2 + WOBBLE[i % WOBBLE.length] }
   })
   return { points, height: TOP + rows * rowHeight + BOTTOM, rowHeight, cols }
 }
 
-/** SVG path through the points (Catmull-Rom as cubic Béziers), entering at `enterX` on the top edge. */
-export function trailPath(points, height, enterX) {
+/** SVG path through the points (Catmull-Rom as cubic Béziers), dropping in straight above the first stop and leaving straight below the last. */
+export function trailPath(points, height) {
   if (!points.length) return ''
   const last = points[points.length - 1]
-  const all = [{ x: enterX ?? points[0].x, y: 0 }, ...points, { x: last.x, y: height }]
+  const all = [{ x: points[0].x, y: 0 }, ...points, { x: last.x, y: height }]
   let d = `M ${all[0].x.toFixed(1)} ${all[0].y.toFixed(1)}`
   for (let i = 0; i < all.length - 1; i++) {
     const [p0, p1, p2, p3] = [all[i - 1] ?? all[i], all[i], all[i + 1], all[i + 2] ?? all[i + 1]]

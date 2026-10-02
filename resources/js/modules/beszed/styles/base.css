@@ -223,3 +223,22 @@ html:has(.bz) {
     transition: none !important;
   }
 }
+
+/* the parent's "less movement" choice (Settings), on top of the device's own setting above */
+.bz[data-motion='reduced'] *,
+.bz[data-motion='reduced'] *::before,
+.bz[data-motion='reduced'] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.bz[data-motion='reduced'] .bz-confetti,
+.bz[data-motion='reduced'] .bz-burst {
+  display: none;
+}
+
+/* big, easy targets for small fingers: nothing pressable is smaller than 44px */
+:where(.bz) button,
+:where(.bz) [role='button'] {
+  min-width: 44px;
+  min-height: 44px;
+}

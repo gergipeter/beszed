@@ -55,6 +55,9 @@ const defaults = {
     skipPauseMs: 1200,
     /** Give up waiting for an audio file's `ended` event after this long. */
     playbackTimeoutMs: 30_000,
+  /** A gentle "time for a little rest" after this many minutes of playing (0 = never). */
+  restAfterMin: 15,
+
     /** Parent recordings stop automatically after this long. */
     recordingMaxMs: 25_000,
   },

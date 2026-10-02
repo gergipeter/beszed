@@ -18,6 +18,11 @@ export const useRewardsStore = defineStore('beszed/rewards', {
     badges: state => state.summary?.badges ?? [],
     earnedBadges: state => (state.summary?.badges ?? []).filter(b => b.earned_at),
     earnedCount: state => (state.summary?.badges ?? []).filter(b => b.earned_at).length,
+    /** The next present on the way (an accessory for Csillám), to look forward to. */
+    nextGift: state => {
+      const level = state.summary?.level?.number ?? 0
+      return (state.summary?.accessories ?? []).filter(a => a.level > level).sort((a, b) => a.level - b.level)[0] ?? null
+    },
     accessories: state => state.summary?.accessories ?? [],
     worn: state => state.summary?.worn ?? {},
     scene: state => state.summary?.scene ?? { background: null, stickers: [] },

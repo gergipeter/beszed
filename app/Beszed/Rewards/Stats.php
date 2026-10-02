@@ -49,8 +49,13 @@ final class Stats
         $today = $now->toDateString();
         $cursor = $played->has($today) ? $now : $now->subDay();
         $streak = 0;
-        while ($played->has($cursor->toDateString())) {
-            $streak++;
+        // A single day off is forgiven (the streak carries on over it, without counting it); two in a row end it.
+        while (true) {
+            if ($played->has($cursor->toDateString())) {
+                $streak++;
+            } elseif (! $played->has($cursor->subDay()->toDateString())) {
+                break;
+            }
             $cursor = $cursor->subDay();
         }
 

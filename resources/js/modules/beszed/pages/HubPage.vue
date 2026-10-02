@@ -1,21 +1,26 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { fetchDailyPath, fetchSpotlight } from '../api'
 import GameFolders from '../components/hub/GameFolders.vue'
 import GardenMap from '../components/garden/GardenMap.vue'
 import GardenSky from '../components/garden/GardenSky.vue'
 import GuideBubble from '../components/guide/GuideBubble.vue'
+import DailyGift from '../components/hub/DailyGift.vue'
 import DailyPath from '../components/hub/DailyPath.vue'
 import ParentMenu from '../components/hub/ParentMenu.vue'
 import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import StreakHistory from '../components/rewards/StreakHistory.vue'
 import EmojiArt from '../components/ui/EmojiArt.vue'
+import { useDailyGift } from '../composables/useDailyGift'
 import { useModuleContext } from '../composables/useModuleContext'
+import { useWelcome } from '../composables/useWelcome'
 import { ICONS } from '../config/icons'
 import { t } from '../i18n'
+import { bloom, gift as giftSfx, giggle } from '../services/audio/sfx'
 import { flyTo } from '../services/effects/fly'
+import { buzz } from '../services/touch/feel'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
 import { useRewardsStore } from '../stores/rewards'
@@ -26,11 +31,43 @@ const rewards = useRewardsStore()
 const guide = useGuideStore()
 const router = useRouter()
 
+const goalDone = () => Boolean(rewards.summary && rewards.summary.daily.done >= rewards.summary.daily.goal)
+const nameOrPet = () => childName.value || t('hub.pet')
+/** What Csillám says now: a welcome that fits the visit, then a caring word every so often. */
+const welcome = useWelcome({
+  childId: childId.value,
+  child: nameOrPet(),
+  goalDone,
+  intro: t('hub.intro', { guide: guideName.value }),
+})
+let settled = false
+watch(
+  () => rewards.summary,
+  summary => {
+    if (!summary || settled) return
+    settled = true
+    welcome.settle()
+  },
+  { immediate: true },
+)
+const CARE_EVERY_MS = 25000
+let careTimer
+onMounted(() => (careTimer = setInterval(() => !guide.talking && welcome.next(), CARE_EVERY_MS)))
+onBeforeUnmount(() => clearInterval(careTimer))
+
 function greet() {
   guide.unlock()
   guide.celebrate()
+  giggle() // tickled: a giggle and a little buzz
+  buzz([12, 40, 12])
   const params = { child: childName.value, guide: guideName.value }
-  guide.speak([{ rec: 'greet', alt: t(childName.value ? 'hub.greetingNamed' : 'hub.greeting', params) }])
+  // the very first hello can be the parent's own recording; later ones say what is on screen
+  const first = welcome.line.value === t('hub.intro', { guide: guideName.value })
+  guide.speak(
+    first
+      ? [{ rec: 'greet', alt: t(childName.value ? 'hub.greetingNamed' : 'hub.greeting', params) }]
+      : [welcome.line.value],
+  )
 }
 
 /** Today's path; stays hidden when it can't be loaded (e.g. offline for the first time today). */
@@ -54,7 +91,17 @@ const spotlightGame = computed(() => (spotlightGameId.value ? meta.game(spotligh
  * The garden grows one plant per finished game. What the child saw last time is
  * remembered on this device, so the plants grown since then sprout in front of them.
  */
-const plants = computed(() => rewards.summary?.sessions ?? 0)
+const gift = useDailyGift(childId.value)
+/** The daily gift: always a flower, planted in the garden for the day. */
+function openGift() {
+  guide.unlock()
+  if (!gift.open()) return
+  giftSfx()
+  buzz([15, 50, 15, 50, 25])
+  guide.celebrate()
+  guide.speak([t('hub.gift.speech')])
+}
+const plants = computed(() => (rewards.summary?.sessions ?? 0) + gift.total.value)
 const sproutFrom = ref(Infinity)
 const seenKey = () => `beszed.garden.${childId.value}`
 watch(
@@ -73,6 +120,14 @@ watch(
   { immediate: true },
 )
 const newPlants = computed(() => (sproutFrom.value === Infinity ? 0 : plants.value - sproutFrom.value))
+/** Each new plant pops up with a little bloom sound, in step with its sprouting. */
+watch(
+  newPlants,
+  (now, before = 0) => {
+    for (let i = before; i < Math.min(now, before + 6); i++) setTimeout(bloom, 600 + (i - before) * 250)
+  },
+  { immediate: true },
+)
 
 /** Folders (games grouped by what they develop) or the garden map; the choice is remembered on this device. */
 const VIEW_KEY = 'beszed.hub.view'
@@ -125,7 +180,7 @@ async function play(game, stone) {
       {{ childName ? t('hub.helloNamed', { child: childName }) : t('hub.hello') }}
       <EmojiArt v-if="childSign" class="sign" :char="childSign" :label="t('hub.sign')" />
     </h1>
-    <p class="intro">{{ t('hub.intro', { guide: guideName }) }}</p>
+    <p class="intro">{{ welcome.line.value }}</p>
   </GuideBubble>
 
   <PlayerStatus
@@ -135,6 +190,8 @@ async function play(game, stone) {
     :stickers-to="{ name: 'beszed.rewards', params: { childId } }"
   />
   <StreakHistory v-if="rewards.summary?.streak.recent.some(d => d.played)" :days="rewards.summary.streak.recent" />
+
+  <DailyGift :available="gift.available.value" @open="openGift" />
 
   <Spotlight v-if="spotlightGame" :game="spotlightGame" @play="play" />
 
@@ -185,6 +242,7 @@ async function play(game, stone) {
     :spotlight="spotlightGameId"
     :plants="plants"
     :sprout-from="sproutFrom"
+    :folders="meta.meta?.folders ?? []"
     @play="play"
   />
 </template>

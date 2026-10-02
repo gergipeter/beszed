@@ -14,6 +14,7 @@ import { burst } from '../services/effects/burst'
 import { buzz, lastTouch } from '../services/touch/feel'
 import { errorMessage } from '../utils/errors'
 import { pick } from '../utils/random'
+import { needsRest } from '../services/care/rest'
 import { useIdleHelp } from './useIdleHelp'
 import { preloadSessionEmojis } from './useEmojiPreload'
 
@@ -272,6 +273,7 @@ export function useGameSession(childId, game, { category, level } = {}) {
     guide.speak([
       { rec: 'finish', alt: t('game.finishSpeech', { count: solved.value }) },
       ...rewardSpeech(earned, rewards.level?.number),
+      ...(needsRest() ? [t('game.rest.speech')] : []),
     ])
   }
 

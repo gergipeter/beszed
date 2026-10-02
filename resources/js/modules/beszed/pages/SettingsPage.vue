@@ -5,6 +5,7 @@ import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
 import PageHeader from '../components/ui/PageHeader.vue'
 import { useModuleContext } from '../composables/useModuleContext'
+import { useMotionPref } from '../composables/useMotionPref'
 import { t } from '../i18n'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
@@ -16,6 +17,7 @@ const { childId } = useModuleContext()
 const meta = useMetaStore()
 const settings = useSettingsStore()
 const guide = useGuideStore()
+const motion = useMotionPref()
 
 const failed = ref(false)
 const message = ref('')
@@ -73,6 +75,14 @@ onMounted(load)
       <label class="row">
         <span>{{ t('settings.mute') }}</span>
         <input type="checkbox" :checked="settings.muted" :disabled="saving" @change="e => save({ muted: e.target.checked })" />
+      </label>
+    </section>
+
+    <section class="card">
+      <h2 class="heading">{{ t('settings.motionTitle') }}</h2>
+      <label class="row">
+        <span>{{ t('settings.reduceMotion') }}</span>
+        <input type="checkbox" :checked="motion.reduceMotion.value" @change="e => motion.set(e.target.checked)" />
       </label>
     </section>
 

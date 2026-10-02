@@ -5,6 +5,7 @@ import { ICONS } from '../../config/icons'
 import { config } from '../../config/options'
 import { t } from '../../i18n'
 import { buzz } from '../../services/touch/feel'
+import { useRecordingsStore } from '../../stores/recordings'
 import BzButton from '../ui/BzButton.vue'
 import EmojiArt from '../ui/EmojiArt.vue'
 import InstallApp from './InstallApp.vue'
@@ -22,6 +23,7 @@ import ParentGate from './ParentGate.vue'
  */
 const { childId, premium } = useModuleContext()
 
+const recordings = useRecordingsStore()
 const dialog = ref(null)
 const trigger = ref(null)
 
@@ -58,6 +60,7 @@ function close() {
     <nav class="items">
       <BzButton class="item" variant="soft" :to="{ name: 'beszed.recordings', params: { childId } }" :icon="ICONS.mic">
         {{ t('recordings.title') }}
+        <b v-if="recordings.loaded && !Object.keys(recordings.urls).length" class="new">{{ t('common.new') }}</b>
       </BzButton>
       <BzButton class="item" variant="soft" :to="{ name: 'beszed.progress', params: { childId } }" :icon="ICONS.chart">
         {{ t('progress.title') }}
@@ -84,6 +87,15 @@ function close() {
 </template>
 
 <style scoped>
+/* a small nudge until the first own-voice line is recorded */
+.new {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-sun);
+  color: var(--bz-on-bright);
+  font-size: 12px;
+}
 /* ---- the corner button: three fat bars, big enough for a parent's thumb, small enough to ignore ---- */
 .menu-btn {
   position: absolute;

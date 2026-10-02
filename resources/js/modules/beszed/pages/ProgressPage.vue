@@ -54,6 +54,16 @@ const starPoints = computed(
     })) ?? [],
 )
 
+/** "This week", in plain words for the parent: what was done, and (only ever) the good news against last week. */
+const thisWeek = computed(() => {
+  const weeksData = data.value?.history.weeks ?? []
+  const games = weeksData.at(-1)?.games ?? 0
+  if (!games) return null
+  const days = (rewards.summary?.streak.recent ?? []).slice(-7).filter(d => d.played).length
+  const prev = weeksData.at(-2)?.games ?? 0
+  return { games, days: days || 1, prev, more: games > prev && prev > 0 }
+})
+
 const print = () => window.print()
 // jsPDF (+ html2canvas/purify) is ~400 KB — only fetch it when the PDF is requested.
 const exportPdf = async () => {
@@ -92,6 +102,12 @@ watch(days, load)
         })
       }}
     </p>
+
+    <BzNotice v-if="thisWeek" class="week">
+      <p class="week-text">{{ t('progress.thisWeek', { days: thisWeek.days, games: thisWeek.games }) }}</p>
+      <p v-if="thisWeek.more" class="week-text">{{ t('progress.thisWeekMore', { prev: thisWeek.prev }) }}</p>
+      <p v-else class="week-text week-text--tip">{{ t('progress.thisWeekTip') }}</p>
+    </BzNotice>
 
     <SkillMap :areas="report.areas" :games="report.games" />
 
@@ -199,6 +215,14 @@ watch(days, load)
 </template>
 
 <style scoped>
+.week-text {
+  margin: 0 0 4px;
+  font-weight: 700;
+}
+.week-text--tip {
+  font-weight: 400;
+  color: var(--bz-muted);
+}
 .period {
   padding: 6px 10px;
   border: 2px solid var(--bz-guide);

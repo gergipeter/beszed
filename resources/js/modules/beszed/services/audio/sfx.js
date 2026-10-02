@@ -139,3 +139,25 @@ export function applause() {
     note(120, 0.4, 0.4, { type: 'sine', gain: 0.06, slideTo: 100 })
   })
 }
+
+/** A flower opens: a little upward pop and a twinkle. */
+export function bloom() {
+  play(() => {
+    note(880, 0, 0.12, { gain: 0.14, slideTo: 1320 })
+    note(1568, 0.09, 0.22, { gain: 0.1 })
+  })
+}
+
+/** Csillám giggles when she is tapped: a quick, bubbly run of notes. */
+export function giggle() {
+  play(() =>
+    [0, 0.07, 0.14, 0.21, 0.28].forEach((at, i) =>
+      note(820 + (i % 2 ? 300 : 0) + i * 45, at, 0.09, { gain: 0.12, slideTo: 1500 }),
+    ),
+  )
+}
+
+/** The daily gift opens: a bright rising arpeggio. */
+export function gift() {
+  play(() => [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => note(f, i * 0.09, 0.3, { gain: 0.16 })))
+}

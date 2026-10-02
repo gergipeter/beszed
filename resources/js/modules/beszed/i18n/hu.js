@@ -8,6 +8,7 @@ export default {
 
   common: {
     back: 'Vissza',
+    new: 'Új',
     retry: 'Újra',
     reset: 'Újra',
     done: 'Kész',
@@ -22,12 +23,39 @@ export default {
   },
 
   hub: {
+    visitor: 'Egy kis vendég érkezett a kertbe! Köszönj neki!',
+    gift: {
+      ready: 'Mai ajándékod!',
+      open: 'Kinyitom!',
+      opened: 'Egy új virág nőtt a kertedben ajándékba!',
+      tomorrow: 'Holnap új ajándék vár',
+      speech: 'Ez a mai ajándékod: egy virág a kertednek! Holnap is lesz új!',
+    },
+    legend: 'Kategóriák a kertben',
+    legendItem: '{name}: {done} / {total} játékhoz nőtt virág',
     hello: 'Szia!',
     helloNamed: 'Szia, {child}!',
     intro: 'Én vagyok {guide}. Melyikkel játszunk?',
     greeting: 'Szia! Én vagyok {guide}. Úgy örülök, hogy itt vagy! Mit játsszunk ma?',
     greetingNamed: 'Szia {child}! Én vagyok {guide}. Úgy örülök, hogy itt vagy! Mit játsszunk ma?',
     greetLabel: '{guide} köszön',
+    pet: 'kicsim',
+    welcome: {
+      again: 'Már itt is vagy újra! Úgy örülök, {child}!',
+      back: 'Szia újra, {child}! Már vártalak! Úgy örülök, hogy itt vagy!',
+      long: 'Szia {child}! Hiányoztál! Úgy örülök, hogy újra itt vagy! Játsszunk!',
+      done: 'Ma már nagyon sokat játszottál, {child}! Ügyes vagy! Holnap is várlak a kertben!',
+    },
+    care: {
+      c1: 'Vigyázz magadra, jó? Én is vigyázok rád!',
+      c2: 'Úgy szeretek veled játszani, {child}!',
+      c3: 'Ittál ma vizet? A víz nagyon egészséges!',
+      c4: 'Te vagy a legjobb barátom, {child}!',
+      c5: 'Hogy telt a napod? Remélem, szép napod volt!',
+      c6: 'Nézd, milyen szépen nő a kerted! Ezt te csináltad!',
+      c7: 'Ha elfáradsz, pihenj egy kicsit. Itt leszek, ha kedved van játszani.',
+      c8: 'Küldök neked egy nagy ölelést!',
+    },
     forParents: 'Szülőknek',
     menu: 'Menü (szülőknek)',
     closeMenu: 'Menü bezárása',
@@ -140,6 +168,18 @@ export default {
     savedLater: 'Most nincs internet: az eredményt elmentjük, amint újra lesz.',
     gardenGrew: 'Egy új növény nőtt a kertedben!',
     pickTheme: 'Milyen képeket rakjunk ki ma? Válassz!',
+    surprise: {
+      dance: 'Meglepetés! Csillám táncol neked!',
+      rainbow: 'Meglepetés! Szivárvány van az égen!',
+      flowers: 'Meglepetés! Virágeső!',
+    },
+    rest: {
+      title: 'Pihenjünk egy kicsit!',
+      text: 'Nagyon sokat játszottunk. Igyál egy kis vizet, nézz ki az ablakon, aztán folytathatjuk!',
+      speech: 'Nagyon jó móka volt! Pihenjünk egy kicsit! Igyál egy kis vizet!',
+      take: 'Pihenek egy kicsit',
+      more: 'Még egy játékot',
+    },
     theme: 'Téma: {name}',
     again: 'Még egyszer',
     otherGame: 'Másik játék',
@@ -160,6 +200,8 @@ export default {
     tooHard: 'Semmi baj, próbáljunk egy rövidebbet!',
   },
 
+    stoneBloomed: 'Kivirágzott a játék köve a kertben!',
+    tomorrow: 'Ma már sokat játszottál. Holnap is találkozunk, várlak a kertben!',
   tapcount: {
     drum: 'Dob',
     help: 'Segíts',
@@ -298,6 +340,8 @@ export default {
     surprise: 'Meglepetés!',
     surpriseSpeech: 'Tádám! Hogy tetszik az új ruhám?',
     undress: 'Mindent le',
+    nextGift: 'Következő ajándék: {name}, a(z) {level}. szinten',
+    daysTogether: 'Ennyi napon játszottunk együtt: {count}',
     undressSpeech: 'Na, most megint a régi Csillám vagyok!',
     unlockAt: '{level}. szinttől',
     wearFailed: 'Nem sikerült átöltöztetni Csillámot.',
@@ -352,6 +396,9 @@ export default {
     },
     levelNote:
       'Papagáj szint = ennyi szót mond vissza sorrendben. Mondd utánam szint: 1 rövid, 2 közepes, 3 összetett mondat.',
+    thisWeek: 'Ezen a héten {days} napon játszottatok, és {games} játékot fejeztetek be.',
+    thisWeekMore: 'Ez több, mint az előző héten ({prev}). Szép munka!',
+    thisWeekTip: 'Már napi pár perc is sokat számít: a kevés, de rendszeres gyakorlás működik a legjobban.',
     charts: {
       games: 'Végigjátszott játékok hetente',
       rate: 'Elsőre jó válaszok aránya',
@@ -391,6 +438,8 @@ export default {
     title: 'Készségterületek',
     subtitle: 'elsőre jó válaszok aránya',
     meterLabel: '{area}: elsőre jó válaszok aránya',
+    motionTitle: 'Mozgás',
+    reduceMotion: 'Kevesebb mozgás: nyugodtabb kert, nincs konfetti és lebegés',
     diferTitle: 'A DIFER egyik területéhez hasonló készséget gyakorol',
     previous: 'Előző időszak: {value}',
     legendNow: 'ez az időszak',
@@ -456,3 +505,5 @@ export default {
     pickFile: 'Hangfájl választása',
   },
 }
+    loveVoice:
+      'Nagymama, nagypapa, testvér hangja? Bárki felveheti a sorokat, akit a gyerek szeret: ő a kedvenc hangját hallja majd Csillám helyett. Ez a legszebb ajándék.',

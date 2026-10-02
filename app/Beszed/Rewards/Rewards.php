@@ -158,13 +158,13 @@ class Rewards
         return $scene;
     }
 
-    /** 0–3 medals for a first-try share (null = never played). */
+    /** 1–3 medals for a first-try share: every finished game earns at least one (null = never played: 0). */
     public function medal(?float $share): int
     {
         if ($share === null) {
             return 0;
         }
-        $medal = 0;
+        $medal = 1;
         foreach (config('beszed.rewards.medals') as $count => $min) {
             if ($share + 1e-9 >= $min) {
                 $medal = $count;
