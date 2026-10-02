@@ -18,3 +18,8 @@ storage/framework/testing
 bootstrap/cache/*.php
 public/build
 public/hot
+# The native app (Capacitor shell) is built on a developer machine, not in the server image.
+dist-native
+android
+ios
+capacitor.config.json

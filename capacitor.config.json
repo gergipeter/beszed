@@ -1,0 +1,10 @@
+{
+  "appId": "hu.beszed.app",
+  "appName": "Csillám",
+  "webDir": "dist-native",
+  "server": {
+    "hostname": "app.beszed.local",
+    "androidScheme": "https",
+    "iosScheme": "capacitor"
+  }
+}

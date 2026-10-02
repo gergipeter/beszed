@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="hu">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#7cc8ff">
+    <meta name="format-detection" content="telephone=no">
+    <title>Csillám</title>
+    <!--
+      The page of the iOS / Android app (Capacitor shell, docs/native-app.md). The website's page is rendered by
+      resources/views/app.blade.php; this one is a file inside the app, so the boot config that SpaController renders
+      into #app-config is written here at build time by vite.native.config.js, from the VITE_* values in .env.native.
+    -->
+    <script id="app-config" type="application/json">__APP_CONFIG__</script>
+    <script type="module" src="./main.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+</body>
+</html>
