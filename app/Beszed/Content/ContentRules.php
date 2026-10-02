@@ -122,6 +122,12 @@ final class ContentRules
             'rimelo', 'rimparok' => str_ends_with($lower($p['word']), $lower($p['rhyme'])) ? [] : ['rhyme' => 'A szó nem erre végződik.'],
             'mondd' => $lower(implode(' ', $p['chunks'])) === $lower($p['text']) ? [] : ['chunks' => 'A darabok együtt nem adják ki a mondatot.'],
             'melyik' => $lower($p['good']) !== $lower($p['bad']) ? [] : ['bad' => 'A két mondat ugyanaz.'],
+            // a pair of the same word, or of two words with the same picture, can't be told apart by ear or by eye
+            'ikerhangok' => match (true) {
+                $lower($p['wordA']) === $lower($p['wordB']) => ['wordB' => 'A két szó nem lehet ugyanaz.'],
+                $p['emojiA'] === $p['emojiB'] => ['emojiB' => 'A két szóhoz két különböző kép kell.'],
+                default => [],
+            },
             // "Koppints a kutyára": the -ra/-re form of the name (a final a/e lengthens: kutya → kutyára)
             'utasitas' => preg_match('/(ra|re)$/u', $lower($p['onto'])) && mb_substr(Hungarian::fold($p['onto']), 0, 2) === mb_substr(Hungarian::fold($p['name']), 0, 2)
                 ? [] : ['onto' => 'A szó -ra/-re végű alakja kell (pl. kutya → kutyára, kenyér → kenyérre).'],

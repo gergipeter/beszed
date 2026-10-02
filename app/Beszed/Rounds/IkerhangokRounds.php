@@ -5,16 +5,24 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Minimal pairs: two real words differing by one sound (kéz / kész). Hear one,
- * tap its picture. Content has just one difficulty grade (every pair is
- * equally "close"), so level instead scales the number of options: 2 at
- * first, a 3rd word borrowed from another pair once the child is solid,
- * so a lucky guess stops being good enough.
+ * Minimal pairs: two real words differing by one sound (kés / kész). Hear one,
+ * tap its picture. Every pair has a `contrast` ("s – sz") and a grade, the
+ * game's level:
+ *   1  sounds that are far apart (hal / fal, anya / apa): any child can hear them
+ *   2  close sounds: different vowels, r / l, ty / p, b / cs (béka / bika, nyár / nyál)
+ *   3  the fine Hungarian contrasts: s / sz / zs, c / cs and short / long vowels
+ *      (só / szó, boci / bocsi, bab / báb)
+ * A child is mostly given pairs up to their own level. The level also scales the
+ * number of options: 2 at first, a 3rd word borrowed from another pair at the top
+ * level, so a lucky guess stops being good enough. (Every word and every picture
+ * is in the content once, so a borrowed word never doubles one of the pair.)
  */
 class IkerhangokRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
+        $this->favorLevel($items, $level);
+
         return $this->cycle($items, $count)->map(function ($it) use ($items, $level) {
             $p = $it->payload;
             $sideA = random_int(0, 1) === 0;

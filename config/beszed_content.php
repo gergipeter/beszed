@@ -95,6 +95,8 @@ return [
             'emojiA' => $emoji('Kép A'),
             'wordB' => $text('Szó B'),
             'emojiB' => $emoji('Kép B'),
+            // the sounds that tell the two words apart; the parents' report groups answers by it
+            'contrast' => $text('Hangpár', ['required' => false, 'max' => 12, 'hint' => 's – sz']),
         ]],
         'mondd' => ['title' => 'text', 'fields' => [
             'text' => $text('Mondat'),

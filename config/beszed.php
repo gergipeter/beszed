@@ -156,7 +156,8 @@ return [
         'ikerhangok' => [
             'name' => 'Ikerhangok', 'emoji' => '👯', 'skill' => 'Hasonló szavak megkülönböztetése', 'color' => '#FFB8D9', 'tier' => 'advanced', 'stage' => 'pond',
             'factory' => Rounds\IkerhangokRounds::class, 'rounds' => 8,
-            // level = options shown: 1-2 → the pair only, 3 → +1 distractor word from another pair (IkerhangokRounds)
+            // level = options shown: 1-2 → the pair only, 3 → +1 distractor word from another pair, and the grade of the
+            // pairs given (content level 1 clear sounds … 3 the fine Hungarian contrasts: s/sz/zs, c/cs, long/short vowels) (IkerhangokRounds)
             'adaptive' => [
                 'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
                 'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
