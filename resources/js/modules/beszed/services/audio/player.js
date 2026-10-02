@@ -37,7 +37,6 @@ export function setVolume(v) {
 export function playAudio(url, { rate = 1 } = {}) {
   settle?.(false)
   const el = audio()
-  el.playbackRate = rate
 
   return new Promise(resolve => {
     const finish = ok => {
@@ -55,7 +54,10 @@ export function playAudio(url, { rate = 1 } = {}) {
 
     const begin = src => {
       if (settle !== finish) return // interrupted while the audio was being fetched
+      // A new src reloads the element, which resets playbackRate to the default: set it after, and as the default too.
+      el.defaultPlaybackRate = rate
       el.src = src
+      el.playbackRate = rate
       el.play().then(
         () => (unlocked = true),
         () => finish(false),
