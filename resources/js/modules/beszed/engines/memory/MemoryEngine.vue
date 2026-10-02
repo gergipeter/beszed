@@ -99,11 +99,14 @@ function flip(card) {
 </template>
 
 <style scoped>
+/* the full width of the scene: the cards have no content of their own to size the grid by (the faces are
+   absolutely placed), so a shrink-to-fit container squeezed them to a few dozen pixels */
 .memory-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  width: 100%;
 }
 
 .difficulty-label {
@@ -119,11 +122,11 @@ function flip(card) {
   display: grid;
   gap: 10px;
   width: 100%;
-  max-width: 560px;
+  max-width: 600px;
 }
 .cards--3 {
   grid-template-columns: repeat(3, 1fr);
-  max-width: 440px;
+  max-width: 480px;
 }
 .cards--4 {
   grid-template-columns: repeat(4, 1fr);
@@ -161,18 +164,18 @@ function flip(card) {
   background:
     radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), transparent 45%),
     linear-gradient(135deg, color-mix(in srgb, var(--bz-guide) 75%, #fff), color-mix(in srgb, var(--bz-coral) 55%, #fff));
-  font-size: 32px;
+  font-size: clamp(32px, 9vw, 52px);
 }
 .face--front {
   background: var(--bz-card);
   transform: rotateY(180deg);
 }
 .art {
-  font-size: clamp(34px, 9vw, 56px);
+  font-size: clamp(38px, 11vw, 68px);
   line-height: 1.05;
 }
 .label {
-  font-size: 14px;
+  font-size: clamp(14px, 3.4vw, 17px);
   font-weight: 700;
   color: var(--bz-muted);
 }
