@@ -23,6 +23,31 @@ export default {
     avatarLabel: '{name}, the unicorn',
   },
 
+  weather: {
+    line: "It's {temp} degrees today, {sky}.",
+    minus: 'minus {n}',
+    sky: {
+      clear: 'the sun is shining',
+      night: 'the sky is clear',
+      partly: 'a little cloudy',
+      cloudy: 'cloudy',
+      fog: 'foggy',
+      rain: 'raining',
+      snow: 'snowing',
+      storm: 'stormy',
+    },
+    tip: {
+      nice: 'Lovely weather, go out and play!',
+      hot: 'It is hot, drink lots of water and stay in the shade!',
+      cool: 'It is cool, take a jacket!',
+      cold: 'It is cold, wear a hat and gloves!',
+      rain: 'Take your umbrella and rain boots!',
+      snow: 'Dress warmly, you can build a snowman!',
+      storm: 'Stay inside when the sky rumbles, you are safe here!',
+    },
+    label: 'Weather: {sentence}',
+  },
+
   hub: {
     visitor: 'A little visitor came to the garden! Say hi!',
     gift: {
@@ -446,6 +471,8 @@ export default {
     legendNow: 'this period',
     legendPrev: 'previous period of the same length',
     bands: {
+    weatherTitle: 'Weather',
+    weatherCity: "City (only for the weather; the child's location is never sent anywhere)",
       strong: 'Solid',
       growing: 'Growing',
       practice: 'Needs more practice',

@@ -22,6 +22,31 @@ export default {
     avatarLabel: '{name}, az egyszarvú',
   },
 
+  weather: {
+    line: 'Ma {temp} fok van, {sky}.',
+    minus: 'mínusz {n}',
+    sky: {
+      clear: 'süt a nap',
+      night: 'tiszta az ég',
+      partly: 'kicsit felhős az ég',
+      cloudy: 'felhős az ég',
+      fog: 'ködös van',
+      rain: 'esik az eső',
+      snow: 'havazik',
+      storm: 'vihar van',
+    },
+    tip: {
+      nice: 'Szép idő van, menj ki játszani!',
+      hot: 'Meleg van, igyál sok vizet, és maradj az árnyékban!',
+      cool: 'Hűvös van, vegyél kabátot!',
+      cold: 'Hideg van, vegyél sapkát és kesztyűt!',
+      rain: 'Vidd az esernyőt és a gumicsizmát!',
+      snow: 'Öltözz melegen, építhetsz hóembert!',
+      storm: 'Maradj bent, ha dörög az ég, itt biztonságban vagy!',
+    },
+    label: 'Időjárás: {sentence}',
+  },
+
   hub: {
     visitor: 'Egy kis vendég érkezett a kertbe! Köszönj neki!',
     gift: {
@@ -445,6 +470,8 @@ export default {
     legendNow: 'ez az időszak',
     legendPrev: 'előző, ugyanilyen hosszú időszak',
     bands: {
+    weatherTitle: 'Időjárás',
+    weatherCity: 'Város (csak az időjárás miatt; a gyerek helye nem kerül sehová)',
       strong: 'Biztosan megy',
       growing: 'Fejlődik',
       practice: 'Gyakoroljuk még',

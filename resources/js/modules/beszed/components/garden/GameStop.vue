@@ -156,7 +156,7 @@ const label = computed(() =>
   box-shadow: var(--bz-shadow-sm);
 }
 .flag--done {
-  background: var(--bz-leaf);
+  background: var(--bz-leaf-deep, var(--bz-leaf));
   color: var(--bz-on-accent);
 }
 .sign {

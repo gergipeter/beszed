@@ -8,6 +8,7 @@ import GardenSky from '../components/garden/GardenSky.vue'
 import GuideBubble from '../components/guide/GuideBubble.vue'
 import DailyGift from '../components/hub/DailyGift.vue'
 import DailyPath from '../components/hub/DailyPath.vue'
+import WeatherChip from '../components/hub/WeatherChip.vue'
 import ParentMenu from '../components/hub/ParentMenu.vue'
 import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
@@ -15,6 +16,7 @@ import StreakHistory from '../components/rewards/StreakHistory.vue'
 import EmojiArt from '../components/ui/EmojiArt.vue'
 import { useDailyGift } from '../composables/useDailyGift'
 import { useModuleContext } from '../composables/useModuleContext'
+import { useWeather } from '../composables/useWeather'
 import { useWelcome } from '../composables/useWelcome'
 import { ICONS } from '../config/icons'
 import { t } from '../i18n'
@@ -55,6 +57,27 @@ let careTimer
 onMounted(() => (careTimer = setInterval(() => !guide.talking && welcome.next(), CARE_EVERY_MS)))
 onBeforeUnmount(() => clearInterval(careTimer))
 
+/**
+ * The weather, top left. Csillám says it once on every visit to the app: on the first tap that
+ * is not meant for something else (a game, the menus, Csillám herself, who then says it with her hello).
+ */
+const weather = useWeather()
+const sayWeather = () => {
+  guide.unlock()
+  guide.speak([weather.sentence.value])
+}
+const ELSEWHERE = 'header, [data-game], dialog, a, .menu-btn, .weather-chip'
+function announceOnTap(event) {
+  if (event.target.closest?.(ELSEWHERE) || !weather.shouldAnnounce()) return
+  document.removeEventListener('pointerdown', announceOnTap, true)
+  sayWeather()
+}
+onMounted(async () => {
+  if (!(await weather.load())) return
+  document.addEventListener('pointerdown', announceOnTap, true)
+})
+onBeforeUnmount(() => document.removeEventListener('pointerdown', announceOnTap, true))
+
 function greet() {
   guide.unlock()
   guide.celebrate()
@@ -63,11 +86,13 @@ function greet() {
   const params = { child: childName.value, guide: guideName.value }
   // the very first hello can be the parent's own recording; later ones say what is on screen
   const first = welcome.line.value === t('hub.intro', { guide: guideName.value })
-  guide.speak(
-    first
-      ? [{ rec: 'greet', alt: t(childName.value ? 'hub.greetingNamed' : 'hub.greeting', params) }]
-      : [welcome.line.value],
-  )
+  const hello = first
+    ? [{ rec: 'greet', alt: t(childName.value ? 'hub.greetingNamed' : 'hub.greeting', params) }]
+    : [welcome.line.value]
+  // the first hello of a visit carries the weather too
+  const withWeather = weather.shouldAnnounce()
+  if (withWeather) document.removeEventListener('pointerdown', announceOnTap, true)
+  guide.speak(withWeather ? [...hello, weather.sentence.value] : hello)
 }
 
 /** Today's path; stays hidden when it can't be loaded (e.g. offline for the first time today). */
@@ -167,6 +192,13 @@ async function play(game, stone) {
 <template>
   <GardenSky />
   <ParentMenu />
+  <WeatherChip
+    v-if="weather.weather.value"
+    :icon="weather.icon.value"
+    :temp="weather.tempText.value"
+    :label="t('weather.label', { sentence: weather.sentence.value })"
+    @press="sayWeather"
+  />
 
   <GuideBubble
     ref="header"
@@ -196,15 +228,6 @@ async function play(game, stone) {
   <Spotlight v-if="spotlightGame" :game="spotlightGame" @play="play" />
 
   <DailyPath v-if="path && meta.games.length" :path="path" :games="meta.games" @play="play" />
-
-  <RouterLink class="journey" :to="{ name: 'beszed.journey', params: { childId } }">
-    <EmojiArt class="journey-icon" :char="ICONS.journey" />
-    <span class="journey-text">
-      <b>{{ t('journey.title') }}</b>
-      <small>{{ t('journey.cardSub') }}</small>
-    </span>
-    <span class="journey-go" aria-hidden="true">›</span>
-  </RouterLink>
 
   <p v-if="newPlants > 0" class="grew" role="status">
     <EmojiArt :char="ICONS.sprout" /> {{ t(newPlants === 1 ? 'hub.grewOne' : 'hub.grewMany', { count: newPlants }) }}
@@ -321,38 +344,5 @@ async function play(game, stone) {
   margin: 6px 0 8px;
   font-size: var(--bz-text-lg, 26px);
   font-weight: 800;
-}
-/* Utazás: a feature of its own, bigger than a menu button and not a game card */
-.journey {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 16px;
-  padding: 12px 18px;
-  border-radius: var(--bz-radius);
-  background: #5aa86a;
-  color: #fff;
-  text-decoration: none;
-  box-shadow: var(--bz-shadow);
-}
-.journey-icon {
-  font-size: 34px;
-}
-.journey-text {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  line-height: 1.2;
-}
-.journey-text b {
-  font-size: var(--bz-text-md);
-}
-.journey-text small {
-  font-size: var(--bz-text-sm);
-  opacity: 0.95;
-}
-.journey-go {
-  font-size: 34px;
-  line-height: 1;
 }
 </style>

@@ -69,7 +69,7 @@ const emit = defineEmits(['play'])
   flex: none;
   padding: 8px 16px;
   border-radius: var(--bz-radius-pill);
-  background: var(--bz-leaf);
+  background: var(--bz-leaf-deep, var(--bz-leaf));
   color: var(--bz-on-accent);
   font-weight: 800;
   font-size: var(--bz-text-sm);

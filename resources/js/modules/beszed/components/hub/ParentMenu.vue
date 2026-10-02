@@ -62,6 +62,9 @@ function close() {
         {{ t('recordings.title') }}
         <b v-if="recordings.loaded && !Object.keys(recordings.urls).length" class="new">{{ t('common.new') }}</b>
       </BzButton>
+      <BzButton class="item" variant="soft" :to="{ name: 'beszed.journey', params: { childId } }" :icon="ICONS.journey">
+        {{ t('journey.title') }}
+      </BzButton>
       <BzButton class="item" variant="soft" :to="{ name: 'beszed.progress', params: { childId } }" :icon="ICONS.chart">
         {{ t('progress.title') }}
       </BzButton>

@@ -16,7 +16,10 @@ class Spotlight
     /** Answers in the last two weeks before a game counts as weak enough to suggest. */
     private const MIN_ANSWERS = 5;
 
-    /** @return array{game: string}|null null when there isn't enough data yet to tell. */
+    /** First-try share below which a game counts as weak (under two medals: config beszed.rewards.medals). */
+    private const WEAK_BELOW = 0.75;
+
+    /** @return array{game: string}|null null when there isn't enough data yet, or the child does well everywhere. */
     public function pick(Child $child): ?array
     {
         $stats = BeszedAttempt::where('child_id', $child->id)
@@ -25,13 +28,15 @@ class Spotlight
             ->selectRaw('game, COUNT(*) as answers, SUM(CASE WHEN correct AND tries = 1 THEN 1 ELSE 0 END) as first_try')
             ->get()
             ->filter(fn ($s) => $s->answers >= self::MIN_ANSWERS)
-            ->filter(fn ($s) => array_key_exists($s->game, config('beszed.games')));
+            ->filter(fn ($s) => array_key_exists($s->game, config('beszed.games')))
+            // only a game the child was really weaker at: never one they already do well
+            ->filter(fn ($s) => $s->first_try / $s->answers < self::WEAK_BELOW);
 
         if ($stats->isEmpty()) {
             return null;
         }
 
-        $weakest = $stats->sortBy(fn ($s) => $s->first_try / $s->answers)->first();
+        $weakest = $stats->sortBy([fn ($a, $b) => $a->first_try / $a->answers <=> $b->first_try / $b->answers, fn ($a, $b) => $b->answers <=> $a->answers])->first();
 
         return ['game' => $weakest->game];
     }

@@ -34,7 +34,6 @@ function open() {
       <b>{{ t('hub.gift.opened') }}</b>
     </span>
   </p>
-  <p v-else class="quiet"><EmojiArt :char="ICONS.gift" /> {{ t('hub.gift.tomorrow') }}</p>
 </template>
 
 <style scoped>
@@ -79,16 +78,6 @@ button.gift:active {
   font-size: var(--bz-text-sm);
   font-weight: 700;
   opacity: 0.85;
-}
-.quiet {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin: 0 0 16px;
-  font-size: var(--bz-text-sm);
-  font-weight: 700;
-  color: var(--bz-muted);
 }
 @keyframes wiggle {
   0%,

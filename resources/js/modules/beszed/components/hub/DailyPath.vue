@@ -59,8 +59,8 @@ const longest = name => Math.max(...name.split(/\s+/).map(w => w.length))
 
 <style scoped>
 .path {
-  margin: 0 0 18px;
-  padding: 12px 14px 14px;
+  margin: 0 0 12px;
+  padding: 8px 10px 10px;
   border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   box-shadow: var(--bz-shadow);
@@ -69,14 +69,14 @@ const longest = name => Math.max(...name.split(/\s+/).map(w => w.length))
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .head-icon {
-  font-size: 26px;
+  font-size: 20px;
 }
 .title {
   margin: 0;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
 }
 .count {
@@ -91,7 +91,7 @@ const longest = name => Math.max(...name.split(/\s+/).map(w => w.length))
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -123,9 +123,9 @@ const longest = name => Math.max(...name.split(/\s+/).map(w => w.length))
   flex-direction: column;
   align-items: center;
   width: 100%;
-  min-height: 118px;
-  padding: 14px 6px 10px;
-  border-radius: 24px;
+  min-height: 78px;
+  padding: 8px 4px 6px;
+  border-radius: 18px;
   background: var(--tile-color, var(--bz-soft));
   color: var(--bz-on-bright);
   box-shadow: 0 5px 0 rgba(59, 31, 74, 0.18);
@@ -145,8 +145,8 @@ const longest = name => Math.max(...name.split(/\s+/).map(w => w.length))
   left: -6px;
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--bz-sun);
   color: var(--bz-on-bright);
@@ -154,17 +154,18 @@ const longest = name => Math.max(...name.split(/\s+/).map(w => w.length))
   box-shadow: var(--bz-shadow-sm);
 }
 .step--done .badge {
-  background: var(--bz-leaf);
+  background: var(--bz-leaf-deep, var(--bz-leaf));
+  color: var(--bz-on-accent);
   font-size: 16px;
 }
 .art {
-  font-size: 44px;
+  font-size: 32px;
   line-height: 1.1;
 }
 .name {
-  margin-top: 4px;
+  margin-top: 2px;
   /* ~0.57em per letter in Baloo 2 bold: long compounds (Árnyékkereső) get smaller instead of breaking */
-  font-size: min(16px, calc(100cqi / (var(--len, 8) * 0.57)));
+  font-size: min(14px, calc(100cqi / (var(--len, 8) * 0.57)));
   font-weight: 800;
   line-height: 1.1;
   text-align: center;
@@ -179,13 +180,13 @@ const longest = name => Math.max(...name.split(/\s+/).map(w => w.length))
 }
 @media (max-width: 380px) {
   .steps {
-    gap: 8px;
+    gap: 6px;
   }
   .art {
-    font-size: 38px;
+    font-size: 30px;
   }
   .name {
-    font-size: min(14px, calc(100cqi / (var(--len, 8) * 0.57)));
+    font-size: min(13px, calc(100cqi / (var(--len, 8) * 0.57)));
   }
 }
 @media (prefers-reduced-motion: reduce) {

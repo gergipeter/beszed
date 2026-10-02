@@ -37,15 +37,22 @@ it('is null until there is enough recent data for any game', function () {
 });
 
 it('suggests the game with the lowest first-try share', function () {
-    attemptsFor('zs', answers: 8, firstTry: 6); // 75%
+    attemptsFor('zs', answers: 8, firstTry: 5); // 62%
     attemptsFor('kezdo', answers: 8, firstTry: 2); // 25%, the weakest
     attemptsFor('hol', answers: 8, firstTry: 8); // 100%
 
     expect(spotlight())->toBe('kezdo');
 });
 
+it('never suggests a game the child already does well', function () {
+    attemptsFor('zs', answers: 8, firstTry: 8); // 100%
+    attemptsFor('hol', answers: 8, firstTry: 7); // 87%
+
+    expect(spotlight())->toBeNull();
+});
+
 it('ignores attempts older than two weeks', function () {
-    attemptsFor('zs', answers: 8, firstTry: 8);
+    attemptsFor('zs', answers: 8, firstTry: 2);
 
     BeszedAttempt::where('game', 'zs')->update(['created_at' => now()->subDays(20)]);
 

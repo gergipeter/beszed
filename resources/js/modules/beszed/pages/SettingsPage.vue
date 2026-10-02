@@ -6,6 +6,8 @@ import BzNotice from '../components/ui/BzNotice.vue'
 import PageHeader from '../components/ui/PageHeader.vue'
 import { useModuleContext } from '../composables/useModuleContext'
 import { useMotionPref } from '../composables/useMotionPref'
+import { readCity, saveCity } from '../composables/useWeather'
+import { CITIES } from '../config/cities'
 import { t } from '../i18n'
 import { useGuideStore } from '../stores/guide'
 import { useMetaStore } from '../stores/meta'
@@ -18,6 +20,7 @@ const meta = useMetaStore()
 const settings = useSettingsStore()
 const guide = useGuideStore()
 const motion = useMotionPref()
+const city = ref(readCity())
 
 const failed = ref(false)
 const message = ref('')
@@ -75,6 +78,16 @@ onMounted(load)
       <label class="row">
         <span>{{ t('settings.mute') }}</span>
         <input type="checkbox" :checked="settings.muted" :disabled="saving" @change="e => save({ muted: e.target.checked })" />
+      </label>
+    </section>
+
+    <section class="card">
+      <h2 class="heading">{{ t('settings.weatherTitle') }}</h2>
+      <label class="row">
+        <span>{{ t('settings.weatherCity') }}</span>
+        <select v-model="city" @change="saveCity(city)">
+          <option v-for="c in CITIES" :key="c.id" :value="c.id">{{ c.name }}</option>
+        </select>
       </label>
     </section>
 
