@@ -53,8 +53,17 @@ export const useSettingsStore = defineStore('beszed/settings', {
       return this.settings
     },
 
-    toggleMuted() {
-      return this.save({ muted: !this.muted })
+    /** Silences at once, then saves; a failed save puts the sound back as it was. */
+    async toggleMuted() {
+      // saving before the stored voice is known would overwrite it with blanks
+      if (!this.loaded) await this.load()
+      applyAudio(!this.muted)
+      try {
+        return await this.save({ muted: !this.muted })
+      } catch (error) {
+        applyAudio(this.muted)
+        throw error
+      }
     },
   },
 })

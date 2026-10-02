@@ -9,6 +9,7 @@ import { t } from '../../i18n'
 import { useGuideStore } from '../../stores/guide'
 import { useMetaStore } from '../../stores/meta'
 import { useRewardsStore } from '../../stores/rewards'
+import { useSettingsStore } from '../../stores/settings'
 import GuideBubble from '../guide/GuideBubble.vue'
 import BzButton from '../ui/BzButton.vue'
 import BzNotice from '../ui/BzNotice.vue'
@@ -30,6 +31,7 @@ const { childId, guideName, premium } = useModuleContext()
 const guide = useGuideStore()
 const meta = useMetaStore()
 const rewards = useRewardsStore()
+const settings = useSettingsStore()
 
 /**
  * Games with picture themes (Kirakó) start with the theme picker; the choice is
@@ -100,6 +102,10 @@ function replay() {
   speakPrompt()
 }
 
+function toggleMute() {
+  settings.toggleMuted().catch(() => {})
+}
+
 function exit() {
   guide.reset()
   emit('exit')
@@ -117,8 +123,9 @@ onMounted(() => {
       :done="index"
       :stars="stars"
       :show-progress="Boolean(session) && !finished"
+      :muted="settings.muted"
       @exit="exit"
-      @replay="speakPrompt()"
+      @toggle-mute="toggleMute"
       @replay-slow="speakPrompt({ slow: true })"
     />
 

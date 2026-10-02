@@ -4,16 +4,17 @@ import { t } from '../../i18n'
 import BzIconButton from '../ui/BzIconButton.vue'
 import EmojiArt from '../ui/EmojiArt.vue'
 
-/** Top bar while playing: home, round progress, stars, "say it again". */
+/** Top bar while playing: home, round progress, stars, mute, "say it again, slowly". */
 defineProps({
   total: { type: Number, default: 0 },
   /** Rounds completed so far. */
   done: { type: Number, default: 0 },
   stars: { type: Number, default: 0 },
   showProgress: { type: Boolean, default: false },
+  muted: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['exit', 'replay', 'replaySlow'])
+const emit = defineEmits(['exit', 'toggleMute', 'replaySlow'])
 </script>
 
 <template>
@@ -33,7 +34,11 @@ const emit = defineEmits(['exit', 'replay', 'replaySlow'])
     <span class="stars" :aria-label="t('game.starsLabel', { count: stars })">
       <EmojiArt :char="ICONS.star" /> {{ stars }}
     </span>
-    <BzIconButton :icon="ICONS.speaker" :label="t('game.replayLabel')" @click="emit('replay')" />
+    <BzIconButton
+      :icon="muted ? ICONS.mute : ICONS.speaker"
+      :label="t(muted ? 'game.unmuteLabel' : 'game.muteLabel')"
+      @click="emit('toggleMute')"
+    />
     <BzIconButton :icon="ICONS.turtle" :label="t('game.replaySlowLabel')" @click="emit('replaySlow')" />
   </div>
 </template>

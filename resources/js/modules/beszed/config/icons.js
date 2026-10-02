@@ -6,6 +6,7 @@
 export const ICONS = Object.freeze({
   home: '🏡',
   speaker: '🔊',
+  mute: '🔇',
   star: '⭐',
   mic: '🎙️',
   chart: '📈',
