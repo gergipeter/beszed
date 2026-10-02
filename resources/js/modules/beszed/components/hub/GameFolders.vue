@@ -156,9 +156,10 @@ const medalsOf = id => props.medals[id] ?? 0
 .folder:nth-child(4n + 2) { --tilt: 2deg; --shape: 54% 46% 48% 52% / 48% 54% 46% 52%; }
 .folder:nth-child(4n + 3) { --tilt: 1.5deg; --shape: 48% 52% 54% 46% / 52% 48% 52% 48%; }
 .folder:nth-child(4n) { --tilt: -2deg; --shape: 52% 48% 46% 54% / 46% 52% 48% 54%; }
+/* a plain zoom (a transition): swapping the animation would replay the entrance, and the sticker would vanish */
 .folder:hover,
 .folder:focus-visible {
-  animation: wiggle 0.6s ease-in-out;
+  transform: scale(1.07) rotate(var(--tilt, 0deg));
 }
 .folder:active {
   transform: scale(0.92) rotate(var(--tilt, 0deg));
@@ -295,7 +296,7 @@ h2 {
 }
 .game:hover,
 .game:focus-visible {
-  animation: wiggle 0.6s ease-in-out;
+  transform: scale(1.06);
 }
 .game:active {
   transform: scale(0.9);
