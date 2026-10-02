@@ -248,7 +248,7 @@ h2 {
   opacity: 0.4;
 }
 .key--ok {
-  background: var(--bz-leaf, #3aa76d);
+  background: var(--bz-leaf-deep, #1f7a43);
   color: var(--bz-on-accent, #fff);
 }
 @keyframes pop {

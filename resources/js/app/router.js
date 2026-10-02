@@ -1,13 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import { createBeszedRoutes } from '../modules/beszed'
 import { appConfig } from './config'
+import { isNative } from './native'
 import { useSessionStore } from './stores/session'
 
 /** Local development without Google set up: sign straight in as the demo parent. */
 const autoDemo = appConfig.auth.demo && !appConfig.auth.google
 
 export const router = createRouter({
-  history: createWebHistory(),
+  // The app is a bundle of static files, with no server to answer /gyerekek: its pages live after the #.
+  history: isNative() ? createWebHashHistory() : createWebHistory(),
   routes: [
     { path: '/login', name: 'login', component: () => import('./pages/LoginPage.vue'), meta: { guest: true } },
     { path: '/jelszo-visszaallitas', name: 'reset-password', component: () => import('./pages/ResetPasswordPage.vue'), meta: { public: true } },

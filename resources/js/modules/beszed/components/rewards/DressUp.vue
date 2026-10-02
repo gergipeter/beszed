@@ -37,7 +37,8 @@ const SHELVES = [
   { slot: 'extra', icon: '🎈' },
   { slot: 'mane', icon: '🎨' },
 ]
-const COMPLIMENTS = ['Nagyon jól áll!', 'Hű, de csinos vagyok!', 'Imádom! Köszönöm!', 'Ez nagyon tetszik!', 'Csodaszép!']
+/** The "rewards.compliment.c{x}" texts she says after a change. */
+const COMPLIMENTS = [1, 2, 3, 4, 5]
 
 const shelves = computed(() =>
   SHELVES.map(s => ({ ...s, items: rewards.accessories.filter(a => a.slot === s.slot) })).filter(s => s.items.length),
@@ -83,7 +84,7 @@ async function toggle(item, { quiet = false } = {}) {
   perform('pose')
   const box = mirror.value?.getBoundingClientRect()
   if (box) burst({ x: box.left + box.width / 2, y: box.top + box.height * 0.4 }, { pieces: 14, reach: 110 })
-  guide.speak([item.name, pick(COMPLIMENTS)])
+  guide.speak([item.name, t(`rewards.compliment.c${pick(COMPLIMENTS)}`)])
   return true
 }
 

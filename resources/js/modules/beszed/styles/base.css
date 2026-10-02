@@ -171,9 +171,11 @@ html:has(.bz) {
   }
 }
 
-.bz :focus-visible {
-  outline: 4px solid var(--bz-coral);
-  outline-offset: 3px;
+/* two bands, a white one against the element and a dark one around it (tokens.css), so it shows on any background */
+.bz.bz :focus-visible {
+  outline: 3px solid var(--bz-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--bz-focus-inner);
 }
 
 /* utilities */

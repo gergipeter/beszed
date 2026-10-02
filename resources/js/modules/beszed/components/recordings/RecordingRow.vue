@@ -100,7 +100,7 @@ function onFile(event) {
 }
 .status {
   font-weight: 700;
-  color: var(--bz-leaf);
+  color: var(--bz-leaf-deep);
 }
 .actions {
   display: flex;

@@ -1,98 +1,18 @@
-/** Texts of the app shell (sign-in, child picker). The games' texts live in modules/beszed/i18n. */
-export const texts = {
-  tagline: 'Játékos beszéd- és iskolaelőkészítő gyakorlás 4–7 éveseknek.',
-  google: 'Bejelentkezés Google-fiókkal',
-  demo: 'Demó belépés',
-  googleSetup: 'Google-belépéshez állítsd be a GOOGLE_CLIENT_ID és GOOGLE_CLIENT_SECRET értékét.',
-  noLogin: 'A bejelentkezés most nem érhető el.',
-  parentsOnly: 'Szülőként jelentkezz be. A gyerekek eredményei a te fiókodhoz tartoznak, és csak te látod őket.',
-  errors: {
-    cancelled: 'A Google-belépés megszakadt. Próbáld újra!',
-    failed: 'Nem sikerült a Google-belépés. Próbáld újra!',
-    email_taken: 'Ezzel az e-mail-címmel már van fiók, de a Google nem igazolta. Jelentkezz be a régi módon.',
-    server: 'A szerver most nem érhető el. Próbáld újra kicsit később!',
-    demo: 'Nem sikerült a demó belépés.',
-  },
-  auth: {
-    login: 'Belépés',
-    register: 'Új fiók',
-    name: 'Neved',
-    email: 'E-mail-cím',
-    password: 'Jelszó',
-    newPassword: 'Új jelszó',
-    passwordHint: 'Legalább 10 karakter, betűk és számok.',
-    loginSubmit: 'Belépek',
-    registerSubmit: 'Fiók létrehozása',
-    forgot: 'Elfelejtett jelszó',
-    forgotSubmit: 'Küldd el a linket',
-    forgotSent: 'Ha van fiók ezzel az e-mail-címmel, elküldtük a jelszó-visszaállító linket. Nézd meg a postaládád!',
-    or: 'vagy',
-    backToLogin: 'Vissza a belépéshez',
-    resetTitle: 'Új jelszó',
-    resetSubmit: 'Új jelszó mentése',
-    resetNoToken: 'Ez a link nem érvényes. Kérj új jelszó-visszaállító levelet a belépésnél!',
-    resetFailed: 'Nem sikerült az új jelszót beállítani.',
-    failed: 'Nem sikerült. Próbáld újra!',
-    agree: 'A fiók létrehozásával elfogadod a',
-    terms: 'Felhasználási feltételeket',
-    and: 'és az',
-    privacy: 'Adatkezelési tájékoztatót',
-  },
-  whoPlays: 'Ki játszik ma?',
-  addChild: 'Új gyerek',
-  childName: 'Hogy hívják a gyereket?',
-  childNamePlaceholder: 'pl. Zoé',
-  birthDate: 'Születési dátum (nem kötelező)',
-  birthDateHint: 'Ebből tudjuk, milyen nehéz feladatokkal kezdjünk.',
-  sign: 'Az óvodai jeled',
-  signHint: 'Válaszd ki a jeledet, mint az oviban a törölköződön! Erről ismered meg magad itt is.',
-  pickSign: 'Jel választása',
-  signOf: '{name} óvodai jele',
-  birthDateOf: '{name} születési dátuma',
-  contentEditor: 'Tartalomszerkesztő',
-  save: 'Mentés',
-  cancel: 'Mégse',
-  edit: 'Szerkesztés',
-  done: 'Kész',
-  remove: '{name} törlése',
-  removeConfirm: 'Biztosan törlöd {name} összes adatát (eredmények, matricák)? Ez nem vonható vissza.',
-  logout: 'Kijelentkezés',
-  saveFailed: 'Nem sikerült menteni.',
-  firstChild: 'Add hozzá az első gyereket, és kezdődhet a játék!',
+import { currentLanguage } from '../modules/beszed/i18n'
+import en from './texts.en'
+import hu from './texts.hu'
 
-  privacyLink: 'Adatvédelem',
-  exportData: 'Adataim letöltése',
-  milestoneEmails: 'E-mail, ha a gyerek elér egy mérföldkövet',
-  milestoneEmailsSaveFailed: 'Nem sikerült elmenteni ezt a beállítást.',
-  weeklyReport: 'Heti beszámoló e-mailben vasárnap este, PDF-fel',
-  weeklySample: 'Küldd el most a heti beszámolót',
-  weeklySampleSending: 'Küldjük…',
-  weeklySampleSent: 'Elküldtük ({count} levél) ide: {email}',
-  weeklySampleNone: 'Ezen a héten még senki nem játszott, így nincs miről beszámolni.',
-  weeklySampleWait: 'Most küldtünk egyet, próbáld újra pár perc múlva!',
-  deleteAccount: 'Fiók törlése',
-  deletePrompt:
-    'A fiókod, az összes gyerek, minden eredmény, matrica és hangfelvétel véglegesen törlődik. Ha biztos vagy benne, írd be: TÖRLÉS',
-  deleteWord: 'TÖRLÉS',
-  deleteFailed: 'Nem sikerült törölni a fiókot.',
-
-  consent: {
-    title: 'Mielőtt kezdünk',
-    intro:
-      'Az alkalmazás elmenti a gyerekek játékeredményeit, hogy lásd a haladásukat, és a játékok hozzájuk igazodjanak. Ehhez a te hozzájárulásodra van szükség.',
-    stored: 'Mit tárolunk',
-    storedItems: [
-      'a te neved és e-mail-címed (a bejelentkezéshez);',
-      'a gyerek keresztnevét (és ha megadod, a születési dátumát);',
-      'a játékok eredményeit, szintjeit és matricáit;',
-      'a hangfelvételeidet, ha készítesz.',
-    ],
-    rights: 'Az adataidat bármikor letöltheted vagy törölheted a „Ki játszik?” oldalon.',
-    checkbox: 'Szülőként elolvastam az adatkezelési tájékoztatót, és hozzájárulok, hogy a gyerekeim eredményeit az alkalmazás tárolja.',
-    accept: 'Elfogadom',
-    failed: 'Nem sikerült menteni. Próbáld újra!',
-  },
-}
+/**
+ * Texts of the app shell (sign-in, child picker, therapist view) in the language the games use
+ * (modules/beszed/i18n: the Settings switcher, remembered on the device). The games' own texts live there.
+ *
+ * `texts.x` reads the active language when it is used, so a template re-renders when the language changes
+ * and the call sites need no `t()` wrapper. Keys are the same in texts.hu.js and texts.en.js.
+ */
+const byLanguage = { hu, en }
+export const texts = new Proxy(hu, {
+  get: (_, key) => (byLanguage[currentLanguage.value] ?? hu)[key],
+})
 
 /** The server's first validation message (Laravel 422), else the fallback. */
 export const firstError = (e, fallback) => {

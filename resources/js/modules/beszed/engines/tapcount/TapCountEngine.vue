@@ -165,7 +165,7 @@ function done() {
   min-height: 1.2em;
   font-size: 26px;
   font-weight: 800;
-  color: var(--bz-coral);
+  color: var(--bz-coral-deep);
 }
 .basket {
   display: flex;

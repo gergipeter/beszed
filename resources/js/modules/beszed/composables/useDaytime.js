@@ -9,7 +9,7 @@ export function daytimeAt(hour) {
 }
 
 /** The browser's top bar follows the sky (Android Chrome, installed app). */
-const BAR_COLOR = { morning: '#a6d8ff', day: '#7cc8ff', evening: '#7466d0', night: '#0f1538' }
+const BAR_COLOR = { morning: '#a6d8ff', day: '#7cc8ff', evening: '#c4b8f8', night: '#0f1538' }
 
 /**
  * Time of day for the garden scene, from the child's clock; checked every few

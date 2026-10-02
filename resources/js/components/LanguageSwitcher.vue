@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { isNative } from '../app/native'
 import { currentLanguage, setLanguage } from '../modules/beszed/i18n'
 
 /**
@@ -20,6 +21,8 @@ const current = computed(() => LANGUAGES[currentLanguage.value] ?? LANGUAGES.hu)
 function pick(code) {
   setLanguage(code)
   isOpen.value = false
+  // In the app there is no server session to tell (the page is a local bundle on its own origin).
+  if (isNative()) return
   fetch('/api/language/switch', {
     method: 'POST',
     headers: {

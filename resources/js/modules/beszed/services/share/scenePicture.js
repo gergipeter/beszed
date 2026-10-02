@@ -84,9 +84,9 @@ export async function renderScene({ colors, stickers, emojiOf, caption }) {
 }
 
 /** Hands the picture to the phone's share sheet (WhatsApp, Messenger…), or downloads it. */
-export async function sharePicture(blob, { title, fileName = 'matricakep.png' }) {
+export async function sharePicture(blob, { title, fileName = 'matricakep.png', type = 'image/png' }) {
   if (!blob) return false
-  const file = new File([blob], fileName, { type: 'image/png' })
+  const file = new File([blob], fileName, { type })
   if (navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title })

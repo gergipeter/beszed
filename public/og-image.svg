@@ -18,12 +18,12 @@
 
   <!-- Subtitle -->
   <text x="600" y="300" font-family="Arial, sans-serif" font-size="60" text-anchor="middle" fill="white">
-    Speech Therapy App
+    Csillám játékai
   </text>
 
   <!-- Description -->
   <text x="600" y="400" font-family="Arial, sans-serif" font-size="45" text-anchor="middle" fill="white">
-    Gamified learning with progress tracking
+    Játékos beszédgyakorlás 4–7 éveseknek
   </text>
 
   <!-- URL -->

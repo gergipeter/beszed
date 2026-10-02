@@ -1,9 +1,11 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { BzButton, BzNotice, EmojiArt, SkillMap } from '../../modules/beszed'
+import { BzButton, BzNotice, EmojiArt, SkillMap, SoundProgress } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
+import { formatDate } from '../../modules/beszed/i18n'
 import { http } from '../http'
+import { fill, texts } from '../texts'
 
 /**
  * What the speech therapist sees behind a share link (public, read-only): the
@@ -14,19 +16,16 @@ const report = ref(null)
 const error = ref('')
 
 const pct = v => (v == null ? '–' : `${Math.round(v * 100)}%`)
-const date = v => (v ? new Date(v).toLocaleDateString('hu-HU') : '–')
+const date = formatDate
 const print = () => window.print()
 const played = computed(() => (report.value?.games ?? []).filter(g => g.rounds > 0))
 
 onMounted(async () => {
   try {
     report.value = await http.get(`/api/share/${encodeURIComponent(route.params.token)}`, { quiet401: true }).then(r => r.data)
-    document.title = `${report.value.child.name} – haladás`
+    document.title = fill(texts.share.docTitle, { name: report.value.child.name })
   } catch (e) {
-    error.value =
-      e.response?.status === 404
-        ? 'Ez a link lejárt, vagy a szülő visszavonta. Kérj tőle újat.'
-        : 'Most nem sikerült betölteni. Próbáld újra kicsit később.'
+    error.value = e.response?.status === 404 ? texts.share.expired : texts.share.loadFailed
   }
 })
 </script>
@@ -34,22 +33,22 @@ onMounted(async () => {
 <template>
   <main class="bz share">
     <BzNotice v-if="error" tone="warn">{{ error }}</BzNotice>
-    <p v-else-if="!report" class="muted">Betöltés…</p>
+    <p v-else-if="!report" class="muted">{{ texts.share.loading }}</p>
 
     <article v-else class="doc">
       <header class="top">
         <div>
-          <p class="kicker">Beszéd – haladási összefoglaló</p>
+          <p class="kicker">{{ texts.share.kicker }}</p>
           <h1>{{ report.child.name }}<small v-if="report.child.age"> · {{ report.child.age }}</small></h1>
           <p class="muted">
-            {{ date(report.since) }} – {{ date(report.generatedAt) }} · a link érvényes: {{ date(report.expiresAt) }}
+            {{ fill(texts.share.period, { since: date(report.since), generated: date(report.generatedAt), expires: date(report.expiresAt) }) }}
           </p>
         </div>
-        <BzButton class="bz-noprint" @click="print">Nyomtatás</BzButton>
+        <BzButton class="bz-noprint" @click="print">{{ texts.share.print }}</BzButton>
       </header>
 
       <section v-if="report.narrative" class="card">
-        <h2>Összefoglaló</h2>
+        <h2>{{ texts.share.summary }}</h2>
         <p>{{ report.narrative }}</p>
         <ul v-if="report.recommendations?.length">
           <li v-for="(r, i) in report.recommendations" :key="i">{{ r }}</li>
@@ -57,21 +56,22 @@ onMounted(async () => {
       </section>
 
       <SkillMap :areas="report.areas" :games="report.games" />
+      <SoundProgress v-if="report.sounds" :sounds="report.sounds" />
 
       <section class="card">
-        <h2>Játékonként</h2>
-        <p v-if="!played.length" class="muted">Ebben az időszakban még nem volt játék.</p>
+        <h2>{{ texts.share.perGame }}</h2>
+        <p v-if="!played.length" class="muted">{{ texts.share.noPlay }}</p>
         <div v-else class="table-wrap">
           <table class="table">
             <thead>
               <tr>
-                <th>Játék</th>
-                <th>Mit gyakorol</th>
-                <th>Végigjátszva</th>
-                <th>Válaszok</th>
-                <th>Elsőre jó</th>
-                <th>Szint</th>
-                <th>Utoljára</th>
+                <th>{{ texts.share.columns.game }}</th>
+                <th>{{ texts.share.columns.skill }}</th>
+                <th>{{ texts.share.columns.sessions }}</th>
+                <th>{{ texts.share.columns.answers }}</th>
+                <th>{{ texts.share.columns.firstTry }}</th>
+                <th>{{ texts.share.columns.level }}</th>
+                <th>{{ texts.share.columns.last }}</th>
               </tr>
             </thead>
             <tbody>
@@ -89,10 +89,7 @@ onMounted(async () => {
         </div>
       </section>
 
-      <p class="muted foot">
-        Az adatok egy otthoni gyakorlóalkalmazásból származnak: „elsőre jó” = a gyerek első próbálkozásra jól
-        válaszolt. Ez nem standardizált mérés és nem diagnózis; a szülő bármikor visszavonhatja a linket.
-      </p>
+      <p class="muted foot">{{ texts.share.foot }}</p>
     </article>
   </main>
 </template>

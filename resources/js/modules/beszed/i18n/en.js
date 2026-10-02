@@ -151,8 +151,29 @@ export default {
       b3: 'Sharing with your speech therapist',
       b4: 'New games and content all the time',
     },
-    upgrade: 'See the premium plan',
-    soon: 'The premium plan is coming soon. Until then, enjoy the free demo games!',
+    plansTitle: 'Choose a plan',
+    perMonth: '{price} / month',
+    perYear: '{price} / year',
+    trial: '{days} days free, then the price above',
+    subscribe: 'Subscribe',
+    restore: 'Restore purchases',
+    loading: 'Loading the plans…',
+    loadFailed: 'Could not load the plans. Check your connection and try again.',
+    retry: 'Try again',
+    failed: 'Something went wrong. You have not been charged twice; try again in a moment.',
+    notActive: 'We could not find an active subscription yet. If you just bought it, wait a moment and tap Restore purchases.',
+    nothingToRestore: 'No subscription found for this account.',
+    thanks: 'Thank you! The premium plan is on. Have fun!',
+    termsTitle: 'Subscription terms',
+    renews: 'The subscription renews automatically every month or year, at the price shown, until you cancel.',
+    chargedIos: 'Payment is charged to your Apple ID account when you confirm the purchase. It renews unless you cancel at least 24 hours before the end of the current period.',
+    chargedAndroid: 'Payment is charged to your Google Play account when you confirm the purchase. It renews unless you cancel before the end of the current period.',
+    cancelIos: 'To cancel: Settings → your name → Subscriptions on your iPhone or iPad.',
+    cancelAndroid: 'To cancel: Google Play → Payments & subscriptions → Subscriptions.',
+    allChildren: 'One subscription covers every child in your account and all your devices.',
+    terms: 'Terms of Use',
+    privacy: 'Privacy Policy',
+    inApp: 'The premium plan can be subscribed to in the Beszéd app on iPhone and Android.',
     tryFree: 'Back to the games',
   },
 
@@ -173,6 +194,18 @@ export default {
   },
 
   game: {
+    surprise: {
+      dance: 'Surprise! Csillám is dancing for you!',
+      rainbow: 'Surprise! A rainbow in the sky!',
+      flowers: 'Surprise! A shower of flowers!',
+    },
+    rest: {
+      title: "Let's rest a little!",
+      text: 'We played a lot. Have some water, look out of the window, then we can carry on!',
+      speech: "That was so much fun! Let's rest a little! Have some water!",
+      take: "I'll rest a bit",
+      more: 'One more game',
+    },
     loadFailed: 'Could not load the game.',
     replayLabel: 'Repeat the question',
     replaySlowLabel: 'Repeat the question, slowly',
@@ -193,19 +226,9 @@ export default {
     unlocked: 'New treasure for Csillám: {name}',
     savedLater: "No internet right now: we'll save the result as soon as there is.",
     gardenGrew: 'A new plant grew in your garden!',
+    stoneBloomed: "The game's stone bloomed in the garden!",
+    tomorrow: "You played a lot today. We'll meet again tomorrow, I'll wait for you in the garden!",
     pickTheme: 'Which pictures shall we use today? Choose one!',
-    surprise: {
-      dance: 'Surprise! Csillám is dancing for you!',
-      rainbow: 'Surprise! A rainbow in the sky!',
-      flowers: 'Surprise! A shower of flowers!',
-    },
-    rest: {
-      title: "Let's rest a little!",
-      text: 'We played a lot. Have some water, look out of the window, then we can carry on!',
-      speech: "That was so much fun! Let's rest a little! Have some water!",
-      take: "I'll rest a bit",
-      more: 'One more game',
-    },
     theme: 'Theme: {name}',
     again: 'Again',
     otherGame: 'Another game',
@@ -226,8 +249,6 @@ export default {
     tooHard: "No worries, let's try a shorter one!",
   },
 
-    stoneBloomed: "The game's stone bloomed in the garden!",
-    tomorrow: "You played a lot today. We'll meet again tomorrow, I'll wait for you in the garden!",
   tapcount: {
     drum: 'Drum',
     help: 'Help',
@@ -345,6 +366,8 @@ export default {
   },
 
   rewards: {
+    nextGift: 'Next gift: {name}, at level {level}',
+    daysTogether: 'Days we played together: {count}',
     title: 'My stickers',
     level: 'Level {level}',
     toNext: '{count} more stars to the next level',
@@ -365,9 +388,14 @@ export default {
     tookOff: "OK, I'll take it off!",
     surprise: 'Surprise!',
     surpriseSpeech: 'Ta-da! How do you like my new outfit?',
+    compliment: {
+      c1: 'It looks so good on me!',
+      c2: "Wow, don't I look pretty!",
+      c3: 'I love it! Thank you!',
+      c4: 'I really like this!',
+      c5: 'Gorgeous!',
+    },
     undress: 'Take everything off',
-    nextGift: 'Next gift: {name}, at level {level}',
-    daysTogether: 'Days we played together: {count}',
     undressSpeech: "Well, now I'm the old Csillám again!",
     unlockAt: 'From level {level}',
     wearFailed: 'Could not change Csillám\'s outfit.',
@@ -401,6 +429,9 @@ export default {
   },
 
   progress: {
+    thisWeek: 'This week you played on {days} days and finished {games} games.',
+    thisWeekMore: 'That is more than last week ({prev}). Great work!',
+    thisWeekTip: 'Even a few minutes a day counts: a little, often, works best.',
     title: 'Progress',
     period: 'Period',
     lastDays: 'Last {count} days',
@@ -422,9 +453,6 @@ export default {
     },
     levelNote:
       'Papagáj level = this many words repeated back in order. Mondd utánam level: 1 short, 2 medium, 3 complex sentence.',
-    thisWeek: 'This week you played on {days} days and finished {games} games.',
-    thisWeekMore: 'That is more than last week ({prev}). Great work!',
-    thisWeekTip: 'Even a few minutes a day counts: a little, often, works best.',
     charts: {
       games: 'Games played through per week',
       rate: 'Share of right-first-try answers',
@@ -443,6 +471,10 @@ export default {
   },
 
   settings: {
+    weatherTitle: 'Weather',
+    weatherCity: "City (only for the weather; the child's location is never sent anywhere)",
+    motionTitle: 'Movement',
+    reduceMotion: 'Less movement: a calmer garden, no confetti or floating',
     title: 'Settings',
     loadFailed: 'Could not load the settings.',
     saveFailed: 'Could not save the setting.',
@@ -464,15 +496,11 @@ export default {
     title: 'Skill areas',
     subtitle: 'share of right-first-try answers',
     meterLabel: '{area}: share of right-first-try answers',
-    motionTitle: 'Movement',
-    reduceMotion: 'Less movement: a calmer garden, no confetti or floating',
     diferTitle: 'Practices a skill similar to one of the DIFER areas',
     previous: 'Previous period: {value}',
     legendNow: 'this period',
     legendPrev: 'previous period of the same length',
     bands: {
-    weatherTitle: 'Weather',
-    weatherCity: "City (only for the weather; the child's location is never sent anywhere)",
       strong: 'Solid',
       growing: 'Growing',
       practice: 'Needs more practice',
@@ -482,6 +510,23 @@ export default {
     note:
       'The grouping is approximate: the games practice skills similar to the DIFER areas, ' +
       'but this is not a DIFER assessment and not a diagnosis. The bands describe in-game results, not an age-group comparison.',
+  },
+
+  sounds: {
+    title: 'Sounds',
+    subtitle: 'share of right-first-try answers per sound',
+    meterLabel: '{sound}: share of right-first-try answers',
+    kinds: { start: 'First sounds', contrast: 'Sound pairs', rhyme: 'Rhymes' },
+    kindName: { start: 'first sound', contrast: 'sound pair', rhyme: 'rhyme' },
+    flags: { strongest: 'Strongest', weakest: 'Worth practising', improved: 'Improved most' },
+    answers: '{count} answers',
+    previous: 'Previous period: {value}',
+    overall: 'since the start: {value} ({count} answers)',
+    few: '{count} more sounds have too few answers so far (at least {min} needed), so they are not shown.',
+    tipTitle: 'Tip for home',
+    note:
+      'The sound breakdown comes from the answers in the games: it shows how well the child recognises and tells ' +
+      'sounds apart in the games, not how they pronounce them. It is not a diagnosis and does not replace a speech therapy assessment.',
   },
 
   share: {
@@ -516,7 +561,36 @@ export default {
       'or email address. Whoever has the link can view it for as long as it is valid.',
   },
 
+  levelPicker: {
+    title: 'Level',
+    titleCurrent: 'Level: {current}',
+    choose: 'choose',
+    start: 'Start',
+  },
+
+  tamagotchi: {
+    nameLevel: '{name} · level {level}',
+    levelBurst: 'Level {level}!',
+    levelUpSpeech: 'Level up! Now on level {level}!',
+    foodLabel: 'Food: drag it to its mouth to feed it',
+    petLabel: 'Little pet',
+    play: 'Play',
+    sleep: 'Sleep',
+    stats: { health: 'Health', happiness: 'Happiness', hunger: 'Hunger', energy: 'Energy' },
+    mood: {
+      sick: 'Not feeling well...',
+      hungry: "I'm hungry!",
+      sad: "I'm sad...",
+      sleeping: 'Zzz... sleeping',
+      playing: 'This is fun!',
+      happy: "I'm happy!",
+    },
+    nyami: { n1: 'Yum!', n2: 'Mmm, delicious!', n3: 'That tasted so good!' },
+  },
+
   recordings: {
+    loveVoice:
+      "Grandma's, grandpa's or a sibling's voice? Anyone the child loves can record the lines: the child will hear their favourite voice instead of Csillám's. It's the loveliest gift.",
     title: 'My voice',
     intro:
       'Press the {record} button, read it slowly and cheerfully, as if telling a story, then press the {stop} button. ' +
@@ -533,5 +607,3 @@ export default {
     pickFile: 'Choose an audio file',
   },
 }
-    loveVoice:
-      "Grandma's, grandpa's or a sibling's voice? Anyone the child loves can record the lines: the child will hear their favourite voice instead of Csillám's. It's the loveliest gift.",

@@ -22,7 +22,7 @@ export function preloadEmojis(chars) {
     } else if (sym) {
       urls.add(`${config.symbols.baseUrl.replace(/\/?$/, '/')}${sym.name}.svg`)
     } else if (uploaded) {
-      urls.add(`/api/content-images/${uploaded.id}`)
+      urls.add(`${config.contentImages.baseUrl.replace(/\/?$/, '/')}${uploaded.id}`)
     } else if (config.emoji.baseUrl) {
       splitEmoji(char).forEach(ch => {
         urls.add(`${config.emoji.baseUrl.replace(/\/?$/, '/')}${emojiAssetName(ch)}${config.emoji.ext}`)

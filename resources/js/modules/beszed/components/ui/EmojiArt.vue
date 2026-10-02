@@ -77,7 +77,7 @@ const a11y = computed(() => (props.label ? { role: 'img', 'aria-label': props.la
   <img
     v-else-if="uploaded && !uploadFailed"
     class="emoji emoji--img"
-    :src="`/api/content-images/${uploaded.id}`"
+    :src="`${config.contentImages.baseUrl.replace(/\/?$/, '/')}${uploaded.id}`"
     :alt="label"
     :aria-hidden="label ? undefined : 'true'"
     draggable="false"

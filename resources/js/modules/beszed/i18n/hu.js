@@ -150,8 +150,29 @@ export default {
       b3: 'Megosztás a logopédussal',
       b4: 'Új játékok és tartalmak folyamatosan',
     },
-    upgrade: 'Prémium csomag megnézése',
-    soon: 'A prémium csomag hamarosan elérhető. Addig is játsszatok a kipróbálható játékokkal!',
+    plansTitle: 'Válassz csomagot',
+    perMonth: '{price} / hó',
+    perYear: '{price} / év',
+    trial: '{days} nap ingyen, utána a fenti ár',
+    subscribe: 'Előfizetek',
+    restore: 'Vásárlások visszaállítása',
+    loading: 'A csomagok betöltése…',
+    loadFailed: 'Nem sikerült betölteni a csomagokat. Ellenőrizd a kapcsolatot, és próbáld újra.',
+    retry: 'Újra',
+    failed: 'Valami félresikerült. Nem vontunk le kétszer pénzt; próbáld újra egy perc múlva.',
+    notActive: 'Még nem találunk aktív előfizetést. Ha épp most vásároltad, várj egy kicsit, és koppints a Vásárlások visszaállítása gombra.',
+    nothingToRestore: 'Ehhez a fiókhoz nem találtunk előfizetést.',
+    thanks: 'Köszönjük! A prémium csomag be van kapcsolva. Jó játékot!',
+    termsTitle: 'Az előfizetés feltételei',
+    renews: 'Az előfizetés a kiírt áron automatikusan megújul havonta vagy évente, amíg le nem mondod.',
+    chargedIos: 'A díjat az Apple-azonosítódra terheli az Apple a vásárlás megerősítésekor. Megújul, hacsak legalább 24 órával az aktuális időszak vége előtt le nem mondod.',
+    chargedAndroid: 'A díjat a Google Play-fiókodra terheli a Google a vásárlás megerősítésekor. Megújul, hacsak az aktuális időszak vége előtt le nem mondod.',
+    cancelIos: 'Lemondás: iPhone-on vagy iPaden Beállítások → a neved → Előfizetések.',
+    cancelAndroid: 'Lemondás: Google Play → Fizetések és előfizetések → Előfizetések.',
+    allChildren: 'Egy előfizetés a fiókod összes gyerekére és minden eszközödre érvényes.',
+    terms: 'Felhasználási feltételek',
+    privacy: 'Adatkezelési tájékoztató',
+    inApp: 'A prémium csomagra a Beszéd alkalmazásban lehet előfizetni iPhone-on és Androidon.',
     tryFree: 'Vissza a játékokhoz',
   },
 
@@ -172,6 +193,18 @@ export default {
   },
 
   game: {
+    surprise: {
+      dance: 'Meglepetés! Csillám táncol neked!',
+      rainbow: 'Meglepetés! Szivárvány van az égen!',
+      flowers: 'Meglepetés! Virágeső!',
+    },
+    rest: {
+      title: 'Pihenjünk egy kicsit!',
+      text: 'Nagyon sokat játszottunk. Igyál egy kis vizet, nézz ki az ablakon, aztán folytathatjuk!',
+      speech: 'Nagyon jó móka volt! Pihenjünk egy kicsit! Igyál egy kis vizet!',
+      take: 'Pihenek egy kicsit',
+      more: 'Még egy játékot',
+    },
     loadFailed: 'Nem sikerült betölteni a játékot.',
     replayLabel: 'Kérdés újra',
     replaySlowLabel: 'Kérdés újra, lassan',
@@ -192,19 +225,9 @@ export default {
     unlocked: 'Új kincs Csillámnak: {name}',
     savedLater: 'Most nincs internet: az eredményt elmentjük, amint újra lesz.',
     gardenGrew: 'Egy új növény nőtt a kertedben!',
+    stoneBloomed: 'Kivirágzott a játék köve a kertben!',
+    tomorrow: 'Ma már sokat játszottál. Holnap is találkozunk, várlak a kertben!',
     pickTheme: 'Milyen képeket rakjunk ki ma? Válassz!',
-    surprise: {
-      dance: 'Meglepetés! Csillám táncol neked!',
-      rainbow: 'Meglepetés! Szivárvány van az égen!',
-      flowers: 'Meglepetés! Virágeső!',
-    },
-    rest: {
-      title: 'Pihenjünk egy kicsit!',
-      text: 'Nagyon sokat játszottunk. Igyál egy kis vizet, nézz ki az ablakon, aztán folytathatjuk!',
-      speech: 'Nagyon jó móka volt! Pihenjünk egy kicsit! Igyál egy kis vizet!',
-      take: 'Pihenek egy kicsit',
-      more: 'Még egy játékot',
-    },
     theme: 'Téma: {name}',
     again: 'Még egyszer',
     otherGame: 'Másik játék',
@@ -225,8 +248,6 @@ export default {
     tooHard: 'Semmi baj, próbáljunk egy rövidebbet!',
   },
 
-    stoneBloomed: 'Kivirágzott a játék köve a kertben!',
-    tomorrow: 'Ma már sokat játszottál. Holnap is találkozunk, várlak a kertben!',
   tapcount: {
     drum: 'Dob',
     help: 'Segíts',
@@ -344,6 +365,8 @@ export default {
   },
 
   rewards: {
+    nextGift: 'Következő ajándék: {name}, a(z) {level}. szinten',
+    daysTogether: 'Ennyi napon játszottunk együtt: {count}',
     title: 'Matricáim',
     level: '{level}. szint',
     toNext: 'Még {count} csillag a következő szintig',
@@ -364,9 +387,14 @@ export default {
     tookOff: 'Rendben, leveszem!',
     surprise: 'Meglepetés!',
     surpriseSpeech: 'Tádám! Hogy tetszik az új ruhám?',
+    compliment: {
+      c1: 'Nagyon jól áll!',
+      c2: 'Hű, de csinos vagyok!',
+      c3: 'Imádom! Köszönöm!',
+      c4: 'Ez nagyon tetszik!',
+      c5: 'Csodaszép!',
+    },
     undress: 'Mindent le',
-    nextGift: 'Következő ajándék: {name}, a(z) {level}. szinten',
-    daysTogether: 'Ennyi napon játszottunk együtt: {count}',
     undressSpeech: 'Na, most megint a régi Csillám vagyok!',
     unlockAt: '{level}. szinttől',
     wearFailed: 'Nem sikerült átöltöztetni Csillámot.',
@@ -400,6 +428,9 @@ export default {
   },
 
   progress: {
+    thisWeek: 'Ezen a héten {days} napon játszottatok, és {games} játékot fejeztetek be.',
+    thisWeekMore: 'Ez több, mint az előző héten ({prev}). Szép munka!',
+    thisWeekTip: 'Már napi pár perc is sokat számít: a kevés, de rendszeres gyakorlás működik a legjobban.',
     title: 'Haladás',
     period: 'Időszak',
     lastDays: 'Utolsó {count} nap',
@@ -421,9 +452,6 @@ export default {
     },
     levelNote:
       'Papagáj szint = ennyi szót mond vissza sorrendben. Mondd utánam szint: 1 rövid, 2 közepes, 3 összetett mondat.',
-    thisWeek: 'Ezen a héten {days} napon játszottatok, és {games} játékot fejeztetek be.',
-    thisWeekMore: 'Ez több, mint az előző héten ({prev}). Szép munka!',
-    thisWeekTip: 'Már napi pár perc is sokat számít: a kevés, de rendszeres gyakorlás működik a legjobban.',
     charts: {
       games: 'Végigjátszott játékok hetente',
       rate: 'Elsőre jó válaszok aránya',
@@ -442,6 +470,10 @@ export default {
   },
 
   settings: {
+    weatherTitle: 'Időjárás',
+    weatherCity: 'Város (csak az időjárás miatt; a gyerek helye nem kerül sehová)',
+    motionTitle: 'Mozgás',
+    reduceMotion: 'Kevesebb mozgás: nyugodtabb kert, nincs konfetti és lebegés',
     title: 'Beállítások',
     loadFailed: 'Nem sikerült betölteni a beállításokat.',
     saveFailed: 'Nem sikerült elmenteni a beállítást.',
@@ -463,15 +495,11 @@ export default {
     title: 'Készségterületek',
     subtitle: 'elsőre jó válaszok aránya',
     meterLabel: '{area}: elsőre jó válaszok aránya',
-    motionTitle: 'Mozgás',
-    reduceMotion: 'Kevesebb mozgás: nyugodtabb kert, nincs konfetti és lebegés',
     diferTitle: 'A DIFER egyik területéhez hasonló készséget gyakorol',
     previous: 'Előző időszak: {value}',
     legendNow: 'ez az időszak',
     legendPrev: 'előző, ugyanilyen hosszú időszak',
     bands: {
-    weatherTitle: 'Időjárás',
-    weatherCity: 'Város (csak az időjárás miatt; a gyerek helye nem kerül sehová)',
       strong: 'Biztosan megy',
       growing: 'Fejlődik',
       practice: 'Gyakoroljuk még',
@@ -481,6 +509,23 @@ export default {
     note:
       'A csoportosítás közelítő: a játékok a DIFER-területekhez hasonló készségeket gyakoroltatnak, ' +
       'de ez nem DIFER-mérés és nem diagnózis. A sávok a játékbeli eredményt írják le, nem korosztályos összevetést.',
+  },
+
+  sounds: {
+    title: 'Hangok',
+    subtitle: 'elsőre jó válaszok aránya hangonként',
+    meterLabel: '{sound}: elsőre jó válaszok aránya',
+    kinds: { start: 'Kezdőhangok', contrast: 'Hangpárok', rhyme: 'Rímek' },
+    kindName: { start: 'kezdőhang', contrast: 'hangpár', rhyme: 'rím' },
+    flags: { strongest: 'Legbiztosabb', weakest: 'Ezt érdemes gyakorolni', improved: 'Legtöbbet fejlődött' },
+    answers: '{count} válasz',
+    previous: 'Előző időszak: {value}',
+    overall: 'a kezdetek óta: {value} ({count} válasz)',
+    few: '{count} további hangról még kevés a válasz (legalább {min} kell), ezeket nem mutatjuk.',
+    tipTitle: 'Otthoni tipp',
+    note:
+      'A hangok szerinti bontás a játékbeli válaszokból készül: azt mutatja, mennyire megy a hang felismerése és ' +
+      'megkülönböztetése a játékokban, nem a kiejtést. Nem diagnózis, és nem helyettesíti a logopédiai vizsgálatot.',
   },
 
   share: {
@@ -515,7 +560,36 @@ export default {
       'e-mail-címet nem. Akinél a link van, amíg él, megnézheti.',
   },
 
+  levelPicker: {
+    title: 'Pálya',
+    titleCurrent: 'Pálya: {current}',
+    choose: 'választás',
+    start: 'Indítás',
+  },
+
+  tamagotchi: {
+    nameLevel: '{name} · {level}. szint',
+    levelBurst: 'Szint {level}!',
+    levelUpSpeech: 'Szintet lépett! Most már {level}. szinten van!',
+    foodLabel: 'Étel: húzd a szájához, hogy megetesd',
+    petLabel: 'Kis kedvenc',
+    play: 'Játék',
+    sleep: 'Alvás',
+    stats: { health: 'Egészség', happiness: 'Boldogság', hunger: 'Éhség', energy: 'Energia' },
+    mood: {
+      sick: 'Rosszul érzi magát...',
+      hungry: 'Éhes vagyok!',
+      sad: 'Szomorú vagyok...',
+      sleeping: 'Zzz... alszik',
+      playing: 'Ez jó móka!',
+      happy: 'Boldog vagyok!',
+    },
+    nyami: { n1: 'Nyami!', n2: 'Mmm, finom!', n3: 'Ez nagyon ízlett!' },
+  },
+
   recordings: {
+    loveVoice:
+      'Nagymama, nagypapa, testvér hangja? Bárki felveheti a sorokat, akit a gyerek szeret: ő a kedvenc hangját hallja majd Csillám helyett. Ez a legszebb ajándék.',
     title: 'Saját hang',
     intro:
       'Nyomd meg a {record} gombot, olvasd fel lassan és vidáman, mintha mesélnél, aztán nyomd meg a {stop} gombot. ' +
@@ -532,5 +606,3 @@ export default {
     pickFile: 'Hangfájl választása',
   },
 }
-    loveVoice:
-      'Nagymama, nagypapa, testvér hangja? Bárki felveheti a sorokat, akit a gyerek szeret: ő a kedvenc hangját hallja majd Csillám helyett. Ez a legszebb ajándék.',

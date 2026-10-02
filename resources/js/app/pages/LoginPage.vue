@@ -4,12 +4,15 @@ import { useRoute, useRouter } from 'vue-router'
 import { BzButton, BzNotice, CsillamAvatar } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
 import { appConfig } from '../config'
+import { isNative } from '../native'
 import { useSessionStore } from '../stores/session'
 import { firstError, texts } from '../texts'
 
 const route = useRoute()
 const router = useRouter()
 const session = useSessionStore()
+/** The iOS / Android app: e-mail sign-in only (no Google, no demo), see config.js. */
+const native = isNative()
 const busy = ref(false)
 const demoError = ref('')
 
@@ -29,7 +32,8 @@ async function submitEmail() {
   try {
     if (mode.value === 'forgot') {
       await session.forgotPassword(form.value.email)
-      notice.value = texts.auth.forgotSent
+      // The e-mailed link opens the website's reset page in the browser, not the app.
+      notice.value = native ? texts.auth.forgotSentNative : texts.auth.forgotSent
       return
     }
     if (mode.value === 'register') await session.emailRegister(form.value.name, form.value.email, form.value.password)
@@ -127,7 +131,7 @@ async function demo() {
       </div>
 
       <p v-if="appConfig.auth.demo && !appConfig.auth.google" class="dev">{{ texts.googleSetup }}</p>
-      <p v-if="!appConfig.auth.google && !appConfig.auth.demo" class="dev">{{ texts.noLogin }}</p>
+      <p v-if="!native && !appConfig.auth.google && !appConfig.auth.demo" class="dev">{{ texts.noLogin }}</p>
       <p class="fine">
         {{ texts.parentsOnly }}
         <RouterLink class="privacy-link" :to="{ name: 'privacy' }">{{ texts.privacyLink }}</RouterLink>

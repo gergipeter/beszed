@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { t } from '../../i18n'
 
 /**
  * Pick a pálya by hand (Kirakó has 200): type a number or tap a jump. The choice
@@ -27,12 +28,12 @@ function go(n) {
 <template>
   <div class="lp">
     <button type="button" class="chip" @click="open = !open">
-      🎚️ Pálya<template v-if="current">: {{ current }}</template> · választás
+      🎚️ {{ current ? t('levelPicker.titleCurrent', { current }) : t('levelPicker.title') }} · {{ t('levelPicker.choose') }}
     </button>
     <div v-if="open" class="panel">
       <form class="row" @submit.prevent="go(value)">
         <input v-model.number="value" type="number" inputmode="numeric" :min="1" :max="max" :placeholder="`1–${max}`" />
-        <button type="submit" class="go">Indítás</button>
+        <button type="submit" class="go">{{ t('levelPicker.start') }}</button>
       </form>
       <div class="jumps">
         <button v-for="n in jumps" :key="n" type="button" @click="go(n)">{{ n }}</button>
@@ -74,6 +75,7 @@ function go(n) {
 input {
   flex: 1;
   min-width: 0;
+  min-height: 44px;
   padding: 8px 12px;
   border: 3px solid var(--bz-soft);
   border-radius: 14px;

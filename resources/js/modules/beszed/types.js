@@ -250,8 +250,38 @@
  * @property {number} days
  * @property {GameProgress[]} games
  * @property {SkillArea[]} areas
+ * @property {SoundReport} sounds
  * @property {string} narrative
  * @property {string[]} recommendations
+ */
+
+/**
+ * How the child does on single sounds (app/Beszed/SoundProgress.php). Only sounds with
+ * at least `minAttempts` answers in the period are in `items`; `attempts` counts all.
+ * @typedef {object} SoundReport
+ * @property {number} minAttempts
+ * @property {number} attempts   answers about sounds this period, in `items` or not
+ * @property {number} few        sounds played this period with too few answers to show
+ * @property {string | null} strongest   key of the sound that goes best (needs another to compare with)
+ * @property {string | null} weakest     key of the one to practise a little more (never a firm one)
+ * @property {string | null} improved    key of the one that improved most
+ * @property {string | null} [summary]   a few plain sentences about the three above
+ * @property {string | null} [tip]       one short thing to do at home (parent's view only)
+ * @property {SoundRow[]} items
+ *
+ * @typedef {object} SoundRow
+ * @property {string} key
+ * @property {'start' | 'contrast' | 'rhyme'} kind   first sound, sound pair (s – sz) or rhyme ending (-ó)
+ * @property {string} label
+ * @property {string[]} games    ids of the games that practise it, most answers first
+ * @property {string[]} examples
+ * @property {number} attempts
+ * @property {number} firstTryRate
+ * @property {number | null} previousRate
+ * @property {'up' | 'flat' | 'down' | null} trend
+ * @property {'strong' | 'growing' | 'practice' | 'noData'} band
+ * @property {number} overallAttempts
+ * @property {number | null} overallRate   since the beginning
  */
 
 /**

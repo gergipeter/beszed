@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { fetchProgress, fetchProgressHistory } from '../api'
 import TrendChart from '../components/charts/TrendChart.vue'
 import SkillMap from '../components/progress/SkillMap.vue'
+import SoundProgress from '../components/progress/SoundProgress.vue'
 import BzButton from '../components/ui/BzButton.vue'
 import BzNotice from '../components/ui/BzNotice.vue'
 import PageHeader from '../components/ui/PageHeader.vue'
@@ -110,6 +111,7 @@ watch(days, load)
     </BzNotice>
 
     <SkillMap :areas="report.areas" :games="report.games" />
+    <SoundProgress v-if="report.sounds" :sounds="report.sounds" />
 
     <BzNotice v-if="report.narrative" class="narrative">
       <p class="narrative-text">{{ report.narrative }}</p>

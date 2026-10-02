@@ -10,6 +10,9 @@ import { appConfig } from '../config'
  */
 const router = useRouter()
 const privacy = appConfig.privacy ?? {}
+const voiceStaysHere = privacy.stt === 'whisper'
+const azureListens = privacy.stt === 'azure'
+const azureSpeaks = privacy.tts === 'azure'
 const missing = 'a szolgáltató még nem adta meg'
 const back = () => (window.history.length > 1 ? router.back() : router.push('/'))
 </script>
@@ -45,10 +48,16 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
 
       <h2>Ki fér hozzá?</h2>
       <p>
-        Csak te, bejelentkezve. Külső szolgáltatók: a <b>Google</b>, ha Google-fiókkal lépsz be (a belépéshez); és ha a
-        szolgáltató bekapcsolta, a <b>Microsoft Azure</b> beszédszolgáltatása (Csillám gépi hangja a mondatok szövegéből,
-        illetve a „Mondd utánam” kiejtésértékelésnél a felvett hang). Az alapbeállítású gépi hang (Piper) a saját
-        szerverünkön fut, a szöveg nem megy külső szolgáltatóhoz.
+        Csak te, bejelentkezve. Külső szolgáltatók: a <b>Google</b>, ha Google-fiókkal lépsz be (a belépéshez)<template
+          v-if="azureSpeaks || azureListens"
+          >; és a <b>Microsoft Azure</b> beszédszolgáltatása<template v-if="azureSpeaks"> (Csillám gépi hangja a mondatok
+            szövegéből; gyerekhang nélkül)</template
+          ><template v-if="azureListens"> (a „Mondd utánam” kiejtésértékelésnél a felvett hang)</template></template
+        >. Az alapbeállítású gépi hang (Piper) a saját szerverünkön fut, a szöveg nem megy külső szolgáltatóhoz.
+      </p>
+      <p v-if="voiceStaysHere">
+        <b>A gyerek hangja nálunk marad:</b> a „Mondd utánam” gyakorlatnál a felvételt a saját szerverünkön alakítjuk
+        szöveggé (Whisper), külső szolgáltatóhoz nem kerül, és a felvételt nem mentjük el: a kiértékelés után törlődik.
       </p>
       <p>
         <b>Megosztás a logopédussal:</b> ha te készítesz egy megosztási linket, akinek odaadod, bejelentkezés nélkül

@@ -3,11 +3,19 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build && node scripts/copy-emoji.mjs",
+        "build": "vite build && node scripts/copy-emoji.mjs && node scripts/stamp-sw.mjs",
+        "build:native": "vite build --config vite.native.config.js --mode native && node scripts/native-assets.mjs",
+        "cap:sync": "cap sync",
         "dev": "vite",
-        "check:emoji": "node scripts/check-emoji.mjs"
+        "check:emoji": "node scripts/check-emoji.mjs",
+        "test:js": "node --test tests/js/*.test.mjs"
     },
     "dependencies": {
+        "@aparajita/capacitor-secure-storage": "^8.0.1",
+        "@capacitor/android": "^8.5.2",
+        "@capacitor/core": "^8.5.2",
+        "@capacitor/ios": "^8.5.2",
+        "@revenuecat/purchases-capacitor": "^13.7.0",
         "axios": "^1.11.0",
         "jspdf": "^4.2.1",
         "pinia": "^3.0.3",
@@ -15,6 +23,7 @@
         "vue-router": "^4.5.1"
     },
     "devDependencies": {
+        "@capacitor/cli": "^8.5.2",
         "@twemoji/svg": "^15.0.0",
         "@vitejs/plugin-vue": "^6.0.1",
         "laravel-vite-plugin": "^2.0.0",

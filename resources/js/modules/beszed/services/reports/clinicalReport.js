@@ -14,6 +14,9 @@ export const BAND_LABEL = Object.freeze({
   noData: 'Még kevés adat',
 })
 
+const SOUND_KIND = Object.freeze({ start: 'kezdőhang', contrast: 'hangpár', rhyme: 'rím' })
+const TREND = Object.freeze({ up: '↗ javult', flat: '→ hasonló', down: '↘ kevesebb' })
+
 const MARGIN = 48
 const PAGE_W = 595.28 // A4 pt
 
@@ -21,7 +24,7 @@ const PAGE_W = 595.28 // A4 pt
  * Builds a clinical-style PDF summary of a child's progress: letterhead, per-area
  * bands (from the server's ProgressReport, grouped the way a logopédus/DIFER
  * assessment would), a narrative paragraph, recommendations, and the per-game table.
- * @param {{ child: { name: string }, since: string, games: import('../../types').GameProgress[], areas: SkillArea[], narrative?: string, recommendations?: string[] }} report
+ * @param {{ child: { name: string }, since: string, games: import('../../types').GameProgress[], areas: SkillArea[], sounds?: import('../../types').SoundReport, narrative?: string, recommendations?: string[] }} report
  * @param {{ ageLabel?: string }} [meta]
  *
  * @typedef {object} SkillArea
@@ -38,6 +41,7 @@ export function buildClinicalReportPdf(report, meta = {}) {
 
   y = drawLetterhead(doc, y, report, meta)
   y = drawAreas(doc, y, report.areas ?? [])
+  y = drawSounds(doc, y, report.sounds)
   y = drawNarrative(doc, y, report.narrative)
   y = drawRecommendations(doc, y, report.recommendations ?? [])
   drawGameTable(doc, y, report.games ?? [])
@@ -154,6 +158,64 @@ function drawAreaGroup(doc, y, groupLabel, areas) {
   })
 
   return y + 6
+}
+
+/** Per first sound / sound pair / rhyme: first-try share as a bar, band and trend; then the plain-words summary. */
+function drawSounds(doc, y, sounds) {
+  const items = sounds?.items ?? []
+  if (!items.length) return y
+  y = sectionTitle(doc, y, 'Hangonkénti áttekintés')
+
+  const barX = MARGIN + 165
+  const barW = PAGE_W - MARGIN - barX - 110
+
+  items.forEach(s => {
+    if (y > 770) {
+      doc.addPage()
+      y = MARGIN
+    }
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(9.5)
+    doc.setTextColor(INK)
+    doc.text(s.label, MARGIN, y + 8)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    doc.setTextColor(MUTED)
+    doc.text(SOUND_KIND[s.kind] ?? '', MARGIN + 52, y + 8, { maxWidth: 108 })
+
+    doc.setFillColor(240, 240, 245)
+    doc.roundedRect(barX, y, barW, 10, 3, 3, 'F')
+    if (s.firstTryRate != null) {
+      const color = hexToRgb(BAND_COLOR[s.band] ?? BAND_COLOR.noData)
+      doc.setFillColor(color.r, color.g, color.b)
+      doc.roundedRect(barX, y, Math.max(6, barW * s.firstTryRate), 10, 3, 3, 'F')
+    }
+
+    doc.setFontSize(8.5)
+    doc.text(`${formatPercent(s.firstTryRate)} · ${BAND_LABEL[s.band] ?? ''}${s.trend ? ` · ${TREND[s.trend]}` : ''}`, barX + barW + 8, y + 8)
+    y += 20
+  })
+
+  if (sounds.summary) {
+    y += 2
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(INK)
+    const lines = doc.splitTextToSize(sounds.summary, PAGE_W - 2 * MARGIN)
+    doc.text(lines, MARGIN, y)
+    y += lines.length * 13
+  }
+
+  doc.setFontSize(8.5)
+  doc.setTextColor(MUTED)
+  const note = doc.splitTextToSize(
+    `Legalább ${sounds.minAttempts} válasz kell egy hanghoz az időszakban, hogy megjelenjen. A bontás a játékbeli felismerést és ` +
+      'megkülönböztetést írja le, nem a kiejtést; nem diagnózis.',
+    PAGE_W - 2 * MARGIN,
+  )
+  doc.text(note, MARGIN, y + 10)
+
+  return y + 10 + note.length * 11 + 12
 }
 
 function drawNarrative(doc, y, narrative) {

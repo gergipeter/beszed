@@ -15,6 +15,10 @@ RUN npm ci
 COPY resources ./resources
 COPY public ./public
 COPY scripts ./scripts
+# scripts/copy-emoji.mjs ships only the emoji these use, so it reads the content and the code that builds rounds
+COPY app ./app
+COPY config ./config
+COPY database ./database
 COPY vite.config.js ./
 RUN npm run build
 

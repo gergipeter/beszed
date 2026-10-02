@@ -27,8 +27,9 @@
 	@emoji path /build/emoji/*
 	header @emoji Cache-Control "public, max-age=2592000"
 
-	# The service worker must be re-checked on every visit.
-	@sw path /sw.js
+	# The service worker must be re-checked on every visit, and so must what tells it a new build is out
+	# (sw-version.js, imported by sw.js) and what it precaches from (manifest.json).
+	@sw path /sw.js /build/sw-version.js /build/manifest.json
 	header @sw Cache-Control "no-cache"
 
 	php_server

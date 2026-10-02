@@ -17,6 +17,12 @@ function readStoredLanguage() {
 /** Reactive so `{{ t('x.y') }}` in a template re-renders when the language changes. */
 const lang = ref(readStoredLanguage() ?? 'hu')
 
+/** Screen readers, hyphenation and the browser's own translate offer follow <html lang>. */
+function applyDocumentLanguage(code) {
+  if (typeof document !== 'undefined') document.documentElement.lang = code
+}
+applyDocumentLanguage(lang.value)
+
 /**
  * Switches the active language and remembers it on this device. Any part of
  * the UI reading `t()`/`numberWord()`/`formatDate()` re-renders on its own
@@ -25,6 +31,7 @@ const lang = ref(readStoredLanguage() ?? 'hu')
 export function setLanguage(code) {
   if (!(code in messages) || code === lang.value) return
   lang.value = code
+  applyDocumentLanguage(code)
   try {
     localStorage.setItem(STORAGE_KEY, code)
   } catch {

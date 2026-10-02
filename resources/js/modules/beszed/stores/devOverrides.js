@@ -22,27 +22,22 @@ export const useDevOverridesStore = defineStore('beszed/dev-overrides', () => {
 
   function setMemoryDifficulty(difficulty) {
     state.memoryDifficulty = difficulty
-    console.log('[DevOverrides] Memory difficulty:', difficulty)
   }
 
   function setFlipBackMultiplier(multiplier) {
     state.flipBackMultiplier = Math.max(0.1, multiplier)
-    console.log('[DevOverrides] Flip-back multiplier:', state.flipBackMultiplier)
   }
 
   function setAutoWinAfter(count) {
     state.autoWinAfter = count
-    console.log('[DevOverrides] Auto-win after:', count, 'correct answers')
   }
 
   function setStarBonus(bonus) {
     state.starBonus = Math.max(0, bonus)
-    console.log('[DevOverrides] Star bonus:', bonus)
   }
 
   function toggleDebug() {
     state.showDebug = !state.showDebug
-    console.log('[DevOverrides] Debug mode:', state.showDebug)
   }
 
   function reset() {
@@ -51,7 +46,6 @@ export const useDevOverridesStore = defineStore('beszed/dev-overrides', () => {
     state.autoWinAfter = null
     state.starBonus = 0
     state.showDebug = false
-    console.log('[DevOverrides] Reset to defaults')
   }
 
   return {

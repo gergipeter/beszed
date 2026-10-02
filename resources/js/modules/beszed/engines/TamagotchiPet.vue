@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { t } from '../i18n'
 
 /**
  * The Tamagotchi pet: its own little unicorn, drawn the same way Csillám is
@@ -30,7 +31,7 @@ const classes = computed(() => ['pet-uni', props.mood !== 'idle' && `mood-${prop
 </script>
 
 <template>
-  <span :class="classes" :style="maneStyle" role="img" aria-label="Kis kedvenc" @click="emit('tap')">
+  <span :class="classes" :style="maneStyle" role="img" :aria-label="t('tamagotchi.petLabel')" @click="emit('tap')">
     <svg class="uni" viewBox="0 0 200 222" aria-hidden="true">
       <defs>
         <linearGradient :id="gradientId" x1="0" y1="0" x2="0" y2="1">

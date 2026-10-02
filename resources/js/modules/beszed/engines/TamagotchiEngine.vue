@@ -4,9 +4,12 @@ import EmojiArt from '../components/ui/EmojiArt.vue'
 import BzButton from '../components/ui/BzButton.vue'
 import TamagotchiPet from './TamagotchiPet.vue'
 import { useDrag } from '../composables/useDrag'
+import { t } from '../i18n'
+import { pick } from '../utils/random'
 import { engineEmits, engineProps } from './contract'
 
-const NYAMI = ['Nyami!', 'Mmm, finom!', 'Ez nagyon ízlett!']
+/** The "tamagotchi.nyami.n{x}" texts she says when fed. */
+const NYAMI = [1, 2, 3]
 
 /**
  * Pet-care mini-game (Tamagotchi): one continuous round, no drill questions.
@@ -36,13 +39,10 @@ let actionTimer
 /** TamagotchiPet knows sick/hungry/sad/sleeping/happy/idle; 'playing' just borrows the happy pose. */
 const petUniMood = computed(() => (petMood.value === 'playing' ? 'happy' : petMood.value))
 
+/** 'sick' | 'hungry' | 'sad' | 'sleeping' | 'playing', else happy. */
 const moodLabel = computed(() => {
-  if (petMood.value === 'sick') return 'Rosszul érzi magát...'
-  if (petMood.value === 'hungry') return 'Éhes vagyok!'
-  if (petMood.value === 'sad') return 'Szomorú vagyok...'
-  if (petMood.value === 'sleeping') return 'Zzz... alszik'
-  if (petMood.value === 'playing') return 'Ez jó móka!'
-  return 'Boldog vagyok!'
+  const mood = ['sick', 'hungry', 'sad', 'sleeping', 'playing'].includes(petMood.value) ? petMood.value : 'happy'
+  return t(`tamagotchi.mood.${mood}`)
 })
 
 /** One-shot particles (floating hearts, food, zzz) that pop up near the pet and fade out. */
@@ -99,7 +99,7 @@ async function levelUp() {
   petHealth.value = 100
   petHappiness.value = 100
   petEnergy.value = 100
-  emit('say', `Szintet lépett! Most már ${petLevel.value}. szinten van!`)
+  emit('say', t('tamagotchi.levelUpSpeech', { level: petLevel.value }))
   leveling.value = true
   popParticles('✨', 6)
   await new Promise(r => setTimeout(r, 900))
@@ -115,7 +115,7 @@ function feed() {
   petMood.value = 'happy'
   playAction('eat')
   popParticles('✨', 2)
-  emit('say', NYAMI[Math.floor(Math.random() * NYAMI.length)])
+  emit('say', t(`tamagotchi.nyami.n${pick(NYAMI)}`))
   addExp(10)
   return true
 }
@@ -173,7 +173,7 @@ onUnmounted(() => {
 
 <template>
   <div class="tamagotchi">
-    <b class="pet-name">{{ data.petName }} · {{ petLevel }}. szint</b>
+    <b class="pet-name">{{ t('tamagotchi.nameLevel', { name: data.petName, level: petLevel }) }}</b>
 
     <div class="stage-wrap">
       <div ref="stage" class="pet-stage" :class="{ 'pet-stage--sleeping': petMood === 'sleeping' }">
@@ -189,7 +189,7 @@ onUnmounted(() => {
           class="food-chip bz-draggable"
           :class="{ 'food-chip--over': drag.over.value === 'mouth' }"
           :disabled="locked"
-          aria-label="Étel: húzd a szájához, hogy megetesd"
+          :aria-label="t('tamagotchi.foodLabel')"
           @pointerdown="drag.start($event, { id: 'apple' })"
           @click="feed()"
         >
@@ -208,7 +208,7 @@ onUnmounted(() => {
         </TransitionGroup>
 
         <div v-if="leveling" class="level-burst">
-          <EmojiArt char="🎉" /> Szint {{ petLevel }}! <EmojiArt char="🎉" />
+          <EmojiArt char="🎉" /> {{ t('tamagotchi.levelBurst', { level: petLevel }) }} <EmojiArt char="🎉" />
         </div>
       </div>
       <p class="mood-caption" aria-live="polite">{{ moodLabel }}</p>
@@ -217,26 +217,26 @@ onUnmounted(() => {
 
     <div class="bars">
       <div class="stat">
-        <EmojiArt char="❤️" /><label>Egészség</label>
+        <EmojiArt char="❤️" /><label>{{ t('tamagotchi.stats.health') }}</label>
         <div class="track"><div class="bar" :style="{ width: petHealth + '%', background: '#5bc27a' }" /></div>
       </div>
       <div class="stat">
-        <EmojiArt char="😊" /><label>Boldogság</label>
+        <EmojiArt char="😊" /><label>{{ t('tamagotchi.stats.happiness') }}</label>
         <div class="track"><div class="bar" :style="{ width: petHappiness + '%', background: '#ffd166' }" /></div>
       </div>
       <div class="stat" :class="{ 'stat--warn': petHunger > 70 }">
-        <EmojiArt char="🍗" /><label>Éhség</label>
+        <EmojiArt char="🍗" /><label>{{ t('tamagotchi.stats.hunger') }}</label>
         <div class="track"><div class="bar" :style="{ width: petHunger + '%', background: '#ff6b6b' }" /></div>
       </div>
       <div class="stat">
-        <EmojiArt char="⚡" /><label>Energia</label>
+        <EmojiArt char="⚡" /><label>{{ t('tamagotchi.stats.energy') }}</label>
         <div class="track"><div class="bar" :style="{ width: petEnergy + '%', background: '#4ecdc4' }" /></div>
       </div>
     </div>
 
     <div class="actions">
-      <BzButton :disabled="locked || petEnergy < 20" @click="play">🎮 Játék</BzButton>
-      <BzButton :disabled="locked" @click="napTime">😴 Alvás</BzButton>
+      <BzButton :disabled="locked || petEnergy < 20" @click="play">🎮 {{ t('tamagotchi.play') }}</BzButton>
+      <BzButton :disabled="locked" @click="napTime">😴 {{ t('tamagotchi.sleep') }}</BzButton>
     </div>
   </div>
 </template>

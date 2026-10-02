@@ -6,11 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#7cc8ff">
 
-    <!-- SEO Meta Tags -->
-    <title>Beszéd - Interactive Speech Therapy for Children</title>
-    <meta name="description" content="Gamified speech therapy app with AI-powered analysis, interactive exercises, progress tracking, and rewards. For children with speech development needs.">
-    <meta name="keywords" content="speech therapy, logopedia, children therapy, szóbeli fejlesztés, logopédia, speech exercises">
-    <meta name="author" content="Horizon Web">
+    <!-- SEO Meta Tags (Hungarian: the app opens in Hungarian, see <html lang>; the wording follows manifest.webmanifest) -->
+    <title>Beszéd – Csillám játékai</title>
+    <meta name="description" content="Játékos beszéd- és iskolaelőkészítő gyakorlás 4–7 éveseknek.">
     <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="bingbot" content="index, follow">
@@ -18,74 +16,38 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:title" content="Beszéd - Interactive Speech Therapy for Children">
-    <meta property="og:description" content="Gamified speech therapy app with AI analysis, interactive exercises, and progress tracking for children.">
+    <meta property="og:title" content="Beszéd – Csillám játékai">
+    <meta property="og:description" content="Játékos beszéd- és iskolaelőkészítő gyakorlás 4–7 éveseknek.">
     <meta property="og:image" content="{{ url('/og-image.svg') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="hu_HU">
-    <meta property="og:locale:alternate" content="en_US">
     <meta property="og:site_name" content="Beszéd">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Beszéd - Speech Therapy for Children">
-    <meta name="twitter:description" content="Interactive speech therapy app with AI analysis and gamified learning.">
+    <meta name="twitter:title" content="Beszéd – Csillám játékai">
+    <meta name="twitter:description" content="Játékos beszéd- és iskolaelőkészítő gyakorlás 4–7 éveseknek.">
     <meta name="twitter:image" content="{{ url('/og-image.svg') }}">
 
-    <!-- Canonical & Language Alternates -->
+    <!-- Canonical (the language is chosen in the app, not by URL, so there are no hreflang alternates) -->
     <link rel="canonical" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="hu" href="{{ url('/?lang=hu') }}" />
-    <link rel="alternate" hreflang="en" href="{{ url('/?lang=en') }}" />
-    <link rel="alternate" hreflang="x-default" href="{{ url('/') }}" />
 
     <!-- Performance -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link rel="preload" as="script" href="{{ asset('js/app.js') }}">
 
-    <!-- JSON-LD Structured Data -->
+    <!-- JSON-LD Structured Data: only what is true of the app itself (no ratings, offers or publisher until they are settled) -->
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
       "@@type": "SoftwareApplication",
       "name": "Beszéd",
-      "description": "Interactive speech therapy app for children with AI-powered analysis",
+      "description": "Játékos beszéd- és iskolaelőkészítő gyakorlás 4–7 éveseknek.",
       "url": "{{ url('/') }}",
-      "applicationCategory": "HealthApplication",
+      "applicationCategory": "EducationApplication",
       "operatingSystem": "Web",
-      "inLanguage": ["hu", "en"],
-      "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR"
-      },
-      "author": {
-        "@@type": "Organization",
-        "name": "Horizon Web",
-        "url": "{{ url('/') }}"
-      },
-      "aggregateRating": {
-        "@@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "42"
-      }
-    }
-    </script>
-
-    <!-- Organization Schema -->
-    <script type="application/ld+json">
-    {
-      "@@context": "https://schema.org",
-      "@@type": "Organization",
-      "name": "Beszéd",
-      "url": "{{ url('/') }}",
-      "logo": "{{ url('/icons/favicon-32.png') }}",
-      "description": "Speech therapy application for children",
-      "sameAs": [
-        "https://facebook.com/beszed",
-        "https://twitter.com/beszed"
-      ]
+      "inLanguage": ["hu", "en"]
     }
     </script>
 

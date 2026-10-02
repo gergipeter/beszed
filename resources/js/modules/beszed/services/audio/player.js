@@ -1,5 +1,6 @@
 import silentWav from '../../assets/audio/silent.wav'
 import { config } from '../../config/options'
+import { loadAudioBlob } from './blobCache'
 
 /**
  * One shared <audio> element for everything Csillám says. iOS only lets an
@@ -52,14 +53,21 @@ export function playAudio(url, { rate = 1 } = {}) {
     // Some browsers never fire `ended` for broken streams; never hang the game on that.
     const timeout = setTimeout(() => finish(true), config.timing.playbackTimeoutMs)
 
+    const begin = src => {
+      if (settle !== finish) return // interrupted while the audio was being fetched
+      el.src = src
+      el.play().then(
+        () => (unlocked = true),
+        () => finish(false),
+      )
+    }
+
     settle = finish
     el.addEventListener('ended', onEnded)
     el.addEventListener('error', onError)
-    el.src = url
-    el.play().then(
-      () => (unlocked = true),
-      () => finish(false),
-    )
+    // Native app: fetched with the Bearer token and played from memory (the same element, so it stays unlocked).
+    if (config.blobAudio) loadAudioBlob(url).then(begin, () => finish(false))
+    else begin(url)
   })
 }
 

@@ -2,32 +2,28 @@
 
 namespace App\Services;
 
+/**
+ * Page meta and structured-data helpers. Kept in line with resources/views/app.blade.php: Hungarian, nothing
+ * the app cannot back up (no ratings, offers or publisher), and only the pages the router has.
+ */
 class SeoService
 {
     private static $pageMeta = [
         'home' => [
-            'title' => 'Beszéd - Interactive Speech Therapy for Children',
-            'description' => 'Gamified speech therapy app with AI-powered analysis, interactive exercises, progress tracking, and rewards. For children with speech development needs.',
+            'title' => 'Beszéd – Csillám játékai',
+            'description' => 'Játékos beszéd- és iskolaelőkészítő gyakorlás 4–7 éveseknek.',
         ],
         'login' => [
-            'title' => 'Login - Beszéd Speech Therapy',
-            'description' => 'Log in to your Beszéd account to continue your child\'s speech therapy journey with interactive games and AI analysis.',
-        ],
-        'register' => [
-            'title' => 'Sign Up - Beszéd Speech Therapy',
-            'description' => 'Create a new account and start your child\'s speech therapy journey with Beszéd. Free interactive exercises and progress tracking.',
-        ],
-        'dashboard' => [
-            'title' => 'Dashboard - Beszéd Speech Therapy',
-            'description' => 'Track your child\'s progress, view speech analysis scores, and unlock achievements with Beszéd.',
+            'title' => 'Belépés – Beszéd',
+            'description' => 'Szülőként jelentkezz be. A gyerekek eredményei a te fiókodhoz tartoznak, és csak te látod őket.',
         ],
         'privacy' => [
-            'title' => 'Privacy Policy - Beszéd',
-            'description' => 'Privacy policy and data protection information for Beszéd users and their families.',
+            'title' => 'Adatkezelési tájékoztató – Beszéd',
+            'description' => 'Hogyan kezeli a Beszéd a szülők és a gyerekek adatait.',
         ],
         'terms' => [
-            'title' => 'Terms of Service - Beszéd',
-            'description' => 'Terms of service and conditions for using Beszéd speech therapy application.',
+            'title' => 'Felhasználási feltételek – Beszéd',
+            'description' => 'A Beszéd használatának feltételei.',
         ],
     ];
 
@@ -43,7 +39,7 @@ class SeoService
             'description' => $meta['description'],
             'og_title' => $meta['title'],
             'og_description' => $meta['description'],
-            'og_image' => url('/og-image.png'),
+            'og_image' => url('/og-image.svg'),
         ];
     }
 
@@ -90,27 +86,6 @@ class SeoService
             '@context' => 'https://schema.org',
             '@type' => 'FAQPage',
             'mainEntity' => $items,
-        ];
-    }
-
-    /**
-     * Generate article schema
-     */
-    public static function generateArticleSchema($article)
-    {
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'Article',
-            'headline' => $article['title'],
-            'description' => $article['description'],
-            'image' => $article['image'] ?? url('/og-image.png'),
-            'datePublished' => $article['published_at'] ?? now()->toIso8601String(),
-            'dateModified' => $article['updated_at'] ?? now()->toIso8601String(),
-            'author' => [
-                '@type' => 'Organization',
-                'name' => 'Beszéd',
-                'url' => url('/'),
-            ],
         ];
     }
 }

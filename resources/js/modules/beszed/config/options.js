@@ -22,6 +22,15 @@ const defaults = {
   upgradeTo: null,
 
   /**
+   * In-app purchase of the premium plan (native app only; services/billing/purchases.js). The host supplies:
+   *   info():  Promise<{ enabled, app_user_id, keys: { ios, android }, products }>  the RevenueCat setup
+   *   sync():  Promise<boolean>  asks the server to re-check the subscription; true = premium now
+   * and the in-app pages the paywall links to (a route location), as the store requires: Terms and Privacy.
+   * null = no purchases (the premium page only describes the plan).
+   */
+  billing: { info: null, sync: null, termsTo: null, privacyTo: null },
+
+  /**
    * Optional emoji image set, so pictures look the same on every device.
    * Twemoji-style file names (`1f41d.svg`), e.g. `{ baseUrl: '/vendor/twemoji/svg/' }`.
    * `null` = the device's own emoji font. Missing images fall back to it too.
@@ -40,11 +49,24 @@ const defaults = {
    */
   symbols: { baseUrl: '/symbols/' },
 
+  /** Pictures uploaded in the content editor ("upload:<id>" in the content), served by GET /api/content-images/{id}. */
+  contentImages: { baseUrl: '/api/content-images/' },
+
+  /**
+   * Native app: an <audio> element cannot send the Bearer token, so Csillám's server voice and the parent's
+   * recordings are fetched through the host's authenticated client and played from memory
+   * (services/audio/blobCache.js). The website leaves this off: the cookie session covers <audio>.
+   */
+  blobAudio: false,
+
   /** Browser Web Speech fallback voice. */
   voice: { lang: 'hu-HU', rate: 0.85, pitch: 1.15 },
 
   /** Synthesised sound effects (chime, fanfare…); volume 0–1. */
   sfx: { enabled: true, volume: 0.8 },
+
+  /** A gentle "time for a little rest" after this many minutes of playing (0 = never). */
+  restAfterMin: 15,
 
   timing: {
     /** Csillám offers help when nothing is tapped for this long. */
@@ -55,9 +77,6 @@ const defaults = {
     skipPauseMs: 1200,
     /** Give up waiting for an audio file's `ended` event after this long. */
     playbackTimeoutMs: 30_000,
-  /** A gentle "time for a little rest" after this many minutes of playing (0 = never). */
-  restAfterMin: 15,
-
     /** Parent recordings stop automatically after this long. */
     recordingMaxMs: 25_000,
   },

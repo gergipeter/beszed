@@ -37,6 +37,9 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, `btn--${props.si
   justify-content: center;
   gap: 6px;
   padding: 10px 22px;
+  /* base.css gives every <button> 44px; the RouterLink (<a>) version needs it here */
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--bz-radius-pill);
   background: var(--bz-card);
   color: var(--bz-ink);
@@ -56,14 +59,14 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, `btn--${props.si
   cursor: default;
 }
 .btn--primary {
-  background: var(--bz-leaf);
+  background: var(--bz-leaf-deep);
   color: var(--bz-on-accent);
 }
 .btn--soft {
   background: var(--bz-soft);
 }
 .btn--danger {
-  background: var(--bz-coral);
+  background: var(--bz-coral-deep);
   color: var(--bz-on-accent);
 }
 .btn--sm {

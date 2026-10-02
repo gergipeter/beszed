@@ -1,0 +1,5 @@
+# Emoji to ship even though no file in the repository uses them: ones that only appear in content edited at
+# runtime (the content editor, uploads), which scripts/emoji-used.mjs cannot see. Without a picture here the app
+# shows the device's own emoji, which is fine; list one only if it must look the same everywhere.
+# Write them on any line, separated by spaces; '#' starts a comment. Run `npm run build` (or copy-emoji) after changing.
+

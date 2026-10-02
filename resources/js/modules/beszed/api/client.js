@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { config } from '../config/options'
+import { config } from '../config/options.js'
 
 let instance = null
 
@@ -32,3 +32,17 @@ export const http = {
 
 /** Absolute-path URL for things the browser loads itself (audio elements, prefetch). */
 export const apiUrl = path => `${config.apiBase.replace(/\/$/, '')}/${path.replace(/^\//, '')}`
+
+/**
+ * Native app (`apiBase` names the API server): `url` on the API server's own origin. URLs the server builds name the
+ * host it was asked on, and the app's Bearer token goes to the API server only.
+ */
+export function onApiOrigin(url) {
+  if (!/^https?:\/\//i.test(config.apiBase)) return url
+  const origin = new URL(config.apiBase).origin
+  const { pathname, search } = new URL(url, origin)
+  return origin + pathname + search
+}
+
+/** The bytes at `url`, fetched with the host's authenticated client (for audio, which an <audio> element cannot authenticate). */
+export const fetchBlob = url => client().get(onApiOrigin(url), { responseType: 'blob' }).then(r => r.data)

@@ -6,17 +6,29 @@
   /* colour */
   --bz-sky: #d6f0ff;
   --bz-ink: #3b1f4a;
-  --bz-muted: #6b5a77;
+  /* 4.7:1 on the sky's top, 7.8:1 on soft (was #6b5a77, 3.45:1 on the sky) */
+  --bz-muted: #574664;
   --bz-card: #ffffff;
   --bz-soft: #eaf7ff;
   --bz-sun: #ffd84d;
+  /* leaf / coral are the garden's art colours: white text on them is only 3.4:1 / 2.7:1 */
   --bz-leaf: #2f9e5b;
   --bz-coral: #ff6f61;
+  /* ...so a filled button or text in those hues uses the deep variants (5.35:1 with white) */
+  --bz-leaf-deep: #1f7a43;
+  --bz-coral-deep: #c4372b;
   --bz-guide: #9c8aae;
   /* text on sun / game colours: dark in both themes */
   --bz-on-bright: #3b1f4a;
-  /* text on leaf / coral */
+  /* text on leaf-deep / coral-deep */
   --bz-on-accent: #ffffff;
+  /*
+   * The keyboard focus ring has two bands (base.css): a dark outer one, ≥3:1 on white, every day sky, the meadow
+   * and the trail, around a white inner one that shows on the night sky, the card and the forest. Together they
+   * show on any background in any theme (the old coral ring was 2.7:1 on white, 1.5:1 on the sky).
+   */
+  --bz-focus: #3b1f4a;
+  --bz-focus-inner: #ffffff;
   /* turns a picture into its shadow (Árnyékkereső, locked stickers) */
   --bz-silhouette: brightness(0) opacity(0.82);
   /* parent charts: one series hue (validated: L band + ≥3:1 on the card, both themes), recessive grid */
@@ -57,6 +69,9 @@
   --bz-sun: #ffcf3a;
   --bz-leaf: #5bd08a;
   --bz-coral: #ff8a7d;
+  /* at night the art colours are already light, with dark text on them (7.8:1 / 6.6:1) */
+  --bz-leaf-deep: #5bd08a;
+  --bz-coral-deep: #ff8a7d;
   --bz-guide: #8c84b8;
   --bz-on-accent: #1e2447;
   --bz-silhouette: brightness(0) invert(0.9);
@@ -91,7 +106,8 @@
   --bz-grass: #b4e290;
 }
 .bz[data-daytime='evening'] {
-  --bz-sky-top: #7466d0;
+  /* dusk lavender: ink and muted text are ≥4.5:1 from the top of this sky to its bottom (was #7466d0, 3.1:1) */
+  --bz-sky-top: #c4b8f8;
   --bz-sky-bottom: #ffc39a;
   --bz-grass: #93c979;
   --bz-grass-deep: #6ea95c;

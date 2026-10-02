@@ -3,7 +3,9 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { BzButton, BzNotice, CsillamAvatar, EmojiArt } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
+import { sharePicture } from '../../modules/beszed/services/share/scenePicture'
 import { http } from '../http'
+import { isNative } from '../native'
 import { useSessionStore } from '../stores/session'
 import { fill, texts } from '../texts'
 
@@ -80,10 +82,23 @@ async function logout() {
   router.replace({ name: 'login' })
 }
 
+/** The website's plain link downloads the file. In the app the link cannot send the Bearer token: fetch the file, then hand it to the share / save sheet. */
+async function exportData(event) {
+  if (!isNative()) return
+  event.preventDefault()
+  try {
+    const { data } = await http.get('/api/me/export', { responseType: 'blob' })
+    await sharePicture(data, { title: texts.exportData, fileName: 'adataim.json', type: 'application/json' })
+  } catch {
+    error.value = texts.saveFailed
+  }
+}
+
 async function deleteAccount() {
   if (window.prompt(texts.deletePrompt) !== texts.deleteWord) return
   try {
-    await session.deleteAccount(texts.deleteWord)
+    // The server's own confirmation word, whichever language the parent typed it in.
+    await session.deleteAccount('TÖRLÉS')
     router.replace({ name: 'login' })
   } catch (e) {
     error.value = e.response?.data?.message || texts.deleteFailed
@@ -227,7 +242,7 @@ async function toggleMilestoneEmails(event) {
     <footer class="account">
       <RouterLink :to="{ name: 'privacy' }">{{ texts.privacyLink }}</RouterLink>
       <RouterLink v-if="session.user?.can_edit_content" :to="{ name: 'content' }">{{ texts.contentEditor }}</RouterLink>
-      <a href="/api/me/export" download>{{ texts.exportData }}</a>
+      <a href="/api/me/export" download @click="exportData">{{ texts.exportData }}</a>
       <button type="button" class="danger" @click="deleteAccount">{{ texts.deleteAccount }}</button>
     </footer>
 
@@ -319,7 +334,7 @@ async function toggleMilestoneEmails(event) {
   text-underline-offset: 3px;
 }
 .account .danger {
-  color: var(--bz-coral);
+  color: var(--bz-coral-deep);
 }
 .top {
   display: flex;
@@ -466,8 +481,8 @@ async function toggleMilestoneEmails(event) {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: var(--bz-coral);
-  color: #fff;
+  background: var(--bz-coral-deep);
+  color: var(--bz-on-accent);
   font-size: 18px;
   font-weight: 800;
   box-shadow: var(--bz-shadow-sm);
