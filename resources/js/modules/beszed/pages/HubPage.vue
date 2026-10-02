@@ -8,6 +8,7 @@ import GardenSky from '../components/garden/GardenSky.vue'
 import GuideBubble from '../components/guide/GuideBubble.vue'
 import DailyGift from '../components/hub/DailyGift.vue'
 import DailyPath from '../components/hub/DailyPath.vue'
+import GamesTabs from '../components/hub/GamesTabs.vue'
 import WeatherChip from '../components/hub/WeatherChip.vue'
 import ParentMenu from '../components/hub/ParentMenu.vue'
 import Spotlight from '../components/hub/Spotlight.vue'
@@ -233,32 +234,17 @@ async function play(game, stone) {
     <EmojiArt :char="ICONS.sprout" /> {{ t(newPlants === 1 ? 'hub.grewOne' : 'hub.grewMany', { count: newPlants }) }}
   </p>
 
-  <div class="games-bar">
-    <h2 class="zone"><EmojiArt :char="ICONS.games" /> {{ t('hub.gamesTitle') }}</h2>
-    <div class="views" role="tablist">
-      <button
-        v-for="v in ['folders', 'garden']"
-        :key="v"
-        type="button"
-        role="tab"
-        class="view"
-        :class="{ 'view--on': view === v }"
-        :aria-selected="view === v"
-        @click="setView(v)"
-      >
-        <EmojiArt :char="v === 'folders' ? '🗂️' : '🌳'" /> {{ t(`hub.views.${v}`) }}
-      </button>
-    </div>
-  </div>
-
-  <GameFolders
-    v-if="view === 'folders' && meta.meta?.folders?.length"
-    :folders="meta.meta.folders"
-    :games="meta.games"
-    :medals="rewards.summary?.medals ?? {}"
-    :path-games="path?.games ?? []"
-    @play="play"
-  />
+  <template v-if="view === 'folders' && meta.meta?.folders?.length">
+    <GamesTabs class="games-tabs-row" :view="view" @change="setView" />
+    <GameFolders
+      :folders="meta.meta.folders"
+      :games="meta.games"
+      :medals="rewards.summary?.medals ?? {}"
+      :path-games="path?.games ?? []"
+      @play="play"
+    />
+  </template>
+  <!-- the garden has the tabs in its own toolbar, on the row with the categories and the map button -->
   <GardenMap
     v-else
     :games="meta.games"
@@ -269,7 +255,9 @@ async function play(game, stone) {
     :sprout-from="sproutFrom"
     :folders="meta.meta?.folders ?? []"
     @play="play"
-  />
+  >
+    <template #head><GamesTabs :view="view" @change="setView" /></template>
+  </GardenMap>
 </template>
 
 <style scoped>
@@ -318,52 +306,8 @@ async function play(game, stone) {
     transform: translateY(12px) scale(0.8);
   }
 }
-/* the games zone: the heading and the folders/garden tabs share one row (they wrap on a narrow screen) */
-.games-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px 12px;
+/* the games' tabs sit above the folders on their own row */
+.games-tabs-row {
   margin: 6px 0 10px;
-}
-.views {
-  display: flex;
-  gap: 8px;
-}
-.view {
-  padding: 6px 14px;
-  border-radius: var(--bz-radius-pill);
-  background: var(--bz-card);
-  font-weight: 800;
-  font-size: var(--bz-text-md);
-  box-shadow: var(--bz-shadow-sm);
-  transition: transform 0.3s var(--bz-spring), background 0.2s;
-}
-.view--on {
-  background: var(--bz-sun);
-  transform: scale(1.06);
-}
-.zone {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: var(--bz-text-lg, 26px);
-  font-weight: 800;
-}
-/* a phone: smaller, so the heading and both tabs still fit on one row */
-@media (max-width: 519px) {
-  .zone {
-    gap: 6px;
-    font-size: var(--bz-text-md);
-  }
-  .views {
-    gap: 6px;
-  }
-  .view {
-    padding: 6px 10px;
-    font-size: var(--bz-text-sm);
-  }
 }
 </style>

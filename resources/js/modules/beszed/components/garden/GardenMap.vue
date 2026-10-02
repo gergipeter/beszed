@@ -151,31 +151,34 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 </script>
 
 <template>
-  <div class="bar">
-    <ul v-if="legend.length" class="legend" :aria-label="t('hub.legend')">
-      <li
-        v-for="c in legend"
-        :key="c.id"
-        class="cat"
-        :class="{ 'cat--full': c.done === c.total }"
-        :style="{ '--c': c.color, '--p': `${c.p}%` }"
-        :title="`${c.name}: ${c.done} / ${c.total}`"
-        :aria-label="t('hub.legendItem', { name: c.name, done: c.done, total: c.total })"
+  <div class="bar-box">
+    <div class="bar">
+      <div v-if="$slots.head" class="bar-head"><slot name="head" /></div>
+      <ul v-if="legend.length" class="legend" :aria-label="t('hub.legend')">
+        <li
+          v-for="c in legend"
+          :key="c.id"
+          class="cat"
+          :class="{ 'cat--full': c.done === c.total }"
+          :style="{ '--c': c.color, '--p': `${c.p}%` }"
+          :title="`${c.name}: ${c.done} / ${c.total}`"
+          :aria-label="t('hub.legendItem', { name: c.name, done: c.done, total: c.total })"
+        >
+          <span class="ring"><EmojiArt :char="c.emoji" /></span>
+          <b class="count">{{ c.done }}/{{ c.total }}</b>
+        </li>
+      </ul>
+      <button
+        type="button"
+        class="map-toggle"
+        :aria-pressed="overview"
+        :aria-label="t(overview ? 'hub.closer' : 'hub.wholeGarden')"
+        @click="setOverview(!overview)"
       >
-        <span class="ring"><EmojiArt :char="c.emoji" /></span>
-        <b class="count">{{ c.done }}/{{ c.total }}</b>
-      </li>
-    </ul>
-    <button
-      type="button"
-      class="map-toggle"
-      :aria-pressed="overview"
-      :aria-label="t(overview ? 'hub.closer' : 'hub.wholeGarden')"
-      @click="setOverview(!overview)"
-    >
-      <EmojiArt :char="overview ? ICONS.zoomIn : ICONS.map" />
-      <span class="map-label">{{ t(overview ? 'hub.closer' : 'hub.wholeGarden') }}</span>
-    </button>
+        <EmojiArt :char="overview ? ICONS.zoomIn : ICONS.map" />
+        <span class="map-label">{{ t(overview ? 'hub.closer' : 'hub.wholeGarden') }}</span>
+      </button>
+    </div>
   </div>
   <div
     ref="frame"
@@ -238,20 +241,41 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 </template>
 
 <style scoped>
-/* one row: the categories on the left, the map button on the right */
+/*
+ * The toolbar above the garden. Narrow: the tabs and the map button on one row, the categories under them.
+ * Room for it all (the bar is 820px or wider): tabs, categories and map button on a single row.
+ */
+.bar-box {
+  container: bar / inline-size;
+  margin: 6px 0 10px;
+}
 .bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'head toggle'
+    'legend legend';
   align-items: center;
-  gap: 10px;
-  margin: 0 0 10px;
+  gap: 8px 12px;
+}
+.bar-head {
+  grid-area: head;
+}
+@container bar (min-width: 820px) {
+  .bar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'head legend toggle';
+  }
+  .legend {
+    justify-content: center;
+  }
 }
 /* "Az egész kert": the map view on and off (the pinch does the same); only the icon on a narrow screen */
 .map-toggle {
-  flex: none;
+  grid-area: toggle;
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-left: auto;
   padding: 6px 14px;
   border-radius: var(--bz-radius-pill);
   background: var(--bz-card);
@@ -270,10 +294,10 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 }
 /* the categories, each a ring that fills as its games get their flowers (also the colour key of the stones) */
 .legend {
-  flex: 1 1 0;
+  grid-area: legend;
   min-width: 0;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
   padding: 2px 2px 4px;
   list-style: none;
@@ -289,10 +313,10 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 .ring {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  font-size: 22px;
+  font-size: 20px;
   /* the colour of the category inside, a ring of flowers-so-far around it */
   background:
     radial-gradient(circle closest-side, var(--c) 0 78%, transparent 80%),
