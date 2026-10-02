@@ -27,12 +27,15 @@ services:
       CACHE_STORE: file
       QUEUE_CONNECTION: sync
       FILESYSTEM_DISK: local
+      BACKUP_PATH: /backups
     volumes:
       - storage:/app/storage
+      - backups:/backups # nightly database snapshots (docs/backup.md): copy this volume off the server too
       - caddy_data:/data
       - caddy_config:/config
 
 volumes:
   storage:
+  backups:
   caddy_data:
   caddy_config:

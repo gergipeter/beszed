@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\User as GoogleUser;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
@@ -59,6 +60,7 @@ class GoogleController extends Controller
     {
         $verified = (bool) ($google->getRaw()['email_verified'] ?? false);
         $user = User::where('google_id', $google->getId())->first();
+        $linking = false;
 
         if (! $user && $google->getEmail()) {
             $byEmail = User::where('email', $google->getEmail())->first();
@@ -66,10 +68,19 @@ class GoogleController extends Controller
                 return null; // someone else's address; don't take the account over
             }
             $user = $byEmail;
+            $linking = $byEmail !== null;
         }
 
         $user ??= new User(['email' => $google->getEmail(), 'name' => $google->getName() ?: $google->getEmail()]);
         $user->fill(['google_id' => $google->getId(), 'avatar' => $google->getAvatar()]);
+        if ($linking && ! $user->email_verified_at) {
+            // A password account nobody confirmed (the sign-up form sends no e-mail) may have been opened by someone
+            // else with this address. Google has just shown the address is this visitor's, so lock the old password
+            // and every session or "remember me" cookie made with it out. The parent can set a new one by e-mail.
+            $user->password = Str::random(40);
+            $user->remember_token = Str::random(60);
+            $user->tokens()->delete();
+        }
         if ($verified && ! $user->email_verified_at) {
             $user->email_verified_at = now();
         }

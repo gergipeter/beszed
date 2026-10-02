@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -35,6 +38,21 @@ class AppServiceProvider extends ServiceProvider
             ->line('Ha nem te kérted, nem kell tenned semmit: a jelszavad nem változik.')
             ->salutation('Üdv, '.config('app.name')));
 
-        Gate::define('edit-content', fn (User $user) => in_array(strtolower((string) $user->email), config('beszed_content.admins'), true));
+        // Only an e-mail that was proved counts (Google, or a reset link sent to it): the sign-up form does not
+        // confirm addresses, so anyone could otherwise register an editor's address first.
+        Gate::define('edit-content', fn (User $user) => $user->email_verified_at !== null
+            && in_array(strtolower((string) $user->email), config('beszed_content.admins'), true));
+
+        // Sanctum's AuthenticateSession signs a session out once the password has changed, but it learns which password
+        // a session belongs to only at that session's first API request. A session opened and left idle (say by someone
+        // who registered another person's address) would escape a later reset. So note the password at sign-in.
+        Event::listen(Login::class, function (Login $event) {
+            if (! request()->hasSession()) {
+                return;
+            }
+            $guard = Auth::guard($event->guard);
+            $hash = $event->user->getAuthPassword();
+            request()->session()->put('password_hash_'.$event->guard, method_exists($guard, 'hashPasswordForCookie') ? $guard->hashPasswordForCookie($hash) : $hash);
+        });
     }
 }

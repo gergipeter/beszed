@@ -25,6 +25,15 @@ class EmailAuthController extends Controller
 
     public function register(Request $request): Response
     {
+        Auth::login($this->createAccount($request), remember: true);
+        $request->session()->regenerate();
+
+        return response()->noContent(201);
+    }
+
+    /** The sign-up form's checks and the new parent, without signing anyone in (the web and the app's token sign-up share it). */
+    public function createAccount(Request $request): User
+    {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:60'],
             'email' => ['required', 'email:rfc', 'max:190'],
@@ -36,14 +45,22 @@ class EmailAuthController extends Controller
             throw ValidationException::withMessages(['email' => 'Ezzel az e-mail-címmel már van fiók. Jelentkezz be, vagy kérj új jelszót!']);
         }
 
-        $user = User::create(['name' => trim($data['name']), 'email' => $email, 'password' => $data['password']]);
-        Auth::login($user, remember: true);
-        $request->session()->regenerate();
-
-        return response()->noContent(201);
+        return User::create(['name' => trim($data['name']), 'email' => $email, 'password' => $data['password']]);
     }
 
     public function login(Request $request): Response
+    {
+        $this->authenticate($request, startSession: true);
+        $request->session()->regenerate();
+
+        return response()->noContent();
+    }
+
+    /**
+     * Checks the e-mail and password, with the sign-in's brute-force limit. With `$startSession` the parent is signed
+     * in with a cookie session (web); without, nothing is started and the caller hands out a token (app).
+     */
+    public function authenticate(Request $request, bool $startSession): User
     {
         $data = $request->validate([
             'email' => ['required', 'string', 'max:190'],
@@ -57,15 +74,16 @@ class EmailAuthController extends Controller
             throw ValidationException::withMessages(['email' => 'Túl sok próbálkozás. Várj egy percet, és próbáld újra!'])->status(429);
         }
 
-        if (! Auth::attempt(['email' => $email, 'password' => $data['password']], remember: true)) {
+        $credentials = ['email' => $email, 'password' => $data['password']];
+        $ok = $startSession ? Auth::attempt($credentials, remember: true) : Auth::validate($credentials);
+        if (! $ok) {
             RateLimiter::hit($key, 60);
             throw ValidationException::withMessages(['email' => 'Hibás e-mail-cím vagy jelszó.']);
         }
 
         RateLimiter::clear($key);
-        $request->session()->regenerate();
 
-        return response()->noContent();
+        return $startSession ? Auth::user() : User::where('email', $email)->firstOrFail();
     }
 
     /** Always answers the same, so it cannot be used to find out who has an account. */
@@ -89,7 +107,13 @@ class EmailAuthController extends Controller
         $status = Password::reset(
             ['email' => Str::lower(trim($data['email'])), 'password' => $data['password'], 'token' => $data['token']],
             function (User $user, string $password) {
-                $user->forceFill(['password' => $password, 'remember_token' => Str::random(60)])->save();
+                // The reset link went to this address, so whoever used it owns it: the address now counts as confirmed.
+                $user->forceFill([
+                    'password' => $password,
+                    'remember_token' => Str::random(60),
+                    'email_verified_at' => $user->email_verified_at ?? now(),
+                ])->save();
+                $user->tokens()->delete(); // the apps sign in again with the new password
                 event(new PasswordReset($user));
             },
         );

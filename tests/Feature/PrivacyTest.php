@@ -79,3 +79,11 @@ it('shares the privacy settings with the app shell', function () {
     preg_match('/<script id="app-config" type="application\/json">(.*?)<\/script>/s', $html, $m);
     expect(json_decode($m[1], true)['privacy'])->toMatchArray(['controller' => 'Példa Kft.', 'contact' => 'adat@example.hu']);
 });
+
+it('tells the notice which speech services receive data', function () {
+    config(['stt.driver' => 'whisper', 'tts.driver' => 'piper']);
+    $html = $this->withoutVite()->get('/adatvedelem')->assertOk()->getContent();
+
+    preg_match('/<script id="app-config" type="application\/json">(.*?)<\/script>/s', $html, $m);
+    expect(json_decode($m[1], true)['privacy'])->toMatchArray(['stt' => 'whisper', 'tts' => 'piper']);
+});

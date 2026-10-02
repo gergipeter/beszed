@@ -104,8 +104,12 @@ class AccountController extends Controller
             $request->session()->regenerateToken();
         }
 
-        // Children, their results, stickers, levels and the recording rows go with the user (FK cascades).
-        DB::transaction(fn () => $user->delete());
+        // Children, their results, stickers, levels and the recording rows go with the user (FK cascades);
+        // the app's sign-in tokens are not tied to it by a foreign key, so they are removed with it.
+        DB::transaction(function () use ($user) {
+            $user->tokens()->delete();
+            $user->delete();
+        });
         foreach ($files as $file) {
             Storage::disk($file->disk)->delete($file->path);
         }

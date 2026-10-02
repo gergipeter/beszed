@@ -20,7 +20,7 @@ Route::name('beszed.')->group(function () {
     Route::get('meta', MetaController::class)->name('meta');
 
     Route::get('children/{child}/session', [SessionController::class, 'show'])->name('session');
-    Route::post('children/{child}/attempts', [AttemptController::class, 'store'])->name('attempts.store');
+    Route::post('children/{child}/attempts', [AttemptController::class, 'store'])->middleware('idempotent')->name('attempts.store');
     Route::get('children/{child}/progress', [ProgressController::class, 'show'])->name('progress');
     Route::get('children/{child}/progress/history', [ProgressController::class, 'history'])->name('progress.history');
     Route::get('children/{child}/shares', [ShareController::class, 'index'])->name('shares.index');
@@ -31,7 +31,7 @@ Route::name('beszed.')->group(function () {
     Route::get('children/{child}/spotlight', [SpotlightController::class, 'show'])->name('spotlight');
 
     Route::get('children/{child}/rewards', [RewardController::class, 'show'])->name('rewards');
-    Route::post('children/{child}/sessions', [RewardController::class, 'store'])->middleware('throttle:60,1,sessions')->name('sessions.store');
+    Route::post('children/{child}/sessions', [RewardController::class, 'store'])->middleware(['idempotent', 'throttle:60,1,sessions'])->name('sessions.store');
     Route::put('children/{child}/profile', [RewardController::class, 'wear'])->name('profile');
     Route::put('children/{child}/scene', [RewardController::class, 'scene'])->name('scene');
 

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Beszed\Stt\AzureSttClient;
 use App\Beszed\Stt\NullSttClient;
 use App\Beszed\Stt\SttClient;
+use App\Beszed\Stt\WhisperSttClient;
 use App\Beszed\Tts\AzureTtsClient;
 use App\Beszed\Tts\NullTtsClient;
 use App\Beszed\Tts\PiperTtsClient;
@@ -24,6 +25,7 @@ class BeszedServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(SttClient::class, fn () => match (config('stt.driver')) {
+            'whisper' => new WhisperSttClient(config('stt.whisper')),
             'azure' => new AzureSttClient(config('stt.azure')),
             default => new NullSttClient,
         });

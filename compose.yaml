@@ -25,6 +25,11 @@ services:
       # *.trycloudflare.com: the free Cloudflare quick tunnel (its address changes on every restart)
       SANCTUM_STATEFUL_DOMAINS: localhost,localhost:8000,127.0.0.1,127.0.0.1:8000,::1,192.168.0.100:8000,*.trycloudflare.com
       TTS_DRIVER: ${TTS_DRIVER:-piper}
+      # Mondd utánam: null | whisper (own server, see the whisper service below) | azure
+      STT_DRIVER: ${STT_DRIVER:-null}
+      WHISPER_URL: ${WHISPER_URL:-http://whisper:8000}
+      WHISPER_MODEL: ${WHISPER_MODEL:-Systran/faster-whisper-large-v3}
+      WHISPER_KEY: ${WHISPER_KEY:-}
       AZURE_SPEECH_KEY: ${AZURE_SPEECH_KEY:-}
       AZURE_SPEECH_REGION: ${AZURE_SPEECH_REGION:-westeurope}
       AZURE_SPEECH_VOICE: ${AZURE_SPEECH_VOICE:-hu-HU-NoemiNeural}
@@ -53,8 +58,35 @@ services:
       - default
       - global-network
 
+  # Self-hosted speech recognition for "Mondd utánam": the child's voice never leaves this machine.
+  # Off by default; start it with `docker compose --profile whisper up -d whisper`, then set
+  # STT_DRIVER=whisper in .env. The first start downloads the model (~3 GB) into the hf-hub-cache volume.
+  # large-v3 in int8_float16 needs about 4 GB of VRAM (a 6 GB card is enough). No GPU? Use the
+  # ghcr.io/speaches-ai/speaches:latest-cpu image, drop the deploy block and set WHISPER_MODEL to a smaller
+  # model (Systran/faster-whisper-medium), also in PRELOAD_MODELS below.
+  whisper:
+    image: ghcr.io/speaches-ai/speaches:latest-cuda
+    profiles: ["whisper"]
+    restart: unless-stopped
+    environment:
+      WHISPER__COMPUTE_TYPE: int8_float16
+      # keep the model loaded: the first word of a game must not wait for it to load
+      STT_MODEL_TTL: "-1"
+      PRELOAD_MODELS: '["Systran/faster-whisper-large-v3"]'
+      API_KEY: ${WHISPER_KEY:-}
+    volumes:
+      - hf-hub-cache:/home/ubuntu/.cache/huggingface/hub
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
 volumes:
   beszed-storage:
+  hf-hub-cache:
 
 networks:
   global-network:

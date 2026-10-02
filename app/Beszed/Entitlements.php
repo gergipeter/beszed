@@ -10,7 +10,10 @@ class Entitlements
 {
     public function premium(User $user): bool
     {
-        return in_array($user->subscription_plan, config('beszed_plans.premium_plans'), true)
+        // A paid plan ends on its date even if the store's "expired" message never reached us; null = no end.
+        $running = $user->subscription_expires_at === null || $user->subscription_expires_at->isFuture();
+
+        return (in_array($user->subscription_plan, config('beszed_plans.premium_plans'), true) && $running)
             || Gate::forUser($user)->allows('edit-content'); // the people who run the content always see all of it
     }
 

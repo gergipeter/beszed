@@ -46,6 +46,8 @@ it('preflight passes when the release settings are in place', function () {
         'beszed_content.pictograms' => false,
         'stt.driver' => 'whisper',
         'tts.driver' => 'piper',
+        'billing.revenuecat.secret_key' => 'sk_test',
+        'billing.revenuecat.webhook_secret' => 'hook-secret',
     ]);
 
     $this->artisan('beszed:preflight')->expectsOutputToContain('No blockers')->assertSuccessful();
