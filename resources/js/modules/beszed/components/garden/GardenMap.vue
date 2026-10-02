@@ -151,23 +151,32 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 </script>
 
 <template>
-  <button type="button" class="map-toggle" :aria-pressed="overview" @click="setOverview(!overview)">
-    <EmojiArt :char="overview ? ICONS.zoomIn : ICONS.map" /> {{ t(overview ? 'hub.closer' : 'hub.wholeGarden') }}
-  </button>
-  <ul v-if="legend.length" class="legend" :aria-label="t('hub.legend')">
-    <li
-      v-for="c in legend"
-      :key="c.id"
-      class="cat"
-      :class="{ 'cat--full': c.done === c.total }"
-      :style="{ '--c': c.color, '--p': `${c.p}%` }"
-      :title="`${c.name}: ${c.done} / ${c.total}`"
-      :aria-label="t('hub.legendItem', { name: c.name, done: c.done, total: c.total })"
+  <div class="bar">
+    <ul v-if="legend.length" class="legend" :aria-label="t('hub.legend')">
+      <li
+        v-for="c in legend"
+        :key="c.id"
+        class="cat"
+        :class="{ 'cat--full': c.done === c.total }"
+        :style="{ '--c': c.color, '--p': `${c.p}%` }"
+        :title="`${c.name}: ${c.done} / ${c.total}`"
+        :aria-label="t('hub.legendItem', { name: c.name, done: c.done, total: c.total })"
+      >
+        <span class="ring"><EmojiArt :char="c.emoji" /></span>
+        <b class="count">{{ c.done }}/{{ c.total }}</b>
+      </li>
+    </ul>
+    <button
+      type="button"
+      class="map-toggle"
+      :aria-pressed="overview"
+      :aria-label="t(overview ? 'hub.closer' : 'hub.wholeGarden')"
+      @click="setOverview(!overview)"
     >
-      <span class="ring"><EmojiArt :char="c.emoji" /></span>
-      <b class="count">{{ c.done }}/{{ c.total }}</b>
-    </li>
-  </ul>
+      <EmojiArt :char="overview ? ICONS.zoomIn : ICONS.map" />
+      <span class="map-label">{{ t(overview ? 'hub.closer' : 'hub.wholeGarden') }}</span>
+    </button>
+  </div>
   <div
     ref="frame"
     class="garden-frame"
@@ -229,12 +238,20 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 </template>
 
 <style scoped>
-/* "Az egész kert": the map view on and off (the pinch does the same) */
+/* one row: the categories on the left, the map button on the right */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+}
+/* "Az egész kert": the map view on and off (the pinch does the same); only the icon on a narrow screen */
 .map-toggle {
+  flex: none;
   display: flex;
   align-items: center;
   gap: 6px;
-  margin: 0 0 10px auto;
+  margin-left: auto;
   padding: 6px 14px;
   border-radius: var(--bz-radius-pill);
   background: var(--bz-card);
@@ -242,12 +259,23 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   font-size: var(--bz-text-sm);
   box-shadow: var(--bz-shadow-sm);
 }
+@media (max-width: 519px) {
+  .map-toggle {
+    padding: 9px;
+    font-size: 22px;
+  }
+  .map-label {
+    display: none;
+  }
+}
 /* the categories, each a ring that fills as its games get their flowers (also the colour key of the stones) */
 .legend {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
-  gap: 10px;
-  margin: 0 0 12px;
-  padding: 2px 2px 8px;
+  gap: 8px;
+  margin: 0;
+  padding: 2px 2px 4px;
   list-style: none;
   overflow-x: auto;
   scrollbar-width: none;
@@ -256,15 +284,15 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   flex: none;
   display: grid;
   justify-items: center;
-  gap: 2px;
+  gap: 1px;
 }
 .ring {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  font-size: 26px;
+  font-size: 22px;
   /* the colour of the category inside, a ring of flowers-so-far around it */
   background:
     radial-gradient(circle closest-side, var(--c) 0 78%, transparent 80%),
@@ -276,7 +304,7 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   box-shadow: 0 0 0 3px #fff, var(--bz-shadow-sm);
 }
 .count {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   color: var(--bz-ink);
 }

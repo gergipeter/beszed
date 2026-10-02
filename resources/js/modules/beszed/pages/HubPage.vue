@@ -233,20 +233,22 @@ async function play(game, stone) {
     <EmojiArt :char="ICONS.sprout" /> {{ t(newPlants === 1 ? 'hub.grewOne' : 'hub.grewMany', { count: newPlants }) }}
   </p>
 
-  <h2 class="zone"><EmojiArt :char="ICONS.games" /> {{ t('hub.gamesTitle') }}</h2>
-  <div class="views" role="tablist">
-    <button
-      v-for="v in ['folders', 'garden']"
-      :key="v"
-      type="button"
-      role="tab"
-      class="view"
-      :class="{ 'view--on': view === v }"
-      :aria-selected="view === v"
-      @click="setView(v)"
-    >
-      <EmojiArt :char="v === 'folders' ? '🗂️' : '🌳'" /> {{ t(`hub.views.${v}`) }}
-    </button>
+  <div class="games-bar">
+    <h2 class="zone"><EmojiArt :char="ICONS.games" /> {{ t('hub.gamesTitle') }}</h2>
+    <div class="views" role="tablist">
+      <button
+        v-for="v in ['folders', 'garden']"
+        :key="v"
+        type="button"
+        role="tab"
+        class="view"
+        :class="{ 'view--on': view === v }"
+        :aria-selected="view === v"
+        @click="setView(v)"
+      >
+        <EmojiArt :char="v === 'folders' ? '🗂️' : '🌳'" /> {{ t(`hub.views.${v}`) }}
+      </button>
+    </div>
   </div>
 
   <GameFolders
@@ -316,14 +318,21 @@ async function play(game, stone) {
     transform: translateY(12px) scale(0.8);
   }
 }
+/* the games zone: the heading and the folders/garden tabs share one row (they wrap on a narrow screen) */
+.games-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+  margin: 6px 0 10px;
+}
 .views {
   display: flex;
   gap: 8px;
-  justify-content: center;
-  margin: 4px 0 16px;
 }
 .view {
-  padding: 8px 18px;
+  padding: 6px 14px;
   border-radius: var(--bz-radius-pill);
   background: var(--bz-card);
   font-weight: 800;
@@ -335,14 +344,26 @@ async function play(game, stone) {
   background: var(--bz-sun);
   transform: scale(1.06);
 }
-/* the games zone: a heading, then the folders or the garden */
 .zone {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  margin: 6px 0 8px;
+  margin: 0;
   font-size: var(--bz-text-lg, 26px);
   font-weight: 800;
+}
+/* a phone: smaller, so the heading and both tabs still fit on one row */
+@media (max-width: 519px) {
+  .zone {
+    gap: 6px;
+    font-size: var(--bz-text-md);
+  }
+  .views {
+    gap: 6px;
+  }
+  .view {
+    padding: 6px 10px;
+    font-size: var(--bz-text-sm);
+  }
 }
 </style>
