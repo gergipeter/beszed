@@ -29,7 +29,7 @@ return [
         // > 1 = slower; a calm pace for 4–7 year olds.
         'length_scale' => (float) env('PIPER_LENGTH_SCALE', 1.12),
         // Pause between sentences (seconds).
-        'sentence_silence' => 0.35,
+        'sentence_silence' => 0.22,
         'lame' => env('LAME_BINARY', 'lame'),
         'bitrate' => 48,
     ],

@@ -21,7 +21,7 @@ const lockedFor = ref(0)
 let resolver = null
 let lockTimer = null
 
-const words = computed(() => numberWords(target.value, currentLanguage.value === 'en' ? 'en' : 'hu'))
+const words = computed(() => numberWords(target.value, currentLanguage.value))
 const locked = computed(() => lockedFor.value > 0)
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'back', '0', 'ok']
 

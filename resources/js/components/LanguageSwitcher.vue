@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { isNative } from '../app/native'
-import { currentLanguage, setLanguage } from '../modules/beszed/i18n'
+import { LANGUAGES as OFFERED, currentLanguage, setLanguage } from '../modules/beszed/i18n'
 
 /**
  * hu/en switch: flips the module's own i18n (index.js) right away – every
@@ -10,10 +10,7 @@ import { currentLanguage, setLanguage } from '../modules/beszed/i18n'
  * side currently does (checked app/ and resources/ for readers of it), so that
  * call is fire-and-forget and never blocks the UI switch.
  */
-const LANGUAGES = {
-  hu: { native_name: 'Magyar', flag: '🇭🇺' },
-  en: { native_name: 'English', flag: '🇬🇧' },
-}
+const LANGUAGES = Object.fromEntries(OFFERED.map(l => [l.code, { native_name: l.name, flag: l.flag }]))
 
 const isOpen = ref(false)
 const current = computed(() => LANGUAGES[currentLanguage.value] ?? LANGUAGES.hu)

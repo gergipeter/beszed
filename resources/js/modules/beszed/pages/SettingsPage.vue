@@ -49,7 +49,7 @@ async function save(patch) {
 }
 
 function tryVoice() {
-  guide.speak([t('settings.tryLine')])
+  guide.speakUi([t('settings.tryLine')])
 }
 
 function playCustomWord() {

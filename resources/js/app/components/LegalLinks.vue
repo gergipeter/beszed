@@ -1,13 +1,15 @@
 <script setup>
+import { texts } from '../texts'
+
 /** The legal pages, as one row of links: for the foot of the sign-in page, the family page and the legal pages themselves. */
 </script>
 
 <template>
-  <nav class="legal" aria-label="Jogi tájékoztatók">
-    <RouterLink :to="{ name: 'privacy' }">Adatvédelem</RouterLink>
-    <RouterLink :to="{ name: 'terms' }">ÁSZF</RouterLink>
-    <RouterLink :to="{ name: 'cookies' }">Sütik</RouterLink>
-    <RouterLink :to="{ name: 'imprint' }">Impresszum</RouterLink>
+  <nav class="legal" :aria-label="texts.legalNav">
+    <RouterLink :to="{ name: 'privacy' }">{{ texts.legalPrivacy }}</RouterLink>
+    <RouterLink :to="{ name: 'terms' }">{{ texts.legalTerms }}</RouterLink>
+    <RouterLink :to="{ name: 'cookies' }">{{ texts.legalCookies }}</RouterLink>
+    <RouterLink :to="{ name: 'imprint' }">{{ texts.legalImprint }}</RouterLink>
   </nav>
 </template>
 

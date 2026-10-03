@@ -15,8 +15,8 @@ class AzureTtsClient implements TtsClient
         $esc = htmlspecialchars($text, ENT_XML1 | ENT_QUOTES, 'UTF-8');
         // Explicit breaks at punctuation: without them the neural voice rushes
         // through pauses, which is a big part of what reads as "robotic".
-        $esc = preg_replace('/([.!?…])(\s|$)/u', "$1<break time='420ms'/>$2", $esc);
-        $esc = preg_replace('/([,;:])(\s)/u', "$1<break time='180ms'/>$2", $esc);
+        $esc = preg_replace('/([.!?…])(\s|$)/u', "$1<break time='260ms'/>$2", $esc);
+        $esc = preg_replace('/([,;:])(\s)/u', "$1<break time='80ms'/>$2", $esc);
         $ssml = "<speak version='1.0' xml:lang='hu-HU' xmlns='http://www.w3.org/2001/10/synthesis'>"
             ."<voice name='{$voice}'>"
             ."<prosody rate='{$rate}' pitch='{$pitch}'>{$esc}</prosody>"
@@ -44,7 +44,8 @@ class AzureTtsClient implements TtsClient
     {
         ['voice' => $voice, 'rate' => $rate, 'pitch' => $pitch] = $this->resolve($overrides);
 
-        return "azure:{$voice}:{$rate}:{$pitch}";
+        // "b2" = pause timing revision: bump it when the SSML breaks change, so cached audio is regenerated.
+        return "azure:b2:{$voice}:{$rate}:{$pitch}";
     }
 
     /**

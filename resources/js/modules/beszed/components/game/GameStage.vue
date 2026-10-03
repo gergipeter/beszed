@@ -11,45 +11,8 @@ defineProps({
   stage: { type: String, default: 'meadow' },
 })
 
-/** A few pictures per scene, placed around the edges (% of the scene), some of them moving. */
-const PROPS = {
-  meadow: [
-    { char: '🌼', x: 4, y: 88, size: 34 },
-    { char: '🌷', x: 93, y: 90, size: 30 },
-    { char: '🦋', x: 88, y: 12, size: 30, move: 'flutter' },
-  ],
-  hive: [
-    { char: '🐝', x: 8, y: 14, size: 30, move: 'buzz' },
-    { char: '🍯', x: 92, y: 88, size: 34 },
-  ],
-  theatre: [{ char: '🎭', x: 50, y: 5, size: 26 }],
-  magic: [
-    { char: '🌙', x: 90, y: 10, size: 32 },
-    { char: '✨', x: 8, y: 20, size: 24, move: 'twinkle' },
-    { char: '✨', x: 86, y: 78, size: 20, move: 'twinkle' },
-  ],
-  workshop: [
-    { char: '🔨', x: 6, y: 90, size: 28 },
-    { char: '🪚', x: 94, y: 88, size: 28 },
-  ],
-  pond: [
-    { char: '🪷', x: 6, y: 86, size: 34 },
-    { char: '🐸', x: 93, y: 84, size: 32, move: 'hop' },
-    { char: '🐟', x: 10, y: 18, size: 24, move: 'swim' },
-  ],
-  forest: [
-    { char: '🌲', x: 3, y: 70, size: 64 },
-    { char: '🌳', x: 97, y: 76, size: 60 },
-    { char: '🦔', x: 12, y: 92, size: 28, move: 'hop' },
-  ],
-  market: [
-    { char: '🍎', x: 6, y: 90, size: 28 },
-    { char: '🥕', x: 94, y: 90, size: 28 },
-  ],
-  storybook: [{ char: '🔖', x: 92, y: 3, size: 30 }],
-  // the table is the whole scene; anything else around the edges would be mistaken for game pieces
-  table: [],
-}
+/** Decorative pictures per scene: none, so nothing competes with the game pieces. Kept as a map so a scene can get one back. */
+const PROPS = {}
 </script>
 
 <template>

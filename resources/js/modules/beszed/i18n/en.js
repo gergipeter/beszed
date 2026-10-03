@@ -92,7 +92,7 @@ export default {
     zones: { meadow: 'The Meadow', forest: 'The Magic Forest', sound: 'Sound Valley', letters: 'Word Town', world: 'Land of Explorers' },
     zoneProgress: '{done} of {total} games have a flower',
     zoneHints: {
-      meadow: 'Counting, puzzles and colours: a start for the smallest.',
+      meadow: 'Counting, puzzles and colors: a start for the smallest.',
       forest: 'Thinking, attention and finding your way.',
       sound: 'Sounds, rhymes, rhythm and mouth exercises.',
       letters: 'Letters, words, sentences and vocabulary.',
@@ -142,7 +142,7 @@ export default {
     level: 'level {level} of {max}',
     held: 'the higher levels are in the premium plan',
     loadFailed: 'Could not load the journey.',
-    state: { new: 'not played yet', learning: 'practising', mastered: 'going well' },
+    state: { new: 'not played yet', learning: 'practicing', mastered: 'going well' },
     note: 'This is not a test: it only shows how the games went.',
   },
 
@@ -429,7 +429,7 @@ export default {
     wardrobeEmpty: 'The wardrobe is still empty. The first treasure comes at level 2: play and collect stars!',
     mirror: '{guide} in front of the mirror',
     slots: { head: 'On the head', face: 'On the eyes', neck: 'Around the neck', extra: 'In hand, beside', mane: 'Mane color' },
-    lockedAt: "You'll get {article} this at level {level}. Collect more stars!",
+    lockedAt: "You'll get this at level {level}. Collect more stars!",
     tookOff: "OK, I'll take it off!",
     surprise: 'Surprise!',
     surpriseSpeech: 'Ta-da! How do you like my new outfit?',
@@ -563,14 +563,14 @@ export default {
     meterLabel: '{sound}: share of right-first-try answers',
     kinds: { start: 'First sounds', contrast: 'Sound pairs', rhyme: 'Rhymes' },
     kindName: { start: 'first sound', contrast: 'sound pair', rhyme: 'rhyme' },
-    flags: { strongest: 'Strongest', weakest: 'Worth practising', improved: 'Improved most' },
+    flags: { strongest: 'Strongest', weakest: 'Worth practicing', improved: 'Improved most' },
     answers: '{count} answers',
     previous: 'Previous period: {value}',
     overall: 'since the start: {value} ({count} answers)',
     few: '{count} more sounds have too few answers so far (at least {min} needed), so they are not shown.',
     tipTitle: 'Tip for home',
     note:
-      'The sound breakdown comes from the answers in the games: it shows how well the child recognises and tells ' +
+      'The sound breakdown comes from the answers in the games: it shows how well the child recognizes and tells ' +
       'sounds apart in the games, not how they pronounce them. It is not a diagnosis and does not replace a speech therapy assessment.',
   },
 
@@ -635,7 +635,7 @@ export default {
 
   recordings: {
     loveVoice:
-      "Grandma's, grandpa's or a sibling's voice? Anyone the child loves can record the lines: the child will hear their favourite voice instead of Csillám's. It's the loveliest gift.",
+      "Grandma's, grandpa's or a sibling's voice? Anyone the child loves can record the lines: the child will hear their favorite voice instead of Csillám's. It's the loveliest gift.",
     title: 'My voice',
     intro:
       'Press the {record} button, read it slowly and cheerfully, as if telling a story, then press the {stop} button. ' +

@@ -63,7 +63,7 @@ function perform(kind) {
 /** Wears `item` (or takes it off when she wears it already). */
 async function toggle(item, { quiet = false } = {}) {
   if (!item.unlocked) {
-    guide.speak([t('rewards.lockedAt', { level: item.level, article: item.level === 1 || item.level === 5 ? 'az' : 'a' })])
+    guide.speakUi([t('rewards.lockedAt', { level: item.level, article: item.level === 1 || item.level === 5 ? 'az' : 'a' })])
     return false
   }
   message.value = ''
@@ -76,7 +76,7 @@ async function toggle(item, { quiet = false } = {}) {
   }
   if (quiet) return true
   if (off) {
-    guide.speak([t('rewards.tookOff', { name: item.name })])
+    guide.speakUi([t('rewards.tookOff', { name: item.name })])
     return true
   }
   guide.celebrate()
@@ -117,7 +117,7 @@ async function surprise() {
     return
   }
   guide.celebrate()
-  guide.speak([t('rewards.surpriseSpeech')])
+  guide.speakUi([t('rewards.surpriseSpeech')])
 }
 
 async function undress() {
@@ -128,7 +128,7 @@ async function undress() {
     return
   }
   perform('spin')
-  guide.speak([t('rewards.undressSpeech')])
+  guide.speakUi([t('rewards.undressSpeech')])
 }
 
 const swatch = item => ACCESSORY_ART[item.id]?.palette ?? []

@@ -1,9 +1,32 @@
 import { ref } from 'vue'
+import catalogEn from './catalog.en'
+import catalogEs from './catalog.es'
 import en from './en'
+import es from './es'
 import hu from './hu'
 
-const messages = { hu, en }
+const messages = { hu, en, es }
+/** Names the server sends in Hungarian (games, folders, stickers…), in the other languages. */
+const catalogs = { en: catalogEn, es: catalogEs }
 const STORAGE_KEY = 'beszed.lang'
+
+/** The languages offered by the switcher: American English and Latin American Spanish besides Hungarian. */
+export const LANGUAGES = [
+  { code: 'hu', name: 'Magyar', flag: '🇭🇺', html: 'hu' },
+  { code: 'en', name: 'English (US)', flag: '🇺🇸', html: 'en-US' },
+  { code: 'es', name: 'Español (Latinoamérica)', flag: '🌎', html: 'es-419' },
+]
+const htmlLang = code => LANGUAGES.find(l => l.code === code)?.html ?? code
+
+/** First visit on this device: the browser's own language if we have it, else Hungarian. */
+function browserLanguage() {
+  try {
+    const prefix = (navigator.language || '').slice(0, 2).toLowerCase()
+    return prefix in messages ? prefix : null
+  } catch {
+    return null
+  }
+}
 
 function readStoredLanguage() {
   try {
@@ -15,11 +38,11 @@ function readStoredLanguage() {
 }
 
 /** Reactive so `{{ t('x.y') }}` in a template re-renders when the language changes. */
-const lang = ref(readStoredLanguage() ?? 'hu')
+const lang = ref(readStoredLanguage() ?? browserLanguage() ?? 'hu')
 
 /** Screen readers, hyphenation and the browser's own translate offer follow <html lang>. */
 function applyDocumentLanguage(code) {
-  if (typeof document !== 'undefined') document.documentElement.lang = code
+  if (typeof document !== 'undefined') document.documentElement.lang = htmlLang(code)
 }
 applyDocumentLanguage(lang.value)
 
@@ -42,9 +65,18 @@ export function setLanguage(code) {
 export const currentLanguage = lang
 
 /**
+ * A server-provided name in the active language: `catalog('games', 'zs', 'name', fallback)`; the fallback (the
+ * Hungarian original from the server) when the language is Hungarian or the catalog lacks it.
+ */
+export function catalog(kind, id, field, fallback) {
+  const entry = catalogs[lang.value]?.[kind]?.[id]
+  const value = field == null ? entry : entry?.[field]
+  return typeof value === 'string' && value ? value : fallback
+}
+
+/**
  * Looks up a UI text by dotted key and fills its `{placeholders}`.
- * Deliberately tiny: hu.js and en.js are the only two languages; a third
- * language is just another file added to `messages` above.
+ * Deliberately tiny: a language is one file (hu.js, en.js, es.js) added to `messages` above.
  */
 export function t(key, params) {
   const active = messages[lang.value]

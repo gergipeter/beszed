@@ -126,7 +126,7 @@ function openGift() {
   giftSfx()
   buzz([15, 50, 15, 50, 25])
   guide.celebrate()
-  guide.speak([t('hub.gift.speech')])
+  guide.speakUi([t('hub.gift.speech')])
 }
 const plants = computed(() => (rewards.summary?.sessions ?? 0) + gift.total.value)
 const sproutFrom = ref(Infinity)
@@ -232,7 +232,7 @@ async function play(game, stone) {
 
   <DailyPath v-if="path && meta.games.length" :path="path" :games="meta.games" @play="play" />
 
-  <template v-if="view === 'folders' && meta.meta?.folders?.length">
+  <template v-if="view === 'folders' && meta.folders.length">
     <GamesTabs class="games-tabs-row" :view="view" @change="setView" />
     <GameFolders
       :folders="meta.meta.folders"
@@ -251,7 +251,7 @@ async function play(game, stone) {
     :spotlight="spotlightGameId"
     :plants="plants"
     :sprout-from="sproutFrom"
-    :folders="meta.meta?.folders ?? []"
+    :folders="meta.folders"
     @play="play"
   >
     <template #head><GamesTabs :view="view" @change="setView" /></template>
