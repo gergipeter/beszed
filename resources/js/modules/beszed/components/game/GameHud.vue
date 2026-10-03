@@ -69,10 +69,13 @@ const emit = defineEmits(['exit', 'toggleMute', 'toggleSlow'])
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--bz-card);
+  background: transparent;
+  /* the card colour alone vanishes against the night sky, so the empty dots get a ring */
+  box-shadow: inset 0 0 0 2.5px var(--bz-muted);
 }
 .dots i.on {
   background: var(--bz-sun);
+  box-shadow: inset 0 0 0 2.5px var(--bz-sun);
 }
 .stars {
   flex: none;

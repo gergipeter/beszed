@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ttsUrl } from '../api'
 import { config } from '../config/options'
+import { currentLanguage } from '../i18n'
 import { playAudio, stopAudio, unlockAudio } from '../services/audio/player'
 import { unlockSfx } from '../services/audio/sfx'
 import { preloadAudio } from '../services/audio/preload'
@@ -11,6 +12,8 @@ import { useSettingsStore } from './settings'
 
 /** Slows down speech for a "say it again, slower" replay. */
 const SLOW_RATE_FACTOR = 0.7
+/** The browser voice language for interface texts in each language. */
+const VOICE_LANG = { en: 'en-US', es: 'es-419' }
 
 /**
  * @typedef {'idle' | 'happy' | 'sad' | 'hop'} Mood
@@ -88,10 +91,11 @@ export const useGuideStore = defineStore('beszed/guide', {
     /**
      * Says `items` in order; interrupts anything already being said.
      * @param {SpeakItem[]} items
-     * @param {{ caption?: string, slow?: boolean }} [options] `slow` says it at a reduced rate.
+     * @param {{ caption?: string, slow?: boolean, lang?: 'en' | 'es' }} [options] `slow` says it at a reduced rate; `lang`: the
+     *   items are interface texts in that language, said with the browser's voice for it (the server voice is Hungarian).
      * @returns {Promise<boolean>} true if everything was said, false if interrupted.
      */
-    async speak(items, { caption, slow: slowOnce = false } = {}) {
+    async speak(items, { caption, slow: slowOnce = false, lang = null } = {}) {
       this.stop()
       const slow = slowOnce || this.slow
       const mine = token
@@ -112,15 +116,21 @@ export const useGuideStore = defineStore('beszed/guide', {
         if (!text) continue
 
         let spoken = false
-        if (this.serverTts) {
+        if (this.serverTts && !lang) {
           spoken = await playAudio(ttsUrl(text), { rate: slow ? SLOW_RATE_FACTOR : 1 })
           if (isCurrent()) this.ttsFailures = spoken ? 0 : this.ttsFailures + 1
         }
-        if (!spoken && isCurrent()) await speakWebSpeech(text, { ...config.voice, rate, pitch, isCurrent })
+        if (!spoken && isCurrent()) await speakWebSpeech(text, { ...config.voice, ...(lang ? { lang: VOICE_LANG[lang] } : {}), rate, pitch, isCurrent })
       }
 
       if (isCurrent()) this.talking = false
       return isCurrent()
+    },
+
+    /** Says an interface text (not game content): in the language of the interface, whatever voice there is for it. */
+    speakUi(items, options = {}) {
+      const lang = currentLanguage.value
+      return this.speak(items, { ...options, lang: lang === 'hu' ? null : lang })
     },
 
     /** Fetches the audio of `items` in the background, so it plays instantly later. */

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { fetchMeta } from '../api'
+import { catalog, currentLanguage } from '../i18n'
 
 /** In-flight request, so parallel callers share one fetch. */
 let pending = null
@@ -13,11 +14,27 @@ export const useMetaStore = defineStore('beszed/meta', {
 
   getters: {
     loaded: state => state.meta !== null,
-    games: state => state.meta?.games ?? [],
+    /** The games with their names in the active language (the server sends Hungarian). */
+    games: state =>
+      (currentLanguage.value, (state.meta?.games ?? []).map(g => ({
+        ...g,
+        name: catalog('games', g.id, 'name', g.name),
+        skill: catalog('games', g.id, 'skill', g.skill),
+        categories: (g.categories ?? []).map(c => ({ ...c, name: catalog('categories', c.id, null, c.name) })),
+      }))),
+    /** The hub folders, named in the active language. */
+    folders: state =>
+      (currentLanguage.value, (state.meta?.folders ?? []).map(f => ({
+        ...f,
+        name: catalog('folders', f.id, 'name', f.name),
+        develops: catalog('folders', f.id, 'develops', f.develops),
+      }))),
     lines: state => state.meta?.lines ?? [],
     serverTts: state => Boolean(state.meta?.serverTts),
     serverStt: state => Boolean(state.meta?.serverStt),
-    game: state => id => state.meta?.games.find(g => g.id === id) ?? null,
+    game() {
+      return id => this.games.find(g => g.id === id) ?? null
+    },
     /** Built-in `praise` / `retry` sentences. */
     phrases: state => kind => state.meta?.[kind] ?? [],
   },

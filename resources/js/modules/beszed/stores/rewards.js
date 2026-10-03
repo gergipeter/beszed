@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia'
 import { completeSession, fetchRewards, saveScene, wearAccessory } from '../api'
+import { catalog, currentLanguage } from '../i18n'
+
+/** Sticker, accessory and background names in the active language (the server sends Hungarian). */
+const badge = b => ({ ...b, name: catalog('badges', b.id, 'name', b.name), hint: catalog('badges', b.id, 'hint', b.hint) })
+const accessory = a => ({ ...a, name: catalog('accessories', a.id, null, a.name) })
+const background = b => ({ ...b, name: catalog('backgrounds', b.id, null, b.name) })
 
 /**
  * The current child's rewards: level, streak, daily goal, medals, stickers and
@@ -15,18 +21,22 @@ export const useRewardsStore = defineStore('beszed/rewards', {
   getters: {
     level: state => state.summary?.level ?? null,
     medal: state => gameId => state.summary?.medals?.[gameId] ?? 0,
-    badges: state => state.summary?.badges ?? [],
-    earnedBadges: state => (state.summary?.badges ?? []).filter(b => b.earned_at),
-    earnedCount: state => (state.summary?.badges ?? []).filter(b => b.earned_at).length,
+    badges: state => (currentLanguage.value, (state.summary?.badges ?? []).map(badge)),
+    earnedBadges() {
+      return this.badges.filter(b => b.earned_at)
+    },
+    earnedCount() {
+      return this.badges.filter(b => b.earned_at).length
+    },
     /** The next present on the way (an accessory for Csillám), to look forward to. */
     nextGift: state => {
       const level = state.summary?.level?.number ?? 0
-      return (state.summary?.accessories ?? []).filter(a => a.level > level).sort((a, b) => a.level - b.level)[0] ?? null
+      return (currentLanguage.value, (state.summary?.accessories ?? []).filter(a => a.level > level).sort((a, b) => a.level - b.level).map(accessory)[0] ?? null)
     },
-    accessories: state => state.summary?.accessories ?? [],
+    accessories: state => (currentLanguage.value, (state.summary?.accessories ?? []).map(accessory)),
     worn: state => state.summary?.worn ?? {},
     scene: state => state.summary?.scene ?? { background: null, stickers: [] },
-    backgrounds: state => state.summary?.backgrounds ?? [],
+    backgrounds: state => (currentLanguage.value, (state.summary?.backgrounds ?? []).map(background)),
   },
 
   actions: {
@@ -49,7 +59,12 @@ export const useRewardsStore = defineStore('beszed/rewards', {
     async complete(childId, body) {
       const { result, ...summary } = await completeSession(childId, body)
       if (childId === this.childId) this.summary = summary
-      return result
+      // what this game just earned, named in the language it is shown in
+      return {
+        ...result,
+        new_badges: (result.new_badges ?? []).map(badge),
+        unlocked: (result.unlocked ?? []).map(accessory),
+      }
     },
 
     async wear(childId, slot, accessory) {

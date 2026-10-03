@@ -52,7 +52,7 @@ export default {
   birthDate: 'Date of birth (optional)',
   birthDateHint: 'This tells us how hard the first tasks should be.',
   sign: 'Kindergarten sign',
-  signHint: "Pick your sign, like the one on your towel at nursery! It's how you recognise yourself here, too.",
+  signHint: "Pick your sign, like the one on your cubby at preschool! It's how you recognize yourself here, too.",
   pickSign: 'Pick a sign',
   signOf: "{name}'s kindergarten sign",
   birthDateOf: "{name}'s date of birth",
@@ -73,6 +73,11 @@ export default {
   milestoneEmailsSaveFailed: "Couldn't save this setting.",
   weeklyReport: 'Weekly summary by e-mail on Sunday evening, with a PDF',
   playReminder: "E-mail me in the evening if we haven't played today",
+  legalNav: 'Legal information',
+  legalPrivacy: 'Privacy',
+  legalTerms: 'Terms',
+  legalCookies: 'Cookies',
+  legalImprint: 'Imprint',
   weeklySample: 'Send the weekly summary now',
   weeklySampleSending: 'Sending…',
   weeklySampleSent: 'Sent ({count} e-mail(s)) to {email}',
@@ -115,7 +120,7 @@ export default {
     noPlay: 'No games were played in this period.',
     columns: {
       game: 'Game',
-      skill: 'What it practises',
+      skill: 'What it practices',
       sessions: 'Completed',
       answers: 'Answers',
       firstTry: 'Right first time',
@@ -124,6 +129,6 @@ export default {
     },
     foot:
       'The data comes from a home practice app: "right first time" = the child answered correctly on the first ' +
-      'attempt. This is not a standardised measure and not a diagnosis; the parent can revoke the link at any time.',
+      'attempt. This is not a standardized measure and not a diagnosis; the parent can revoke the link at any time.',
   },
 }

@@ -93,7 +93,7 @@ function openPack(badge) {
     phase.value = 'open'
     sparkle()
     guide.celebrate()
-    guide.speak([t('rewards.packSpeech', { name: badge.name })])
+    guide.speakUi([t('rewards.packSpeech', { name: badge.name })])
     await nextTick()
     const box = reveal.value?.getBoundingClientRect()
     if (box) burst({ x: box.left + box.width / 2, y: box.top + box.height / 2 }, { pieces: 18, reach: 140 })

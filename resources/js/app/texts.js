@@ -1,5 +1,6 @@
 import { currentLanguage } from '../modules/beszed/i18n'
 import en from './texts.en'
+import es from './texts.es'
 import hu from './texts.hu'
 
 /**
@@ -7,9 +8,9 @@ import hu from './texts.hu'
  * (modules/beszed/i18n: the Settings switcher, remembered on the device). The games' own texts live there.
  *
  * `texts.x` reads the active language when it is used, so a template re-renders when the language changes
- * and the call sites need no `t()` wrapper. Keys are the same in texts.hu.js and texts.en.js.
+ * and the call sites need no `t()` wrapper. Keys are the same in texts.hu.js, texts.en.js and texts.es.js.
  */
-const byLanguage = { hu, en }
+const byLanguage = { hu, en, es }
 export const texts = new Proxy(hu, {
   get: (_, key) => (byLanguage[currentLanguage.value] ?? hu)[key],
 })
