@@ -5,6 +5,7 @@ import { BzButton, BzNotice, CsillamAvatar } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
 import { useSessionStore } from '../stores/session'
 import { texts } from '../texts'
+import LegalLinks from '../components/LegalLinks.vue'
 
 /** One-time parental consent (again whenever the privacy notice version changes). */
 const session = useSessionStore()
@@ -47,6 +48,7 @@ async function logout() {
         <RouterLink class="link" :to="{ name: 'privacy' }">{{ texts.privacyLink }} →</RouterLink><br />
         <RouterLink class="link" :to="{ name: 'terms' }">{{ texts.auth.terms }} →</RouterLink>
       </p>
+      <LegalLinks />
 
       <label class="check">
         <input v-model="agreed" type="checkbox" />

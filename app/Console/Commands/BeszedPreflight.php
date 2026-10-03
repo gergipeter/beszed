@@ -28,6 +28,10 @@ class BeszedPreflight extends Command
         $placeholder = fn (?string $v) => blank($v) || str_contains((string) $v, 'kitöltendő');
         $add('Privacy notice: controller', ! $placeholder(config('privacy.controller')), 'blocker', 'set PRIVACY_CONTROLLER (who publishes the app)');
         $add('Privacy notice: contact', ! $placeholder(config('privacy.contact')), 'blocker', 'set PRIVACY_CONTACT (a monitored e-mail address)');
+        $add('Imprint: registration number', ! $placeholder(config('privacy.registration')), 'blocker', 'set PRIVACY_REGISTRATION (company or sole-trader registration number, shown on /impresszum)');
+        $add('Imprint: tax number', ! $placeholder(config('privacy.tax_id')), 'blocker', 'set PRIVACY_TAX_ID');
+        $add('Imprint: hosting provider', ! $placeholder(config('privacy.hosting')), 'blocker', 'set PRIVACY_HOSTING (name, address, e-mail of the hosting provider)');
+        $add('Terms: conciliation body', ! $placeholder(config('privacy.conciliation')), 'blocker', 'set PRIVACY_CONCILIATION (the consumer conciliation body, shown in the terms)');
         $add('Debug mode off', ! config('app.debug'), 'blocker', 'set APP_DEBUG=false');
         $add('App URL is https', str_starts_with((string) config('app.url'), 'https://'), 'blocker', 'set APP_URL to the public https address');
         $add('Demo sign-in off', ! app()->isLocal(), 'blocker', 'APP_ENV=local enables the one-tap demo sign-in; use production');

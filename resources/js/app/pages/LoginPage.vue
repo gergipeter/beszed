@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { BzButton, BzNotice, CsillamAvatar } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
 import { appConfig } from '../config'
+import LegalLinks from '../components/LegalLinks.vue'
 import { isNative } from '../native'
 import { useSessionStore } from '../stores/session'
 import { firstError, texts } from '../texts'
@@ -136,6 +137,7 @@ async function demo() {
         {{ texts.parentsOnly }}
         <RouterLink class="privacy-link" :to="{ name: 'privacy' }">{{ texts.privacyLink }}</RouterLink>
       </p>
+      <LegalLinks />
     </div>
   </main>
 </template>

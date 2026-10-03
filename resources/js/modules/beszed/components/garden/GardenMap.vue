@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ICONS } from '../../config/icons'
 import { buzz } from '../../services/touch/feel'
+import { useModuleContext } from '../../composables/useModuleContext'
 import { t } from '../../i18n'
 import EmojiArt from '../ui/EmojiArt.vue'
 import GameStop from './GameStop.vue'
@@ -30,6 +31,7 @@ const props = defineProps({
   folders: { type: Array, default: () => [] },
 })
 const emit = defineEmits(['play'])
+const { demo } = useModuleContext()
 
 const ZONES = [
   { id: 'meadow', icon: ICONS.tierSimple, growth: ['🌷', '🌼', '🌻', '🌸', '🌱', '🪻', '🌾', '🌿'] },
@@ -143,7 +145,7 @@ const gate = computed(() => {
   const meadow = props.games.filter(g => zoneOf(g) === 'meadow')
   const need = Math.ceil(meadow.length / 2)
   const have = meadow.filter(g => (props.medals[g.id] ?? 0) > 0).length
-  return { need, have, open: have >= need }
+  return { need, have, open: demo.value || have >= need }
 })
 const lockedZone = zone => zone.id !== 'meadow' && !gate.value.open
 function open(zone, game, event) {

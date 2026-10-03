@@ -8,6 +8,7 @@ import { http } from '../http'
 import { isNative } from '../native'
 import { useSessionStore } from '../stores/session'
 import { fill, texts } from '../texts'
+import LegalLinks from '../components/LegalLinks.vue'
 
 /** "Who is playing today?": pick a child, add one, or remove one. */
 const session = useSessionStore()
@@ -240,7 +241,7 @@ async function toggleMilestoneEmails(event) {
     </p>
 
     <footer class="account">
-      <RouterLink :to="{ name: 'privacy' }">{{ texts.privacyLink }}</RouterLink>
+      <LegalLinks />
       <RouterLink v-if="session.user?.can_edit_content" :to="{ name: 'content' }">{{ texts.contentEditor }}</RouterLink>
       <a href="/api/me/export" download @click="exportData">{{ texts.exportData }}</a>
       <button type="button" class="danger" @click="deleteAccount">{{ texts.deleteAccount }}</button>
