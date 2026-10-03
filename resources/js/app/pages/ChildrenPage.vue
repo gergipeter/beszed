@@ -9,6 +9,7 @@ import { isNative } from '../native'
 import { useSessionStore } from '../stores/session'
 import { fill, texts } from '../texts'
 import LegalLinks from '../components/LegalLinks.vue'
+import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 
 /** "Who is playing today?": pick a child, add one, or remove one. */
 const session = useSessionStore()
@@ -154,6 +155,7 @@ async function toggleMilestoneEmails(event) {
     <header class="top">
       <img v-if="session.user?.avatar" class="parent-avatar" :src="session.user.avatar" alt="" referrerpolicy="no-referrer" />
       <span class="parent">{{ session.user?.name }}</span>
+      <LanguageSwitcher />
       <BzButton size="sm" variant="soft" @click="logout">{{ texts.logout }}</BzButton>
     </header>
 
