@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import EmojiArt from '../../components/ui/EmojiArt.vue'
+import PictureCard from '../../components/ui/PictureCard.vue'
 import { useDrag } from '../../composables/useDrag'
 import { useShake } from '../../composables/useShake'
 import { t } from '../../i18n'
@@ -33,7 +34,10 @@ const sized = item => (item.scale ? { '--scale': item.scale } : null)
 /** @returns {boolean} it was the right next one */
 function tap(item) {
   if (props.locked) return false
-  if (item.id !== props.data.order[placed.value.length]) {
+  // pieces that are the same word or letter (the two "a" of "alma") are interchangeable
+  const expected = byId.value[props.data.order[placed.value.length]]
+  const same = item.id === expected?.id || (!item.emoji && Boolean(item.label) && item.label === expected?.label)
+  if (!same) {
     mistakes++
     shake(item.id)
     emit('say', props.data.wrong)
@@ -55,6 +59,7 @@ const drag = useDrag({ root: row, onDrop: item => tap(item) })
 </script>
 
 <template>
+  <PictureCard v-if="data.stimulus" :emoji="data.stimulus.emoji" :label="data.stimulus.label ?? ''" />
   <ol ref="row" class="row" :class="{ 'row--arrows': data.arrows, 'row--shelf': sizes }" :style="{ '--n': data.order.length }" :aria-label="t('order.row')">
     <li
       v-for="(item, i) in slots"

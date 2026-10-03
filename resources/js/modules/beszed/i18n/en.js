@@ -90,6 +90,7 @@ export default {
     exit: 'Kids',
     forestLocked: 'Opens when {need} meadow games have a flower ({have}/{need})',
     zones: { meadow: 'The Meadow', forest: 'The Magic Forest', sound: 'Sound Valley', letters: 'Word Town', world: 'Land of Explorers' },
+    zoneProgress: '{done} of {total} games have a flower',
     zoneHints: {
       meadow: 'Counting, puzzles and colours: a start for the smallest.',
       forest: 'Thinking, attention and finding your way.',
@@ -291,6 +292,15 @@ export default {
 
   clock: {
     label: 'Clock: {hour} hours {minute} minutes',
+  },
+
+  weekly: {
+    title: 'Weekly challenge',
+    goal: 'Play {goal} different games this week!',
+    left: '{days} days left',
+    done: 'Weekly challenge done! 🎉',
+    progress: '{done} / {goal} games',
+    won: 'Done in {n} weeks so far',
   },
 
   mimic: {

@@ -175,6 +175,26 @@ return [
         'ido' => ['title' => 'time', 'fields' => [
             'time' => $text('Idő (ó:pp, negyedórás pontossággal)', ['max' => 5, 'hint' => '3:30', 'speak' => false]),
         ]],
+        'szokirako' => ['title' => 'word', 'fields' => [
+            'word' => $text('Szó (kisbetűvel)', ['max' => 12]),
+            'emoji' => $emoji(),
+        ]],
+        'olvasd' => ['title' => 'word', 'fields' => [
+            'word' => $text('Szó', ['speak' => false]),
+            'syllables' => ['type' => 'list', 'label' => 'Szótagok', 'separator' => '|', 'hint' => 'ku | tya'],
+            'emoji' => $emoji(),
+        ]],
+        'mese' => ['title' => 'title', 'fields' => [
+            'title' => $text('Mese címe'),
+            'text' => $text('A mese (4–7 rövid mondat)', ['max' => 600]),
+            'emoji' => $emoji('Kép (1–3 emoji)'),
+            'q1' => $text('1. kérdés', ['max' => 160]),
+            'o1' => ['type' => 'pairs', 'label' => '1. válaszok: az ELSŐ a helyes', 'min' => 3, 'hint' => 'soronként: emoji válasz'],
+            'q2' => $text('2. kérdés', ['max' => 160]),
+            'o2' => ['type' => 'pairs', 'label' => '2. válaszok: az ELSŐ a helyes', 'min' => 3, 'hint' => 'soronként: emoji válasz'],
+            'q3' => $text('3. kérdés', ['max' => 160]),
+            'o3' => ['type' => 'pairs', 'label' => '3. válaszok: az ELSŐ a helyes', 'min' => 3, 'hint' => 'soronként: emoji válasz'],
+        ]],
         'melyik' => ['title' => 'good', 'fields' => [
             'good' => $text('Helyes mondat'),
             'bad' => $text('Hibás mondat'),

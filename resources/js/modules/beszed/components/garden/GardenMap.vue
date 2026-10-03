@@ -120,7 +120,8 @@ const zones = computed(() => {
     const layout = trailLayout(games.length, width.value, flip)
     const d = trailPath(layout.points, layout.height)
     flip = (layout.points.at(-1)?.x ?? 0) > width.value / 2 // the next zone starts where this one ends
-    return { ...zone, games, layout, d, spots: scatter(plantSpots(layout, width.value), 7 + z) }
+    const flowered = games.filter(g => (props.medals[g.id] ?? 0) > 0).length
+    return { ...zone, games, flowered, layout, d, spots: scatter(plantSpots(layout, width.value), 7 + z) }
   })
   // the child's plants: the zones in turn; a full zone passes its plants on to the next
   const grown = laid.map(() => [])
@@ -210,6 +211,9 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
               {{ t(`hub.zoneHints.${zone.id}`) }}
             </p>
           </div>
+          <b class="zone-count" :class="{ 'zone-count--full': zone.flowered === zone.games.length }" :title="t('hub.zoneProgress', { done: zone.flowered, total: zone.games.length })">
+            {{ zone.flowered === zone.games.length ? '🏅' : '🌸' }} {{ zone.flowered }}/{{ zone.games.length }}
+          </b>
         </header>
   
         <div class="field" :style="{ height: `${zone.layout.height}px` }">
@@ -359,6 +363,19 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   background: var(--bz-bark);
   color: var(--bz-on-bark);
   box-shadow: 0 5px 0 color-mix(in srgb, var(--bz-bark) 60%, #000);
+}
+/* flowers grown in this zone: a gold medal when every game has one */
+.zone-count {
+  flex: none;
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: var(--bz-radius-pill);
+  background: rgba(255, 255, 255, 0.18);
+  font-size: var(--bz-text-sm);
+}
+.zone-count--full {
+  background: var(--bz-sun);
+  color: var(--bz-on-bright);
 }
 .zone-icon {
   flex: none;

@@ -41,6 +41,10 @@ it('preflight passes when the release settings are in place', function () {
     config([
         'privacy.controller' => 'Példa Kft., 1111 Budapest, Példa u. 1.',
         'privacy.contact' => 'adat@example.hu',
+        'privacy.registration' => 'Cg. 01-09-123456',
+        'privacy.tax_id' => '12345678-1-42',
+        'privacy.hosting' => 'Példa Tárhely Kft., 1111 Budapest, tarhely@example.hu',
+        'privacy.conciliation' => 'Budapesti Békéltető Testület, 1016 Budapest, Krisztina krt. 99.',
         'app.debug' => false,
         'app.url' => 'https://beszed.example.hu',
         'beszed_content.pictograms' => false,

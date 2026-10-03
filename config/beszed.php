@@ -327,6 +327,36 @@ return [
             ],
             'intro' => 'Hány óra van? A kis mutató az órát mutatja, a nagy a perceket. Nézd meg jól, és válaszd ki az időt!',
         ],
+        'szokirako' => [
+            'name' => 'Szókirakó', 'emoji' => '🔡', 'skill' => 'Szavak kirakása betűkből', 'color' => '#FFE6A0', 'tier' => 'advanced', 'stage' => 'workshop',
+            'factory' => Rounds\SzokirakoRounds::class, 'rounds' => 5, 'guess' => false,
+            // level = the word's letters: 1 → 3, 2 → 4, 3 → 5-6 (the two-letter sounds cs, sz, gy… are one tile) (SzokirakoRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Szavakat rakunk ki betűkből! Nézd a képet, hallgasd a szót, és koppints a betűkre sorban!',
+        ],
+        'olvasd' => [
+            'name' => 'Olvasd el!', 'emoji' => '📖', 'skill' => 'Olvasás szótagolva', 'color' => '#FFD9B0', 'tier' => 'advanced', 'stage' => 'storybook',
+            'factory' => Rounds\OlvasdRounds::class, 'rounds' => 6, 'guess' => false,
+            // level = the word: 1 short, 2 longer two-syllable, 3 three syllables (content level)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Most te olvasol! Megjelenik egy szó szótagokra bontva. Olvasd el, és koppints a hozzá illő képre!',
+        ],
+        'mese' => [
+            'name' => 'Mesehallgató', 'emoji' => '📚', 'skill' => 'Mesehallgatás és szövegértés', 'color' => '#E3D4FF', 'tier' => 'simple', 'stage' => 'storybook',
+            'factory' => Rounds\MeseRounds::class, 'rounds' => 3, 'guess' => false,
+            // level = the story: 1 shortest, 3 longest and most to work out (content level)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Mesét mesélek neked! Hallgasd figyelmesen, mert a végén kérdezek valamit a meséről!',
+        ],
         'melyik' => [
             'name' => 'Melyik mondja szépen?', 'emoji' => '🐻', 'skill' => 'Magyaros mondatok', 'color' => '#E3F0A8', 'tier' => 'advanced', 'stage' => 'theatre',
             'factory' => Rounds\MelyikRounds::class, 'rounds' => 8,
@@ -641,6 +671,8 @@ return [
         'timezone' => env('BESZED_TIMEZONE', 'Europe/Budapest'),
         // Games to finish per day.
         'daily_goal' => 3,
+        // The weekly challenge: this many DIFFERENT games finished in a calendar week.
+        'weekly_goal' => 5,
         // Stars needed for level n: step · n · (n − 1) → 0, 10, 30, 60, 100, 150…
         'level_step' => 5,
         // Medals for a game = the best session's share of first-try answers.
@@ -651,6 +683,8 @@ return [
         |   sessions n · stars n · streak n · perfect n (flawless sessions)
         |   all_games (each game finished once) · game <id> n · daily_goal
         |   daily_path n ("Mai kaland" finished on n days)
+        |   weekly n (the weekly challenge reached in n weeks)
+        |   zone <id> (every game of a garden zone finished once: config beszed_folders.zones)
         | ":goal" in a hint becomes daily_goal.
         | email: true → a milestone worth mailing the parent about (MilestoneEarned),
         |   if they haven't turned that off. Left off the common, small ones on purpose.
@@ -662,6 +696,13 @@ return [
             'perfect' => ['name' => 'Hibátlan', 'emoji' => '💎', 'hint' => 'Oldj meg egy egész játékot elsőre!', 'rule' => ['perfect', 1]],
             'streak_3' => ['name' => 'Három nap', 'emoji' => '🔥', 'hint' => 'Játssz három nap egymás után!', 'rule' => ['streak', 3], 'email' => true],
             'streak_7' => ['name' => 'Egész héten', 'emoji' => '🌈', 'hint' => 'Játssz hét nap egymás után!', 'rule' => ['streak', 7], 'email' => true],
+            'week_1' => ['name' => 'Heti kihívás', 'emoji' => '🗓️', 'hint' => 'Játssz egy héten 5 különböző játékot!', 'rule' => ['weekly', 1], 'email' => true],
+            'week_4' => ['name' => 'Négy hét bajnoka', 'emoji' => '🏆', 'hint' => 'Teljesítsd a heti kihívást négy héten!', 'rule' => ['weekly', 4], 'email' => true],
+            'zone_meadow' => ['name' => 'A Rét felfedezője', 'emoji' => '🌼', 'hint' => 'Próbáld ki a Rét összes játékát!', 'rule' => ['zone', 'meadow'], 'email' => true],
+            'zone_forest' => ['name' => 'A Varázserdő felfedezője', 'emoji' => '🌲', 'hint' => 'Próbáld ki a Varázserdő összes játékát!', 'rule' => ['zone', 'forest'], 'email' => true],
+            'zone_sound' => ['name' => 'A Hangok völgyének felfedezője', 'emoji' => '🎵', 'hint' => 'Próbáld ki a Hangok völgye összes játékát!', 'rule' => ['zone', 'sound'], 'email' => true],
+            'zone_letters' => ['name' => 'A Szavak városának felfedezője', 'emoji' => '🔤', 'hint' => 'Próbáld ki a Szavak városa összes játékát!', 'rule' => ['zone', 'letters'], 'email' => true],
+            'zone_world' => ['name' => 'A Felfedezők földjének felfedezője', 'emoji' => '🌍', 'hint' => 'Próbáld ki a Felfedezők földje összes játékát!', 'rule' => ['zone', 'world'], 'email' => true],
             'stars_50' => ['name' => 'Csillaggyűjtő', 'emoji' => '⭐', 'hint' => 'Gyűjts 50 csillagot!', 'rule' => ['stars', 50]],
             'stars_200' => ['name' => 'Csillagszóró', 'emoji' => '🌟', 'hint' => 'Gyűjts 200 csillagot!', 'rule' => ['stars', 200], 'email' => true],
             'sessions_10' => ['name' => 'Kis bajnok', 'emoji' => '🏅', 'hint' => 'Játssz végig 10 játékot!', 'rule' => ['sessions', 10], 'email' => true],

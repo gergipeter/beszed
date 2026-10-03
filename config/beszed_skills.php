@@ -31,7 +31,7 @@ return [
         ],
         'nyelv_emlekezet' => [
             'label' => 'Mondatok és emlékezet', 'emoji' => '🗣️', 'difer' => false,
-            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok', 'mitunt', 'korus', 'utasitas', 'szajtorna', 'lepegeto', 'betuk', 'ellentet', 'tobbes', 'foglalkozas', 'mondat'],
+            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok', 'mitunt', 'korus', 'utasitas', 'szajtorna', 'lepegeto', 'betuk', 'szokirako', 'olvasd', 'mese', 'ellentet', 'tobbes', 'foglalkozas', 'mondat'],
         ],
         'vizualis' => [
             'label' => 'Vizuális észlelés', 'emoji' => '👀', 'difer' => false,
@@ -43,7 +43,7 @@ return [
         ],
         'erzelmek' => [
             'label' => 'Érzelmek felismerése', 'emoji' => '😊', 'difer' => false,
-            'games' => ['erzelmek'],
+            'games' => ['erzelmek', 'tamagotchi'],
         ],
     ],
 

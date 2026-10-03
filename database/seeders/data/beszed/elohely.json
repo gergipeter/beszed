@@ -1,6 +1,11 @@
 [
-  {"level": 1, "payload": {"key": "viz", "label": "Vízben élők", "singular": "vízi állat", "icon": "🌊", "items": [["🐟", "hal"], ["🐬", "delfin"], ["🐳", "bálna"], ["🦀", "rák"], ["🐙", "polip"], ["🦈", "cápa"], ["🐠", "díszhal"], ["🦑", "tintahal"]]}},
-  {"level": 1, "payload": {"key": "erdo", "label": "Erdőben élők", "singular": "erdei állat", "icon": "🌲", "items": [["🦊", "róka"], ["🐻", "medve"], ["🦌", "szarvas"], ["🐗", "vaddisznó"], ["🐺", "farkas"], ["🦉", "bagoly"], ["🐿️", "mókus"], ["🦔", "sün"]]}},
-  {"level": 1, "payload": {"key": "tanya", "label": "Tanyán élők", "singular": "háziállat", "icon": "🏡", "items": [["🐄", "tehén"], ["🐖", "malac"], ["🐔", "tyúk"], ["🐑", "birka"], ["🐐", "kecske"], ["🐴", "ló"], ["🦆", "kacsa"], ["🐇", "nyúl"]]}},
-  {"level": 1, "payload": {"key": "levego", "label": "Az égen repülők", "singular": "repülő állat", "icon": "☁️", "items": [["🦅", "sas"], ["🦜", "papagáj"], ["🕊️", "galamb"], ["🦢", "hattyú"], ["🦋", "pillangó"], ["🐝", "méh"], ["🦇", "denevér"], ["🐞", "katica"]]}}
+  {"level":1,"payload":{"key":"viz","label":"Vízben élők","singular":"vízi állat","icon":"🌊","items":[["🐟","hal"],["🐬","delfin"],["🐳","bálna"],["🦀","rák"],["🐙","polip"],["🦈","cápa"],["🐠","díszhal"],["🦑","tintahal"]]}},
+  {"level":1,"payload":{"key":"erdo","label":"Erdőben élők","singular":"erdei állat","icon":"🌲","items":[["🦊","róka"],["🐻","medve"],["🦌","szarvas"],["🐗","vaddisznó"],["🐺","farkas"],["🦉","bagoly"],["🐿️","mókus"],["🦔","sün"]]}},
+  {"level":1,"payload":{"key":"tanya","label":"Tanyán élők","singular":"háziállat","icon":"🏡","items":[["🐄","tehén"],["🐖","malac"],["🐔","tyúk"],["🐑","birka"],["🐐","kecske"],["🐴","ló"],["🦆","kacsa"],["🐇","nyúl"]]}},
+  {"level":1,"payload":{"key":"levego","label":"Az égen repülők","singular":"repülő állat","icon":"☁️","items":[["🦅","sas"],["🦜","papagáj"],["🕊️","galamb"],["🦢","hattyú"],["🦋","pillangó"],["🐝","méh"],["🦇","denevér"],["🐞","katica"]]}},
+  {"level":1,"payload":{"key":"szavanna","label":"Szavannán élők","singular":"szavannai állat","icon":"🌅","items":[["🦁","oroszlán"],["🐘","elefánt"],["🦒","zsiráf"],["🦓","zebra"],["🦏","orrszarvú"],["🐆","gepárd"],["🐃","bivaly"]]}},
+  {"level":1,"payload":{"key":"dzsungel","label":"Dzsungelben élők","singular":"dzsungellakó állat","icon":"🌴","items":[["🦍","gorilla"],["🐅","tigris"],["🦥","lajhár"],["🦧","orángután"],["🐒","majom"],["🦚","páva"],["🐊","krokodil"],["🐸","béka"]]}},
+  {"level":1,"payload":{"key":"sivatag","label":"Sivatagban és pusztán élők","singular":"sivatagi vagy pusztai állat","icon":"🏜️","items":[["🐫","teve"],["🐪","egypúpú teve"],["🦂","skorpió"],["🦎","gyík"],["🐍","kígyó"],["🦘","kenguru"],["🦬","bölény"],["🦙","láma"]]}},
+  {"level":1,"payload":{"key":"ret","label":"Réten, kertben élők","singular":"rét- vagy kertlakó állat","icon":"🌼","items":[["🦗","tücsök"],["🐜","hangya"],["🐌","csiga"],["🪱","giliszta"],["🕷️","pók"],["🐛","hernyó"],["🪲","bogár"],["🐁","egér"]]}},
+  {"level":1,"payload":{"key":"otthon","label":"Otthon, a lakásban élők","singular":"házi kedvenc","icon":"🏠","items":[["🐕","kutya"],["🐈","macska"],["🐹","hörcsög"],["🐢","teknős"]]}}
 ]
