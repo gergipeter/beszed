@@ -134,6 +134,11 @@ final class ContentRules
             },
             'napirend', 'keszul' => count(array_unique(array_column($p['steps'], 0))) === count($p['steps']) ? [] : ['steps' => 'Egy képet csak egyszer használj.'],
             'elohely', 'szobak' => count(array_unique(array_column($p['items'], 0))) === count($p['items']) ? [] : ['items' => 'Egy képet csak egyszer használj.'],
+            'mondat' => match (true) {
+                count(explode(' ', trim($p['text']))) < 3 || count(explode(' ', trim($p['text']))) > 5 => ['text' => 'A mondat 3–5 szóból álljon.'],
+                count(array_unique(array_map($lower, explode(' ', trim($p['text']), 9)))) !== count(explode(' ', trim($p['text']), 9)) => ['text' => 'Egy szó csak egyszer szerepelhet (különben nem lehet sorrendbe rakni).'],
+                default => [],
+            },
             'melyik' => $lower($p['good']) !== $lower($p['bad']) ? [] : ['bad' => 'A két mondat ugyanaz.'],
             'szajtorna' => count(array_unique(array_column($p['moves'], 1))) === count($p['moves']) ? [] : ['moves' => 'Minden mozdulat más legyen.'],
             // a pair of the same word, or of two words with the same picture, can't be told apart by ear or by eye

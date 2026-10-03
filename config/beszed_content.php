@@ -165,6 +165,9 @@ return [
             'icon' => $emoji('Szoba képe'),
             'items' => ['type' => 'pairs', 'label' => 'Képek', 'min' => 4, 'hint' => 'soronként: emoji név'],
         ]],
+        'mondat' => ['title' => 'text', 'fields' => [
+            'text' => $text('Mondat (3–5 szó, egy szó csak egyszer)', ['hint' => 'A cica alszik.']),
+        ]],
         'melyik' => ['title' => 'good', 'fields' => [
             'good' => $text('Helyes mondat'),
             'bad' => $text('Hibás mondat'),

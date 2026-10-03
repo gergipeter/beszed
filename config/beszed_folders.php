@@ -56,7 +56,7 @@ return [
         'nyelv' => [
             'name' => 'Betűk és szókincs', 'emoji' => '🔤', 'color' => '#FFE7A8',
             'develops' => 'Betűismeret, ellentétek, többes szám, foglalkozások, olvasás-előkészítés',
-            'games' => ['betuk', 'ellentet', 'tobbes', 'foglalkozas'],
+            'games' => ['betuk', 'ellentet', 'tobbes', 'foglalkozas', 'mondat'],
         ],
         'vilag' => [
             'name' => 'Világunk', 'emoji' => '🌍', 'color' => '#BDEBE3',
@@ -74,7 +74,7 @@ return [
         'meadow' => ['szamol', 'szamok', 'beka', 'merleg', 'osztozas', 'ceruza', 'kirako', 'parkereso', 'kulonbseg', 'szinek', 'tamagotchi'],
         'forest' => ['okoska', 'valogato', 'nagysag', 'arnyek', 'mitunt', 'korus', 'utasitas', 'irany', 'hol'],
         'sound' => ['zs', 'kezdo', 'szotag', 'rimelo', 'ikerhangok', 'rimparok', 'hallgasd', 'ritmus', 'zongora', 'szajtorna'],
-        'letters' => ['betuk', 'papagaj', 'mondd', 'melyik', 'lepegeto', 'ellentet', 'tobbes', 'foglalkozas'],
+        'letters' => ['betuk', 'papagaj', 'mondd', 'mondat', 'melyik', 'lepegeto', 'ellentet', 'tobbes', 'foglalkozas'],
         'world' => ['elohely', 'szobak', 'napirend', 'keszul', 'tortenet', 'erzelmek'],
     ],
 ];

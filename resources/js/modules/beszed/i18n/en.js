@@ -288,6 +288,10 @@ export default {
     again: 'Once more',
     rep: 'Done it',
     progress: '{done} of {total}',
+    mirrorOn: 'Mirror',
+    mirrorOff: 'Mirror off',
+    mirrorLabel: 'Yourself in the camera',
+    noCamera: 'The camera is not available right now. Use a real mirror!',
   },
 
   board: {

@@ -65,8 +65,8 @@ const drag = useDrag({ root: row, onDrop: item => tap(item) })
     >
       <Transition name="land">
         <span v-if="item" class="placed">
-          <EmojiArt class="art" :style="sized(item)" :char="item.emoji" />
-          <small v-if="item.label" class="label">{{ item.label }}</small>
+          <EmojiArt v-if="item.emoji" class="art" :style="sized(item)" :char="item.emoji" />
+          <small v-if="item.label" class="label" :class="{ 'label--word': !item.emoji }">{{ item.label }}</small>
         </span>
         <span v-else class="number" aria-hidden="true">{{ i + 1 }}</span>
       </Transition>
@@ -87,8 +87,8 @@ const drag = useDrag({ root: row, onDrop: item => tap(item) })
       @pointerdown="drag.start($event, item)"
       @click="tap(item)"
     >
-      <EmojiArt class="art" :style="sized(item)" :char="item.emoji" />
-      <small v-if="item.label" class="label">{{ item.label }}</small>
+      <EmojiArt v-if="item.emoji" class="art" :style="sized(item)" :char="item.emoji" />
+      <small v-if="item.label" class="label" :class="{ 'label--word': !item.emoji }">{{ item.label }}</small>
     </button>
   </div>
 </template>
@@ -175,6 +175,11 @@ const drag = useDrag({ root: row, onDrop: item => tap(item) })
   /* --scale shrinks the size-ordering pictures; story pictures keep the full size */
   font-size: calc(clamp(34px, 12vw, 64px) * var(--scale, 1));
   line-height: 1;
+}
+.label--word {
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 800;
+  color: inherit;
 }
 .label {
   padding: 0 4px;

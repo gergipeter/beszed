@@ -65,6 +65,11 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
         e-mail-címet nem). A link legfeljebb 90 napig él, és bármikor visszavonhatod.
       </p>
 
+      <p>
+        <b>Kamera:</b> a Szájtorna „Tükör” gombja a telefon előlapi kamerájával mutatja a gyereknek önmagát. A kép csak a
+        képernyőn jelenik meg: nem rögzítjük, nem mentjük el és nem küldjük el sehová.
+      </p>
+
       <h2>Meddig tároljuk?</h2>
       <p>
         Amíg a fiókod vagy a gyerek profilja létezik. Egy gyerek törlésével az összes eredménye azonnal törlődik; a fiók

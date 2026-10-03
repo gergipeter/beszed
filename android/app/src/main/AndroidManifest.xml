@@ -41,6 +41,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Parents record Csillám's sentences in their own voice (optional): getUserMedia in the WebView needs both. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!-- The microphone is not a required feature: the games work without one. -->
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
