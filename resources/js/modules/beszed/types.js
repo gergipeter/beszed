@@ -41,6 +41,7 @@
  * @property {boolean} noIdle
  * @property {number | null} [freeMaxLevel]  top level a free account plays in this game
  * @property {{ id: string, name: string, emoji: string }[]} [categories]  picture themes to pick before playing (Kirakó)
+ * @property {string} [pickPrompt]  what Csillám asks above those themes (default: Kirakó's question)
  *
  * @typedef {{ key: string, label: string, text: string }} Line  A line a parent can record.
  *

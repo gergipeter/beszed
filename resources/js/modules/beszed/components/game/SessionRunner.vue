@@ -156,7 +156,7 @@ onMounted(() => {
         </GuideBubble>
 
         <LevelPicker v-if="maxLevel > 10" :max="pickMax" :current="session?.level ?? null" @pick="pickLevel" />
-        <CategoryPicker v-if="picking" :categories="themes" :last="lastTheme" @pick="pickTheme" />
+        <CategoryPicker v-if="picking" :categories="themes" :last="lastTheme" :prompt="meta.game(game)?.pickPrompt" @pick="pickTheme" />
         <template v-else>
           <button v-if="themes.length && themeName" type="button" class="theme-chip" @click="picking = true">
             <EmojiArt :char="ICONS.picture" /> {{ t('game.theme', { name: themeName }) }}

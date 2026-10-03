@@ -9,19 +9,21 @@ import EmojiArt from '../ui/EmojiArt.vue'
  * pictures should be, animals, princesses and tales, vehicles… The last
  * choice glows. Csillám asks.
  */
-defineProps({
+const props = defineProps({
   /** @type {import('vue').PropType<{ id: string, name: string, emoji: string }[]>} */
   categories: { type: Array, required: true },
   last: { type: String, default: null },
+  /** What Csillám asks; the Kirakó question when empty. */
+  prompt: { type: String, default: null },
 })
 const emit = defineEmits(['pick'])
 const guide = useGuideStore()
 
-onMounted(() => guide.speak([t('game.pickTheme')]))
+onMounted(() => guide.speak([props.prompt || t('game.pickTheme')]))
 </script>
 
 <template>
-  <div class="picker" role="group" :aria-label="t('game.pickTheme')">
+  <div class="picker" role="group" :aria-label="prompt || t('game.pickTheme')">
     <button
       v-for="(c, i) in categories"
       :key="c.id"

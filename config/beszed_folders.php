@@ -21,7 +21,7 @@ return [
         'beszed' => [
             'name' => 'Beszéd és szavak', 'emoji' => '🗣️', 'color' => '#FFD1E0',
             'develops' => 'Szókincs, mondatalkotás, szépen beszélés',
-            'games' => ['papagaj', 'mondd', 'melyik', 'hallgasd'],
+            'games' => ['papagaj', 'mondd', 'melyik', 'hallgasd', 'szajtorna', 'lepegeto'],
         ],
         'ter' => [
             'name' => 'Nézd és tájékozódj', 'emoji' => '🧭', 'color' => '#CFF0DA',

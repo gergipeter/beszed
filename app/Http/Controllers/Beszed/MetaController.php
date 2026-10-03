@@ -30,6 +30,7 @@ class MetaController extends Controller
             'maxLevel' => $g['adaptive']['max'] ?? null,
             // picture themes to pick from before playing (Kirakó)
             'categories' => collect($g['categories'] ?? [])->map(fn ($c, $id) => ['id' => $id, 'name' => $c['name'], 'emoji' => $c['emoji']])->values(),
+            'pickPrompt' => $g['pick_prompt'] ?? null,
         ])->values();
 
         // the hub's folders (what each game develops); games not filed anywhere go to a last one

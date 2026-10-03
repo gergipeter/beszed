@@ -103,6 +103,18 @@ return [
             'chunks' => ['type' => 'list', 'label' => 'Darabok (lassú kimondáshoz)', 'separator' => '|', 'hint' => 'A cica | alszik.'],
             'emoji' => $emoji('Kép (1–3 emoji)'),
         ]],
+        'szajtorna' => ['title' => 'name', 'fields' => [
+            'name' => $text('Gyakorlat neve'),
+            'moves' => ['type' => 'pairs', 'label' => 'Mozdulatok egymás után', 'min' => 2, 'hint' => 'soronként: emoji mit csinálj'],
+        ]],
+        'lepegeto' => ['title' => 'text', 'fields' => [
+            'theme' => ['type' => 'select', 'label' => 'Évszak', 'options' => ['osz' => 'Ősz', 'tel' => 'Tél', 'tavasz' => 'Tavasz', 'nyar' => 'Nyár']],
+            'kind' => ['type' => 'select', 'label' => 'Fajta', 'options' => [
+                'ask' => 'Kérdés (válaszolj)', 'echo' => 'Utánozd (hang)', 'move' => 'Mozogj', 'clap' => 'Tapsold el', 'mouth' => 'Szájtorna',
+            ]],
+            'emoji' => $emoji(),
+            'text' => $text('Feladat'),
+        ]],
         'melyik' => ['title' => 'good', 'fields' => [
             'good' => $text('Helyes mondat'),
             'bad' => $text('Hibás mondat'),

@@ -275,6 +275,22 @@ export default {
     recordAttempt: 'Mondd a mikrofonba',
     recording: 'Felvétel… koppints, ha kész',
     scoring: 'Figyelem…',
+  mimic: {
+    mirror: 'Nézzetek együtt tükörbe!',
+    again: 'Még egyszer',
+    rep: 'Megcsináltam',
+    progress: '{done} a {total}-ból',
+  },
+
+  board: {
+    label: '{theme} játéktábla',
+    task: 'A mező feladata',
+    roll: 'Dobok!',
+    rolled: 'Dobtál: {n}',
+    again: 'Még egyszer',
+    done: 'Megvolt!',
+  },
+
     micUnavailable: 'A mikrofon most nem érhető el {folder}. Kérd meg a szülőt, hogy döntsön!',
   },
 

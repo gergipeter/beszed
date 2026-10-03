@@ -24,6 +24,8 @@ const loaders = {
   share: () => import('./share/ShareEngine.vue'),
   rhythm: () => import('./rhythm/RhythmEngine.vue'),
   piano: () => import('./piano/PianoEngine.vue'),
+  mimic: () => import('./mimic/MimicEngine.vue'),
+  board: () => import('./board/BoardEngine.vue'),
   tamagotchi: () => import('./TamagotchiEngine.vue'),
 }
 

@@ -122,6 +122,7 @@ final class ContentRules
             'rimelo', 'rimparok' => str_ends_with($lower($p['word']), $lower($p['rhyme'])) ? [] : ['rhyme' => 'A szó nem erre végződik.'],
             'mondd' => $lower(implode(' ', $p['chunks'])) === $lower($p['text']) ? [] : ['chunks' => 'A darabok együtt nem adják ki a mondatot.'],
             'melyik' => $lower($p['good']) !== $lower($p['bad']) ? [] : ['bad' => 'A két mondat ugyanaz.'],
+            'szajtorna' => count(array_unique(array_column($p['moves'], 1))) === count($p['moves']) ? [] : ['moves' => 'Minden mozdulat más legyen.'],
             // a pair of the same word, or of two words with the same picture, can't be told apart by ear or by eye
             'ikerhangok' => match (true) {
                 $lower($p['wordA']) === $lower($p['wordB']) => ['wordB' => 'A két szó nem lehet ugyanaz.'],
