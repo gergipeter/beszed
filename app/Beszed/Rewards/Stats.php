@@ -27,6 +27,8 @@ final class Stats
         public readonly array $gameBest,
         public readonly int $dailyPaths = 0,
         public readonly array $recentDays = [],
+        public readonly int $weekGames = 0,
+        public readonly int $weeksWon = 0,
     ) {}
 
     public static function for(Child $child, string $timezone): self
@@ -44,6 +46,24 @@ final class Stats
             ->where('completed_at', '>=', $now->subYear())
             ->pluck('completed_at')
             ->map(fn ($at) => CarbonImmutable::parse($at)->setTimezone($timezone)->toDateString());
+
+        // The weekly challenge: different games finished in a calendar week (Monday to Sunday, local time).
+        $goal = (int) config('beszed.rewards.weekly_goal', 5);
+        $weeks = BeszedSession::query()
+            ->where('child_id', $child->id)
+            ->where('completed_at', '>=', $now->subYear())
+            ->get(['game', 'completed_at'])
+            ->groupBy(fn ($s) => CarbonImmutable::parse($s->completed_at)->setTimezone($timezone)->format('o-W'))
+            ->map(fn ($week) => $week->pluck('game')->unique()->count());
+
+        // The weekly challenge: different games finished in a calendar week (Monday to Sunday, local time).
+        $goal = (int) config('beszed.rewards.weekly_goal', 5);
+        $weeks = BeszedSession::query()
+            ->where('child_id', $child->id)
+            ->where('completed_at', '>=', $now->subYear())
+            ->get(['game', 'completed_at'])
+            ->groupBy(fn ($s) => CarbonImmutable::parse($s->completed_at)->setTimezone($timezone)->format('o-W'))
+            ->map(fn ($week) => $week->pluck('game')->unique()->count());
 
         $played = $days->unique()->flip();
         $today = $now->toDateString();
@@ -75,6 +95,8 @@ final class Stats
             gameBest: $perGame->map(fn ($g) => (float) $g->best)->all(),
             dailyPaths: BeszedDailyPath::where('child_id', $child->id)->whereNotNull('completed_at')->count(),
             recentDays: $recentDays,
+            weekGames: (int) ($weeks[$now->format('o-W')] ?? 0),
+            weeksWon: $weeks->filter(fn ($n) => $n >= $goal)->count(),
         );
     }
 }

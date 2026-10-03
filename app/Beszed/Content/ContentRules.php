@@ -141,7 +141,12 @@ final class ContentRules
             },
             'ido' => preg_match('/^([1-9]|1[0-2]):(00|15|30|45)$/', trim($p['time'])) ? [] : ['time' => 'Az idő ó:pp alakú legyen, 1–12 óra, a perc 00, 15, 30 vagy 45.'],
             // the strokes of a letter are drawn by the app (engines/letter/glyphs.js): only those can be written
-            'betuiro' => str_contains('IMLTHEFANKVZOCDUPBRSGJliotcunmadbpes', $p['glyph']) ? [] : ['glyph' => 'Ehhez a betűhöz még nincs rajzolt útvonal.'],
+            'betuiro' => str_contains('IMLTHEFANKVZOCDUPBRSGJliotcunmadbpesáéíóöőúüűÁÉÍÓÖŐÚÜŰ', $p['glyph']) ? [] : ['glyph' => 'Ehhez a betűhöz még nincs rajzolt útvonal.'],
+            'szokirako' => preg_match('/^[a-záéíóöőúüű]{2,12}$/u', $p['word']) && $lower($p['word']) === $p['word'] ? [] : ['word' => 'Csak kisbetűs magyar betűk, 2–12 betű.'],
+            'olvasd' => $lower(implode('', $p['syllables'])) === $lower($p['word']) ? [] : ['syllables' => 'A szótagok együtt nem adják ki a szót.'],
+            'mese' => count(array_unique(array_map(fn ($k) => $p["o$k"][0][0] ?? '', [1, 2, 3]))) >= 1
+                && collect([1, 2, 3])->every(fn ($k) => count(array_unique(array_column($p["o$k"], 0))) === count($p["o$k"]))
+                ? [] : ['o1' => 'Egy kérdés válaszaihoz különböző képek kellenek.'],
             'melyik' => $lower($p['good']) !== $lower($p['bad']) ? [] : ['bad' => 'A két mondat ugyanaz.'],
             'szajtorna' => count(array_unique(array_column($p['moves'], 1))) === count($p['moves']) ? [] : ['moves' => 'Minden mozdulat más legyen.'],
             // a pair of the same word, or of two words with the same picture, can't be told apart by ear or by eye

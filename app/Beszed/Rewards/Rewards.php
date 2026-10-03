@@ -33,6 +33,13 @@ class Rewards
             'level' => $level,
             'streak' => ['days' => $stats->streak, 'today' => $stats->playedToday, 'recent' => $stats->recentDays],
             'daily' => ['done' => $stats->today, 'goal' => $cfg['daily_goal']],
+            'week' => [
+                'games' => $stats->weekGames,
+                'goal' => (int) $cfg['weekly_goal'],
+                'won' => $stats->weeksWon,
+                // days left in this calendar week, today included (Monday = 7 … Sunday = 1)
+                'days_left' => 8 - (int) now($cfg['timezone'])->isoWeekday(),
+            ],
             'sessions' => $stats->sessions,
             'medals' => collect(config('beszed.games'))
                 ->mapWithKeys(fn ($g, $id) => [$id => $this->medal($stats->gameBest[$id] ?? null)]),

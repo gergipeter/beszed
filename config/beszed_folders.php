@@ -56,12 +56,12 @@ return [
         'nyelv' => [
             'name' => 'Betűk és szókincs', 'emoji' => '🔤', 'color' => '#FFE7A8',
             'develops' => 'Betűismeret, ellentétek, többes szám, foglalkozások, olvasás-előkészítés',
-            'games' => ['betuk', 'ellentet', 'tobbes', 'foglalkozas', 'mondat'],
+            'games' => ['betuk', 'szokirako', 'olvasd', 'ellentet', 'tobbes', 'foglalkozas', 'mondat'],
         ],
         'vilag' => [
             'name' => 'Világunk', 'emoji' => '🌍', 'color' => '#BDEBE3',
             'develops' => 'Környezetismeret: állatok élőhelye, otthon, napirend, időfogalmak, folyamatok',
-            'games' => ['elohely', 'szobak', 'napirend', 'keszul', 'ido'],
+            'games' => ['mese', 'elohely', 'szobak', 'napirend', 'keszul', 'ido'],
         ],
     ],
 
@@ -74,7 +74,7 @@ return [
         'meadow' => ['szamol', 'szamok', 'beka', 'merleg', 'osztozas', 'ceruza', 'kirako', 'parkereso', 'kulonbseg', 'szinek', 'tamagotchi'],
         'forest' => ['okoska', 'valogato', 'nagysag', 'arnyek', 'mitunt', 'korus', 'utasitas', 'irany', 'hol'],
         'sound' => ['zs', 'kezdo', 'szotag', 'rimelo', 'ikerhangok', 'rimparok', 'hallgasd', 'ritmus', 'zongora', 'szajtorna'],
-        'letters' => ['betuk', 'betuiro', 'papagaj', 'mondd', 'mondat', 'melyik', 'lepegeto', 'ellentet', 'tobbes', 'foglalkozas'],
-        'world' => ['ido', 'elohely', 'szobak', 'napirend', 'keszul', 'tortenet', 'erzelmek'],
+        'letters' => ['betuk', 'betuiro', 'szokirako', 'olvasd', 'papagaj', 'mondd', 'mondat', 'melyik', 'lepegeto', 'ellentet', 'tobbes', 'foglalkozas'],
+        'world' => ['mese', 'ido', 'elohely', 'szobak', 'napirend', 'keszul', 'tortenet', 'erzelmek'],
     ],
 ];

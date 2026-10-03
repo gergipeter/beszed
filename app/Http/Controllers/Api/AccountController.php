@@ -38,12 +38,13 @@ class AccountController extends Controller
         $data = $request->validate([
             'milestone_emails_enabled' => ['sometimes', 'boolean'],
             'weekly_report_enabled' => ['sometimes', 'boolean'],
+            'play_reminder_enabled' => ['sometimes', 'boolean'],
         ]);
 
         $user = $request->user();
         $user->forceFill($data)->save();
 
-        return response()->json($user->only('milestone_emails_enabled', 'weekly_report_enabled'));
+        return response()->json($user->only('milestone_emails_enabled', 'weekly_report_enabled', 'play_reminder_enabled'));
     }
 
     /** This week's report for every child who played, e-mailed now (a sample; the real one comes on Sunday). */

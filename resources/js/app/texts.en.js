@@ -72,6 +72,7 @@ export default {
   milestoneEmails: 'E-mail me when the child reaches a milestone',
   milestoneEmailsSaveFailed: "Couldn't save this setting.",
   weeklyReport: 'Weekly summary by e-mail on Sunday evening, with a PDF',
+  playReminder: "E-mail me in the evening if we haven't played today",
   weeklySample: 'Send the weekly summary now',
   weeklySampleSending: 'Sending…',
   weeklySampleSent: 'Sent ({count} e-mail(s)) to {email}',

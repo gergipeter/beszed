@@ -16,7 +16,7 @@ class MeController extends Controller
         $user = $request->user();
 
         return response()->json([
-            'user' => $user->only('id', 'name', 'email', 'avatar', 'milestone_emails_enabled', 'weekly_report_enabled') + ['can_edit_content' => $user->can('edit-content'), 'premium' => $plans->premium($user), 'demo' => DemoLoginController::enabled() && $user->email === DemoLoginController::EMAIL],
+            'user' => $user->only('id', 'name', 'email', 'avatar', 'milestone_emails_enabled', 'weekly_report_enabled', 'play_reminder_enabled') + ['can_edit_content' => $user->can('edit-content'), 'premium' => $plans->premium($user), 'demo' => DemoLoginController::enabled() && $user->email === DemoLoginController::EMAIL],
             'consent' => ['required' => $user->needsConsent(), 'version' => config('privacy.version')],
             'children' => ChildController::present($user->children()->orderBy('id')->get()),
             // the óvodai jelek a child can pick from

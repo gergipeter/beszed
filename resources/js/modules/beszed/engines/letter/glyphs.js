@@ -62,6 +62,33 @@ export const GLYPHS = {
   s: [join(arc(0.5, 0.52, 0.17, 0.12, -30, -270), arc(0.5, 0.76, 0.19, 0.12, -90, 150))],
 }
 
+// accents, drawn last: acute (á é í ó ú), umlaut (ö ü) and double acute (ő ű)
+const acute = (x, y) => [[x - 0.04, y + 0.05], [x + 0.06, y - 0.05]]
+const umlaut = (x, y) => [[[x - 0.08, y], [x - 0.08, y + 0.02]], [[x + 0.08, y], [x + 0.08, y + 0.02]]]
+const doubleAcute = (x, y) => [acute(x - 0.07, y), acute(x + 0.07, y)]
+const accented = (base, ...marks) => [...GLYPHS[base], ...marks]
+
+Object.assign(GLYPHS, {
+  á: accented('a', acute(0.56, 0.26)),
+  é: accented('e', acute(0.5, 0.26)),
+  í: [GLYPHS.i[0], acute(0.52, 0.24)],
+  ó: accented('o', acute(0.5, 0.26)),
+  ö: accented('o', ...umlaut(0.5, 0.28)),
+  ő: accented('o', ...doubleAcute(0.5, 0.26)),
+  ú: accented('u', acute(0.5, 0.26)),
+  ü: accented('u', ...umlaut(0.5, 0.28)),
+  ű: accented('u', ...doubleAcute(0.5, 0.26)),
+  Á: accented('A', acute(0.5, 0.06)),
+  É: accented('E', acute(0.5, 0.06)),
+  Í: accented('I', acute(0.5, 0.06)),
+  Ó: accented('O', acute(0.5, 0.06)),
+  Ö: accented('O', ...umlaut(0.5, 0.07)),
+  Ő: accented('O', ...doubleAcute(0.5, 0.06)),
+  Ú: accented('U', acute(0.5, 0.06)),
+  Ü: accented('U', ...umlaut(0.5, 0.07)),
+  Ű: accented('U', ...doubleAcute(0.5, 0.06)),
+})
+
 /** Points every ~1.5% of the square along a stroke, so a quick finger still covers it. */
 export function densify(stroke, gap = 0.015) {
   const out = [stroke[0]]

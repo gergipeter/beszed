@@ -89,6 +89,7 @@ export default {
     exit: 'Gyerekek',
     forestLocked: 'Nyílik, ha a rét {need} játékán virág nő ({have}/{need})',
     zones: { meadow: 'A Rét', forest: 'A Varázserdő', sound: 'A Hangok völgye', letters: 'A Szavak városa', world: 'A Felfedezők földje' },
+    zoneProgress: '{done} / {total} játékon nő virág',
     zoneHints: {
       meadow: 'Számolás, kirakók, színek: kezdésnek és a legkisebbeknek.',
       forest: 'Gondolkodás, figyelem és tájékozódás.',
@@ -290,6 +291,15 @@ export default {
 
   clock: {
     label: 'Óra: {hour} óra {minute} perc',
+  },
+
+  weekly: {
+    title: 'Heti kihívás',
+    goal: 'Játssz {goal} különböző játékot a héten!',
+    left: 'még {days} nap',
+    done: 'Megvan a heti kihívás! 🎉',
+    progress: '{done} / {goal} játék',
+    won: 'Eddig {n} héten sikerült',
   },
 
   mimic: {

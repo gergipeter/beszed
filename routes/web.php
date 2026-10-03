@@ -8,6 +8,7 @@ use App\Http\Controllers\PictogramController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\SpaController;
 use App\Http\Controllers\WeeklyReportUnsubscribeController;
+use App\Http\Controllers\PlayReminderUnsubscribeController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -40,6 +41,11 @@ Route::get('/pictograms/{id}.png', PictogramController::class)
 Route::get('/email/heti-beszamolo/leiratkozas/{user}', WeeklyReportUnsubscribeController::class)
     ->middleware(['signed', 'throttle:10,1,unsubscribe'])
     ->name('weekly-report.unsubscribe');
+
+// The one-click unsubscribe in the play reminder e-mail (signed link).
+Route::get('/email/emlekezteto/leiratkozas/{user}', PlayReminderUnsubscribeController::class)
+    ->middleware(['signed', 'throttle:10,1,unsubscribe'])
+    ->name('play-reminder.unsubscribe');
 
 // Every other page URL is the Vue app; it decides between sign-in and the games.
 Route::get('/login', SpaController::class)->name('login');

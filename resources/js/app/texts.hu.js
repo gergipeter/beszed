@@ -68,6 +68,7 @@ export default {
   milestoneEmails: 'E-mail, ha a gyerek elér egy mérföldkövet',
   milestoneEmailsSaveFailed: 'Nem sikerült elmenteni ezt a beállítást.',
   weeklyReport: 'Heti beszámoló e-mailben vasárnap este, PDF-fel',
+  playReminder: 'Esti emlékeztető e-mailben, ha ma még nem játszottatok',
   weeklySample: 'Küldd el most a heti beszámolót',
   weeklySampleSending: 'Küldjük…',
   weeklySampleSent: 'Elküldtük ({count} levél) ide: {email}',

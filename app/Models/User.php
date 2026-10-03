@@ -28,6 +28,7 @@ class User extends Authenticatable
         'avatar',
         'milestone_emails_enabled',
         'weekly_report_enabled',
+        'play_reminder_enabled',
     ];
 
     /**
@@ -55,6 +56,7 @@ class User extends Authenticatable
             'subscription_expires_at' => 'datetime',
             'milestone_emails_enabled' => 'boolean',
             'weekly_report_enabled' => 'boolean',
+            'play_reminder_enabled' => 'boolean',
         ];
     }
 

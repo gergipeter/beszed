@@ -73,8 +73,8 @@ class SessionBuilder
     private function weights(Child $child, string $game, Collection $items, bool $adaptive, int $rounds): array
     {
         $recent = BeszedAttempt::where('child_id', $child->id)->where('game', $game)
-            ->whereNotNull('content_item_id')->where('created_at', '>=', now()->subDays(30))
-            ->latest('id')->limit(500)->get(['content_item_id', 'correct', 'tries'])
+            ->whereNotNull('content_item_id')->where('created_at', '>=', now()->subDays(90))
+            ->latest('id')->limit(2000)->get(['content_item_id', 'correct', 'tries', 'created_at'])
             ->groupBy('content_item_id');
         $ageLevel = $adaptive ? null : (config('beszed_content.age_levels')[AgeBands::of($child)] ?? null);
         $review = (bool) config("beszed.games.$game.review", true);
@@ -86,7 +86,7 @@ class SessionBuilder
             if ($misses) {
                 $missed[$item->id] = $misses;
             }
-            $weight = $misses === 0 && $last->count() >= 2 ? 0.6 : 1.0;
+            $weight = $misses === 0 ? $this->spacing($recent[$item->id] ?? collect()) : 1.0;
             if ($ageLevel) {
                 $weight *= match ($item->level <=> $ageLevel) { 1 => 0.3, -1 => 0.7, 0 => 1.0 };
             }
@@ -110,6 +110,33 @@ class SessionBuilder
         }
 
         return $weights;
+    }
+
+    /** Days to leave an item alone after it was right first time this many times in a row (spaced repetition). */
+    private const INTERVAL_DAYS = [0, 1, 2, 4, 8, 16, 32];
+
+    /**
+     * Spaced repetition: an item the child keeps getting right at the first try waits longer and longer (1, 2, 4, 8, 16, 32 days)
+     * before it comes back; once that time is up it is a little more likely than a new item, before it, much less likely.
+     * New items, and items with no clean streak, keep the normal chance.
+     *
+     * @param  Collection<int, BeszedAttempt>  $attempts  newest first
+     */
+    private function spacing(Collection $attempts): float
+    {
+        $streak = 0;
+        foreach ($attempts as $a) {
+            if (! ($a->correct && (int) $a->tries === 1)) {
+                break;
+            }
+            $streak++;
+        }
+        if ($streak === 0) {
+            return 1.0;
+        }
+        $wait = self::INTERVAL_DAYS[min($streak, count(self::INTERVAL_DAYS) - 1)];
+
+        return $attempts->first()->created_at->diffInDays(now(), false) >= $wait ? 1.6 : 0.35;
     }
 
     /** Pictures among the child's last `fresh` plays of this game almost never come up again (several items can share a picture). */

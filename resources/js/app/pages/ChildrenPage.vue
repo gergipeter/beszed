@@ -106,6 +106,17 @@ async function deleteAccount() {
   }
 }
 
+/** The evening nudge when the child has not played today (off until the parent turns it on). */
+async function togglePlayReminder(event) {
+  const enabled = event.target.checked
+  try {
+    await session.savePreferences({ play_reminder_enabled: enabled })
+  } catch {
+    event.target.checked = !enabled
+    error.value = texts.milestoneEmailsSaveFailed
+  }
+}
+
 /** The Sunday e-mail with each child's week and its PDF. */
 async function toggleWeeklyReport(event) {
   const enabled = event.target.checked
@@ -234,6 +245,10 @@ async function toggleMilestoneEmails(event) {
     <label class="milestone-toggle">
       <input type="checkbox" :checked="session.user?.weekly_report_enabled" @change="toggleWeeklyReport" />
       <span>{{ texts.weeklyReport }}</span>
+    </label>
+    <label class="milestone-toggle">
+      <input type="checkbox" :checked="session.user?.play_reminder_enabled" @change="togglePlayReminder" />
+      <span>{{ texts.playReminder }}</span>
     </label>
     <p class="weekly-sample">
       <BzButton size="sm" variant="soft" @click="sendSample">{{ texts.weeklySample }}</BzButton>
