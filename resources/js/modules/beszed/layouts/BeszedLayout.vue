@@ -29,6 +29,8 @@ const props = defineProps({
   guideName: { type: String, default: '' },
   /** The plan unlocks every game; false = the free demo games only. A module used on its own has no plans. */
   premium: { type: Boolean, default: true },
+  /** The local demo parent: every garden zone is open to try, not only the ones the child has earned. */
+  demo: { type: Boolean, default: false },
 })
 
 provideModuleContext(createModuleContext(props))

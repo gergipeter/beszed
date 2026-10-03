@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { BzButton } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
 import { appConfig } from '../config'
+import LegalLinks from '../components/LegalLinks.vue'
 
 /**
  * Terms of use (public). The App Store asks for them next to the privacy notice, and for any subscription they must
@@ -17,7 +18,7 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
 <template>
   <main class="bz terms">
     <article class="doc">
-      <h1>Felhasználási feltételek</h1>
+      <h1>Általános szerződési és felhasználási feltételek (ÁSZF)</h1>
       <p class="draft" role="note">
         Vázlat: a szolgáltató adatait és a hatálybalépés napját a megjelenés előtt ki kell tölteni, a szöveget jogásszal át kell nézni.
       </p>
@@ -91,17 +92,45 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
         mértékben nem felelünk közvetett károkért. A fogyasztót a jogszabályok szerint megillető jogaidat ez nem érinti.
       </p>
 
-      <h2>9. Változások, megszűnés</h2>
+      <h2>9. Elállás és visszatérítés (fogyasztóknak)</h2>
+      <ul>
+        <li>
+          Fogyasztóként az előfizetéstől a vásárlástól számított <b>14 napon belül, indoklás nélkül</b> elállhatsz.
+        </li>
+        <li>
+          Digitális tartalomnál (a Prémium csomag megnyitott funkciói) az elállási jog elvész, ha a teljesítés a te kifejezett
+          előzetes hozzájárulásoddal megkezdődik, és tudomásul veszed, hogy ezzel elveszíted az elállási jogodat. Ezt a vásárlás
+          során külön megerősítheted vagy megtagadhatod.
+        </li>
+        <li>
+          A vásárlást az Apple App Store vagy a Google Play kezeli, ezért az elállást és a visszatérítést is ott kell kérned (Apple:
+          reportaproblem.apple.com; Google Play: a Play Áruház „Fizetések és előfizetések” menüje). Ha elakadsz, írj nekünk, és segítünk.
+        </li>
+      </ul>
+
+      <h2>10. Hibás teljesítés, panasz</h2>
+      <p>
+        Ha a szolgáltatás nem úgy működik, ahogy ígértük, jelezd az elérhetőségen: {{ privacy.contact }}. A hibát észszerű időn
+        belül javítjuk; ha ez nem sikerül, a fogyasztói jogszabályok szerinti jogaid (árleszállítás, megszüntetés) megilletnek. A
+        panaszodra legkésőbb 30 napon belül érdemben válaszolunk. Ha nem értesz egyet a válasszal, fordulhatsz a lakóhelyed szerint
+        illetékes békéltető testülethez, vagy bírósághoz.
+      </p>
+      <p>
+        <b>Békéltető testület:</b> {{ privacy.conciliation }}
+      </p>
+
+      <h2>11. Változások, megszűnés</h2>
       <p>
         A feltételeket módosíthatjuk; lényeges változásnál az alkalmazásban értesítünk, és ha kell, újra a hozzájárulásodat kérjük.
         Ha nem értesz egyet, töröld a fiókodat. A szolgáltatást megszüntethetjük; ilyenkor a fizetett időszakból hátralévő
         részt az áruház szabályai szerint kezeljük.
       </p>
 
-      <h2>10. Irányadó jog</h2>
+      <h2>12. Irányadó jog</h2>
       <p>A feltételekre a magyar jog az irányadó, a fogyasztói jogaidat védő kötelező szabályok sérelme nélkül.</p>
 
       <p class="version">Hatály: [dátum – kitöltendő] · Tájékoztató változata: {{ privacy.version }}</p>
+      <LegalLinks class="foot" />
       <BzButton @click="back">Vissza</BzButton>
     </article>
   </main>
@@ -146,6 +175,9 @@ li + li {
 .link {
   font-weight: 700;
   text-decoration: underline;
+}
+.foot {
+  margin: 22px 0 14px;
 }
 .version {
   margin-top: 22px;

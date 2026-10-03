@@ -24,6 +24,10 @@ class DemoLoginController extends Controller
         abort_unless(self::enabled(), 404);
 
         $user = User::firstOrCreate(['email' => self::EMAIL], ['name' => 'Demo szülő', 'password' => Str::random(40), 'subscription_plan' => 'premium']);
+        // the demo parent is for trying everything: keep it on the premium plan, whatever happened to it before
+        if ($user->subscription_plan !== 'premium' || $user->subscription_expires_at) {
+            $user->forceFill(['subscription_plan' => 'premium', 'subscription_expires_at' => null])->save();
+        }
         Auth::login($user, remember: true);
         $request->session()->regenerate();
 

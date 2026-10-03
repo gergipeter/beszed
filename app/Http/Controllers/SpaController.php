@@ -23,6 +23,10 @@ class SpaController extends Controller
                 'version' => config('privacy.version'),
                 'controller' => config('privacy.controller'),
                 'contact' => config('privacy.contact'),
+                'registration' => config('privacy.registration'),
+                'taxId' => config('privacy.tax_id'),
+                'hosting' => config('privacy.hosting'),
+                'conciliation' => config('privacy.conciliation'),
                 // which speech services are on, so the notice only names the ones that receive data
                 'stt' => config('stt.driver'),
                 'tts' => config('tts.driver'),

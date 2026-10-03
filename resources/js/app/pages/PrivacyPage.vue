@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { BzButton } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
 import { appConfig } from '../config'
+import LegalLinks from '../components/LegalLinks.vue'
 
 /**
  * Privacy notice (public). Operator details come from config/privacy.php
@@ -46,6 +47,32 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
         fejlődik. Nincs reklám, nincs követés, az adatokat nem adjuk el és nem használjuk profilozásra.
       </p>
 
+      <h2>Mi a jogalap?</h2>
+      <ul>
+        <li>
+          <b>A fiókod és a játékok működtetése:</b> a szerződés teljesítése (GDPR 6. cikk (1) b)), az Általános szerződési és
+          felhasználási feltételek szerint.
+        </li>
+        <li>
+          <b>A gyerek adatai:</b> a te, mint szülő hozzájárulásod (GDPR 6. cikk (1) a) és 8. cikk), amelyet a fiók létrehozásakor és
+          a gyerek felvételekor kérünk. A hozzájárulást bármikor visszavonhatod a gyerek vagy a fiók törlésével; ez a korábbi
+          kezelés jogszerűségét nem érinti.
+        </li>
+        <li><b>Hangfelvétel, heti e-mail, mérföldkő-értesítő:</b> a külön, kifejezett hozzájárulásod; mindegyik kikapcsolható.</li>
+        <li>
+          <b>Számlázás, adó, számvitel:</b> jogszabályi kötelezettség (GDPR 6. cikk (1) c)); az ilyen bizonylatokat a törvény szerinti
+          ideig megőrizzük. Az előfizetés fizetését az áruház (Apple, Google) kezeli, a bankkártya-adataidat mi nem látjuk.
+        </li>
+      </ul>
+
+      <h2>A gyerekek adatai</h2>
+      <p>
+        Fiókot csak szülő vagy törvényes képviselő hozhat létre; a gyerek nem ad meg adatot, és nem lép be. A gyerekről a
+        legszükségesebbet tároljuk (keresztnév, opcionálisan születési dátum, a játékok eredményei). Nem készítünk a gyerekről
+        reklámcélú profilt, nem adjuk el az adatait, és nem küldjük harmadik félnek marketingre. A kamerát a Szájtorna „Tükör”
+        gombja csak a képernyőn mutatja, nem rögzíti.
+      </p>
+
       <h2>Ki fér hozzá?</h2>
       <p>
         Csak te, bejelentkezve. Külső szolgáltatók: a <b>Google</b>, ha Google-fiókkal lépsz be (a belépéshez)<template
@@ -70,6 +97,28 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
         képernyőn jelenik meg: nem rögzítjük, nem mentjük el és nem küldjük el sehová.
       </p>
 
+      <h2>Adatfeldolgozók és külső szolgáltatók</h2>
+      <ul>
+        <li><b>Tárhely:</b> {{ privacy.hosting || missing }}. Az adatokat az Európai Unióban tároljuk, ha a szolgáltató ezt másképp nem jelzi itt.</li>
+        <li><b>Google:</b> csak ha Google-fiókkal lépsz be.</li>
+        <li>
+          <b>Apple App Store, Google Play:</b> az előfizetés vásárlása és kezelése; saját adatkezelők. Az előfizetés állapotát egy
+          előfizetés-kezelő szolgáltatón (RevenueCat) keresztül szinkronizáljuk, amely csak a fiókod azonosítóját és az előfizetés
+          adatait kapja, gyerekadatot nem.
+        </li>
+        <li>
+          Harmadik országba (az EU-n kívülre) személyes adatot csak megfelelő garanciákkal (például szabványos szerződési
+          feltételekkel) továbbítunk, ha ez szükséges.
+        </li>
+      </ul>
+
+      <h2>Hogyan védjük?</h2>
+      <p>
+        A kapcsolat titkosított (HTTPS), a jelszavakat visszafejthetetlenül tároljuk, az adatokhoz csak a működtetéshez szükséges
+        személyek férnek hozzá, és rendszeresen biztonsági mentést készítünk. Ha adatvédelmi incidens érintene, a jogszabályok szerint
+        értesítünk, és jelentjük a hatóságnak.
+      </p>
+
       <h2>Meddig tároljuk?</h2>
       <p>
         Amíg a fiókod vagy a gyerek profilja létezik. Egy gyerek törlésével az összes eredménye azonnal törlődik; a fiók
@@ -77,7 +126,10 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
       </p>
 
       <h2>Sütik</h2>
-      <p>Csak a bejelentkezéshez szükséges munkamenet-sütit használjuk. Nincs analitika és nincs harmadik féltől származó süti.</p>
+      <p>
+        Csak a bejelentkezéshez és a biztonsághoz szükséges sütit használjuk. Nincs analitika és nincs harmadik féltől származó süti.
+        Részletek: <RouterLink class="link" :to="{ name: 'cookies' }">Sütitájékoztató</RouterLink>.
+      </p>
 
       <h2>A jogaid</h2>
       <ul>
@@ -85,7 +137,11 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
         <li><b>Törlés:</b> ugyanott → Fiók törlése; vagy egy gyerek törlése a Szerkesztés gombbal.</li>
         <li><b>Hozzájárulás visszavonása:</b> a fiók törlésével.</li>
         <li>
-          <b>Panasz:</b> a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH, naih.hu).
+          <b>Hozzáférés, helyesbítés, korlátozás, tiltakozás, adathordozhatóság:</b> kérd az elérhetőségen; egy hónapon belül válaszolunk.
+        </li>
+        <li>
+          <b>Panasz:</b> a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH): 1055 Budapest, Falk Miksa utca 9–11.,
+          levelezési cím: 1363 Budapest, Pf. 9., ugyfelszolgalat@naih.hu, naih.hu. Bírósághoz is fordulhatsz.
         </li>
       </ul>
 
@@ -110,6 +166,7 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
       </p>
 
       <p class="version">Tájékoztató változata: {{ privacy.version }}</p>
+      <LegalLinks class="foot" />
       <BzButton @click="back">Vissza</BzButton>
     </article>
   </main>
@@ -150,6 +207,13 @@ li + li {
 }
 .credits a {
   text-decoration: underline;
+}
+.link {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.foot {
+  margin: 22px 0 14px;
 }
 .version {
   margin-top: 22px;

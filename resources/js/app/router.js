@@ -15,6 +15,8 @@ export const router = createRouter({
     { path: '/jelszo-visszaallitas', name: 'reset-password', component: () => import('./pages/ResetPasswordPage.vue'), meta: { public: true } },
     { path: '/felhasznalasi-feltetelek', name: 'terms', component: () => import('./pages/TermsPage.vue'), meta: { public: true } },
     { path: '/adatvedelem', name: 'privacy', component: () => import('./pages/PrivacyPage.vue'), meta: { public: true } },
+    { path: '/suti-tajekoztato', name: 'cookies', component: () => import('./pages/CookiePage.vue'), meta: { public: true } },
+    { path: '/impresszum', name: 'imprint', component: () => import('./pages/ImprintPage.vue'), meta: { public: true } },
     // A therapist's read-only report: no sign-in, the link is the key.
     { path: '/megosztas/:token', name: 'share', component: () => import('./pages/SharePage.vue'), meta: { public: true } },
     { path: '/tartalom', name: 'content', component: () => import('./pages/ContentPage.vue'), meta: { editor: true } },
@@ -25,7 +27,7 @@ export const router = createRouter({
     ...createBeszedRoutes({
       props: route => {
         const child = useSessionStore().child(route.params.childId)
-        return { childName: child?.name ?? '', childSign: child?.sign_emoji ?? '', premium: Boolean(useSessionStore().user?.premium) }
+        return { childName: child?.name ?? '', childSign: child?.sign_emoji ?? '', premium: Boolean(useSessionStore().user?.premium), demo: Boolean(useSessionStore().user?.demo) }
       },
     }),
     { path: '/:pathMatch(.*)*', redirect: '/' },
