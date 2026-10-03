@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ttsUrl } from '../api'
 import { config } from '../config/options'
-import { currentLanguage } from '../i18n'
+import { currentLanguage, spokenLanguage } from '../i18n'
 import { playAudio, stopAudio, unlockAudio } from '../services/audio/player'
 import { unlockSfx } from '../services/audio/sfx'
 import { preloadAudio } from '../services/audio/preload'
@@ -115,12 +115,14 @@ export const useGuideStore = defineStore('beszed/guide', {
         }
         if (!text) continue
 
+        // an interface text in English or Spanish is said with a voice of that language, not by the Hungarian server voice
+        const voice = lang ?? spokenLanguage(text)
         let spoken = false
-        if (this.serverTts && !lang) {
+        if (this.serverTts && !voice) {
           spoken = await playAudio(ttsUrl(text), { rate: slow ? SLOW_RATE_FACTOR : 1 })
           if (isCurrent()) this.ttsFailures = spoken ? 0 : this.ttsFailures + 1
         }
-        if (!spoken && isCurrent()) await speakWebSpeech(text, { ...config.voice, ...(lang ? { lang: VOICE_LANG[lang] } : {}), rate, pitch, isCurrent })
+        if (!spoken && isCurrent()) await speakWebSpeech(text, { ...config.voice, ...(voice ? { lang: VOICE_LANG[voice] } : {}), rate, pitch, isCurrent })
       }
 
       if (isCurrent()) this.talking = false
@@ -136,7 +138,7 @@ export const useGuideStore = defineStore('beszed/guide', {
     /** Fetches the audio of `items` in the background, so it plays instantly later. */
     preload(items) {
       if (!config.preloadAudio) return
-      const urls = items.map(sourceOf).map(({ url, text }) => url ?? (text && this.serverTts ? ttsUrl(text) : null))
+      const urls = items.map(sourceOf).map(({ url, text }) => url ?? (text && this.serverTts && !spokenLanguage(text) ? ttsUrl(text) : null))
       preloadAudio(urls)
     },
 

@@ -65,13 +65,31 @@ export function setLanguage(code) {
 export const currentLanguage = lang
 
 /**
+ * Interface texts produced in a language other than Hungarian. Csillám's voice is Hungarian (the language being
+ * learned), so the guide asks here whether a text she is about to say is such an interface text, and says it with a voice
+ * of that language instead of reading English or Spanish with Hungarian sounds.
+ */
+const interfaceTexts = new Set()
+const remember = text => {
+  if (lang.value === 'hu' || typeof text !== 'string' || !text) return text
+  if (interfaceTexts.size > 3000) interfaceTexts.clear()
+  interfaceTexts.add(text)
+  return text
+}
+/** @returns {'en' | 'es' | null} the language to say `text` in, or null for Csillám's own Hungarian voice */
+export const spokenLanguage = text => (lang.value !== 'hu' && interfaceTexts.has(text) ? lang.value : null)
+
+/** A text in Hungarian whatever the interface language is (what Csillám says inside a game). */
+export const tHu = key => key.split('.').reduce((node, part) => node?.[part], messages.hu) ?? key
+
+/**
  * A server-provided name in the active language: `catalog('games', 'zs', 'name', fallback)`; the fallback (the
  * Hungarian original from the server) when the language is Hungarian or the catalog lacks it.
  */
 export function catalog(kind, id, field, fallback) {
   const entry = catalogs[lang.value]?.[kind]?.[id]
   const value = field == null ? entry : entry?.[field]
-  return typeof value === 'string' && value ? value : fallback
+  return typeof value === 'string' && value ? remember(value) : fallback
 }
 
 /**
@@ -85,8 +103,8 @@ export function t(key, params) {
     if (import.meta.env?.DEV) console.warn(`[beszed] missing text: ${key}`)
     return key
   }
-  if (!params) return text
-  return text.replace(/\{(\w+)\}/g, (match, name) => (name in params ? String(params[name]) : match))
+  if (!params) return remember(text)
+  return remember(text.replace(/\{(\w+)\}/g, (match, name) => (name in params ? String(params[name]) : match)))
 }
 
 /** Number word ("két"/"two"…) for sentences built on the client. */
