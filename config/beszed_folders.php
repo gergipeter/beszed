@@ -53,5 +53,28 @@ return [
             'develops' => 'Érzelmek felismerése, együttérzés, felelősség',
             'games' => ['erzelmek', 'tamagotchi'],
         ],
+        'nyelv' => [
+            'name' => 'Betűk és szókincs', 'emoji' => '🔤', 'color' => '#FFE7A8',
+            'develops' => 'Betűismeret, ellentétek, többes szám, foglalkozások, olvasás-előkészítés',
+            'games' => ['betuk', 'ellentet', 'tobbes', 'foglalkozas'],
+        ],
+        'vilag' => [
+            'name' => 'Világunk', 'emoji' => '🌍', 'color' => '#BDEBE3',
+            'develops' => 'Környezetismeret: állatok élőhelye, otthon, napirend, időfogalmak, folyamatok',
+            'games' => ['elohely', 'szobak', 'napirend', 'keszul'],
+        ],
+    ],
+
+    /*
+    | The garden's zones: where each game stands on the map. A game not listed lands in the meadow
+    | (a simple game) or the forest (an advanced one). The first zone, the meadow, stays open;
+    | the others open once half of its games have a flower.
+    */
+    'zones' => [
+        'meadow' => ['szamol', 'szamok', 'beka', 'merleg', 'osztozas', 'ceruza', 'kirako', 'parkereso', 'kulonbseg', 'szinek', 'tamagotchi'],
+        'forest' => ['okoska', 'valogato', 'nagysag', 'arnyek', 'mitunt', 'korus', 'utasitas', 'irany', 'hol'],
+        'sound' => ['zs', 'kezdo', 'szotag', 'rimelo', 'ikerhangok', 'rimparok', 'hallgasd', 'ritmus', 'zongora', 'szajtorna'],
+        'letters' => ['betuk', 'papagaj', 'mondd', 'melyik', 'lepegeto', 'ellentet', 'tobbes', 'foglalkozas'],
+        'world' => ['elohely', 'szobak', 'napirend', 'keszul', 'tortenet', 'erzelmek'],
     ],
 ];

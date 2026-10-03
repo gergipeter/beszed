@@ -7,7 +7,9 @@ import EmojiArt from './EmojiArt.vue'
  * word"); `silhouette` shows only its shadow.
  */
 defineProps({
-  emoji: { type: String, required: true },
+  emoji: { type: String, default: '' },
+  /** A big letter instead of a picture (Betűvadász). */
+  letter: { type: String, default: '' },
   label: { type: String, default: '' },
   highlight: { type: Boolean, default: false },
   silhouette: { type: Boolean, default: false },
@@ -24,11 +26,13 @@ defineProps({
     :data-peek="silhouette ? undefined : ''"
     :aria-label="label || t('common.picture')"
   >
-    <EmojiArt class="art" :char="emoji" />
+    <b v-if="letter" class="letter">{{ letter }}</b>
+    <EmojiArt v-else class="art" :char="emoji" />
     <small v-if="label" class="label">{{ label }}</small>
   </button>
   <div v-else class="picture" :class="{ 'picture--highlight': highlight, 'picture--silhouette': silhouette }" :data-peek="silhouette ? undefined : ''" aria-hidden="true">
-    <EmojiArt class="art" :char="emoji" />
+    <b v-if="letter" class="letter">{{ letter }}</b>
+    <EmojiArt v-else class="art" :char="emoji" />
     <small v-if="label" class="label">{{ label }}</small>
   </div>
 </template>
@@ -62,6 +66,10 @@ button.picture:active {
 }
 .picture--silhouette .art {
   filter: var(--bz-silhouette);
+}
+.letter {
+  font-size: clamp(64px, 16vw, 104px);
+  line-height: 1.1;
 }
 .label {
   margin-top: 4px;

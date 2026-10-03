@@ -14,6 +14,8 @@ class MetaController extends Controller
 {
     public function __invoke(TtsClient $tts, SttClient $stt): JsonResponse
     {
+        // where each game stands on the garden map (config beszed_folders.zones); null = by its tier
+        $zones = collect(config('beszed_folders.zones'))->flatMap(fn ($ids, $zone) => array_fill_keys($ids, $zone))->all();
         $games = collect(config('beszed.games'))->map(fn ($g, $id) => [
             'id' => $id,
             'name' => $g['name'],
@@ -31,6 +33,7 @@ class MetaController extends Controller
             // picture themes to pick from before playing (Kirakó)
             'categories' => collect($g['categories'] ?? [])->map(fn ($c, $id) => ['id' => $id, 'name' => $c['name'], 'emoji' => $c['emoji']])->values(),
             'pickPrompt' => $g['pick_prompt'] ?? null,
+            'zone' => $zones[$id] ?? null,
         ])->values();
 
         // the hub's folders (what each game develops); games not filed anywhere go to a last one

@@ -1,0 +1,18 @@
+[
+  {"level": 1, "payload": {"name": "piros", "kind": "color", "emoji": "🔴"}},
+  {"level": 1, "payload": {"name": "kék", "kind": "color", "emoji": "🔵"}},
+  {"level": 1, "payload": {"name": "sárga", "kind": "color", "emoji": "🟡"}},
+  {"level": 1, "payload": {"name": "zöld", "kind": "color", "emoji": "🟢"}},
+  {"level": 1, "payload": {"name": "narancssárga", "kind": "color", "emoji": "🟠"}},
+  {"level": 1, "payload": {"name": "lila", "kind": "color", "emoji": "🟣"}},
+  {"level": 1, "payload": {"name": "barna", "kind": "color", "emoji": "🟤"}},
+  {"level": 1, "payload": {"name": "fekete", "kind": "color", "emoji": "⚫"}},
+  {"level": 1, "payload": {"name": "fehér", "kind": "color", "emoji": "⚪"}},
+  {"level": 2, "payload": {"name": "háromszög", "kind": "shape", "emoji": "🔺"}},
+  {"level": 2, "payload": {"name": "négyzet", "kind": "shape", "emoji": "🟦"}},
+  {"level": 2, "payload": {"name": "csillag", "kind": "shape", "emoji": "⭐"}},
+  {"level": 2, "payload": {"name": "szív", "kind": "shape", "emoji": "💜"}},
+  {"level": 2, "payload": {"name": "rombusz", "kind": "shape", "emoji": "🔶"}},
+  {"level": 2, "payload": {"name": "félhold", "kind": "shape", "emoji": "🌙"}},
+  {"level": 2, "payload": {"name": "felhő", "kind": "shape", "emoji": "☁️"}}
+]

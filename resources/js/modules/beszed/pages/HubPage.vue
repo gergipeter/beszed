@@ -230,10 +230,6 @@ async function play(game, stone) {
 
   <DailyPath v-if="path && meta.games.length" :path="path" :games="meta.games" @play="play" />
 
-  <p v-if="newPlants > 0" class="grew" role="status">
-    <EmojiArt :char="ICONS.sprout" /> {{ t(newPlants === 1 ? 'hub.grewOne' : 'hub.grewMany', { count: newPlants }) }}
-  </p>
-
   <template v-if="view === 'folders' && meta.meta?.folders?.length">
     <GamesTabs class="games-tabs-row" :view="view" @change="setView" />
     <GameFolders
@@ -285,26 +281,6 @@ async function play(game, stone) {
   font-size: var(--bz-text-md);
   line-height: 1.25;
   color: var(--bz-muted);
-}
-.grew {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  margin: 0 auto 14px;
-  padding: 8px 16px;
-  border-radius: var(--bz-radius-pill);
-  background: var(--bz-card);
-  font-size: var(--bz-text-md);
-  font-weight: 800;
-  box-shadow: var(--bz-shadow);
-  animation: grew 0.6s var(--bz-spring) 0.4s backwards;
-}
-@keyframes grew {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.8);
-  }
 }
 /* the games' tabs sit above the folders on their own row */
 .games-tabs-row {

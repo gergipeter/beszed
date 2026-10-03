@@ -48,6 +48,8 @@ export const useGuideStore = defineStore('beszed/guide', {
     party: false,
     talking: false,
     caption: '',
+    /** Turtle mode: everything Csillám says is slower, until the child turns it off or leaves the game. */
+    slow: false,
     ttsFailures: 0,
   }),
 
@@ -89,8 +91,9 @@ export const useGuideStore = defineStore('beszed/guide', {
      * @param {{ caption?: string, slow?: boolean }} [options] `slow` says it at a reduced rate.
      * @returns {Promise<boolean>} true if everything was said, false if interrupted.
      */
-    async speak(items, { caption, slow = false } = {}) {
+    async speak(items, { caption, slow: slowOnce = false } = {}) {
       this.stop()
+      const slow = slowOnce || this.slow
       const mine = token
       const isCurrent = () => mine === token
       if (caption !== undefined) this.caption = caption

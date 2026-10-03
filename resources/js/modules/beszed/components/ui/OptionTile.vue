@@ -8,6 +8,8 @@ import EmojiArt from './EmojiArt.vue'
 defineProps({
   emoji: { type: String, default: '' },
   label: { type: String, default: '' },
+  /** A big letter instead of a picture (Betűvadász). */
+  letter: { type: String, default: '' },
   variant: { type: String, default: 'default', validator: v => ['default', 'plate', 'scene'].includes(v) },
   good: { type: Boolean, default: false },
   shake: { type: Boolean, default: false },
@@ -20,6 +22,7 @@ defineProps({
   <!-- press and hold: the picture opens big (services/touch/peek.js) -->
   <button type="button" class="option" :class="[`option--${variant}`, { 'option--good': good, 'option--shake': shake }]" data-peek>
     <slot>
+      <b v-if="letter" class="letter">{{ letter }}</b>
       <EmojiArt v-if="emoji" class="art" :char="emoji" />
       <small v-if="label" class="label">{{ label }}</small>
     </slot>
@@ -74,6 +77,10 @@ defineProps({
 .art {
   font-size: clamp(48px, 11vw, 72px);
   line-height: 1.05;
+}
+.letter {
+  font-size: clamp(40px, 10vw, 64px);
+  line-height: 1.1;
 }
 .label {
   margin-top: 4px;

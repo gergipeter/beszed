@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { t } from '../../i18n'
+import { ICONS } from '../../config/icons'
 import EmojiArt from '../ui/EmojiArt.vue'
 
 /**
@@ -21,6 +22,8 @@ const props = defineProps({
   index: { type: Number, default: 0 },
   /** The colour of the game's category (folder): the stone takes it. */
   tint: { type: String, default: null },
+  /** Its island is not open yet. */
+  locked: { type: Boolean, default: false },
 })
 
 /**
@@ -52,7 +55,8 @@ const label = computed(() =>
   <button
     type="button"
     class="stop"
-    :class="{ 'stop--spotlight': spotlight, 'stop--done': medal > 0 }"
+    :class="{ 'stop--spotlight': spotlight, 'stop--done': medal > 0, 'stop--locked': locked }"
+    :aria-disabled="locked || undefined"
     :style="{ '--stop': tint ?? game.color, '--i': index }"
     :data-game="game.id"
     :aria-label="label"
@@ -67,6 +71,7 @@ const label = computed(() =>
           :char="f.char"
           :style="{ left: f.left, top: f.top, '--r': `${f.rotate}deg`, '--d': `${f.delay}s` }"
         />
+        <EmojiArt v-if="locked" class="lock" :char="ICONS.lock" />
         <b v-if="step" class="flag" :class="{ 'flag--done': stepDone }" aria-hidden="true">{{ stepDone ? '✓' : step }}</b>
       </span>
     </span>
@@ -97,6 +102,16 @@ const label = computed(() =>
     inset 0 -6px 0 color-mix(in srgb, var(--stop) 60%, #3b1f4a),
     0 10px 0 -2px rgba(40, 60, 30, 0.25);
   transition: transform 0.38s var(--bz-spring);
+}
+.stop--locked .art {
+  opacity: 0.35;
+}
+.lock {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
 }
 /* bobbing on its own layer, each stone a little out of step with the last */
 .bob {

@@ -36,6 +36,7 @@
  * @property {string} skill
  * @property {string} color
  * @property {'simple' | 'advanced'} tier  Hub group: the meadow (simple) or the enchanted forest (advanced).
+ * @property {string} [zone]  Where the game stands on the garden map (meadow, forest, sound, letters, world); by tier when absent.
  * @property {string} stage  The scene it's played in (components/game/GameStage.vue).
  * @property {number} rounds
  * @property {boolean} noIdle

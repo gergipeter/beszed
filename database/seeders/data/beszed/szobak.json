@@ -1,0 +1,6 @@
+[
+  {"level": 1, "payload": {"key": "konyha", "label": "Konyha", "singular": "a konyhába való", "icon": "🍳", "items": [["🍳", "serpenyő"], ["🔪", "kés"], ["🥄", "kanál"], ["🍴", "villa"], ["🥣", "tál"], ["☕", "bögre"], ["🧊", "hűtő"], ["🫖", "teáskanna"]]}},
+  {"level": 1, "payload": {"key": "furdo", "label": "Fürdőszoba", "singular": "a fürdőszobába való", "icon": "🛁", "items": [["🪥", "fogkefe"], ["🧼", "szappan"], ["🛁", "kád"], ["🚿", "zuhany"], ["🧴", "sampon"], ["🚽", "vécé"], ["🪞", "tükör"], ["🧻", "vécépapír"]]}},
+  {"level": 1, "payload": {"key": "haloszoba", "label": "Hálószoba", "singular": "a hálószobába való", "icon": "🛏️", "items": [["🛏️", "ágy"], ["🧸", "plüssmaci"], ["⏰", "ébresztőóra"], ["🩴", "papucs"], ["📚", "mesekönyv"], ["🌙", "éjjeli lámpa"], ["👗", "ruha"], ["🧦", "zokni"]]}},
+  {"level": 1, "payload": {"key": "nappali", "label": "Nappali", "singular": "a nappaliba való", "icon": "🛋️", "items": [["🛋️", "kanapé"], ["📺", "televízió"], ["🖼️", "festmény"], ["🪴", "szobanövény"], ["🧶", "gombolyag"], ["🎮", "játékkonzol"], ["🕰️", "falióra"], ["🎲", "társasjáték"]]}}
+]

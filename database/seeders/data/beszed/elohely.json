@@ -1,0 +1,6 @@
+[
+  {"level": 1, "payload": {"key": "viz", "label": "Vízben élők", "singular": "vízi állat", "icon": "🌊", "items": [["🐟", "hal"], ["🐬", "delfin"], ["🐳", "bálna"], ["🦀", "rák"], ["🐙", "polip"], ["🦈", "cápa"], ["🐠", "díszhal"], ["🦑", "tintahal"]]}},
+  {"level": 1, "payload": {"key": "erdo", "label": "Erdőben élők", "singular": "erdei állat", "icon": "🌲", "items": [["🦊", "róka"], ["🐻", "medve"], ["🦌", "szarvas"], ["🐗", "vaddisznó"], ["🐺", "farkas"], ["🦉", "bagoly"], ["🐿️", "mókus"], ["🦔", "sün"]]}},
+  {"level": 1, "payload": {"key": "tanya", "label": "Tanyán élők", "singular": "háziállat", "icon": "🏡", "items": [["🐄", "tehén"], ["🐖", "malac"], ["🐔", "tyúk"], ["🐑", "birka"], ["🐐", "kecske"], ["🐴", "ló"], ["🦆", "kacsa"], ["🐇", "nyúl"]]}},
+  {"level": 1, "payload": {"key": "levego", "label": "Az égen repülők", "singular": "repülő állat", "icon": "☁️", "items": [["🦅", "sas"], ["🦜", "papagáj"], ["🕊️", "galamb"], ["🦢", "hattyú"], ["🦋", "pillangó"], ["🐝", "méh"], ["🦇", "denevér"], ["🐞", "katica"]]}}
+]

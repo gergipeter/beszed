@@ -115,6 +115,56 @@ return [
             'emoji' => $emoji(),
             'text' => $text('Feladat'),
         ]],
+        'betuk' => ['title' => 'word', 'fields' => [
+            'letter' => $text('Első betű (vagy betűpár)', ['max' => 3, 'hint' => 'a, cs, sz']),
+            'word' => $text('Szó'),
+            'emoji' => $emoji(),
+        ]],
+        'szinek' => ['title' => 'name', 'fields' => [
+            'name' => $text('Neve'),
+            'kind' => ['type' => 'select', 'label' => 'Fajta', 'options' => ['color' => 'Szín', 'shape' => 'Alakzat']],
+            'emoji' => $emoji(),
+        ]],
+        'ellentet' => ['title' => 'a', 'fields' => [
+            'a' => $text('Szó'),
+            'emojiA' => $emoji('Kép'),
+            'b' => $text('Az ellentéte'),
+            'emojiB' => $emoji('Kép'),
+        ]],
+        'tobbes' => ['title' => 'sg', 'fields' => [
+            'sg' => $text('Egyes szám', ['hint' => 'kutya']),
+            'pl' => $text('Többes szám', ['hint' => 'kutyák']),
+            'emoji' => $emoji(),
+        ]],
+        'foglalkozas' => ['title' => 'job', 'fields' => [
+            'job' => $text('Foglalkozás', ['hint' => 'tűzoltó']),
+            'emoji' => $emoji(),
+            'does' => $text('Mit csinál? (a „Ki …?” kérdés után)', ['hint' => 'oltja a tüzet']),
+        ]],
+        'napirend' => ['title' => 'title', 'fields' => [
+            'title' => $text('Cím', ['speak' => false]),
+            'steps' => ['type' => 'pairs', 'label' => 'Képek sorrendben', 'min' => 3, 'hint' => 'soronként: emoji mi történik'],
+            'story' => $text('Elmesélve (a végén hangzik el)', ['max' => 300]),
+        ]],
+        'keszul' => ['title' => 'title', 'fields' => [
+            'title' => $text('Cím', ['speak' => false]),
+            'steps' => ['type' => 'pairs', 'label' => 'Képek sorrendben', 'min' => 3, 'hint' => 'soronként: emoji mi történik'],
+            'story' => $text('Elmesélve (a végén hangzik el)', ['max' => 300]),
+        ]],
+        'elohely' => ['title' => 'label', 'fields' => [
+            'key' => $text('Azonosító', ['max' => 20, 'hint' => 'viz', 'speak' => false]),
+            'label' => $text('Hely neve', ['hint' => 'Vízben élők']),
+            'singular' => $text('„Ez nem …” alakja', ['hint' => 'vízi állat']),
+            'icon' => $emoji('Hely képe'),
+            'items' => ['type' => 'pairs', 'label' => 'Képek', 'min' => 4, 'hint' => 'soronként: emoji név'],
+        ]],
+        'szobak' => ['title' => 'label', 'fields' => [
+            'key' => $text('Azonosító', ['max' => 20, 'hint' => 'konyha', 'speak' => false]),
+            'label' => $text('Szoba neve', ['hint' => 'Konyha']),
+            'singular' => $text('„Ez nem …” alakja', ['hint' => 'a konyhába való']),
+            'icon' => $emoji('Szoba képe'),
+            'items' => ['type' => 'pairs', 'label' => 'Képek', 'min' => 4, 'hint' => 'soronként: emoji név'],
+        ]],
         'melyik' => ['title' => 'good', 'fields' => [
             'good' => $text('Helyes mondat'),
             'bad' => $text('Hibás mondat'),
