@@ -282,6 +282,16 @@ export default {
     micUnavailable: 'A mikrofon most nem érhető el {folder}. Kérd meg a szülőt, hogy döntsön!',
   },
 
+  letter: {
+    again: 'Még egyszer',
+    almost: 'Majdnem! Menj végig a pöttyökön a számok sorrendjében!',
+    canvas: '{name} betű, rajzold le az ujjaddal',
+  },
+
+  clock: {
+    label: 'Óra: {hour} óra {minute} perc',
+  },
+
   mimic: {
     mirror: 'Nézzetek együtt tükörbe!',
     again: 'Még egyszer',

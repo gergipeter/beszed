@@ -4,6 +4,7 @@ import BzButton from '../../components/ui/BzButton.vue'
 import EmojiArt from '../../components/ui/EmojiArt.vue'
 import OptionGrid from '../../components/ui/OptionGrid.vue'
 import OptionTile from '../../components/ui/OptionTile.vue'
+import ClockFace from '../../components/ui/ClockFace.vue'
 import PictureCard from '../../components/ui/PictureCard.vue'
 import { useShake } from '../../composables/useShake'
 import { ICONS } from '../../config/icons'
@@ -86,8 +87,9 @@ function sayStimulus() {
 </script>
 
 <template>
+  <ClockFace v-if="data.stimulus?.clock" :hour="data.stimulus.clock.hour" :minute="data.stimulus.clock.minute" />
   <PictureCard
-    v-if="data.stimulus"
+    v-else-if="data.stimulus"
     :emoji="data.stimulus.emoji"
     :letter="data.stimulus.letter"
     :label="data.stimulus.label"

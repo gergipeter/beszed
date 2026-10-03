@@ -307,6 +307,26 @@ return [
             ],
             'intro' => 'Mondatot építünk! Meghallgatod a mondatot, aztán a szavakat sorba rakod, ahogy mondtam.',
         ],
+        'betuiro' => [
+            'name' => 'Betűíró', 'emoji' => '✍️', 'skill' => 'Betűk írása ujjal', 'color' => '#FFD27A', 'tier' => 'advanced', 'stage' => 'workshop',
+            'factory' => Rounds\BetuiroRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
+            // level = the letters: 1 straight capitals, 2 round capitals, 3 small letters (content level)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Betűket írunk az ujjunkkal! Kövesd a pöttyöket a számok sorrendjében, és kész a betű!',
+        ],
+        'ido' => [
+            'name' => 'Óra és idő', 'emoji' => '🕒', 'skill' => 'Az óra olvasása', 'color' => '#CDE3FF', 'tier' => 'advanced', 'stage' => 'workshop',
+            'factory' => Rounds\IdoRounds::class, 'rounds' => 6, 'guess' => false,
+            // level = the times: 1 whole hours, 2 + half hours (fél négy), 3 + quarters (negyed négy, háromnegyed négy) (IdoRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Hány óra van? A kis mutató az órát mutatja, a nagy a perceket. Nézd meg jól, és válaszd ki az időt!',
+        ],
         'melyik' => [
             'name' => 'Melyik mondja szépen?', 'emoji' => '🐻', 'skill' => 'Magyaros mondatok', 'color' => '#E3F0A8', 'tier' => 'advanced', 'stage' => 'theatre',
             'factory' => Rounds\MelyikRounds::class, 'rounds' => 8,

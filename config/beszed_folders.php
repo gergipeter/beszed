@@ -46,7 +46,7 @@ return [
         'kez' => [
             'name' => 'Kézügyesség', 'emoji' => '✏️', 'color' => '#FFE0C2',
             'develops' => 'Finommotorika, vonalvezetés, írás előkészítése',
-            'games' => ['ceruza'],
+            'games' => ['ceruza', 'betuiro'],
         ],
         'szivem' => [
             'name' => 'Érzelmek és gondoskodás', 'emoji' => '💛', 'color' => '#FFD6D6',
@@ -61,7 +61,7 @@ return [
         'vilag' => [
             'name' => 'Világunk', 'emoji' => '🌍', 'color' => '#BDEBE3',
             'develops' => 'Környezetismeret: állatok élőhelye, otthon, napirend, időfogalmak, folyamatok',
-            'games' => ['elohely', 'szobak', 'napirend', 'keszul'],
+            'games' => ['elohely', 'szobak', 'napirend', 'keszul', 'ido'],
         ],
     ],
 
@@ -74,7 +74,7 @@ return [
         'meadow' => ['szamol', 'szamok', 'beka', 'merleg', 'osztozas', 'ceruza', 'kirako', 'parkereso', 'kulonbseg', 'szinek', 'tamagotchi'],
         'forest' => ['okoska', 'valogato', 'nagysag', 'arnyek', 'mitunt', 'korus', 'utasitas', 'irany', 'hol'],
         'sound' => ['zs', 'kezdo', 'szotag', 'rimelo', 'ikerhangok', 'rimparok', 'hallgasd', 'ritmus', 'zongora', 'szajtorna'],
-        'letters' => ['betuk', 'papagaj', 'mondd', 'mondat', 'melyik', 'lepegeto', 'ellentet', 'tobbes', 'foglalkozas'],
-        'world' => ['elohely', 'szobak', 'napirend', 'keszul', 'tortenet', 'erzelmek'],
+        'letters' => ['betuk', 'betuiro', 'papagaj', 'mondd', 'mondat', 'melyik', 'lepegeto', 'ellentet', 'tobbes', 'foglalkozas'],
+        'world' => ['ido', 'elohely', 'szobak', 'napirend', 'keszul', 'tortenet', 'erzelmek'],
     ],
 ];

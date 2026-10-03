@@ -11,7 +11,7 @@ return [
     'areas' => [
         'irasmozgas' => [
             'label' => 'Írásmozgás-koordináció', 'emoji' => '✏️', 'difer' => true,
-            'games' => ['ceruza'],
+            'games' => ['ceruza', 'betuiro'],
         ],
         'beszedhanghallas' => [
             'label' => 'Beszédhanghallás', 'emoji' => '👂', 'difer' => true,
@@ -27,7 +27,7 @@ return [
         ],
         'kovetkeztetes' => [
             'label' => 'Tapasztalati következtetés', 'emoji' => '🧠', 'difer' => true,
-            'games' => ['okoska', 'valogato', 'tortenet', 'napirend', 'keszul', 'elohely', 'szobak'],
+            'games' => ['okoska', 'valogato', 'tortenet', 'napirend', 'keszul', 'elohely', 'szobak', 'ido'],
         ],
         'nyelv_emlekezet' => [
             'label' => 'Mondatok és emlékezet', 'emoji' => '🗣️', 'difer' => false,

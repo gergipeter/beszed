@@ -168,6 +168,13 @@ return [
         'mondat' => ['title' => 'text', 'fields' => [
             'text' => $text('Mondat (3–5 szó, egy szó csak egyszer)', ['hint' => 'A cica alszik.']),
         ]],
+        'betuiro' => ['title' => 'glyph', 'fields' => [
+            'glyph' => $text('Betű', ['max' => 1, 'hint' => 'A', 'speak' => false]),
+            'name' => $text('Neve', ['hint' => 'nagy A']),
+        ]],
+        'ido' => ['title' => 'time', 'fields' => [
+            'time' => $text('Idő (ó:pp, negyedórás pontossággal)', ['max' => 5, 'hint' => '3:30', 'speak' => false]),
+        ]],
         'melyik' => ['title' => 'good', 'fields' => [
             'good' => $text('Helyes mondat'),
             'bad' => $text('Hibás mondat'),
