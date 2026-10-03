@@ -210,6 +210,93 @@ return [
             ],
             'intro' => 'Társasjátékozunk! Dobj a kockával, lépj előre, és csináld meg, amit a mező kér. Anya vagy apa is segít!',
         ],
+        'betuk' => [
+            'name' => 'Betűvadász', 'emoji' => '🔤', 'skill' => 'Betűk ismerete, első betű', 'color' => '#FFE08A', 'tier' => 'simple', 'stage' => 'storybook',
+            'factory' => Rounds\BetukRounds::class, 'rounds' => 8,
+            // level = the letters in play: 1 plain ones, 2 + long vowels (and picture-from-letter rounds), 3 + cs, sz, gy… (BetukRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Betűket keresünk! Megmutatok egy képet, te pedig megkeresed, melyik betűvel kezdődik a neve.',
+        ],
+        'szinek' => [
+            'name' => 'Színek és formák', 'emoji' => '🎨', 'skill' => 'Színek és alakzatok nevei', 'color' => '#FFC2E0', 'tier' => 'simple', 'stage' => 'meadow',
+            'factory' => Rounds\SzinekRounds::class, 'rounds' => 8,
+            // level: 1 colours, 2 shapes, 3 both (SzinekRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Színeket és formákat keresünk! Hallgasd meg, melyiket kérem, és koppints rá!',
+        ],
+        'ellentet' => [
+            'name' => 'Ellentétek', 'emoji' => '↔️', 'skill' => 'Szókincs: ellentétes szavak', 'color' => '#C5D8FF', 'tier' => 'simple', 'stage' => 'theatre',
+            'factory' => Rounds\EllentetRounds::class, 'rounds' => 8,
+            // level = what to pick from (2 → 3 options) and the pairs' own level (EllentetRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Az ellentétek párban járnak: nagy és kicsi, meleg és hideg. Mondok egyet, te megkeresed a párját!',
+        ],
+        'tobbes' => [
+            'name' => 'Egy vagy sok?', 'emoji' => '🐶', 'skill' => 'Egyes és többes szám', 'color' => '#D5C8FF', 'tier' => 'advanced', 'stage' => 'storybook',
+            'factory' => Rounds\TobbesRounds::class, 'rounds' => 8,
+            // level = the plural: 1 plain -k (kutya → kutyák), 2 -ak/-ek/-ok/-ök, 3 changing stems (ló → lovak) (content level)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Egy kutya, sok kutya! Hallgasd meg, melyiket kérem, és koppints a jó képre!',
+        ],
+        'foglalkozas' => [
+            'name' => 'Ki mit csinál?', 'emoji' => '🧑‍🚒', 'skill' => 'Foglalkozások, szókincs', 'color' => '#FFD0B0', 'tier' => 'simple', 'stage' => 'market',
+            'factory' => Rounds\FoglalkozasRounds::class, 'rounds' => 8,
+            // level = what to pick from: 1 → two, 2 → three, 3 → four (FoglalkozasRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Ki mit csinál? Mondok egy munkát, te pedig megkeresed, ki végzi!',
+        ],
+        'napirend' => [
+            'name' => 'Napirend és idő', 'emoji' => '🌅', 'skill' => 'Napszakok, évszakok, napi teendők sorrendje', 'color' => '#FFE3A3', 'tier' => 'advanced', 'stage' => 'storybook',
+            'factory' => Rounds\TortenetRounds::class, 'rounds' => 5,
+            'adaptive' => [
+                'min' => 1, 'max' => 2, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Mikor mi jön? Nézd meg a képeket, és rakd őket a helyes sorrendbe!',
+        ],
+        'keszul' => [
+            'name' => 'Hogyan készül?', 'emoji' => '🥞', 'skill' => 'Folyamatok: lépések sorrendje', 'color' => '#FFD6B8', 'tier' => 'advanced', 'stage' => 'workshop',
+            'factory' => Rounds\TortenetRounds::class, 'rounds' => 5,
+            'adaptive' => [
+                'min' => 1, 'max' => 2, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Hogyan készül a palacsinta? És a torta? Rakd sorba a lépéseket!',
+        ],
+        'elohely' => [
+            'name' => 'Ki hol él?', 'emoji' => '🦊', 'skill' => 'Állatok élőhelye', 'color' => '#C6EBC9', 'tier' => 'simple', 'stage' => 'forest',
+            'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
+            // level = pictures per round: 1 → 4, 2 → 6, 3 → 8
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Ki hol lakik? A vízben, az erdőben, a tanyán vagy az égen? Koppints a jó helyre!',
+        ],
+        'szobak' => [
+            'name' => 'Melyik szobába való?', 'emoji' => '🏠', 'skill' => 'Otthon: tárgyak és szobák', 'color' => '#F7D9C4', 'tier' => 'simple', 'stage' => 'table',
+            'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Rendet rakunk a lakásban! Melyik tárgy melyik szobába való? Koppints a jó helyre!',
+        ],
         'melyik' => [
             'name' => 'Melyik mondja szépen?', 'emoji' => '🐻', 'skill' => 'Magyaros mondatok', 'color' => '#E3F0A8', 'tier' => 'advanced', 'stage' => 'theatre',
             'factory' => Rounds\MelyikRounds::class, 'rounds' => 8,

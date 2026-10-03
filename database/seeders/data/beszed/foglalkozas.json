@@ -1,0 +1,18 @@
+[
+  {"level": 1, "payload": {"job": "tűzoltó", "emoji": "🧑‍🚒", "does": "oltja a tüzet"}},
+  {"level": 1, "payload": {"job": "orvos", "emoji": "🧑‍⚕️", "does": "gyógyítja a betegeket"}},
+  {"level": 1, "payload": {"job": "pék", "emoji": "🥖", "does": "süti a kenyeret"}},
+  {"level": 1, "payload": {"job": "szakács", "emoji": "🧑‍🍳", "does": "főzi az ebédet"}},
+  {"level": 1, "payload": {"job": "postás", "emoji": "📮", "does": "hozza a leveleket"}},
+  {"level": 1, "payload": {"job": "rendőr", "emoji": "👮", "does": "vigyáz ránk az utcán"}},
+  {"level": 1, "payload": {"job": "fodrász", "emoji": "💇", "does": "vágja a hajat"}},
+  {"level": 1, "payload": {"job": "tanár", "emoji": "🧑‍🏫", "does": "tanít az iskolában"}},
+  {"level": 1, "payload": {"job": "kertész", "emoji": "🧑‍🌾", "does": "gondozza a virágokat"}},
+  {"level": 1, "payload": {"job": "pilóta", "emoji": "🧑‍✈️", "does": "vezeti a repülőt"}},
+  {"level": 1, "payload": {"job": "buszsofőr", "emoji": "🚌", "does": "vezeti a buszt"}},
+  {"level": 1, "payload": {"job": "festő", "emoji": "🧑‍🎨", "does": "festi a képet"}},
+  {"level": 1, "payload": {"job": "énekes", "emoji": "🧑‍🎤", "does": "énekli a dalt"}},
+  {"level": 1, "payload": {"job": "fogorvos", "emoji": "🦷", "does": "gyógyítja a fogakat"}},
+  {"level": 1, "payload": {"job": "halász", "emoji": "🎣", "does": "fogja a halat"}},
+  {"level": 1, "payload": {"job": "építő", "emoji": "👷", "does": "építi a házat"}}
+]

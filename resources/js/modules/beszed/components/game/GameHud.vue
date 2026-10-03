@@ -12,9 +12,11 @@ defineProps({
   stars: { type: Number, default: 0 },
   showProgress: { type: Boolean, default: false },
   muted: { type: Boolean, default: false },
+  /** Turtle mode: speech is slower. */
+  slow: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['exit', 'toggleMute', 'replaySlow'])
+const emit = defineEmits(['exit', 'toggleMute', 'toggleSlow'])
 </script>
 
 <template>
@@ -39,7 +41,12 @@ const emit = defineEmits(['exit', 'toggleMute', 'replaySlow'])
       :label="t(muted ? 'game.unmuteLabel' : 'game.muteLabel')"
       @click="emit('toggleMute')"
     />
-    <BzIconButton :icon="ICONS.turtle" :label="t('game.replaySlowLabel')" @click="emit('replaySlow')" />
+    <BzIconButton
+      :icon="ICONS.turtle"
+      :label="t('game.slowLabel')"
+      :active="slow"
+      @click="emit('toggleSlow')"
+    />
   </div>
 </template>
 

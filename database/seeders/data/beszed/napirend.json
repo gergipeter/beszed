@@ -1,0 +1,11 @@
+[
+  {"level": 1, "payload": {"title": "Reggel az oviba", "steps": [["🛏️", "felkelek"], ["🪥", "fogat mosok"], ["🥣", "reggelizek"], ["🎒", "indulok az oviba"]], "story": "Reggel felkelek, fogat mosok, megreggelizem, aztán indulok az oviba."}},
+  {"level": 1, "payload": {"title": "Esti készülődés", "steps": [["🍽️", "vacsorázom"], ["🛁", "megfürdök"], ["📖", "esti mesét hallgatok"], ["😴", "alszom"]], "story": "Este vacsorázom, megfürdök, hallgatok egy esti mesét, aztán alszom."}},
+  {"level": 1, "payload": {"title": "A nap részei", "steps": [["🌅", "reggel"], ["☀️", "dél"], ["🌆", "este"], ["🌙", "éjszaka"]], "story": "Reggel felkel a nap, délben a legmagasabban van, este lenyugszik, éjszaka pedig alszunk."}},
+  {"level": 1, "payload": {"title": "Az évszakok", "steps": [["🌷", "tavasz"], ["☀️", "nyár"], ["🍂", "ősz"], ["❄️", "tél"]], "story": "Tavasszal kinyílnak a virágok, nyáron meleg van, ősszel hullanak a levelek, télen havazik."}},
+  {"level": 1, "payload": {"title": "Kézmosás", "steps": [["🚰", "megnyitom a vizet"], ["🧼", "szappanozom a kezem"], ["🙌", "dörzsölöm"], ["🧻", "megtörlöm"]], "story": "Megnyitom a vizet, beszappanozom a kezem, jól összedörzsölöm, aztán megtörlöm."}},
+  {"level": 1, "payload": {"title": "Öltözködés", "steps": [["🧦", "zokni"], ["👖", "nadrág"], ["👕", "póló"], ["👟", "cipő"]], "story": "Felveszem a zoknit, a nadrágot, a pólót, végül a cipőt."}},
+  {"level": 2, "payload": {"title": "A hét napjai", "steps": [["🟥", "hétfő"], ["🟧", "kedd"], ["🟨", "szerda"], ["🟩", "csütörtök"], ["🟦", "péntek"], ["🟪", "szombat"], ["🟫", "vasárnap"]], "story": "Hétfő, kedd, szerda, csütörtök, péntek, szombat, vasárnap: ez a hét hét napja."}},
+  {"level": 1, "payload": {"title": "Fogmosás", "steps": [["🪥", "fogkefét veszek"], ["🪥🧴", "fogkrémet teszek rá"], ["😁", "megmosom a fogam"], ["🚰", "kiöblítem a szám"]], "story": "Fogkefét veszek, fogkrémet teszek rá, megmosom a fogam, végül kiöblítem a számat."}},
+  {"level": 1, "payload": {"title": "Játszótéren", "steps": [["🚶", "elindulunk"], ["🛝", "csúszdázom"], ["🥤", "iszom egy kortyot"], ["🏠", "hazamegyünk"]], "story": "Elindulunk a játszótérre, csúszdázom, iszom egy kortyot, aztán hazamegyünk."}}
+]

@@ -87,16 +87,20 @@ export default {
     gamesTitle: 'Játékok',
     loadFailed: 'Nem sikerült betölteni a játékokat.',
     exit: 'Gyerekek',
-    zones: { meadow: 'A Rét', forest: 'A Varázserdő' },
+    forestLocked: 'Nyílik, ha a rét {need} játékán virág nő ({have}/{need})',
+    zones: { meadow: 'A Rét', forest: 'A Varázserdő', sound: 'A Hangok völgye', letters: 'A Szavak városa', world: 'A Felfedezők földje' },
+    zoneHints: {
+      meadow: 'Számolás, kirakók, színek: kezdésnek és a legkisebbeknek.',
+      forest: 'Gondolkodás, figyelem és tájékozódás.',
+      sound: 'Hangok, rímek, ritmus és szájtorna.',
+      letters: 'Betűk, szavak, mondatok és a szókincs.',
+      world: 'Állatok, otthon, napirend és hogyan készül valami.',
+    },
     views: { folders: 'Mappák', garden: 'Kert' },
     folderBack: 'Vissza a mappákhoz',
     folderGames: '{count} játék',
     folderMedals: '{done}/{total} érem',
-    wholeGarden: 'Az egész kert',
     sign: 'az óvodai jeled',
-    closer: 'Közelebb',
-    grewOne: 'Új növény nőtt a kertedben!',
-    grewMany: '{count} új növény nőtt a kertedben!',
     tiers: {
       simple: { title: 'Egyszerű játékok', hint: 'Kezdésnek és a legkisebbeknek: egy koppintás, kevés megjegyezni való.' },
       advanced: { title: 'Haladó játékok', hint: 'Nagyobbaknak: hangok, rímek, emlékezet és gondolkodás.' },
@@ -208,7 +212,7 @@ export default {
     loadFailed: 'Nem sikerült betölteni a játékot.',
     muteLabel: 'Hang kikapcsolása',
     unmuteLabel: 'Hang bekapcsolása',
-    replaySlowLabel: 'Kérdés újra, lassan',
+    slowLabel: 'Lassabb beszéd',
     repeatLabel: '{guide}, mondd el újra',
     progressLabel: 'Kör',
     starsLabel: '{count} csillag',
@@ -275,6 +279,9 @@ export default {
     recordAttempt: 'Mondd a mikrofonba',
     recording: 'Felvétel… koppints, ha kész',
     scoring: 'Figyelem…',
+    micUnavailable: 'A mikrofon most nem érhető el {folder}. Kérd meg a szülőt, hogy döntsön!',
+  },
+
   mimic: {
     mirror: 'Nézzetek együtt tükörbe!',
     again: 'Még egyszer',
@@ -289,9 +296,6 @@ export default {
     rolled: 'Dobtál: {n}',
     again: 'Még egyszer',
     done: 'Megvolt!',
-  },
-
-    micUnavailable: 'A mikrofon most nem érhető el {folder}. Kérd meg a szülőt, hogy döntsön!',
   },
 
   puzzle: {

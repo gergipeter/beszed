@@ -89,6 +89,7 @@ function sayStimulus() {
   <PictureCard
     v-if="data.stimulus"
     :emoji="data.stimulus.emoji"
+    :letter="data.stimulus.letter"
     :label="data.stimulus.label"
     :highlight="Boolean(data.stimulus.highlight)"
     :silhouette="Boolean(data.stimulus.silhouette)"
@@ -128,6 +129,7 @@ function sayStimulus() {
         :key="o.id"
         :emoji="o.emoji"
         :label="o.label"
+        :letter="o.letter"
         :variant="data.variant === 'plates' ? 'plate' : o.scene ? 'scene' : 'default'"
         :good="good === o.id"
         :shake="shaking === o.id"

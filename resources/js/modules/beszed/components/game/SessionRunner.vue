@@ -106,7 +106,14 @@ function toggleMute() {
   settings.toggleMuted().catch(() => {})
 }
 
+/** Turtle mode on/off; the question is said again so the child hears the new pace. */
+function toggleSlow() {
+  guide.slow = !guide.slow
+  speakPrompt()
+}
+
 function exit() {
+  guide.slow = false
   guide.reset()
   emit('exit')
 }
@@ -126,7 +133,8 @@ onMounted(() => {
       :muted="settings.muted"
       @exit="exit"
       @toggle-mute="toggleMute"
-      @replay-slow="speakPrompt({ slow: true })"
+      :slow="guide.slow"
+      @toggle-slow="toggleSlow"
     />
 
     <!-- Scene changes (playing ↔ finished) and each new round glide in: opacity/transform only. -->

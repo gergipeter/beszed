@@ -27,15 +27,15 @@ return [
         ],
         'kovetkeztetes' => [
             'label' => 'Tapasztalati következtetés', 'emoji' => '🧠', 'difer' => true,
-            'games' => ['okoska', 'valogato', 'tortenet'],
+            'games' => ['okoska', 'valogato', 'tortenet', 'napirend', 'keszul', 'elohely', 'szobak'],
         ],
         'nyelv_emlekezet' => [
             'label' => 'Mondatok és emlékezet', 'emoji' => '🗣️', 'difer' => false,
-            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok', 'mitunt', 'korus', 'utasitas', 'szajtorna', 'lepegeto'],
+            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok', 'mitunt', 'korus', 'utasitas', 'szajtorna', 'lepegeto', 'betuk', 'ellentet', 'tobbes', 'foglalkozas'],
         ],
         'vizualis' => [
             'label' => 'Vizuális észlelés', 'emoji' => '👀', 'difer' => false,
-            'games' => ['arnyek', 'kirako', 'kulonbseg'],
+            'games' => ['arnyek', 'kirako', 'kulonbseg', 'szinek'],
         ],
         'zene' => [
             'label' => 'Zenei hallás', 'emoji' => '🎹', 'difer' => false,

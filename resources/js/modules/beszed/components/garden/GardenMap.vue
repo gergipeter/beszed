@@ -32,9 +32,14 @@ const props = defineProps({
 const emit = defineEmits(['play'])
 
 const ZONES = [
-  { id: 'meadow', tier: 'simple', icon: ICONS.tierSimple, growth: ['🌷', '🌼', '🌻', '🌸', '🌱', '🪻', '🌾', '🌿'] },
-  { id: 'forest', tier: 'advanced', icon: ICONS.tierAdvanced, growth: ['🍄', '🌿', '🌱', '🍄', '🌰', '🪺', '🌿'] },
+  { id: 'meadow', icon: ICONS.tierSimple, growth: ['🌷', '🌼', '🌻', '🌸', '🌱', '🪻', '🌾', '🌿'] },
+  { id: 'forest', icon: ICONS.tierAdvanced, growth: ['🍄', '🌿', '🌱', '🍄', '🌰', '🪺', '🌿'] },
+  { id: 'sound', icon: '🎵', growth: ['🎵', '🔔', '🌼', '🎶', '🌱', '🌷'] },
+  { id: 'letters', icon: '🔤', growth: ['📚', '🌻', '✏️', '🌱', '🌼', '📖'] },
+  { id: 'world', icon: '🌍', growth: ['🌴', '🌺', '🌵', '🌱', '🍀', '🌿'] },
 ]
+/** The zone a game stands in: the server's pick, else by tier (the meadow or the forest). */
+const zoneOf = g => g.zone ?? (g.tier === 'advanced' ? 'forest' : 'meadow')
 /** Fireflies of the forest night (% of the zone). */
 const FIREFLIES = [
   [8, 12], [22, 30], [80, 18], [91, 44], [14, 58], [70, 66], [40, 80], [88, 86], [55, 40], [30, 92],
@@ -109,16 +114,16 @@ const zones = computed(() => {
   if (!width.value) return []
   let flip = false
   const laid = ZONES.map((zone, z) => {
-    const games = props.games.filter(g => (g.tier ?? 'simple') === zone.tier)
+    const games = props.games.filter(g => zoneOf(g) === zone.id)
     const layout = trailLayout(games.length, width.value, flip)
     const d = trailPath(layout.points, layout.height)
     flip = (layout.points.at(-1)?.x ?? 0) > width.value / 2 // the next zone starts where this one ends
     return { ...zone, games, layout, d, spots: scatter(plantSpots(layout, width.value), 7 + z) }
   })
-  // the child's plants: meadow and forest in turn; a full zone passes its plants to the other
+  // the child's plants: the zones in turn; a full zone passes its plants on to the next
   const grown = laid.map(() => [])
   for (let n = 0; n < props.plants; n++) {
-    const z = (n % 2 ? [1, 0] : [0, 1]).find(i => grown[i].length < laid[i].spots.length)
+    const z = laid.map((_, i) => (n + i) % laid.length).find(i => grown[i].length < laid[i].spots.length)
     if (z === undefined) break
     const zone = laid[z]
     const sprout = n >= props.sproutFrom
@@ -132,6 +137,19 @@ const zones = computed(() => {
   }
   return laid.map((zone, z) => ({ ...zone, grown: grown[z] })).filter(zone => zone.games.length)
 })
+
+/** The forest opens once half of the meadow's games have a flower (a medal). */
+const gate = computed(() => {
+  const meadow = props.games.filter(g => zoneOf(g) === 'meadow')
+  const need = Math.ceil(meadow.length / 2)
+  const have = meadow.filter(g => (props.medals[g.id] ?? 0) > 0).length
+  return { need, have, open: have >= need }
+})
+const lockedZone = zone => zone.id !== 'meadow' && !gate.value.open
+function open(zone, game, event) {
+  if (lockedZone(zone)) return buzz(15)
+  emit('play', game.id, event.currentTarget.querySelector('.stone'))
+}
 
 const tints = computed(() =>
   Object.fromEntries(props.folders.flatMap(f => f.games.map(id => [id, f.color]))),
@@ -168,16 +186,6 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
           <b class="count">{{ c.done }}/{{ c.total }}</b>
         </li>
       </ul>
-      <button
-        type="button"
-        class="map-toggle"
-        :aria-pressed="overview"
-        :aria-label="t(overview ? 'hub.closer' : 'hub.wholeGarden')"
-        @click="setOverview(!overview)"
-      >
-        <EmojiArt :char="overview ? ICONS.zoomIn : ICONS.map" />
-        <span class="map-label">{{ t(overview ? 'hub.closer' : 'hub.wholeGarden') }}</span>
-      </button>
     </div>
   </div>
   <div
@@ -188,13 +196,16 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
     @touchmove.passive="onTouchMove"
   >
     <div ref="root" class="garden" :style="{ transform: scale < 1 ? `scale(${scale})` : null }">
-      <section v-for="zone in zones" :key="zone.id" class="zone" :class="`zone--${zone.id}`" :aria-labelledby="`zone-${zone.id}`">
+      <section v-for="zone in zones" :key="zone.id" class="zone" :class="[`zone--${zone.id}`, { 'zone--locked': lockedZone(zone) }]" :aria-labelledby="`zone-${zone.id}`">
         <header class="zone-head">
           <EmojiArt class="zone-icon" :char="zone.icon" />
           <div>
             <h2 :id="`zone-${zone.id}`" class="zone-title">{{ t(`hub.zones.${zone.id}`) }}</h2>
-            <p class="zone-hint">
-              <b>{{ t(`hub.tiers.${zone.tier}.title`) }}</b> · {{ t(`hub.tiers.${zone.tier}.hint`) }}
+            <p v-if="lockedZone(zone)" class="zone-hint">
+              <EmojiArt :char="ICONS.lock" /> {{ t('hub.forestLocked', gate) }}
+            </p>
+            <p v-else class="zone-hint">
+              {{ t(`hub.zoneHints.${zone.id}`) }}
             </p>
           </div>
         </header>
@@ -229,10 +240,11 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
             :medal="medals[game.id] ?? 0"
             :step="stepOf(game.id)"
             :step-done="doneOf(game.id)"
+            :locked="lockedZone(zone)"
             :spotlight="spotlight === game.id"
             :tint="tints[game.id] ?? null"
             :style="{ left: `${zone.layout.points[i].x}px`, top: `${zone.layout.points[i].y}px` }"
-            @click="emit('play', game.id, $event.currentTarget.querySelector('.stone'))"
+            @click="open(zone, game, $event)"
           />
         </div>
       </section>
@@ -251,10 +263,10 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 }
 .bar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    'head toggle'
-    'legend legend';
+    'head'
+    'legend';
   align-items: center;
   gap: 8px 12px;
 }
@@ -263,33 +275,11 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
 }
 @container bar (min-width: 820px) {
   .bar {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas: 'head legend toggle';
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'head legend';
   }
   .legend {
     justify-content: center;
-  }
-}
-/* "Az egész kert": the map view on and off (the pinch does the same); only the icon on a narrow screen */
-.map-toggle {
-  grid-area: toggle;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: var(--bz-radius-pill);
-  background: var(--bz-card);
-  font-weight: 800;
-  font-size: var(--bz-text-sm);
-  box-shadow: var(--bz-shadow-sm);
-}
-@media (max-width: 519px) {
-  .map-toggle {
-    padding: 9px;
-    font-size: 22px;
-  }
-  .map-label {
-    display: none;
   }
 }
 /* the categories, each a ring that fills as its games get their flowers (also the colour key of the stones) */
@@ -363,7 +353,7 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   gap: 10px;
   margin: 0 6px -18px;
   padding: 10px 16px 12px;
-  border-radius: 22px 24px 20px 26px;
+  border-radius: var(--bz-radius-lg);
   background: var(--bz-bark);
   color: var(--bz-on-bark);
   box-shadow: 0 5px 0 color-mix(in srgb, var(--bz-bark) 60%, #000);
@@ -384,10 +374,14 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
   line-height: 1.25;
   opacity: 0.9;
 }
+/* a island still closed: its ground is dimmed, its stones are locked */
+.zone--locked .field {
+  filter: saturate(0.35) brightness(0.8);
+}
 .field {
   position: relative;
   overflow: hidden;
-  border-radius: 40px 40px 36px 36px;
+  border-radius: var(--bz-radius-lg);
 }
 /* the meadow: rolling grass with soft light patches */
 .zone--meadow .field {
@@ -410,6 +404,28 @@ const doneOf = id => Boolean(props.path?.done.includes(id))
     radial-gradient(34px 44px at 100% 60%, var(--bz-forest-deep) 98%, transparent) 0 0 / 100% 190px repeat-y,
     radial-gradient(120% 50% at 50% 0, color-mix(in srgb, var(--bz-forest) 55%, #fff) 0, transparent 55%),
     linear-gradient(to bottom, var(--bz-forest), var(--bz-forest-deep));
+}
+/* the valley of sounds: a dusky blue-violet meadow with soft note-shaped lights */
+.zone--sound .field {
+  background:
+    radial-gradient(circle at 25% 35%, rgba(255, 255, 255, 0.22) 0 2px, transparent 3px) 0 0 / 52px 58px,
+    radial-gradient(circle at 70% 70%, rgba(255, 220, 255, 0.2) 0 2.4px, transparent 3.4px) 0 0 / 71px 63px,
+    radial-gradient(120% 50% at 50% 0, color-mix(in srgb, #b9a6ff 60%, #fff) 0, transparent 60%),
+    linear-gradient(to bottom, #9d8bea, #6f63c4);
+}
+/* the word town: warm sandy ground with a paper-ruled pattern */
+.zone--letters .field {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 41px, rgba(120, 80, 30, 0.1) 41px 43px),
+    radial-gradient(120% 50% at 50% 0, color-mix(in srgb, #ffe7a8 60%, #fff) 0, transparent 60%),
+    linear-gradient(to bottom, #f6d487, #e3b45a);
+}
+/* the land of explorers: sea-green coast with sparkling water dots */
+.zone--world .field {
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.35) 0 2px, transparent 3px) 0 0 / 58px 49px,
+    radial-gradient(120% 50% at 50% 0, color-mix(in srgb, #7fe0d0 60%, #fff) 0, transparent 60%),
+    linear-gradient(to bottom, #52c7b4, #2b9a8e);
 }
 .trail {
   position: absolute;

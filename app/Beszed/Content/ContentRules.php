@@ -121,6 +121,19 @@ final class ContentRules
             'kezdo' => self::firstSound($p['word']) === $lower($p['sound']) ? [] : ['sound' => 'A szó nem ezzel a hanggal kezdődik (kezdőhang: „'.self::firstSound($p['word']).'”).'],
             'rimelo', 'rimparok' => str_ends_with($lower($p['word']), $lower($p['rhyme'])) ? [] : ['rhyme' => 'A szó nem erre végződik.'],
             'mondd' => $lower(implode(' ', $p['chunks'])) === $lower($p['text']) ? [] : ['chunks' => 'A darabok együtt nem adják ki a mondatot.'],
+            'betuk' => self::firstSound($p['word']) === $lower($p['letter']) ? [] : ['letter' => 'A szó nem ezzel a betűvel kezdődik (kezdőhang: „'.self::firstSound($p['word']).'”).'],
+            'tobbes' => match (true) {
+                ! str_ends_with($lower($p['pl']), 'k') => ['pl' => 'A többes szám -k végű.'],
+                mb_substr($lower($p['pl']), 0, 1) !== mb_substr($lower($p['sg']), 0, 1) => ['pl' => 'A többes szám ugyanazzal a betűvel kezdődik, mint az egyes.'],
+                default => [],
+            },
+            'ellentet' => match (true) {
+                $lower($p['a']) === $lower($p['b']) => ['b' => 'A két szó nem lehet ugyanaz.'],
+                $p['emojiA'] === $p['emojiB'] => ['emojiB' => 'A két szóhoz két különböző kép kell.'],
+                default => [],
+            },
+            'napirend', 'keszul' => count(array_unique(array_column($p['steps'], 0))) === count($p['steps']) ? [] : ['steps' => 'Egy képet csak egyszer használj.'],
+            'elohely', 'szobak' => count(array_unique(array_column($p['items'], 0))) === count($p['items']) ? [] : ['items' => 'Egy képet csak egyszer használj.'],
             'melyik' => $lower($p['good']) !== $lower($p['bad']) ? [] : ['bad' => 'A két mondat ugyanaz.'],
             'szajtorna' => count(array_unique(array_column($p['moves'], 1))) === count($p['moves']) ? [] : ['moves' => 'Minden mozdulat más legyen.'],
             // a pair of the same word, or of two words with the same picture, can't be told apart by ear or by eye

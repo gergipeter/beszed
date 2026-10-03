@@ -88,16 +88,20 @@ export default {
     gamesTitle: 'Games',
     loadFailed: 'Could not load the games.',
     exit: 'Kids',
-    zones: { meadow: 'The Meadow', forest: 'The Magic Forest' },
+    forestLocked: 'Opens when {need} meadow games have a flower ({have}/{need})',
+    zones: { meadow: 'The Meadow', forest: 'The Magic Forest', sound: 'Sound Valley', letters: 'Word Town', world: 'Land of Explorers' },
+    zoneHints: {
+      meadow: 'Counting, puzzles and colours: a start for the smallest.',
+      forest: 'Thinking, attention and finding your way.',
+      sound: 'Sounds, rhymes, rhythm and mouth exercises.',
+      letters: 'Letters, words, sentences and vocabulary.',
+      world: 'Animals, home, daily routine and how things are made.',
+    },
     views: { folders: 'Folders', garden: 'Garden' },
     folderBack: 'Back to the folders',
     folderGames: '{count} games',
     folderMedals: '{done}/{total} medals',
-    wholeGarden: 'The whole garden',
     sign: 'your kindergarten sign',
-    closer: 'Closer',
-    grewOne: 'A new plant grew in your garden!',
-    grewMany: '{count} new plants grew in your garden!',
     tiers: {
       simple: { title: 'Simple games', hint: 'Good for starting out and for the youngest: one tap, little to remember.' },
       advanced: { title: 'Advanced games', hint: 'For older kids: sounds, rhymes, memory and reasoning.' },
@@ -209,7 +213,7 @@ export default {
     loadFailed: 'Could not load the game.',
     muteLabel: 'Turn the sound off',
     unmuteLabel: 'Turn the sound on',
-    replaySlowLabel: 'Repeat the question, slowly',
+    slowLabel: 'Slower speech',
     repeatLabel: '{guide}, say it again',
     progressLabel: 'Round',
     starsLabel: '{count} stars',
@@ -276,6 +280,9 @@ export default {
     recordAttempt: 'Speak into the microphone',
     recording: 'Recording… tap when done',
     scoring: 'Checking…',
+    micUnavailable: 'The microphone is not available {folder}. Ask a parent to decide!',
+  },
+
   mimic: {
     mirror: 'Look in the mirror together!',
     again: 'Once more',
@@ -290,9 +297,6 @@ export default {
     rolled: 'You rolled {n}',
     again: 'Once more',
     done: 'Done!',
-  },
-
-    micUnavailable: 'The microphone is not available {folder}. Ask a parent to decide!',
   },
 
   puzzle: {

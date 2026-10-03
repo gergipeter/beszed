@@ -1,0 +1,22 @@
+[
+  {"level": 1, "payload": {"a": "nagy", "emojiA": "🐘", "b": "kicsi", "emojiB": "🐭"}},
+  {"level": 1, "payload": {"a": "meleg", "emojiA": "🔥", "b": "hideg", "emojiB": "🧊"}},
+  {"level": 1, "payload": {"a": "gyors", "emojiA": "🐇", "b": "lassú", "emojiB": "🐢"}},
+  {"level": 1, "payload": {"a": "magas", "emojiA": "🦒", "b": "alacsony", "emojiB": "🐕"}},
+  {"level": 1, "payload": {"a": "vidám", "emojiA": "😀", "b": "szomorú", "emojiB": "😢"}},
+  {"level": 1, "payload": {"a": "nyitva", "emojiA": "🔓", "b": "zárva", "emojiB": "🔒"}},
+  {"level": 1, "payload": {"a": "tele", "emojiA": "🥛", "b": "üres", "emojiB": "🫙"}},
+  {"level": 1, "payload": {"a": "fent", "emojiA": "⬆️", "b": "lent", "emojiB": "⬇️"}},
+  {"level": 2, "payload": {"a": "nehéz", "emojiA": "🪨", "b": "könnyű", "emojiB": "🪶"}},
+  {"level": 2, "payload": {"a": "kemény", "emojiA": "🧱", "b": "puha", "emojiB": "🧸"}},
+  {"level": 2, "payload": {"a": "nedves", "emojiA": "💧", "b": "száraz", "emojiB": "🏜️"}},
+  {"level": 2, "payload": {"a": "nappal", "emojiA": "☀️", "b": "éjszaka", "emojiB": "🌙"}},
+  {"level": 2, "payload": {"a": "hosszú", "emojiA": "🚆", "b": "rövid", "emojiB": "🐛"}},
+  {"level": 2, "payload": {"a": "tiszta", "emojiA": "🧼", "b": "koszos", "emojiB": "🐖"}},
+  {"level": 2, "payload": {"a": "sok", "emojiA": "🍪", "b": "kevés", "emojiB": "☝️"}},
+  {"level": 3, "payload": {"a": "ébren", "emojiA": "🙂", "b": "alszik", "emojiB": "😴"}},
+  {"level": 3, "payload": {"a": "vastag", "emojiA": "📚", "b": "vékony", "emojiB": "📄"}},
+  {"level": 3, "payload": {"a": "új", "emojiA": "🎁", "b": "régi", "emojiB": "🏚️"}},
+  {"level": 3, "payload": {"a": "közel", "emojiA": "🏠", "b": "messze", "emojiB": "🏔️"}},
+  {"level": 3, "payload": {"a": "erős", "emojiA": "💪", "b": "gyenge", "emojiB": "🥀"}}
+]
