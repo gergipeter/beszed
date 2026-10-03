@@ -336,7 +336,7 @@ const swatch = item => ACCESSORY_ART[item.id]?.palette ?? []
   width: 96px;
   padding: 12px 6px 8px;
   border: 4px solid transparent;
-  border-radius: 22px;
+  border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   box-shadow: var(--bz-shadow);
   font-weight: 700;

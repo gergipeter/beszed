@@ -63,7 +63,7 @@ function go(n) {
   flex-direction: column;
   gap: 10px;
   padding: 12px;
-  border-radius: 20px;
+  border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   box-shadow: var(--bz-shadow-lg);
   max-width: 100%;
@@ -78,14 +78,14 @@ input {
   min-height: 44px;
   padding: 8px 12px;
   border: 3px solid var(--bz-soft);
-  border-radius: 14px;
+  border-radius: var(--bz-radius-sm);
   font: inherit;
   font-weight: 800;
   font-size: 18px;
 }
 .go {
   padding: 8px 16px;
-  border-radius: 14px;
+  border-radius: var(--bz-radius-sm);
   background: var(--bz-sun);
   font-weight: 800;
 }
@@ -98,7 +98,7 @@ input {
 .jumps button {
   min-width: 46px;
   padding: 6px 10px;
-  border-radius: 12px;
+  border-radius: var(--bz-radius-sm);
   background: var(--bz-soft);
   font-weight: 800;
 }

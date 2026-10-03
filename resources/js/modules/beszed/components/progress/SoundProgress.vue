@@ -154,7 +154,7 @@ const hasPrevious = computed(() => props.sounds.items.some(i => i.previousRate !
   justify-content: center;
   padding: 4px 6px;
   border: 2px solid var(--bz-chart-grid);
-  border-radius: 14px;
+  border-radius: var(--bz-radius-sm);
   font-size: 20px;
   line-height: 1.2;
   white-space: nowrap;

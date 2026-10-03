@@ -228,7 +228,7 @@ watch(days, load)
 .period {
   padding: 6px 10px;
   border: 2px solid var(--bz-guide);
-  border-radius: 12px;
+  border-radius: var(--bz-radius-sm);
   background: var(--bz-soft);
   color: var(--bz-ink);
   font: inherit;

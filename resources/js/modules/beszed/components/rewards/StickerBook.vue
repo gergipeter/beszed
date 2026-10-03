@@ -275,7 +275,7 @@ function tap(badge) {
   width: 78px;
   height: 96px;
   overflow: hidden;
-  border-radius: 16px 16px 12px 12px;
+  border-radius: var(--bz-radius-sm);
   background: linear-gradient(135deg, #ff9ec7, #b9a6ff 45%, #7cc7ff 70%, #9ee6c9);
   box-shadow:
     inset 0 0 0 3px rgba(255, 255, 255, 0.6),
@@ -321,7 +321,7 @@ function tap(badge) {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  border-radius: 28px;
+  border-radius: var(--bz-radius-lg);
   background: #fff7e6;
   box-shadow:
     inset 0 0 0 5px color-mix(in srgb, var(--bz-bark) 35%, transparent),

@@ -112,7 +112,7 @@
   place-items: center;
   width: min(78vw, 78vh, 420px);
   aspect-ratio: 1;
-  border-radius: 40px;
+  border-radius: var(--bz-radius-lg);
   background: #fff;
   box-shadow: 0 16px 40px rgba(30, 20, 60, 0.35);
   font-size: min(60vw, 60vh, 320px);

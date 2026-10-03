@@ -39,7 +39,7 @@ defineProps({
   flex-direction: column;
   align-items: center;
   padding: 18px 34px 10px;
-  border-radius: 36px;
+  border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   font-size: 110px;
   line-height: 1;

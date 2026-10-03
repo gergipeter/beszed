@@ -141,7 +141,7 @@ function close() {
   margin: 0;
   padding: calc(18px + env(safe-area-inset-top, 0px)) 18px calc(24px + env(safe-area-inset-bottom, 0px));
   border: 0;
-  border-radius: 32px 0 0 32px;
+  border-radius: var(--bz-radius-lg) 0 0 var(--bz-radius-lg);
   background: var(--bz-card);
   color: var(--bz-ink);
   font-family: var(--bz-font);

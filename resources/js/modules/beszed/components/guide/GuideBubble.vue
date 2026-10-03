@@ -42,7 +42,7 @@ const emit = defineEmits(['press'])
   flex: 1;
   min-width: 0;
   padding: 12px 18px;
-  border-radius: 26px;
+  border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   box-shadow: 0 6px 0 rgba(59, 31, 74, 0.12);
 }

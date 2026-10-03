@@ -81,7 +81,7 @@ const PROPS = {
   min-height: 360px;
   padding: 26px clamp(10px, 3vw, 22px) 34px;
   overflow: hidden;
-  border-radius: 34px;
+  border-radius: var(--bz-radius-lg);
   background: linear-gradient(to bottom, #e8f7ff, #d9f2c8);
   box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.5);
 }

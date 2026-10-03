@@ -381,7 +381,7 @@ function bringToLife() {
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border: 4px solid var(--bz-card);
-  border-radius: 14px;
+  border-radius: var(--bz-radius-sm);
   box-shadow: var(--bz-shadow-sm);
 }
 .backdrop-pick--on .thumb {

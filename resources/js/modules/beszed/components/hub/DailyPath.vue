@@ -125,7 +125,7 @@ const longest = name => Math.max(...name.split(/\s+/).map(w => w.length))
   width: 100%;
   min-height: 78px;
   padding: 8px 4px 6px;
-  border-radius: 18px;
+  border-radius: var(--bz-radius);
   background: var(--tile-color, var(--bz-soft));
   color: var(--bz-on-bright);
   box-shadow: 0 5px 0 rgba(59, 31, 74, 0.18);
