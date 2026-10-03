@@ -6,7 +6,6 @@ import GameFolders from '../components/hub/GameFolders.vue'
 import GardenMap from '../components/garden/GardenMap.vue'
 import GardenSky from '../components/garden/GardenSky.vue'
 import GuideBubble from '../components/guide/GuideBubble.vue'
-import DailyGift from '../components/hub/DailyGift.vue'
 import DailyPath from '../components/hub/DailyPath.vue'
 import GamesTabs from '../components/hub/GamesTabs.vue'
 import WeatherChip from '../components/hub/WeatherChip.vue'
@@ -14,7 +13,6 @@ import ParentMenu from '../components/hub/ParentMenu.vue'
 import Spotlight from '../components/hub/Spotlight.vue'
 import PlayerStatus from '../components/rewards/PlayerStatus.vue'
 import StreakHistory from '../components/rewards/StreakHistory.vue'
-import WeeklyChallenge from '../components/rewards/WeeklyChallenge.vue'
 import EmojiArt from '../components/ui/EmojiArt.vue'
 import { useDailyGift } from '../composables/useDailyGift'
 import { useModuleContext } from '../composables/useModuleContext'
@@ -224,9 +222,7 @@ async function play(game, stone) {
     :stickers-to="{ name: 'beszed.rewards', params: { childId } }"
   />
   <StreakHistory v-if="rewards.summary?.streak.recent.some(d => d.played)" :days="rewards.summary.streak.recent" />
-  <WeeklyChallenge v-if="rewards.summary?.week" :week="rewards.summary.week" />
 
-  <DailyGift :available="gift.available.value" @open="openGift" />
 
   <Spotlight v-if="spotlightGame" :game="spotlightGame" @play="play" />
 
