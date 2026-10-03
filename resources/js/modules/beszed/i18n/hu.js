@@ -287,6 +287,10 @@ export default {
     again: 'Még egyszer',
     rep: 'Megcsináltam',
     progress: '{done} a {total}-ból',
+    mirrorOn: 'Tükör',
+    mirrorOff: 'Tükör ki',
+    mirrorLabel: 'Te magad a kamerában',
+    noCamera: 'A kamera most nem érhető el. Nézzetek egy igazi tükörbe!',
   },
 
   board: {

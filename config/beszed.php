@@ -297,6 +297,16 @@ return [
             ],
             'intro' => 'Rendet rakunk a lakásban! Melyik tárgy melyik szobába való? Koppints a jó helyre!',
         ],
+        'mondat' => [
+            'name' => 'Mondatépítő', 'emoji' => '🧱', 'skill' => 'Szórend, mondatalkotás, figyelő emlékezet', 'color' => '#FFD9C0', 'tier' => 'advanced', 'stage' => 'storybook',
+            'factory' => Rounds\MondatRounds::class, 'rounds' => 6,
+            // level = words in the sentence: 1 → 3, 2 → 4, 3 → 5 (MondatRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Mondatot építünk! Meghallgatod a mondatot, aztán a szavakat sorba rakod, ahogy mondtam.',
+        ],
         'melyik' => [
             'name' => 'Melyik mondja szépen?', 'emoji' => '🐻', 'skill' => 'Magyaros mondatok', 'color' => '#E3F0A8', 'tier' => 'advanced', 'stage' => 'theatre',
             'factory' => Rounds\MelyikRounds::class, 'rounds' => 8,

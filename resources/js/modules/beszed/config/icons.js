@@ -57,6 +57,7 @@ export const ICONS = Object.freeze({
   dress: '👗',
   picture: '🖼️',
   dice: '🎲',
+  mirror: '🪞',
   magic: '🪄',
   phone: '📲',
   shareBox: '📤',
