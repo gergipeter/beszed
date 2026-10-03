@@ -5,8 +5,8 @@ const synth = typeof window !== 'undefined' && 'speechSynthesis' in window ? win
 
 const QUALITY = /enhanced|premium|továbbfejlesztett|prémium|natural|neural|online|google/i
 
-/** undefined = not chosen yet; null = no voice for the language (browser default). */
-let cachedVoice
+/** language prefix → the chosen voice; null = no voice for the language (browser default). */
+const cachedVoices = new Map()
 let primed = false
 let volume = 1
 
@@ -16,15 +16,16 @@ export function setWebSpeechVolume(v) {
 }
 
 // Chrome loads its voice list asynchronously; choose again once it arrives.
-synth?.addEventListener?.('voiceschanged', () => (cachedVoice = undefined))
+synth?.addEventListener?.('voiceschanged', () => cachedVoices.clear())
 
 function voiceFor(lang) {
-  if (cachedVoice !== undefined) return cachedVoice
   const prefix = lang.slice(0, 2).toLowerCase()
+  if (cachedVoices.has(prefix)) return cachedVoices.get(prefix)
   const rank = v => (QUALITY.test(v.name) ? 10 : 0) + (v.localService ? 0 : 1)
   const voices = synth.getVoices().filter(v => v.lang.toLowerCase().startsWith(prefix))
-  cachedVoice = voices.sort((a, b) => rank(b) - rank(a))[0] ?? null
-  return cachedVoice
+  const chosen = voices.sort((a, b) => rank(b) - rank(a))[0] ?? null
+  cachedVoices.set(prefix, chosen)
+  return chosen
 }
 
 /**
