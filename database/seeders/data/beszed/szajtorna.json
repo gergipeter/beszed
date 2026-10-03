@@ -1,0 +1,13 @@
+[
+  {"level": 1, "payload": {"name": "Pufi pofi, sovány pofi", "moves": [["🐡", "fújd fel az arcod, pufi pofi"], ["🐟", "szívd be az arcod, sovány pofi"]]}},
+  {"level": 1, "payload": {"name": "Csücsörítés és mosoly", "moves": [["😗", "csücsörítsd az ajkad"], ["😁", "mosolyogj szélesen, fogsorral"]]}},
+  {"level": 1, "payload": {"name": "Csücsörítés jobbra-balra", "moves": [["😗➡️", "csücsörítés jobbra"], ["⬅️😗", "csücsörítés balra"]]}},
+  {"level": 1, "payload": {"name": "Boldog és szomorú arc", "moves": [["😊", "zárt ajakkal mosolyogj, boldog arc"], ["😢", "szomorú arc, a szád sarka lefelé"]]}},
+  {"level": 1, "payload": {"name": "Titkos száj", "moves": [["🤐", "szívd be az ajkaidat, titkos száj"], ["🙂", "lazán zárt ajkak"]]}},
+  {"level": 1, "payload": {"name": "Halacska", "moves": [["🐟", "csücsörítve zárd az ajkad"], ["😗", "csücsörítve nyisd ki"]]}},
+  {"level": 1, "payload": {"name": "Pici puszi", "moves": [["😐", "pihenj"], ["😘", "dobj egy pici puszit"]]}},
+  {"level": 1, "payload": {"name": "Nagy puszi", "moves": [["😗", "pici puszi"], ["😮", "nagy puszi, nyisd nagyra a szád"]]}},
+  {"level": 1, "payload": {"name": "Két pici puszi, egy nagy puszi", "moves": [["😘", "pici puszi"], ["😙", "még egy pici puszi"], ["😮", "nagy puszi"]]}},
+  {"level": 1, "payload": {"name": "Fogatlan boszi", "moves": [["🧙‍♀️", "az ajkaid a fogaidon, zárd a szád"], ["😲", "nyisd ki a szád"]]}},
+  {"level": 1, "payload": {"name": "Alsó és felső ajak", "moves": [["😬", "az alsó ajkad befelé, a felső fogsor mögé"], ["😶", "a felső ajkad befelé, az alsó fogsor mögé"]]}}
+]

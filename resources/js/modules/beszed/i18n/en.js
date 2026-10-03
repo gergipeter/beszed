@@ -276,6 +276,22 @@ export default {
     recordAttempt: 'Speak into the microphone',
     recording: 'Recording… tap when done',
     scoring: 'Checking…',
+  mimic: {
+    mirror: 'Look in the mirror together!',
+    again: 'Once more',
+    rep: 'Done it',
+    progress: '{done} of {total}',
+  },
+
+  board: {
+    label: '{theme} board',
+    task: 'Task for this field',
+    roll: 'Roll!',
+    rolled: 'You rolled {n}',
+    again: 'Once more',
+    done: 'Done!',
+  },
+
     micUnavailable: 'The microphone is not available {folder}. Ask a parent to decide!',
   },
 

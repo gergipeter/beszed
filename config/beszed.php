@@ -182,6 +182,34 @@ return [
             ],
             'intro' => 'Most mondatokat mondok. Figyelj jól, és mondd utánam! Anya vagy apa is segít.',
         ],
+        'szajtorna' => [
+            'name' => 'Szájtorna', 'emoji' => '😗', 'skill' => 'Szájizmok erősítése, tükör előtt', 'color' => '#FFC2D4', 'tier' => 'simple', 'stage' => 'storybook',
+            'factory' => Rounds\SzajtornaRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
+            // level = repetitions per exercise: 1 → 3, 2 → 5, 3 → 10 (SzajtornaRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Most a szádat edzzük! Nézz tükörbe, és csináld, amit a kép mutat. Anya vagy apa is csinálja veled!',
+        ],
+        'lepegeto' => [
+            'name' => 'Lépegető', 'emoji' => '🎲', 'skill' => 'Társasjáték beszédfeladatokkal', 'color' => '#FFD9A0', 'tier' => 'simple', 'stage' => 'forest',
+            'factory' => Rounds\LepegetoRounds::class, 'rounds' => 1, 'no_idle' => true, 'guess' => false,
+            // level = fields on the path: 1 → 8, 2 → 12, 3 → 16 (LepegetoRounds)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            // the season of the board; without a pick it is the season it is now
+            'pick_prompt' => 'Melyik évszakban lépegessünk ma? Válassz!',
+            'categories' => [
+                'osz' => ['name' => 'Ősz', 'emoji' => '🍂'],
+                'tel' => ['name' => 'Tél', 'emoji' => '⛄'],
+                'tavasz' => ['name' => 'Tavasz', 'emoji' => '🌷'],
+                'nyar' => ['name' => 'Nyár', 'emoji' => '🏖️'],
+            ],
+            'intro' => 'Társasjátékozunk! Dobj a kockával, lépj előre, és csináld meg, amit a mező kér. Anya vagy apa is segít!',
+        ],
         'melyik' => [
             'name' => 'Melyik mondja szépen?', 'emoji' => '🐻', 'skill' => 'Magyaros mondatok', 'color' => '#E3F0A8', 'tier' => 'advanced', 'stage' => 'theatre',
             'factory' => Rounds\MelyikRounds::class, 'rounds' => 8,
