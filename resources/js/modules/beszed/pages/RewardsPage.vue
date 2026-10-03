@@ -162,7 +162,7 @@ onMounted(load)
   gap: 2px;
   padding: 10px 6px 8px;
   border: 4px solid transparent;
-  border-radius: 22px 24px 20px 26px;
+  border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   box-shadow: var(--bz-shadow);
   transition: transform 0.38s var(--bz-spring);

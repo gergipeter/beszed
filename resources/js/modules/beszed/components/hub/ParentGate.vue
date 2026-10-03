@@ -142,7 +142,7 @@ defineExpose({ ask })
   max-height: 96dvh;
   padding: 0;
   border: 0;
-  border-radius: 32px;
+  border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   color: var(--bz-ink);
   font-family: var(--bz-font);
@@ -189,7 +189,7 @@ h2 {
 .words {
   margin: 0;
   padding: 10px 12px;
-  border-radius: 16px;
+  border-radius: var(--bz-radius-sm);
   background: var(--bz-soft);
   font-size: 22px;
   font-weight: 800;
@@ -213,7 +213,7 @@ h2 {
   width: 56px;
   height: 64px;
   border: 3px solid color-mix(in srgb, var(--bz-ink) 30%, transparent);
-  border-radius: 16px;
+  border-radius: var(--bz-radius-sm);
   background: #fff;
   color: #1f1f1f;
   font-size: 34px;
@@ -234,7 +234,7 @@ h2 {
 }
 .key {
   min-height: 58px;
-  border-radius: 18px;
+  border-radius: var(--bz-radius);
   background: var(--bz-soft);
   box-shadow: 0 4px 0 rgba(0, 0, 0, 0.14);
   font-size: 28px;

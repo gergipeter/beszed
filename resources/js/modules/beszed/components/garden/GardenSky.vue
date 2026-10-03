@@ -72,7 +72,7 @@ const STARS = [
   position: absolute;
   width: 120px;
   height: 36px;
-  border-radius: 40px;
+  border-radius: var(--bz-radius-lg);
   background: #fff;
   opacity: 0.85;
   animation: drift 70s linear infinite alternate;

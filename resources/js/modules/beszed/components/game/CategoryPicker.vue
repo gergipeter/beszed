@@ -52,7 +52,7 @@ onMounted(() => guide.speak([props.prompt || t('game.pickTheme')]))
   gap: 4px;
   padding: 16px 8px 12px;
   border: 4px solid transparent;
-  border-radius: 28px 28px 28px 12px;
+  border-radius: var(--bz-radius-lg) var(--bz-radius-lg) var(--bz-radius-lg) var(--bz-radius-sm);
   background: var(--bz-card);
   box-shadow: var(--bz-shadow-lg);
   animation: theme-in 0.4s var(--bz-spring) backwards;

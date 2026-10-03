@@ -152,10 +152,10 @@ const medalsOf = id => props.medals[id] ?? 0
   transition: transform 0.38s var(--bz-spring);
 }
 /* every sticker sits a little crooked, and not the same way */
-.folder:nth-child(4n + 1) { --tilt: -2.5deg; --shape: 30px 36px 32px 38px / 36px 30px 38px 32px; }
-.folder:nth-child(4n + 2) { --tilt: 2deg; --shape: 36px 30px 38px 32px / 30px 38px 32px 36px; }
-.folder:nth-child(4n + 3) { --tilt: 1.5deg; --shape: 32px 38px 30px 36px / 38px 32px 36px 30px; }
-.folder:nth-child(4n) { --tilt: -2deg; --shape: 38px 32px 36px 30px / 32px 36px 30px 38px; }
+.folder:nth-child(4n + 1) { --tilt: -2.5deg; --shape: var(--bz-radius-lg); }
+.folder:nth-child(4n + 2) { --tilt: 2deg; --shape: var(--bz-radius-lg); }
+.folder:nth-child(4n + 3) { --tilt: 1.5deg; --shape: var(--bz-radius-lg); }
+.folder:nth-child(4n) { --tilt: -2deg; --shape: var(--bz-radius-lg); }
 /* a plain zoom (a transition): swapping the animation would replay the entrance, and the sticker would vanish */
 .folder:hover,
 .folder:focus-visible {
@@ -169,7 +169,7 @@ const medalsOf = id => props.medals[id] ?? 0
 .blob {
   position: absolute;
   inset: 0;
-  border-radius: var(--shape, 34px);
+  border-radius: var(--shape, var(--bz-radius-lg));
   background: linear-gradient(160deg, var(--c), color-mix(in srgb, var(--c) 70%, #fff));
   filter: saturate(1.7);
   box-shadow:
@@ -225,7 +225,7 @@ const medalsOf = id => props.medals[id] ?? 0
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  border-radius: 40px;
+  border-radius: var(--bz-radius-lg);
   background: linear-gradient(160deg, var(--c), color-mix(in srgb, var(--c) 70%, #fff));
   color: #3b1f4a;
   box-shadow:
@@ -283,7 +283,7 @@ h2 {
   align-items: center;
   gap: 6px;
   padding: 16px 8px 14px;
-  border-radius: 38px;
+  border-radius: var(--bz-radius-lg);
   background: var(--bz-card);
   box-shadow:
     0 0 0 4px var(--g),

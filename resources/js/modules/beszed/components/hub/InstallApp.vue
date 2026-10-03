@@ -61,7 +61,7 @@ async function install() {
   margin: 0 auto;
   width: 100%;
   padding: 22px 22px calc(22px + env(safe-area-inset-bottom, 0px));
-  border-radius: 28px 28px 0 0;
+  border-radius: var(--bz-radius-lg) var(--bz-radius-lg) 0 0;
   background: #fff;
   animation: up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -84,7 +84,7 @@ async function install() {
 .tip {
   margin: 0;
   padding: 10px 14px;
-  border-radius: 16px;
+  border-radius: var(--bz-radius-sm);
   background: #eaf7ff;
   font-size: 15px;
   line-height: 1.35;
