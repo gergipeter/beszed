@@ -5,6 +5,7 @@ import { BzButton, BzNotice, CsillamAvatar } from '../../modules/beszed'
 import '../../modules/beszed/styles/index.css'
 import { appConfig } from '../config'
 import LegalLinks from '../components/LegalLinks.vue'
+import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import { isNative } from '../native'
 import { useSessionStore } from '../stores/session'
 import { firstError, texts } from '../texts'
@@ -69,6 +70,7 @@ async function demo() {
 
 <template>
   <main class="bz login">
+    <div class="lang-corner"><LanguageSwitcher /></div>
     <div class="card">
       <div class="avatar"><CsillamAvatar :worn="{}" /></div>
       <h1 class="title">{{ appConfig.name }}</h1>
@@ -143,6 +145,13 @@ async function demo() {
 </template>
 
 <style scoped>
+.lang-corner {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 440px;
+  margin-bottom: 8px;
+}
 .login {
   display: grid;
   place-items: center;
