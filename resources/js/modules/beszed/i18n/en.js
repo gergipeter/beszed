@@ -283,6 +283,16 @@ export default {
     micUnavailable: 'The microphone is not available {folder}. Ask a parent to decide!',
   },
 
+  letter: {
+    again: 'Once more',
+    almost: 'Almost! Follow the dots in the order of the numbers!',
+    canvas: 'The letter {name}: trace it with your finger',
+  },
+
+  clock: {
+    label: 'Clock: {hour} hours {minute} minutes',
+  },
+
   mimic: {
     mirror: 'Look in the mirror together!',
     again: 'Once more',

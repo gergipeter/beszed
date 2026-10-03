@@ -25,6 +25,7 @@ const loaders = {
   rhythm: () => import('./rhythm/RhythmEngine.vue'),
   piano: () => import('./piano/PianoEngine.vue'),
   mimic: () => import('./mimic/MimicEngine.vue'),
+  letter: () => import('./letter/LetterTraceEngine.vue'),
   board: () => import('./board/BoardEngine.vue'),
   tamagotchi: () => import('./TamagotchiEngine.vue'),
 }
