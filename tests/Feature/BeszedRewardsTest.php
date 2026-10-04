@@ -191,6 +191,8 @@ it('has a valid rule for every sticker and a level for every accessory', functio
 });
 
 it('earns the explorer sticker after every game was finished once', function () {
+    // more games than the sessions throttle lets through in a minute; this test is not about the throttle
+    $this->withoutMiddleware(Illuminate\Routing\Middleware\ThrottleRequests::class);
     $games = array_keys(config('beszed.games'));
     foreach ($games as $i => $game) {
         $res = finish($game, 2, 1, 0);

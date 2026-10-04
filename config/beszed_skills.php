@@ -11,15 +11,15 @@ return [
     'areas' => [
         'irasmozgas' => [
             'label' => 'Írásmozgás-koordináció', 'emoji' => '✏️', 'difer' => true,
-            'games' => ['ceruza', 'betuiro'],
+            'games' => ['ceruza', 'betuiro', 'pontozo'],
         ],
         'beszedhanghallas' => [
             'label' => 'Beszédhanghallás', 'emoji' => '👂', 'difer' => true,
-            'games' => ['zs', 'kezdo', 'szotag', 'rimelo', 'ikerhangok'],
+            'games' => ['zs', 'kezdo', 'szotag', 'rimelo', 'ikerhangok', 'hangvonat', 'csigabeszed'],
         ],
         'relacioszokincs' => [
             'label' => 'Relációszókincs', 'emoji' => '📦', 'difer' => true,
-            'games' => ['hol', 'nagysag', 'irany'],
+            'games' => ['hol', 'nagysag', 'irany', 'robot'],
         ],
         'szamolas' => [
             'label' => 'Elemi számolás', 'emoji' => '🔢', 'difer' => true,
@@ -27,15 +27,15 @@ return [
         ],
         'kovetkeztetes' => [
             'label' => 'Tapasztalati következtetés', 'emoji' => '🧠', 'difer' => true,
-            'games' => ['okoska', 'valogato', 'tortenet', 'napirend', 'keszul', 'elohely', 'szobak', 'ido'],
+            'games' => ['okoska', 'valogato', 'tortenet', 'napirend', 'keszul', 'elohely', 'szobak', 'ido', 'illik', 'szelektiv'],
         ],
         'nyelv_emlekezet' => [
             'label' => 'Mondatok és emlékezet', 'emoji' => '🗣️', 'difer' => false,
-            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok', 'mitunt', 'korus', 'utasitas', 'szajtorna', 'lepegeto', 'betuk', 'szokirako', 'olvasd', 'mese', 'ellentet', 'tobbes', 'foglalkozas', 'mondat'],
+            'games' => ['papagaj', 'mondd', 'melyik', 'parkereso', 'hallgasd', 'rimparok', 'mitunt', 'korus', 'utasitas', 'szajtorna', 'lepegeto', 'betuk', 'szokirako', 'olvasd', 'mese', 'ellentet', 'tobbes', 'foglalkozas', 'mondat', 'hanggyakorlo', 'fujoka', 'hangrepulo', 'talalos', 'igek', 'igazvagy', 'hangutanzo', 'testreszek', 'mondoka', 'szoragaszto', 'kapdel'],
         ],
         'vizualis' => [
             'label' => 'Vizuális észlelés', 'emoji' => '👀', 'difer' => false,
-            'games' => ['arnyek', 'kirako', 'kulonbseg', 'szinek'],
+            'games' => ['arnyek', 'kirako', 'kulonbseg', 'szinek', 'keresd', 'labirintus', 'szinezo'],
         ],
         'zene' => [
             'label' => 'Zenei hallás', 'emoji' => '🎹', 'difer' => false,

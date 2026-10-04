@@ -156,6 +156,7 @@ export default {
       b4: 'Új játékok és tartalmak folyamatosan',
     },
     plansTitle: 'Válassz csomagot',
+    bestValue: '{percent}%-kal olcsóbb havonta',
     perMonth: '{price} / hó',
     perYear: '{price} / év',
     trial: '{days} nap ingyen, utána a fenti ár',
@@ -289,6 +290,16 @@ export default {
     canvas: '{name} betű, rajzold le az ujjaddal',
   },
 
+  color: {
+    again: 'Még egyszer',
+    done: 'Kész!',
+    free: 'Színezd ki, ahogy tetszik!',
+    listen: 'Figyelj!',
+    picture: 'Kifestő: {name}',
+    pot: '{name} festék',
+    pots: 'Festékek',
+  },
+
   clock: {
     label: 'Óra: {hour} óra {minute} perc',
   },
@@ -311,6 +322,70 @@ export default {
     mirrorOff: 'Tükör ki',
     mirrorLabel: 'Te magad a kamerában',
     noCamera: 'A kamera most nem érhető el. Nézzetek egy igazi tükörbe!',
+  },
+
+  voice: {
+    wait: 'Figyelj Csillámra!',
+    asking: 'Engedd meg, hogy halljam a mikrofont!',
+    tapToStart: 'Koppints az „Indulhat” gombra!',
+    start: 'Indulhat!',
+    calibrating: 'Egy pillanat csend…',
+    blow: 'Fújj!',
+    blowSoftly: 'Fújj finoman!',
+    puffs: '{done} / {total}',
+    soft: 'Most gyengén!',
+    strong: 'Most erősen!',
+    softer: 'Finomabban!',
+    softStep: 'gyengén',
+    strongStep: 'erősen',
+    steps: '{done} / {total} lépés kész',
+    sayIt: 'Most te: {sound}',
+    rightSound: 'Ez az: {sound}!',
+    wrongSound: 'Ez inkább „{heard}” volt, nem „{sound}”!',
+    flying: 'Repül! Csak így tovább!',
+    keepGoing: 'Ne hagyd abba!',
+    higher: 'Magasabban!',
+    lower: 'Mélyebben!',
+    high: 'magas',
+    low: 'mély',
+    done: 'Ügyes!',
+    again: 'Még egyszer',
+    hear: 'Meghallgatom',
+    blew: 'Fújta!',
+    finished: 'Kész!',
+    parentHint: 'Nem hallja a mikrofon? Szülő: nyomd meg a gombot, ha sikerült.',
+    privacy: 'A mikrofon csak hallgat: semmit nem veszünk fel, és semmit nem küldünk el.',
+    noMicBlow: 'Most nincs mikrofon. Szülő: nyomd meg a gombot minden fújás után!',
+    noMicHold: 'Most nincs mikrofon. Nyomd és tartsd az eget, amíg szól a hangod!',
+    meter: 'Hangerő: {percent}%',
+    sky: 'Az ég, rajta a repülő',
+    skyHold: 'Nyomd és tartsd, amíg szól a hangod',
+    scene: {
+      candles: 'Szülinapi torta gyertyákkal',
+      dandelion: 'Pitypang',
+      boat: 'Vitorlás a tavon',
+      pinwheel: 'Szélforgó',
+      bubbles: 'Buborékok',
+      feather: 'Lebegő toll',
+    },
+  },
+
+  say: {
+    again: 'Még egyszer',
+    slowly: 'Lassan',
+    picture: 'A kép: {word}',
+    hidden: 'Mi ez? Mondd ki!',
+    sound: '{sound} hang, {where}',
+    record: 'Mondd a mikrofonba',
+    recording: 'Figyelek… Kész?',
+    listen: 'Hallgasd meg magad!',
+    playAgain: 'Meghallgatom',
+    funny: 'Mókushang',
+    privacy: 'A hangod csak itt szól, nem mentjük el.',
+    noMic: 'A mikrofon most nem érhető el. Mondd hangosan, és döntsétek el együtt!',
+    judgeHint: 'Jól sikerült? Döntsétek el együtt!',
+    good: 'Jól mondtam!',
+    practise: 'Még gyakorlom',
   },
 
   board: {
@@ -373,6 +448,17 @@ export default {
     tooHard: 'Semmi baj, próbáljunk egy másikat!',
   },
 
+  grid: {
+    maze: 'Labirintus: húzd a mesehőst az úton, vagy használd a nyilakat',
+    mazeHint: 'Húzd az ujjadat az úton!',
+    board: 'A robot pályája',
+    moves: 'Irányok',
+    program: 'A robot lépései: koppints egyre, és kiveszem',
+    remove: '{n}. lépés: {dir}. Koppints, és kiveszem.',
+    clear: 'Mindet kiveszem',
+    go: 'Indulj!',
+  },
+
   balance: {
     tray: 'Koppints, és a jobb serpenyőbe kerül',
     add: 'Tedd a mérlegre',
@@ -407,6 +493,26 @@ export default {
   directions: {
     listen: 'Figyelj, mit mondok…',
     tooHard: 'Semmi baj, próbáljunk egy könnyebbet!',
+  },
+
+  hidden: {
+    board: 'A kép: koppints arra, amit keresel',
+    picture: '{n}. kép',
+    tray: 'Megtalálva: {found} / {count}',
+  },
+
+  dots: {
+    board: 'Pöttyök: kösd össze őket sorban',
+    dot: '{label} pötty',
+  },
+
+  catch: {
+    catchThese: 'Ezeket kapd el',
+    notThese: 'Ezeket ne',
+    progress: '{done} / {total} elkapva',
+    ready: 'Figyelj, mindjárt jönnek!',
+    listen: 'Figyelj…',
+    again: 'Még egyszer jönnek!',
   },
 
   rewards: {

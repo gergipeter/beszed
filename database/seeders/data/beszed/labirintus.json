@@ -1,0 +1,18 @@
+[
+  {"level":1,"payload":{"name":"Egérke és a sajt","hero":"🐭","goal":"🧀","task":"Vezesd el az egérkét a sajthoz!","says":"Hamm! Megvan a sajt! Köszönöm!"}},
+  {"level":1,"payload":{"name":"Méhecske és a virág","hero":"🐝","goal":"🌸","task":"Vezesd el a méhecskét a virághoz!","says":"Zümm-zümm! De finom a virágpor!"}},
+  {"level":1,"payload":{"name":"Nyuszi és a répa","hero":"🐰","goal":"🥕","task":"Segíts a nyuszinak megtalálni a répát!","says":"Ropp-ropp! Megvan a répa!"}},
+  {"level":1,"payload":{"name":"Kutyus és a csont","hero":"🐶","goal":"🦴","task":"Vezesd el a kutyust a csonthoz!","says":"Vau-vau! Megvan a csontom!"}},
+  {"level":1,"payload":{"name":"Béka és a tavirózsa","hero":"🐸","goal":"🪷","task":"Segíts a békának eljutni a tavirózsához!","says":"Brekeke! Itt jó pihenni!"}},
+  {"level":1,"payload":{"name":"Cica és a tej","hero":"🐱","goal":"🥛","task":"Vezesd el a cicát a tejhez!","says":"Miaú! Finom a tej!"}},
+  {"level":1,"payload":{"name":"Majom és a banán","hero":"🐵","goal":"🍌","task":"Segíts a majomnak megtalálni a banánt!","says":"Hurrá, banán! Köszönöm!"}},
+  {"level":1,"payload":{"name":"Mackó és a méz","hero":"🐻","goal":"🍯","task":"Vezesd el a mackót a mézhez!","says":"Hmm, de finom ez a méz!"}},
+  {"level":1,"payload":{"name":"Mókus és a gesztenye","hero":"🐿️","goal":"🌰","task":"Segíts a mókusnak megtalálni a gesztenyét!","says":"Megvan a gesztenye! Elteszem télire."}},
+  {"level":1,"payload":{"name":"Csiga és a saláta","hero":"🐌","goal":"🥬","task":"Vezesd el a csigát a salátához!","says":"Lassan, de odaértem! Finom a saláta!"}},
+  {"level":1,"payload":{"name":"Kiscsibe és az anyukája","hero":"🐤","goal":"🐔","task":"Segíts a kiscsibének megtalálni az anyukáját!","says":"Csip-csip! Itt vagy, anya!"}},
+  {"level":1,"payload":{"name":"Pingvin és a hal","hero":"🐧","goal":"🐟","task":"Vezesd el a pingvint a halhoz!","says":"Hurrá, hal! Köszönöm!"}},
+  {"level":1,"payload":{"name":"Katica és a napraforgó","hero":"🐞","goal":"🌻","task":"Vezesd el a katicát a napraforgóhoz!","says":"Itt jó meleg van! Köszönöm!"}},
+  {"level":1,"payload":{"name":"Malac és az alma","hero":"🐷","goal":"🍎","task":"Vezesd el a malacot az almához!","says":"Röf-röf! Ropogós alma!"}},
+  {"level":1,"payload":{"name":"Bagoly és a fészek","hero":"🦉","goal":"🪺","task":"Vezesd haza a baglyot a fészkébe!","says":"Huhu! Itthon vagyok!"}},
+  {"level":1,"payload":{"name":"Kisautó és a ház","hero":"🚗","goal":"🏠","task":"Vezesd haza a kisautót!","says":"Tütü! Hazaértem!"}}
+]

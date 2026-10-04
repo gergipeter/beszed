@@ -1,0 +1,2332 @@
+[
+  {
+    "level": 1,
+    "payload": {
+      "name": "Kert",
+      "backdrop": "garden",
+      "kind": "find",
+      "targets": [
+        [
+          "🐞",
+          "katicát"
+        ],
+        [
+          "🦋",
+          "pillangót"
+        ],
+        [
+          "🐌",
+          "csigát"
+        ],
+        [
+          "🐝",
+          "méhecskét"
+        ],
+        [
+          "🌻",
+          "napraforgót"
+        ]
+      ],
+      "fillers": [
+        "🌷",
+        "🌼",
+        "🌿",
+        "🍃",
+        "🪨",
+        "🌱",
+        "🍀",
+        "🌸"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "Tenger",
+      "backdrop": "sea",
+      "kind": "find",
+      "targets": [
+        [
+          "🐙",
+          "polipot"
+        ],
+        [
+          "🦀",
+          "rákot"
+        ],
+        [
+          "🐢",
+          "teknőst"
+        ],
+        [
+          "🐡",
+          "gömbhalat"
+        ],
+        [
+          "🐳",
+          "bálnát"
+        ],
+        [
+          "🐬",
+          "delfint"
+        ]
+      ],
+      "fillers": [
+        "🫧",
+        "🪸",
+        "🌿",
+        "🪨",
+        "🐚",
+        "💧"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "Konyha",
+      "backdrop": "kitchen",
+      "kind": "find",
+      "targets": [
+        [
+          "🥄",
+          "kanalat"
+        ],
+        [
+          "🍳",
+          "serpenyőt"
+        ],
+        [
+          "☕",
+          "csészét"
+        ],
+        [
+          "🧂",
+          "sószórót"
+        ],
+        [
+          "🫖",
+          "teáskannát"
+        ],
+        [
+          "🍽️",
+          "tányért"
+        ]
+      ],
+      "fillers": [
+        "🍞",
+        "🧀",
+        "🥕",
+        "🍅",
+        "🥚",
+        "🧁",
+        "🍎",
+        "🥖"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "Égbolt",
+      "backdrop": "sky",
+      "kind": "find",
+      "targets": [
+        [
+          "✈️",
+          "repülőt"
+        ],
+        [
+          "🎈",
+          "lufit"
+        ],
+        [
+          "🪁",
+          "sárkányt"
+        ],
+        [
+          "🚁",
+          "helikoptert"
+        ],
+        [
+          "🐦",
+          "madarat"
+        ]
+      ],
+      "fillers": [
+        "☁️",
+        "🌤️",
+        "🌈",
+        "🕊️",
+        "🪶",
+        "💨"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "Erdő",
+      "backdrop": "forest",
+      "kind": "find",
+      "targets": [
+        [
+          "🦔",
+          "sünit"
+        ],
+        [
+          "🐿️",
+          "mókust"
+        ],
+        [
+          "🦊",
+          "rókát"
+        ],
+        [
+          "🍄",
+          "gombát"
+        ],
+        [
+          "🦉",
+          "baglyot"
+        ],
+        [
+          "🌰",
+          "gesztenyét"
+        ]
+      ],
+      "fillers": [
+        "🌲",
+        "🌳",
+        "🍂",
+        "🍁",
+        "🌿",
+        "🪵",
+        "🪨",
+        "🌱"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "Gyerekszoba",
+      "backdrop": "room",
+      "kind": "find",
+      "targets": [
+        [
+          "🧸",
+          "macit"
+        ],
+        [
+          "⚽",
+          "labdát"
+        ],
+        [
+          "🪀",
+          "jojót"
+        ],
+        [
+          "🚗",
+          "kisautót"
+        ],
+        [
+          "🎲",
+          "dobókockát"
+        ],
+        [
+          "🥁",
+          "dobot"
+        ]
+      ],
+      "fillers": [
+        "🛏️",
+        "🪑",
+        "🧦",
+        "👕",
+        "🧢",
+        "🎒",
+        "🧺",
+        "📚"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "Tanya",
+      "backdrop": "garden",
+      "kind": "find",
+      "targets": [
+        [
+          "🐔",
+          "tyúkot"
+        ],
+        [
+          "🐤",
+          "csibét"
+        ],
+        [
+          "🐷",
+          "malacot"
+        ],
+        [
+          "🐑",
+          "bárányt"
+        ],
+        [
+          "🐄",
+          "tehenet"
+        ],
+        [
+          "🐴",
+          "lovat"
+        ]
+      ],
+      "fillers": [
+        "🌾",
+        "🌻",
+        "🪵",
+        "🚜",
+        "🌳",
+        "🥕",
+        "🪣"
+      ]
+    }
+  },
+  {
+    "level": 1,
+    "payload": {
+      "name": "Tó",
+      "backdrop": "sea",
+      "kind": "find",
+      "targets": [
+        [
+          "🐸",
+          "békát"
+        ],
+        [
+          "🦆",
+          "kacsát"
+        ],
+        [
+          "🐟",
+          "halat"
+        ],
+        [
+          "🦢",
+          "hattyút"
+        ],
+        [
+          "🐌",
+          "csigát"
+        ]
+      ],
+      "fillers": [
+        "🌿",
+        "🪨",
+        "🍃",
+        "💧",
+        "🫧",
+        "🌾"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "name": "Gyümölcsöstál",
+      "backdrop": "kitchen",
+      "kind": "find",
+      "targets": [
+        [
+          "🍎",
+          "almát"
+        ],
+        [
+          "🍐",
+          "körtét"
+        ],
+        [
+          "🍌",
+          "banánt"
+        ],
+        [
+          "🍓",
+          "epret"
+        ],
+        [
+          "🍒",
+          "cseresznyét"
+        ],
+        [
+          "🍇",
+          "szőlőt"
+        ],
+        [
+          "🍋",
+          "citromot"
+        ]
+      ],
+      "fillers": [
+        "🧺",
+        "🍃",
+        "🥝",
+        "🍍",
+        "🍉",
+        "🫐",
+        "🥥"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "name": "Zöldségeskert",
+      "backdrop": "garden",
+      "kind": "find",
+      "targets": [
+        [
+          "🥕",
+          "répát"
+        ],
+        [
+          "🍅",
+          "paradicsomot"
+        ],
+        [
+          "🥒",
+          "uborkát"
+        ],
+        [
+          "🌽",
+          "kukoricát"
+        ],
+        [
+          "🥔",
+          "krumplit"
+        ],
+        [
+          "🧅",
+          "hagymát"
+        ],
+        [
+          "🫑",
+          "paprikát"
+        ]
+      ],
+      "fillers": [
+        "🌱",
+        "🌿",
+        "🪱",
+        "🐛",
+        "🍃",
+        "🪨",
+        "🧺"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "name": "Rét",
+      "backdrop": "garden",
+      "kind": "find",
+      "targets": [
+        [
+          "🐛",
+          "hernyót"
+        ],
+        [
+          "🦗",
+          "tücsköt"
+        ],
+        [
+          "🐜",
+          "hangyát"
+        ],
+        [
+          "🪲",
+          "bogarat"
+        ],
+        [
+          "🐞",
+          "katicát"
+        ],
+        [
+          "🐝",
+          "méhecskét"
+        ]
+      ],
+      "fillers": [
+        "🌿",
+        "🍀",
+        "🌾",
+        "🌱",
+        "🍃",
+        "🌸",
+        "🌼"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "name": "Éjszaka",
+      "backdrop": "night",
+      "kind": "find",
+      "targets": [
+        [
+          "🦉",
+          "baglyot"
+        ],
+        [
+          "🌙",
+          "holdat"
+        ],
+        [
+          "⭐",
+          "csillagot"
+        ],
+        [
+          "🦇",
+          "denevért"
+        ],
+        [
+          "🚀",
+          "rakétát"
+        ],
+        [
+          "🪐",
+          "bolygót"
+        ],
+        [
+          "🛸",
+          "ufót"
+        ]
+      ],
+      "fillers": [
+        "✨",
+        "☁️",
+        "💫",
+        "☄️",
+        "🌟"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "name": "Fürdőszoba",
+      "backdrop": "room",
+      "kind": "find",
+      "targets": [
+        [
+          "🧼",
+          "szappant"
+        ],
+        [
+          "🪥",
+          "fogkefét"
+        ],
+        [
+          "🧽",
+          "szivacsot"
+        ],
+        [
+          "🦆",
+          "kiskacsát"
+        ],
+        [
+          "🧴",
+          "flakont"
+        ],
+        [
+          "🧻",
+          "vécépapírt"
+        ],
+        [
+          "🪞",
+          "tükröt"
+        ]
+      ],
+      "fillers": [
+        "🫧",
+        "💧",
+        "🚿",
+        "🛁",
+        "🪣",
+        "🧺",
+        "🧦"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "name": "Születésnap",
+      "backdrop": "room",
+      "kind": "find",
+      "targets": [
+        [
+          "🎁",
+          "ajándékot"
+        ],
+        [
+          "🎈",
+          "lufit"
+        ],
+        [
+          "🧁",
+          "muffint"
+        ],
+        [
+          "🍭",
+          "nyalókát"
+        ],
+        [
+          "🎂",
+          "tortát"
+        ],
+        [
+          "🍬",
+          "cukrot"
+        ],
+        [
+          "👑",
+          "koronát"
+        ]
+      ],
+      "fillers": [
+        "🎊",
+        "🎉",
+        "🍪",
+        "🎀",
+        "🥤",
+        "⭐"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "name": "Tél",
+      "backdrop": "snow",
+      "kind": "find",
+      "targets": [
+        [
+          "⛄",
+          "hóembert"
+        ],
+        [
+          "🧤",
+          "kesztyűt"
+        ],
+        [
+          "🧣",
+          "sálat"
+        ],
+        [
+          "🛷",
+          "szánkót"
+        ],
+        [
+          "🎿",
+          "sílécet"
+        ],
+        [
+          "🐧",
+          "pingvint"
+        ]
+      ],
+      "fillers": [
+        "🌲",
+        "❄️",
+        "🏔️",
+        "🪵",
+        "🦌",
+        "☁️"
+      ]
+    }
+  },
+  {
+    "level": 2,
+    "payload": {
+      "name": "Játszótér",
+      "backdrop": "garden",
+      "kind": "find",
+      "targets": [
+        [
+          "⚽",
+          "labdát"
+        ],
+        [
+          "🪁",
+          "sárkányt"
+        ],
+        [
+          "🛝",
+          "csúszdát"
+        ],
+        [
+          "🚲",
+          "biciklit"
+        ],
+        [
+          "🛴",
+          "rollert"
+        ],
+        [
+          "🪣",
+          "vödröt"
+        ]
+      ],
+      "fillers": [
+        "🌳",
+        "🌼",
+        "🌿",
+        "🪨",
+        "🍃",
+        "🌸",
+        "🐦"
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Piros dolgok",
+      "backdrop": "room",
+      "kind": "clue",
+      "clue": "piros dolgot",
+      "nope": "nem piros",
+      "targets": [
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🍓",
+          "eper"
+        ],
+        [
+          "🍒",
+          "cseresznye"
+        ],
+        [
+          "🐞",
+          "katica"
+        ],
+        [
+          "🌹",
+          "rózsa"
+        ],
+        [
+          "🚒",
+          "tűzoltóautó"
+        ],
+        [
+          "🍅",
+          "paradicsom"
+        ]
+      ],
+      "others": [
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🥒",
+          "uborka"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🌻",
+          "napraforgó"
+        ],
+        [
+          "🐳",
+          "bálna"
+        ],
+        [
+          "🍋",
+          "citrom"
+        ],
+        [
+          "🥦",
+          "brokkoli"
+        ],
+        [
+          "☁️",
+          "felhő"
+        ],
+        [
+          "🐧",
+          "pingvin"
+        ],
+        [
+          "🍇",
+          "szőlő"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Sárga dolgok",
+      "backdrop": "sea",
+      "kind": "clue",
+      "clue": "sárga dolgot",
+      "nope": "nem sárga",
+      "targets": [
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🍋",
+          "citrom"
+        ],
+        [
+          "🌻",
+          "napraforgó"
+        ],
+        [
+          "🐤",
+          "csibe"
+        ],
+        [
+          "🌽",
+          "kukorica"
+        ],
+        [
+          "⭐",
+          "csillag"
+        ],
+        [
+          "🧀",
+          "sajt"
+        ],
+        [
+          "🚕",
+          "taxi"
+        ]
+      ],
+      "others": [
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🍇",
+          "szőlő"
+        ],
+        [
+          "🐳",
+          "bálna"
+        ],
+        [
+          "🍆",
+          "padlizsán"
+        ],
+        [
+          "🥦",
+          "brokkoli"
+        ],
+        [
+          "🐷",
+          "malac"
+        ],
+        [
+          "🍓",
+          "eper"
+        ],
+        [
+          "🐧",
+          "pingvin"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Zöld dolgok",
+      "backdrop": "room",
+      "kind": "clue",
+      "clue": "zöld dolgot",
+      "nope": "nem zöld",
+      "targets": [
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🥒",
+          "uborka"
+        ],
+        [
+          "🥦",
+          "brokkoli"
+        ],
+        [
+          "🌲",
+          "fenyőfa"
+        ],
+        [
+          "🦖",
+          "dinoszaurusz"
+        ],
+        [
+          "🐢",
+          "teknős"
+        ],
+        [
+          "🦎",
+          "gyík"
+        ],
+        [
+          "🐊",
+          "krokodil"
+        ]
+      ],
+      "others": [
+        [
+          "🍓",
+          "eper"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐳",
+          "bálna"
+        ],
+        [
+          "🐷",
+          "malac"
+        ],
+        [
+          "🍊",
+          "narancs"
+        ],
+        [
+          "🍇",
+          "szőlő"
+        ],
+        [
+          "🌻",
+          "napraforgó"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "☁️",
+          "felhő"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Kék dolgok",
+      "backdrop": "garden",
+      "kind": "clue",
+      "clue": "kék dolgot",
+      "nope": "nem kék",
+      "targets": [
+        [
+          "🐳",
+          "bálna"
+        ],
+        [
+          "💧",
+          "vízcsepp"
+        ],
+        [
+          "🫐",
+          "áfonya"
+        ],
+        [
+          "🧢",
+          "sapka"
+        ],
+        [
+          "👖",
+          "farmernadrág"
+        ],
+        [
+          "🐬",
+          "delfin"
+        ],
+        [
+          "🦋",
+          "pillangó"
+        ]
+      ],
+      "others": [
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🍊",
+          "narancs"
+        ],
+        [
+          "🐷",
+          "malac"
+        ],
+        [
+          "🥕",
+          "répa"
+        ],
+        [
+          "🌻",
+          "napraforgó"
+        ],
+        [
+          "🍓",
+          "eper"
+        ],
+        [
+          "🐤",
+          "csibe"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Narancssárga dolgok",
+      "backdrop": "sky",
+      "kind": "clue",
+      "clue": "narancssárga dolgot",
+      "nope": "nem narancssárga",
+      "targets": [
+        [
+          "🍊",
+          "narancs"
+        ],
+        [
+          "🥕",
+          "répa"
+        ],
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🎃",
+          "tök"
+        ],
+        [
+          "🐅",
+          "tigris"
+        ],
+        [
+          "🏀",
+          "kosárlabda"
+        ]
+      ],
+      "others": [
+        [
+          "🍇",
+          "szőlő"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🐳",
+          "bálna"
+        ],
+        [
+          "🥦",
+          "brokkoli"
+        ],
+        [
+          "🐧",
+          "pingvin"
+        ],
+        [
+          "🥒",
+          "uborka"
+        ],
+        [
+          "🫐",
+          "áfonya"
+        ],
+        [
+          "🐑",
+          "bárány"
+        ],
+        [
+          "🍆",
+          "padlizsán"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Fehér dolgok",
+      "backdrop": "room",
+      "kind": "clue",
+      "clue": "fehér dolgot",
+      "nope": "nem fehér",
+      "targets": [
+        [
+          "☁️",
+          "felhő"
+        ],
+        [
+          "⛄",
+          "hóember"
+        ],
+        [
+          "🐑",
+          "bárány"
+        ],
+        [
+          "🥚",
+          "tojás"
+        ],
+        [
+          "🦢",
+          "hattyú"
+        ],
+        [
+          "🦷",
+          "fog"
+        ],
+        [
+          "🥛",
+          "tej"
+        ]
+      ],
+      "others": [
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🍊",
+          "narancs"
+        ],
+        [
+          "🍇",
+          "szőlő"
+        ],
+        [
+          "🐳",
+          "bálna"
+        ],
+        [
+          "🥕",
+          "répa"
+        ],
+        [
+          "🍓",
+          "eper"
+        ],
+        [
+          "🥦",
+          "brokkoli"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Lila dolgok",
+      "backdrop": "garden",
+      "kind": "clue",
+      "clue": "lila dolgot",
+      "nope": "nem lila",
+      "targets": [
+        [
+          "🍇",
+          "szőlő"
+        ],
+        [
+          "🍆",
+          "padlizsán"
+        ],
+        [
+          "☂️",
+          "esernyő"
+        ],
+        [
+          "🐙",
+          "polip"
+        ],
+        [
+          "💜",
+          "szív"
+        ]
+      ],
+      "others": [
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🍊",
+          "narancs"
+        ],
+        [
+          "🐤",
+          "csibe"
+        ],
+        [
+          "🥕",
+          "répa"
+        ],
+        [
+          "🥦",
+          "brokkoli"
+        ],
+        [
+          "☁️",
+          "felhő"
+        ],
+        [
+          "🐷",
+          "malac"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Barna dolgok",
+      "backdrop": "sky",
+      "kind": "clue",
+      "clue": "barna dolgot",
+      "nope": "nem barna",
+      "targets": [
+        [
+          "🌰",
+          "gesztenye"
+        ],
+        [
+          "🥔",
+          "krumpli"
+        ],
+        [
+          "🪵",
+          "farönk"
+        ],
+        [
+          "🥥",
+          "kókuszdió"
+        ],
+        [
+          "🐴",
+          "ló"
+        ],
+        [
+          "🧸",
+          "maci"
+        ],
+        [
+          "🦔",
+          "süni"
+        ]
+      ],
+      "others": [
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🐳",
+          "bálna"
+        ],
+        [
+          "🍇",
+          "szőlő"
+        ],
+        [
+          "🍊",
+          "narancs"
+        ],
+        [
+          "🥒",
+          "uborka"
+        ],
+        [
+          "🐷",
+          "malac"
+        ],
+        [
+          "⭐",
+          "csillag"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Sz hang az elején",
+      "backdrop": "room",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve sz hanggal kezdődik",
+      "nope": "neve nem sz hanggal kezdődik",
+      "sound": "sz",
+      "targets": [
+        [
+          "🪑",
+          "szék"
+        ],
+        [
+          "🍇",
+          "szőlő"
+        ],
+        [
+          "❤️",
+          "szív"
+        ],
+        [
+          "🌈",
+          "szivárvány"
+        ],
+        [
+          "👓",
+          "szemüveg"
+        ],
+        [
+          "🧼",
+          "szappan"
+        ],
+        [
+          "🛷",
+          "szánkó"
+        ],
+        [
+          "🥪",
+          "szendvics"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🎈",
+          "lufi"
+        ],
+        [
+          "⚽",
+          "labda"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐄",
+          "tehén"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "S hang az elején",
+      "backdrop": "garden",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve s hanggal kezdődik",
+      "nope": "neve nem s hanggal kezdődik",
+      "sound": "s",
+      "targets": [
+        [
+          "🧢",
+          "sapka"
+        ],
+        [
+          "🦔",
+          "süni"
+        ],
+        [
+          "🧀",
+          "sajt"
+        ],
+        [
+          "🦅",
+          "sas"
+        ],
+        [
+          "🧂",
+          "só"
+        ],
+        [
+          "⛺",
+          "sátor"
+        ],
+        [
+          "🧹",
+          "seprű"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🎈",
+          "lufi"
+        ],
+        [
+          "⚽",
+          "labda"
+        ],
+        [
+          "🌙",
+          "hold"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐄",
+          "tehén"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "M hang az elején",
+      "backdrop": "forest",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve m hanggal kezdődik",
+      "nope": "neve nem m hanggal kezdődik",
+      "sound": "m",
+      "targets": [
+        [
+          "🐵",
+          "majom"
+        ],
+        [
+          "🧸",
+          "maci"
+        ],
+        [
+          "🐝",
+          "méhecske"
+        ],
+        [
+          "🐿️",
+          "mókus"
+        ],
+        [
+          "🐷",
+          "malac"
+        ],
+        [
+          "🏍️",
+          "motor"
+        ],
+        [
+          "🐻",
+          "medve"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🎈",
+          "lufi"
+        ],
+        [
+          "⚽",
+          "labda"
+        ],
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐢",
+          "teknős"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "R hang az elején",
+      "backdrop": "sky",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve r hanggal kezdődik",
+      "nope": "neve nem r hanggal kezdődik",
+      "sound": "r",
+      "targets": [
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🦀",
+          "rák"
+        ],
+        [
+          "🥕",
+          "répa"
+        ],
+        [
+          "🚀",
+          "rakéta"
+        ],
+        [
+          "✈️",
+          "repülő"
+        ],
+        [
+          "🌹",
+          "rózsa"
+        ],
+        [
+          "🤖",
+          "robot"
+        ],
+        [
+          "📻",
+          "rádió"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🎈",
+          "lufi"
+        ],
+        [
+          "⚽",
+          "labda"
+        ],
+        [
+          "🐱",
+          "cica"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐝",
+          "méhecske"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "L hang az elején",
+      "backdrop": "garden",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve l hanggal kezdődik",
+      "nope": "neve nem l hanggal kezdődik",
+      "sound": "l",
+      "targets": [
+        [
+          "🐴",
+          "ló"
+        ],
+        [
+          "⚽",
+          "labda"
+        ],
+        [
+          "🎈",
+          "lufi"
+        ],
+        [
+          "🪜",
+          "létra"
+        ],
+        [
+          "🦋",
+          "lepke"
+        ],
+        [
+          "🦶",
+          "láb"
+        ],
+        [
+          "🔒",
+          "lakat"
+        ],
+        [
+          "🍲",
+          "leves"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🐱",
+          "cica"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐝",
+          "méhecske"
+        ],
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🐢",
+          "teknős"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "F hang az elején",
+      "backdrop": "forest",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve f hanggal kezdődik",
+      "nope": "neve nem f hanggal kezdődik",
+      "sound": "f",
+      "targets": [
+        [
+          "🌳",
+          "fa"
+        ],
+        [
+          "🍦",
+          "fagyi"
+        ],
+        [
+          "🦭",
+          "fóka"
+        ],
+        [
+          "🪥",
+          "fogkefe"
+        ],
+        [
+          "🦷",
+          "fog"
+        ],
+        [
+          "👂",
+          "fül"
+        ],
+        [
+          "🍩",
+          "fánk"
+        ],
+        [
+          "🪚",
+          "fűrész"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🐱",
+          "cica"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐝",
+          "méhecske"
+        ],
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🐢",
+          "teknős"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "V hang az elején",
+      "backdrop": "sea",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve v hanggal kezdődik",
+      "nope": "neve nem v hanggal kezdődik",
+      "sound": "v",
+      "targets": [
+        [
+          "🚆",
+          "vonat"
+        ],
+        [
+          "🌸",
+          "virág"
+        ],
+        [
+          "🏰",
+          "vár"
+        ],
+        [
+          "🪣",
+          "vödör"
+        ],
+        [
+          "🪄",
+          "varázspálca"
+        ],
+        [
+          "🧈",
+          "vaj"
+        ],
+        [
+          "🌋",
+          "vulkán"
+        ],
+        [
+          "💧",
+          "vízcsepp"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🐱",
+          "cica"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐝",
+          "méhecske"
+        ],
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🐢",
+          "teknős"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Z hang az elején",
+      "backdrop": "kitchen",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve z hanggal kezdődik",
+      "nope": "neve nem z hanggal kezdődik",
+      "sound": "z",
+      "targets": [
+        [
+          "🦓",
+          "zebra"
+        ],
+        [
+          "🚩",
+          "zászló"
+        ],
+        [
+          "🧦",
+          "zokni"
+        ],
+        [
+          "🎹",
+          "zongora"
+        ],
+        [
+          "🚿",
+          "zuhany"
+        ],
+        [
+          "🎵",
+          "zene"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🐱",
+          "cica"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐝",
+          "méhecske"
+        ],
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🐢",
+          "teknős"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "N hang az elején",
+      "backdrop": "room",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve n hanggal kezdődik",
+      "nope": "neve nem n hanggal kezdődik",
+      "sound": "n",
+      "targets": [
+        [
+          "☀️",
+          "nap"
+        ],
+        [
+          "🌻",
+          "napraforgó"
+        ],
+        [
+          "👖",
+          "nadrág"
+        ],
+        [
+          "🍊",
+          "narancs"
+        ],
+        [
+          "👵",
+          "nagymama"
+        ],
+        [
+          "📅",
+          "naptár"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🐱",
+          "cica"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐝",
+          "méhecske"
+        ],
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🐢",
+          "teknős"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "Cs hang az elején",
+      "backdrop": "garden",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve cs hanggal kezdődik",
+      "nope": "neve nem cs hanggal kezdődik",
+      "sound": "cs",
+      "targets": [
+        [
+          "🐌",
+          "csiga"
+        ],
+        [
+          "🍒",
+          "cseresznye"
+        ],
+        [
+          "⭐",
+          "csillag"
+        ],
+        [
+          "🍫",
+          "csokoládé"
+        ],
+        [
+          "🔔",
+          "csengő"
+        ],
+        [
+          "👢",
+          "csizma"
+        ],
+        [
+          "🛶",
+          "csónak"
+        ],
+        [
+          "🐔",
+          "csirke"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🎈",
+          "lufi"
+        ],
+        [
+          "⚽",
+          "labda"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🐄",
+          "tehén"
+        ],
+        [
+          "🦊",
+          "róka"
+        ]
+      ]
+    }
+  },
+  {
+    "level": 3,
+    "payload": {
+      "name": "B hang az elején",
+      "backdrop": "forest",
+      "kind": "clue",
+      "clue": "olyan dolgot, aminek a neve b hanggal kezdődik",
+      "nope": "neve nem b hanggal kezdődik",
+      "sound": "b",
+      "targets": [
+        [
+          "🍌",
+          "banán"
+        ],
+        [
+          "🐸",
+          "béka"
+        ],
+        [
+          "🦉",
+          "bagoly"
+        ],
+        [
+          "🚲",
+          "bicikli"
+        ],
+        [
+          "🚌",
+          "busz"
+        ],
+        [
+          "🐑",
+          "bárány"
+        ],
+        [
+          "👶",
+          "baba"
+        ]
+      ],
+      "others": [
+        [
+          "🐶",
+          "kutya"
+        ],
+        [
+          "🍎",
+          "alma"
+        ],
+        [
+          "🐟",
+          "hal"
+        ],
+        [
+          "🚗",
+          "autó"
+        ],
+        [
+          "🎈",
+          "lufi"
+        ],
+        [
+          "⚽",
+          "labda"
+        ],
+        [
+          "🐱",
+          "cica"
+        ],
+        [
+          "🦆",
+          "kacsa"
+        ],
+        [
+          "🍐",
+          "körte"
+        ],
+        [
+          "🦊",
+          "róka"
+        ],
+        [
+          "🐢",
+          "teknős"
+        ],
+        [
+          "🐄",
+          "tehén"
+        ]
+      ]
+    }
+  }
+]

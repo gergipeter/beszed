@@ -1,0 +1,6 @@
+[
+  {"level":1,"payload":{"key":"papir","label":"Papír a kék kukába","singular":"papír","icon":"🟦","items":[["📰","újság"],["📦","kartondoboz"],["📄","papírlap"],["📓","füzet"],["✉️","boríték"],["💌","levél"],["🗺️","térkép"],["📅","naptár"],["📚","régi könyv"]]}},
+  {"level":1,"payload":{"key":"bio","label":"Biohulladék a barna kukába","singular":"biohulladék","icon":"🟫","items":[["🍌","banánhéj"],["🍎","almacsutka"],["🥚","tojáshéj"],["🍉","dinnyehéj"],["🍊","narancshéj"],["🥔","krumplihéj"],["🧅","hagymahéj"],["🍂","száraz falevél"],["🥀","hervadt virág"],["🥬","salátalevél"]]}},
+  {"level":2,"payload":{"key":"sarga","label":"Műanyag és fém a sárga kukába","singular":"műanyag vagy fém","icon":"🟨","items":[["🧴","samponos flakon"],["🧋","műanyag pohár"],["🥫","konzervdoboz"],["🧃","üdítős doboz"]]}},
+  {"level":2,"payload":{"key":"uveg","label":"Üveg a zöld konténerbe","singular":"üveg","icon":"🟩","items":[["🍾","pezsgősüveg"],["🫙","befőttesüveg"]]}}
+]

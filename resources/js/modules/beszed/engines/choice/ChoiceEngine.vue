@@ -145,6 +145,12 @@ function sayStimulus() {
         @click="choose(o.id)"
       >
         <SceneView v-if="o.scene" :relation="o.scene" :emoji="o.emoji ?? SCENE_FALLBACK" />
+        <template v-else-if="o.emojis && o.label">
+          <span class="emoji-row">
+            <EmojiArt v-for="(char, i) in o.emojis" :key="i" :char="char" />
+          </span>
+          <small class="emoji-label">{{ o.label }}</small>
+        </template>
         <template v-else-if="o.emojis">
           <EmojiArt v-for="(char, i) in o.emojis" :key="i" :char="char" />
         </template>
@@ -169,6 +175,18 @@ function sayStimulus() {
   border-radius: 24px;
   background: var(--bz-card);
   font-size: clamp(34px, 8vw, 52px);
+}
+/* several pictures in one answer (a plate of apples, the sound train's wagons), with an optional caption */
+.emoji-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+.emoji-label {
+  font-size: var(--bz-text-sm);
+  line-height: 1.2;
+  text-align: center;
 }
 .missing {
   display: inline-grid;

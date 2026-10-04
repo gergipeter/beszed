@@ -158,6 +158,7 @@ export default {
       b4: 'Juegos y contenido nuevos todo el tiempo',
     },
     plansTitle: 'Elige un plan',
+    bestValue: '{percent}% más barato al mes',
     perMonth: '{price} / mes',
     perYear: '{price} / año',
     trial: '{days} días gratis, luego el precio indicado arriba',
@@ -291,6 +292,16 @@ export default {
     canvas: 'La letra {name}: trázala con tu dedo',
   },
 
+  color: {
+    again: 'Una vez más',
+    done: '¡Listo!',
+    free: '¡Coloréalo como quieras!',
+    listen: '¡Escucha!',
+    picture: 'Para colorear: {name}',
+    pot: 'Pintura: {name}',
+    pots: 'Pinturas',
+  },
+
   clock: {
     label: 'Reloj: {hour} horas {minute} minutos',
   },
@@ -313,6 +324,70 @@ export default {
     mirrorOff: 'Sin espejo',
     mirrorLabel: 'Tú en la cámara',
     noCamera: 'La cámara no está disponible ahora. ¡Usa un espejo de verdad!',
+  },
+
+  voice: {
+    wait: '¡Escucha a Csillám!',
+    asking: '¡Déjame oír el micrófono!',
+    tapToStart: '¡Toca «Vamos»!',
+    start: '¡Vamos!',
+    calibrating: 'Un momento de silencio…',
+    blow: '¡Sopla!',
+    blowSoftly: '¡Sopla suavecito!',
+    puffs: '{done} / {total}',
+    soft: '¡Ahora suave!',
+    strong: '¡Ahora fuerte!',
+    softer: '¡Más suave!',
+    softStep: 'suave',
+    strongStep: 'fuerte',
+    steps: '{done} / {total} pasos listos',
+    sayIt: 'Te toca: {sound}',
+    rightSound: '¡Eso es: {sound}!',
+    wrongSound: '¡Eso sonó más como «{heard}», no «{sound}»!',
+    flying: '¡Vuela! ¡Sigue así!',
+    keepGoing: '¡No pares!',
+    higher: '¡Más agudo!',
+    lower: '¡Más grave!',
+    high: 'agudo',
+    low: 'grave',
+    done: '¡Muy bien!',
+    again: 'Otra vez',
+    hear: 'Escuchar',
+    blew: '¡Sopló!',
+    finished: '¡Listo!',
+    parentHint: '¿El micrófono no lo oye? Adulto: toca el botón cuando lo logre.',
+    privacy: 'El micrófono solo escucha: no se graba nada ni se envía nada.',
+    noMicBlow: 'Ahora no hay micrófono. Adulto: toca el botón después de cada soplido.',
+    noMicHold: 'Ahora no hay micrófono. Mantén presionado el cielo mientras suena tu voz.',
+    meter: 'Volumen: {percent}%',
+    sky: 'El cielo con el que vuela',
+    skyHold: 'Mantén presionado mientras suena tu voz',
+    scene: {
+      candles: 'Pastel de cumpleaños con velitas',
+      dandelion: 'Diente de león',
+      boat: 'Velero en el estanque',
+      pinwheel: 'Rehilete',
+      bubbles: 'Burbujas',
+      feather: 'Pluma flotando',
+    },
+  },
+
+  say: {
+    again: 'Otra vez',
+    slowly: 'Despacio',
+    picture: 'La imagen: {word}',
+    hidden: '¿Qué es? ¡Dilo!',
+    sound: 'Sonido {sound}, {where}',
+    record: 'Dilo al micrófono',
+    recording: 'Escuchando… ¿Listo?',
+    listen: '¡Escúchate!',
+    playAgain: 'Escuchar otra vez',
+    funny: 'Voz de ardilla',
+    privacy: 'Tu voz solo suena aquí; no se guarda.',
+    noMic: 'El micrófono no está disponible ahora. ¡Dilo en voz alta y decidan juntos!',
+    judgeHint: '¿Salió bien? ¡Decidan juntos!',
+    good: '¡Lo dije bien!',
+    practise: 'Sigo practicando',
   },
 
   board: {
@@ -375,6 +450,17 @@ export default {
     tooHard: '¡No pasa nada, probemos otro!',
   },
 
+  grid: {
+    maze: 'Laberinto: arrastra al personaje por el camino, o usa las flechas',
+    mazeHint: '¡Arrastra el dedo por el camino!',
+    board: 'El tablero del robot',
+    moves: 'Direcciones',
+    program: 'Los pasos del robot: toca uno para quitarlo',
+    remove: 'Paso {n}: {dir}. Toca para quitarlo.',
+    clear: 'Quitarlos todos',
+    go: '¡Vamos!',
+  },
+
   balance: {
     tray: 'Toca y se va al platillo correcto',
     add: 'Poner en la balanza',
@@ -409,6 +495,26 @@ export default {
   directions: {
     listen: 'Escucha lo que digo…',
     tooHard: '¡No pasa nada, probemos uno más fácil!',
+  },
+
+  hidden: {
+    board: 'La imagen: toca lo que buscas',
+    picture: 'imagen {n}',
+    tray: 'Encontrados: {found} de {count}',
+  },
+
+  dots: {
+    board: 'Puntos: únelos en orden',
+    dot: 'punto {label}',
+  },
+
+  catch: {
+    catchThese: 'Atrapa estos',
+    notThese: 'Estos no',
+    progress: '{done} / {total} atrapados',
+    ready: '¡Atento, ya vienen!',
+    listen: 'Escucha…',
+    again: '¡Vienen otra vez!',
   },
 
   rewards: {
