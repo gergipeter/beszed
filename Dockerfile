@@ -16,13 +16,15 @@ RUN apk add --no-cache \
     zip \
     unzip \
     libpq-dev \
+    sqlite-dev \
+    oniguruma-dev \
     mysql-client \
     redis \
     supervisor \
     nginx
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql bcmath ctype json mbstring
+# Install PHP extensions (pdo, ctype, json are already built into this image)
+RUN docker-php-ext-install pdo_mysql pdo_pgsql pdo_sqlite bcmath mbstring
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -103,6 +105,11 @@ autorestart=true
 numprocs=1
 SUPERVISOREOF
 
+# Render (and any other host without a DB/Redis service attached) needs the SQLite file
+# created and migrated before supervisor starts; harmless no-op when a real DB is configured.
+COPY docker/render/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 EXPOSE 8000
 
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/local/bin/entrypoint.sh"]

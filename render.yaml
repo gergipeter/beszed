@@ -1,0 +1,52 @@
+# Temporary free-tier deploy for a family trial — see docs/render-deploy.md.
+# Render dashboard → New → Blueprint → pick this repo → it reads this file.
+services:
+  - type: web
+    name: beszed-trial
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: frankfurt
+    envVars:
+      - key: APP_NAME
+        value: "Beszéd & DIFER"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /app/storage/app/database.sqlite
+      - key: SESSION_DRIVER
+        value: file
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: TTS_DRIVER
+        value: piper
+      - key: STT_DRIVER
+        value: "null"
+      # Set these two after the first deploy, once you know the *.onrender.com URL
+      # (see docs/render-deploy.md) — Render will redeploy automatically when you save them.
+      - key: APP_URL
+        value: https://beszed-trial.onrender.com
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: beszed-trial.onrender.com
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+    disk:
+      name: storage
+      mountPath: /app/storage
+      sizeGB: 1
