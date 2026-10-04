@@ -157,6 +157,7 @@ export default {
       b4: 'New games and content all the time',
     },
     plansTitle: 'Choose a plan',
+    bestValue: '{percent}% cheaper per month',
     perMonth: '{price} / month',
     perYear: '{price} / year',
     trial: '{days} days free, then the price above',
@@ -290,6 +291,16 @@ export default {
     canvas: 'The letter {name}: trace it with your finger',
   },
 
+  color: {
+    again: 'Once more',
+    done: 'Done!',
+    free: 'Color it any way you like!',
+    listen: 'Listen!',
+    picture: 'Coloring page: {name}',
+    pot: 'Paint: {name}',
+    pots: 'Paints',
+  },
+
   clock: {
     label: 'Clock: {hour} hours {minute} minutes',
   },
@@ -312,6 +323,70 @@ export default {
     mirrorOff: 'Mirror off',
     mirrorLabel: 'Yourself in the camera',
     noCamera: 'The camera is not available right now. Use a real mirror!',
+  },
+
+  voice: {
+    wait: 'Listen to Csillám!',
+    asking: 'Please let me hear the microphone!',
+    tapToStart: 'Tap “Let’s go”!',
+    start: 'Let’s go!',
+    calibrating: 'A moment of quiet…',
+    blow: 'Blow!',
+    blowSoftly: 'Blow gently!',
+    puffs: '{done} / {total}',
+    soft: 'Now gently!',
+    strong: 'Now hard!',
+    softer: 'More gently!',
+    softStep: 'gently',
+    strongStep: 'hard',
+    steps: '{done} / {total} steps done',
+    sayIt: 'Your turn: {sound}',
+    rightSound: 'That is it: {sound}!',
+    wrongSound: 'That sounded more like “{heard}”, not “{sound}”!',
+    flying: 'It’s flying! Keep going!',
+    keepGoing: 'Don’t stop!',
+    higher: 'Higher!',
+    lower: 'Lower!',
+    high: 'high',
+    low: 'low',
+    done: 'Well done!',
+    again: 'Again',
+    hear: 'Listen',
+    blew: 'Blown!',
+    finished: 'Done!',
+    parentHint: 'The microphone can’t hear it? Parent: press the button when it worked.',
+    privacy: 'The microphone only listens: nothing is recorded and nothing is sent anywhere.',
+    noMicBlow: 'No microphone right now. Parent: press the button after each blow!',
+    noMicHold: 'No microphone right now. Press and hold the sky while the sound lasts!',
+    meter: 'Loudness: {percent}%',
+    sky: 'The sky with the flyer',
+    skyHold: 'Press and hold while your sound lasts',
+    scene: {
+      candles: 'Birthday cake with candles',
+      dandelion: 'Dandelion',
+      boat: 'Sailboat on the pond',
+      pinwheel: 'Pinwheel',
+      bubbles: 'Bubbles',
+      feather: 'Floating feather',
+    },
+  },
+
+  say: {
+    again: 'Again',
+    slowly: 'Slowly',
+    picture: 'The picture: {word}',
+    hidden: 'What is it? Say it!',
+    sound: '{sound} sound, {where}',
+    record: 'Say it into the microphone',
+    recording: 'Listening… Done?',
+    listen: 'Listen to yourself!',
+    playAgain: 'Listen again',
+    funny: 'Chipmunk voice',
+    privacy: 'Your voice only plays here; it is not saved.',
+    noMic: 'The microphone is not available right now. Say it out loud and decide together!',
+    judgeHint: 'Did it go well? Decide together!',
+    good: 'I said it well!',
+    practise: 'Still practising',
   },
 
   board: {
@@ -374,6 +449,17 @@ export default {
     tooHard: "No worries, let's try another one!",
   },
 
+  grid: {
+    maze: 'Maze: drag the hero along the path, or use the arrow keys',
+    mazeHint: 'Drag your finger along the path!',
+    board: "The robot's board",
+    moves: 'Directions',
+    program: "The robot's steps: tap one to take it out",
+    remove: 'Step {n}: {dir}. Tap to take it out.',
+    clear: 'Take them all out',
+    go: 'Go!',
+  },
+
   balance: {
     tray: 'Tap, and it goes to the right pan',
     add: 'Put on the scale',
@@ -408,6 +494,26 @@ export default {
   directions: {
     listen: "Listen to what I say…",
     tooHard: "No worries, let's try an easier one!",
+  },
+
+  hidden: {
+    board: 'The picture: tap what you are looking for',
+    picture: 'picture {n}',
+    tray: 'Found: {found} of {count}',
+  },
+
+  dots: {
+    board: 'Dots: join them in order',
+    dot: 'dot {label}',
+  },
+
+  catch: {
+    catchThese: 'Catch these',
+    notThese: 'Not these',
+    progress: '{done} / {total} caught',
+    ready: 'Get ready, here they come!',
+    listen: 'Listen…',
+    again: 'Here they come again!',
   },
 
   rewards: {

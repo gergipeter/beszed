@@ -167,11 +167,162 @@
  * @property {string} wrong        Said on a wrong tap, before the direction is repeated.
  * @property {string} [onCorrect]
  *
+ * Grid games (engine grid). Cells are numbered row by row: index = row × cols + col.
+ * @typedef {object} GridMazeData  Labirintus: drag the hero through a perfect maze to its goal.
+ * @property {'maze'} mode
+ * @property {number} cols
+ * @property {number} rows
+ * @property {number[]} walls      Per cell, a bitmask of its walls: 1 up, 2 right, 4 down, 8 left.
+ * @property {number} start
+ * @property {number} goal
+ * @property {number[]} path       The one way from start to goal (cells, start first).
+ * @property {number | null} star  Level 3: a star on the way to pick up.
+ * @property {string} hero         Picture that walks.
+ * @property {string} target       Picture at the goal.
+ * @property {[number, number]} grade  Wrong turns (+ half the bumps) for tries 1 / 2; more = 3.
+ * @property {number} hintAfter    Wrong turns before footprints show the next steps.
+ * @property {string} onCorrect
+ * @property {string} onStar
+ * @property {string} onBump       Said at the first bump into a wall.
+ * @property {string} onDeadEnd    Said the first time the hero gets into a dead end.
+ *
+ * @typedef {{ id: 'up' | 'down' | 'left' | 'right', label: string, say: string }} GridMove
+ * @typedef {object} GridProgramData  Kis robot: arrows move the robot, at once (direct) or as a program.
+ * @property {'program'} mode
+ * @property {boolean} direct      Each arrow moves at once (level 1); otherwise commands go into a strip.
+ * @property {number} maxSteps     Commands that fit the strip (0 when direct).
+ * @property {number} cols
+ * @property {number} rows
+ * @property {number} start
+ * @property {number} goal
+ * @property {number[]} blocks     Obstacle cells.
+ * @property {number} best         Length of the shortest way.
+ * @property {number[]} path       One shortest way (cells, start first), shown as a hint.
+ * @property {string[]} solution   Its moves.
+ * @property {string} hero
+ * @property {string} target
+ * @property {string} obstacle
+ * @property {GridMove[]} moves    The four arrows, with the word each one says.
+ * @property {[number, number]} grade  Mistakes for tries 1 / 2 (direct: bumps + half the wasted steps; program: failed runs).
+ * @property {number} hintAfter
+ * @property {string} onCorrect
+ * @property {string} onBumpBlock
+ * @property {string} onBumpEdge
+ * @property {string} onShort      The program ended before the goal.
+ *
+ * @typedef {object} ColorFill  One part to colour in a step.
+ * @property {string} region       Region id of the picture (engines/color/pictures.js).
+ * @property {string} color        Paint id: piros, narancs, sarga, zold, kek, lila, rozsaszin, barna, szurke, fekete.
+ * @property {string} wrongColor   Said when this part is tapped with another paint.
+ * @property {string} wrongPart    Said when another part is tapped with this paint.
+ *
+ * @typedef {object} ColorStep  One sentence of Csillám: one part (levels 1–2) or two (level 3).
+ * @property {string} say          The instruction ("Színezd a tetőt pirosra!").
+ * @property {string} [lead]       Said when the step follows another one ("Szép! Most …").
+ * @property {ColorFill[]} fills   In any order.
+ *
+ * @typedef {object} ColorData  Színező: colour a line picture as told, then freely.
+ * @property {string} picture      Picture id in engines/color/pictures.js.
+ * @property {string} name
+ * @property {Object<string, string>} regions   Region id → its Hungarian name (accessible labels).
+ * @property {Object<string, string>} colors    Paint id → its Hungarian name.
+ * @property {string[]} pots       The paints offered during the steps, in paint-box order.
+ * @property {string[]} freePots   The paints offered for free colouring.
+ * @property {ColorStep[]} steps
+ * @property {string} pickFirst    Said when a part is tapped before any paint.
+ * @property {string} free         Said when the steps are done.
+ * @property {string} [onCorrect]
+ *
  * @typedef {object} SimonData  Állatkórus: repeat the tune.
  * @property {Option[]} pads       Four animals; each position has its own note and colour.
  * @property {string[]} order      Pad ids, in the order they sing.
  * @property {string} [onCorrect]
  * @property {string[]} [replayParts]
+ *
+ * @typedef {object} SayData  Hanggyakorló: say the picture's name (or a sentence), hear yourself, judge it.
+ * @property {'repeat' | 'name'} mode  repeat: Csillám says it first; name: "Mi ez?", the word stays hidden until judged or helped.
+ * @property {string} word         The word or sentence to say.
+ * @property {string} emoji        Picture (1–3 emoji).
+ * @property {string} sound        The sound practised, as named on the badge ("R", "Sz").
+ * @property {string} where        Where the sound is ("a szó elején", "mondatban").
+ * @property {string | null} model 🔊 says this; null (naming) = the question again.
+ * @property {string[]} slow       🐢: said one by one (syllables, or a sentence's words), then whole.
+ * @property {string[]} retry      Said after "Még gyakorlom": slowly, as the model.
+ * @property {string} onCorrect
+ * @property {string} onSkip
+ * @property {number} skipAfter    "Tovább" shows after this many practice tries.
+ *
+ * @typedef {object} VoiceData  Fújóka (mode blow) and Hangrepülő (sustain, pitch): the microphone plays the round.
+ * @property {'blow' | 'sustain' | 'pitch'} mode
+ * @property {{ puffs?: number, holdMs?: number, softMs?: number, stepMs?: number, ms?: number, continuous?: boolean }} [target]
+ *   blow: puffs (short blows) · holdMs (one long blow) · softMs (a gentle blow) · stepMs (each soft/strong step);
+ *   sustain: ms of sound, `continuous` = without stopping (the flyer falls back after a pause).
+ * @property {'candles' | 'dandelion' | 'boat' | 'pinwheel' | 'bubbles' | 'feather'} [scene]  blow: the picture
+ * @property {'puffs' | 'long' | 'gentle' | 'alternate'} [kind]  blow
+ * @property {{ strength: 'soft' | 'strong', say: string }[]} [steps]  blow, alternate: said as each step starts
+ * @property {string} [friend]     blow: who is in the picture
+ * @property {string} [shown]      sustain/pitch: the sound as written ("sssz"); never spoken (the voice would spell it)
+ * @property {string} [sound]
+ * @property {string} [helper]
+ * @property {string} [emoji]      the helper's picture
+ * @property {string} [sayModel]   said when the sound's chip is tapped ("Sziszegj hosszan, mint a kígyó.")
+ * @property {'rocket' | 'bee' | 'balloon'} [flyer]  sustain/pitch: what flies (FlyScene draws it and its goal)
+ * @property {{ x: number, high: boolean }[]} [stars]  pitch: left to right
+ * @property {Record<string, string>} hints  voiced · quiet · tooStrong · fell · high · low: Csillám's nudges, at most twice each
+ * @property {string} onCorrect
+ *
+ * @typedef {{ emojis: string[], text?: string, avoid?: string[] }} CatchGoal  What to catch (pictures, or the sound's letter) and what not to.
+ * @typedef {object} CatchItem  One bubble of the stream.
+ * @property {string} id
+ * @property {string} emoji
+ * @property {string} name     Said as it appears in `hear` mode; the bubble's accessible name.
+ * @property {boolean} target  To be caught.
+ * @property {number} at       ms on the stream clock (from the start, not counting pauses).
+ * @property {number} rise     ms to float from the bottom to the top.
+ * @property {number} x        Lane, 0–1 across the sky.
+ * @property {string} why      Said the first time this bubble is a mistake (caught though wrong, or let go though right).
+ * @typedef {object} CatchData  Kapd el!: catch the bubbles that fit the rule, let the others go.
+ * @property {'see' | 'hear'} mode  hear: each picture says its word as it appears.
+ * @property {CatchGoal} goal
+ * @property {number} need          Targets to catch to win the round.
+ * @property {CatchItem[]} stream   In order of `at`.
+ * @property {{ at: number, goal: CatchGoal, say: string }} [switch]  The rule turns round at `at`; later bubbles follow the new rule.
+ * @property {[number, number]} grade  Mistakes up to [0] → tries 1, up to [1] → 2, more → 3.
+ * @property {string} again         Said before the stream comes round once more (too few caught).
+ * @property {string} onCorrect
+ * @property {string} onEnd         The second round of the stream ended with too few caught: a gentle end.
+ *
+ * @typedef {object} HiddenItem  One picture of a Keresd meg! scene, in drawing order.
+ * @property {string} id
+ * @property {string} emoji
+ * @property {boolean} target
+ * @property {number} x        Centre, % of the (square) board's width.
+ * @property {number} y        Centre, % of the board's height.
+ * @property {number} size     Width, % of the board.
+ * @property {number} rotate   Degrees.
+ * @property {string} [say]    Said when tapped: the name of a found target, or why another picture isn't one (clue rounds).
+ * @typedef {object} HiddenData  Keresd meg!: find every target in a busy picture.
+ * @property {'garden' | 'sea' | 'kitchen' | 'sky' | 'forest' | 'room' | 'night' | 'snow'} backdrop
+ * @property {number} seed          The layout's seed (the same seed lays out the same picture).
+ * @property {HiddenItem[]} items
+ * @property {number} count         Targets to find.
+ * @property {{ emoji?: string, swatch?: string, sound?: string }} tray  What the tray shows: the target, or the clue's colour / letter.
+ * @property {string[]} [counts]    Said as the targets are found ("Egy!", "Kettő!"), unless the item has its own `say`.
+ * @property {string} [wrong]       Said on a wrong tap, unless the item has its own `say`.
+ * @property {string} onCorrect
+ *
+ * @typedef {object} DotsDot
+ * @property {number} x        0–1 across the square board.
+ * @property {number} y        0–1 down.
+ * @property {string} label    "1"… or a letter ("cs" is one dot).
+ * @property {string} say      Said when the dot is joined ("Három!").
+ * @property {string} hint     Said on a wrong tap while this dot is the next one ("A kettő után melyik jön?").
+ * @typedef {object} DotsData  Pontról pontra: join the dots in order; the picture pops out.
+ * @property {DotsDot[]} dots  In order; the outline closes from the last back to the first.
+ * @property {string} emoji
+ * @property {string} name
+ * @property {boolean} pulse   The next dot is always shown (the youngest).
+ * @property {string} onCorrect
  *
  * @typedef {object} AnswerEvent
  * @property {boolean} correct

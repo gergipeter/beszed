@@ -28,6 +28,13 @@ const loaders = {
   letter: () => import('./letter/LetterTraceEngine.vue'),
   board: () => import('./board/BoardEngine.vue'),
   tamagotchi: () => import('./TamagotchiEngine.vue'),
+  say: () => import('./say/SayEngine.vue'),
+  voice: () => import('./voice/VoiceEngine.vue'),
+  catch: () => import('./catch/CatchEngine.vue'),
+  hidden: () => import('./hidden/HiddenEngine.vue'),
+  grid: () => import('./grid/GridEngine.vue'),
+  dots: () => import('./dots/DotsEngine.vue'),
+  color: () => import('./color/ColorEngine.vue'),
 }
 
 /** Engines already downloaded, as plain components (render with no async gap). */

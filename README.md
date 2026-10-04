@@ -36,6 +36,26 @@ BabyBus, Bimi Boo, Lingokids, Otsimo, MentalUP, LogicLike, Okos Doboz, Hamaguchi
 and following directions. The directions need each picture's "-ra/-re" form (kutyára, kenyérre),
 stored with the picture (`onto`) and checked by the content rules.
 
+**From the 2026 competitor sweep** (`docs/competitor-games.md`: what leading children's, phonics and speech-therapy
+apps offer that Beszéd had no game for), twenty more, with seven new engines:
+
+| Game | Engine | Practises |
+|---|---|---|
+| 🎙️ **Hanggyakorló** | `say` | articulation by target sound (r, l, s, sz, z, zs, c, cs, k, g, gy, ty): start → middle/end → naming and sentences; the child hears their own recording (never uploaded) |
+| 🌬️ **Fújóka**, 🚀 **Hangrepülő** | `voice` | blowing into the mic (candles, dandelion, boat, feather); holding a sound and flying high/low with the voice (pitch by autocorrelation) |
+| 🚂 Hangvonat, 🐌 Csigabeszéd, ⛄ Szóragasztó | `choice` | sound position, syllable blending, compound words (glue, split, delete) |
+| 🤔 Találós kérdések, 🏃 Mozgó szavak, 🤪 Igaz vagy butaság?, 🐮 Ki mondja?, 👃 Testrészek, 🧦 Mi illik hozzá?, 👏 Mondókázz! | `choice` | riddles, verbs and their endings, true/silly sentences, onomatopoeia, body parts, associations/function/group names, traditional mondókák |
+| ♻️ Szelektív gyűjtés | `sort` | recycling bins (content only, ValogatoRounds) |
+| 🦋 **Kapd el!** | `catch` | go/no-go bubbles; the top level by ear (words with a sound) |
+| 🔦 **Keresd meg!** | `hidden` | hidden pictures by name, colour or first sound |
+| 🐭 **Labirintus**, 🤖 **Kis robot** | `grid` | server-generated mazes; programming a robot with fel/le/balra/jobbra |
+| 🌟 **Pontról pontra** | `dots` | dot-to-dot by number or by the Hungarian ABC |
+| 🖍️ **Színező** | `color` | colouring as told ("Színezd a tetőt pirosra!"), then freely |
+
+Csillám's TTS spells out text with no vowel and Piper reads "…" aloud, so spoken text names sounds by their letter
+("az sz hang") and never contains "…"; the games' tests check this. Every garden zone now holds 14 games, the
+most GardenZonesTest allows.
+
 **Hub groups.** Each game has a `tier` in `config/beszed.php`: *Egyszerű játékok* (one tap, little
 to remember: good first games for 3–5 year olds) or *Haladó játékok* (sounds, rhymes, memory and
 reasoning). The hub shows the simple group first; the order inside a group is the config order.

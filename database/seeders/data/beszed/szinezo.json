@@ -1,0 +1,16 @@
+[
+  {"level": 1, "payload": {"picture": "haz", "name": "Ház", "steps": ["teto=piros", "ajto=barna", "fu=zold", "nap=sarga", "fal=narancs", "kemeny=szurke", "felho=kek", "ablak_bal=kek", "ablak_jobb=sarga"]}},
+  {"level": 1, "payload": {"picture": "fa", "name": "Almafa", "steps": ["lomb=zold", "torzs=barna", "nap=sarga", "kosar=narancs", "fu=zold", "alma_bal=piros", "alma_jobb=sarga"]}},
+  {"level": 1, "payload": {"picture": "gomba", "name": "Gomba", "steps": ["kalap=piros", "fu=zold", "tonk=barna", "nap=sarga", "csigahaz=narancs", "csiga=lila"]}},
+  {"level": 1, "payload": {"picture": "fagyi", "name": "Fagyi", "steps": ["gomboc=rozsaszin", "tolcser=sarga", "cseresznye=piros", "ontet=barna", "ostya=narancs"]}},
+  {"level": 1, "payload": {"picture": "bohoc", "name": "Bohóc", "steps": ["orr=piros", "haj=narancs", "kalap=kek", "masni=zold", "szaj=rozsaszin", "arc=sarga"]}},
+  {"level": 2, "payload": {"picture": "hal", "name": "Halacska", "steps": ["hal=narancs", "farok=piros", "uszony=sarga", "kovek=szurke", "buborekok=kek", "pottyok=lila", "hinar_bal=zold", "hinar_jobb=barna"]}},
+  {"level": 2, "payload": {"picture": "auto", "name": "Autó", "steps": ["auto=piros", "ablakok=kek", "nap=sarga", "ut=szurke", "felho=rozsaszin", "kerek_bal=fekete", "kerek_jobb=barna"]}},
+  {"level": 2, "payload": {"picture": "hajo", "name": "Vitorlás", "steps": ["viz=kek", "hajo=barna", "zaszlo=piros", "nap=sarga", "felho=szurke", "vitorla_bal=narancs", "vitorla_jobb=zold"]}},
+  {"level": 2, "payload": {"picture": "sarkany", "name": "Sárkány", "steps": ["sarkany=piros", "domb=zold", "nap=sarga", "masnik=kek", "felho_bal=szurke", "felho_jobb=rozsaszin"]}},
+  {"level": 2, "payload": {"picture": "vonat", "name": "Vonat", "steps": ["mozdony=piros", "kocsi=kek", "kerekek=fekete", "fust=szurke", "teto=zold", "ablakok=sarga", "sin=barna", "kemeny=lila"]}},
+  {"level": 3, "payload": {"picture": "katica", "name": "Katica", "steps": ["hat=piros", "pottyok=fekete", "level=zold", "fej=fekete", "kozepek=narancs", "virag_bal=sarga", "virag_jobb=kek"]}},
+  {"level": 3, "payload": {"picture": "pillango", "name": "Pillangó", "steps": ["szarnyak=lila", "test=fekete", "pottyok=sarga", "fu=zold", "kozepek=narancs", "virag_bal=piros", "virag_jobb=kek"]}},
+  {"level": 3, "payload": {"picture": "raketa", "name": "Rakéta", "steps": ["raketa=kek", "orr=piros", "lang=narancs", "szarnyak=lila", "hold=sarga", "ablak=zold", "csillag_bal=sarga", "csillag_jobb=rozsaszin"]}},
+  {"level": 3, "payload": {"picture": "hoember", "name": "Hóember", "steps": ["kalap=fekete", "sal=piros", "orr=narancs", "gombok=kek", "fenyo_bal=zold", "fenyo_jobb=zold"]}}
+]

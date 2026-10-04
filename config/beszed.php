@@ -601,6 +601,228 @@ return [
             'factory' => Rounds\TamagotchiRounds::class, 'rounds' => 1, 'no_idle' => true, 'guess' => false,
             'intro' => 'Nézd, egy kis állatkád! Etesd, játssz vele, és vigyázz rá, hogy mindig boldog legyen!',
         ],
+
+        /*
+        | Twenty games picked from what leading children's and speech-therapy apps offer that Beszéd had no
+        | game for (docs/competitor-games.md): articulation by target sound, breath and voice games, sound
+        | position, blending, compounds, riddles, verbs, true or silly, onomatopoeia, body parts, associations,
+        | nursery rhymes, recycling, go/no-go, hidden pictures, mazes, first coding, dot-to-dot and colouring.
+        */
+        'hanggyakorlo' => [
+            'name' => 'Hanggyakorló', 'emoji' => '🎙️', 'skill' => 'Hangok kiejtése szavakban', 'color' => '#FFD3B6', 'tier' => 'simple', 'stage' => 'storybook',
+            'factory' => Rounds\HanggyakorloRounds::class, 'rounds' => 8, 'no_idle' => true, 'guess' => false,
+            // level 1: the sound at the start of a word · 2: in the middle or at the end · 3: naming without a model, phrases
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            // the sound to practise, picked before playing
+            'pick_prompt' => 'Melyik hangot gyakoroljuk ma? Válassz!',
+            'categories' => [
+                'r' => ['name' => 'R', 'emoji' => '🦊'], 'l' => ['name' => 'L', 'emoji' => '🦙'],
+                's' => ['name' => 'S', 'emoji' => '🧢'], 'sz' => ['name' => 'Sz', 'emoji' => '🍇'],
+                'z' => ['name' => 'Z', 'emoji' => '🦓'], 'zs' => ['name' => 'Zs', 'emoji' => '🦒'],
+                'c' => ['name' => 'C', 'emoji' => '🍋'], 'cs' => ['name' => 'Cs', 'emoji' => '🐌'],
+                'k' => ['name' => 'K', 'emoji' => '🐶'], 'g' => ['name' => 'G', 'emoji' => '🍄'],
+                'gy' => ['name' => 'Gy', 'emoji' => '💍'], 'ty' => ['name' => 'Ty', 'emoji' => '🐔'],
+                'vegyes' => ['name' => 'Vegyesen', 'emoji' => '🎲'],
+            ],
+            'intro' => 'Hangokat gyakorlunk! Megmutatok egy képet, kimondom a nevét, te pedig utánam mondod. Ha akarod, meg is hallgathatod magad!',
+        ],
+        'fujoka' => [
+            'name' => 'Fújóka', 'emoji' => '🌬️', 'skill' => 'Fújás és légzés, a szép beszéd alapja', 'color' => '#CDEBFF', 'tier' => 'simple', 'stage' => 'meadow',
+            'factory' => Rounds\FujokaRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
+            // level 1: short puffs · 2: one long blow · 3: a gentle, steady blow
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Most fújni fogunk! Fújj bele a telefonba vagy a tabletbe, mintha gyertyát fújnál el, és figyeld, mi történik!',
+        ],
+        'hangrepulo' => [
+            'name' => 'Hangrepülő', 'emoji' => '🚀', 'skill' => 'Hosszan kitartott hang, hangerő, hangmagasság', 'color' => '#E0D4FF', 'tier' => 'advanced', 'stage' => 'magic',
+            'factory' => Rounds\HangrepuloRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
+            // level 1: hold a sound 2 s in all · 2: 4 s without stopping · 3: fly high and low with the voice
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'A rakéta a hangodtól repül! Mondj egy hosszú hangot, és amíg szól, a rakéta száll. Ha elhallgatsz, megáll!',
+        ],
+        'hangvonat' => [
+            'name' => 'Hangvonat', 'emoji' => '🚂', 'skill' => 'Hol hallod a hangot? Elején, közepén, végén', 'color' => '#FFE0A3', 'tier' => 'advanced', 'stage' => 'meadow',
+            'factory' => Rounds\HangvonatRounds::class, 'rounds' => 8,
+            // level 1: start or end · 2: start, middle or end · 3: look-alike sounds side by side, longer words
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Ez a hangvonat! Minden szó egy vonat, három kocsival: az első kocsi a szó eleje, a középső a közepe, az utolsó a vége. A zöld kocsi mutatja, hol van a hang. Koppints arra a vonatra, amelyiken jó helyen van a zöld kocsi!',
+        ],
+        'csigabeszed' => [
+            'name' => 'Csigabeszéd', 'emoji' => '🐌', 'skill' => 'Szótagok és hangok összevonása szóvá', 'color' => '#E8E0C8', 'tier' => 'advanced', 'stage' => 'meadow',
+            'factory' => Rounds\CsigabeszedRounds::class, 'rounds' => 8,
+            // level 1: two syllables · 2: three or more · 3: a sound and the rest (sss… ó)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'A csiga nagyon lassan beszél: darabokban mondja a szavakat. Rakd össze, mit mondott, és keresd meg a képét!',
+        ],
+        'szoragaszto' => [
+            'name' => 'Szóragasztó', 'emoji' => '⛄', 'skill' => 'Összetett szavak: két szóból egy', 'color' => '#DDF3FF', 'tier' => 'advanced', 'stage' => 'workshop',
+            'factory' => Rounds\SzoragasztoRounds::class, 'rounds' => 8,
+            // level 1: glue two words · 2: which two words make it · 3: take one part away
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Szavakat ragasztunk össze! A hó meg az ember együtt: hóember. Találd ki, mi lesz a két szóból!',
+        ],
+        'talalos' => [
+            'name' => 'Találós kérdések', 'emoji' => '🤔', 'skill' => 'Kitalálni, miről beszélek', 'color' => '#F3E1FF', 'tier' => 'advanced', 'stage' => 'theatre',
+            'factory' => Rounds\TalalosRounds::class, 'rounds' => 8,
+            // level 1: three easy clues · 2: two clues, what it is for · 3: trickier clues, four pictures
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Találós kérdéseket mondok! Figyeld a nyomokat, és találd ki, mire gondolok!',
+        ],
+        'igek' => [
+            'name' => 'Mozgó szavak', 'emoji' => '🏃', 'skill' => 'Cselekvések, igék', 'color' => '#FFE6CC', 'tier' => 'simple', 'stage' => 'meadow',
+            'factory' => Rounds\IgekRounds::class, 'rounds' => 8,
+            // level 1: who is doing it (3 pictures) · 2: four pictures, what is she doing · 3: verb endings (futok, futsz)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Ki mit csinál éppen? Fut, ugrik, alszik? Hallgasd meg, mit kérdezek, és keresd meg a jó képet!',
+        ],
+        'igazvagy' => [
+            'name' => 'Igaz vagy butaság?', 'emoji' => '🤪', 'skill' => 'Mondatok megértése, butaságok felismerése', 'color' => '#FFF0B8', 'tier' => 'advanced', 'stage' => 'theatre',
+            'factory' => Rounds\IgazvagyRounds::class, 'rounds' => 8, 'guess' => false,
+            // level 1: with a picture, obvious · 2: no picture, negation · 3: all / none, order, cause and effect
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Mondok valamit. Néha igazat, néha butaságot! Ha igaz, koppints a felfelé mutató ujjra, ha butaság, a bolondos arcra!',
+        ],
+        'hangutanzo' => [
+            'name' => 'Ki mondja?', 'emoji' => '🐮', 'skill' => 'Hangutánzó szavak, állathangok', 'color' => '#FFE8D1', 'tier' => 'simple', 'stage' => 'forest',
+            'factory' => Rounds\HangutanzoRounds::class, 'rounds' => 8,
+            // level 1: who says it · 2: what does it say · 3: things, vehicles, the weather
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Vau-vau, miaú, brekeke! Kitaláljuk, ki mondja, és te is utánozhatod!',
+        ],
+        'testreszek' => [
+            'name' => 'Testrészek', 'emoji' => '👃', 'skill' => 'A testünk részei, és mire valók', 'color' => '#FFD9D9', 'tier' => 'simple', 'stage' => 'storybook',
+            'factory' => Rounds\TestreszekRounds::class, 'rounds' => 8,
+            // level 1: the names · 2: what each does · 3: what goes on it, caring for it
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Fül, orr, száj, kéz és láb! Megkeressük a testünk részeit, és megtudjuk, mire valók!',
+        ],
+        'illik' => [
+            'name' => 'Mi illik hozzá?', 'emoji' => '🧦', 'skill' => 'Összetartozó dolgok, mire való, gyűjtőnevek', 'color' => '#D9F2E6', 'tier' => 'simple', 'stage' => 'table',
+            'factory' => Rounds\IllikRounds::class, 'rounds' => 8,
+            // level 1: what goes with it · 2: what we use it for · 3: the name of the group
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Vannak dolgok, amelyek összetartoznak, mint a zokni és a cipő. Keresd meg, mi illik hozzá!',
+        ],
+        'mondoka' => [
+            'name' => 'Mondókázz!', 'emoji' => '👏', 'skill' => 'Mondókák, a hiányzó szó', 'color' => '#FFE3F1', 'tier' => 'simple', 'stage' => 'storybook',
+            'factory' => Rounds\MondokaRounds::class, 'rounds' => 5, 'guess' => false,
+            // level 1: short, the word at the end · 2: longer, the word inside · 3: longer rhymes, four pictures
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Mondókázzunk! Elmondom a mondókát, aztán még egyszer, de egy szót kihagyok. Te találod ki, melyik hiányzik!',
+        ],
+        'szelektiv' => [
+            'name' => 'Szelektív gyűjtés', 'emoji' => '♻️', 'skill' => 'A szemét szétválogatása, környezetvédelem', 'color' => '#C9EBC0', 'tier' => 'simple', 'stage' => 'market',
+            'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
+            // level = pictures per round: 1 → 4, 2 → 6, 3 → 8
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Válogassuk szét a szemetet! A papír a kék kukába kerül, a műanyag és a fém a sárgába, az üveg a zöldbe, a biohulladék a barnába. Koppints a jó kukára!',
+        ],
+        'kapdel' => [
+            'name' => 'Kapd el!', 'emoji' => '🦋', 'skill' => 'Figyelem, önuralom: csak a jót kapd el', 'color' => '#FFF3C4', 'tier' => 'advanced', 'stage' => 'meadow',
+            'factory' => Rounds\KapdelRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
+            // level 1: one kind, slowly · 2: a whole group, faster · 3: by ear (the sound in the word), or the rule turns round
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 2],
+            ],
+            'intro' => 'Buborékok szállnak fel! Csak azokat kapd el, amiket kérek, a többit hagyd elrepülni!',
+        ],
+        'keresd' => [
+            'name' => 'Keresd meg!', 'emoji' => '🔦', 'skill' => 'Képkeresés zsúfolt képen', 'color' => '#D4ECFF', 'tier' => 'simple', 'stage' => 'forest',
+            'factory' => Rounds\KeresdRounds::class, 'rounds' => 4, 'guess' => false,
+            // level 1: 3 among about 12 · 2: 5 among about 25, turned · 3: found by a spoken clue (colour, sound)
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Ez a kép tele van mindenfélével! Keresd meg, amit kérek, és koppints rá!',
+        ],
+        'labirintus' => [
+            'name' => 'Labirintus', 'emoji' => '🐭', 'skill' => 'Útkeresés, tervezés', 'color' => '#E6F5D0', 'tier' => 'simple', 'stage' => 'forest',
+            'factory' => Rounds\LabirintusRounds::class, 'rounds' => 3, 'no_idle' => true, 'guess' => false,
+            // the theme is only the look: a win graded 2–3 is no reason to bring the same theme back
+            'review' => false,
+            // level = the maze: 1 → 4×4, 2 → 6×6, 3 → 8×8 with a star on the way
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Segíts kijutni a labirintusból! Húzd az ujjadat az úton, a falakon nem lehet átmenni.',
+        ],
+        'robot' => [
+            'name' => 'Kis robot', 'emoji' => '🤖', 'skill' => 'Irányok, lépések sorrendje, első programozás', 'color' => '#D8E2FF', 'tier' => 'advanced', 'stage' => 'workshop',
+            'factory' => Rounds\RobotRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
+            // the theme is only the look: a win graded 2–3 is no reason to bring the same theme back
+            'review' => false,
+            // level 1: each arrow moves at once · 2: plan 2–4 moves, then go · 3: longer programs round obstacles
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+            ],
+            'intro' => 'Ez a kis robot azt csinálja, amit mondasz neki: fel, le, balra, jobbra. Vezesd el a céljához!',
+        ],
+        'pontozo' => [
+            'name' => 'Pontról pontra', 'emoji' => '🌟', 'skill' => 'Számok sorrendje, vonalhúzás', 'color' => '#FFF0C8', 'tier' => 'simple', 'stage' => 'meadow',
+            'factory' => Rounds\PontozoRounds::class, 'rounds' => 4, 'guess' => false,
+            // level 1: 1–6 · 2: 1–10 · 3: 1–15, or the ABC in order
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Kössük össze a pöttyöket sorban! Egy, kettő, három… a végén előbújik a kép!',
+        ],
+        'szinezo' => [
+            'name' => 'Színező', 'emoji' => '🖍️', 'skill' => 'Színek, utasítások követése, kézügyesség', 'color' => '#FFDDE8', 'tier' => 'simple', 'stage' => 'table',
+            'factory' => Rounds\SzinezoRounds::class, 'rounds' => 3, 'no_idle' => true, 'guess' => false,
+            // level 1: one part at a time, three colours · 2: more colours and steps · 3: two parts in one sentence, left and right
+            'adaptive' => [
+                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+            ],
+            'intro' => 'Színezzünk! Figyeld, mit kérek: először koppints a festékre, aztán a kép részére!',
+        ],
     ],
 
     /*
@@ -730,6 +952,12 @@ return [
             'drummer' => ['name' => 'Dobos', 'emoji' => '🥁', 'hint' => 'Játssz ötször a Ritmus játékkal!', 'rule' => ['game', 'ritmus', 5]],
             'pianist' => ['name' => 'Zongorista', 'emoji' => '🎹', 'hint' => 'Játssz ötször a Zongorával!', 'rule' => ['game', 'zongora', 5]],
             'listener' => ['name' => 'Figyelmes', 'emoji' => '🦉', 'hint' => 'Játssz ötször a „Csináld, amit mondok!” játékkal!', 'rule' => ['game', 'utasitas', 5]],
+            'sound_artist' => ['name' => 'Hangművész', 'emoji' => '🎙️', 'hint' => 'Játssz ötször a Hanggyakorlóval!', 'rule' => ['game', 'hanggyakorlo', 5]],
+            'wind_king' => ['name' => 'Szélkirály', 'emoji' => '🌬️', 'hint' => 'Játssz ötször a Fújókával!', 'rule' => ['game', 'fujoka', 5]],
+            'pilot' => ['name' => 'Hangpilóta', 'emoji' => '🚀', 'hint' => 'Játssz ötször a Hangrepülővel!', 'rule' => ['game', 'hangrepulo', 5]],
+            'catcher' => ['name' => 'Fogócska bajnok', 'emoji' => '🦋', 'hint' => 'Játssz ötször a „Kapd el!” játékkal!', 'rule' => ['game', 'kapdel', 5]],
+            'pathfinder' => ['name' => 'Útkereső', 'emoji' => '🐭', 'hint' => 'Játssz ötször a Labirintussal!', 'rule' => ['game', 'labirintus', 5]],
+            'painter' => ['name' => 'Kis festő', 'emoji' => '🖍️', 'hint' => 'Játssz ötször a Színezővel!', 'rule' => ['game', 'szinezo', 5]],
             ...generateCollectorStickers(),
         ],
 

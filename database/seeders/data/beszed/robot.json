@@ -1,0 +1,14 @@
+[
+  {"level":1,"payload":{"name":"Elem","goal":"🔋","obstacle":"🪨","task":"Vezesd el a robotot az elemhez!","bump":"Bumm! Ott egy kő van.","says":"Hurrá, feltöltődtem!"}},
+  {"level":1,"payload":{"name":"Süti","goal":"🍪","obstacle":"🌵","task":"Vezesd el a robotot a sütihez!","bump":"Jaj, egy kaktusz! Az szúr.","says":"Mmm, robotsüti! Köszönöm!"}},
+  {"level":1,"payload":{"name":"Csavar","goal":"🔩","obstacle":"💧","task":"Vezesd el a robotot a csavarhoz!","bump":"Hoppá, víz! A robot nem szereti a vizet.","says":"Megvan a csavar! Most már nem lötyög a karom."}},
+  {"level":1,"payload":{"name":"Villanykörte","goal":"💡","obstacle":"🧱","task":"Vezesd el a robotot a villanykörtéhez!","bump":"Bumm! Ott egy fal van.","says":"Felkapcsoltam a lámpát! Világos lett."}},
+  {"level":1,"payload":{"name":"Ajándék","goal":"🎁","obstacle":"🪵","task":"Vezesd el a robotot az ajándékhoz!","bump":"Hoppá, egy farönk!","says":"Hurrá, ajándék! Vajon mi van benne?"}},
+  {"level":1,"payload":{"name":"Labda","goal":"⚽","obstacle":"🪴","task":"Vezesd el a robotot a labdához!","bump":"Bumm! Ott egy virágcserép áll.","says":"Megvan a labda! Játsszunk!"}},
+  {"level":1,"payload":{"name":"Mágnes","goal":"🧲","obstacle":"📦","task":"Vezesd el a robotot a mágneshez!","bump":"Bumm! Ott egy doboz van.","says":"Hű, a mágnes magához húzott!"}},
+  {"level":1,"payload":{"name":"Olajoshordó","goal":"🛢️","obstacle":"🪨","task":"Vezesd el a robotot az olajoshordóhoz!","bump":"Bumm! Ott egy kő van.","says":"Glugy-glugy! Megolajoztam magam."}},
+  {"level":1,"payload":{"name":"Kulcs","goal":"🔑","obstacle":"🌳","task":"Vezesd el a robotot a kulcshoz!","bump":"Bumm! Ott egy fa áll.","says":"Megvan a kulcs! Most már ki tudom nyitni az ajtót."}},
+  {"level":1,"payload":{"name":"Autó","goal":"🚗","obstacle":"🚧","task":"Vezesd el a robotot az autóhoz!","bump":"Állj! Ott le van zárva az út.","says":"Brrrm! Beültem az autóba!"}},
+  {"level":1,"payload":{"name":"Fagyi","goal":"🍦","obstacle":"🧊","task":"Vezesd el a robotot a fagyihoz!","bump":"Brr, egy jégkocka!","says":"Hű, de hideg! Finom a fagyi!"}},
+  {"level":1,"payload":{"name":"Csillag","goal":"⭐","obstacle":"☁️","task":"Vezesd el a robotot a csillaghoz!","bump":"Hoppá, egy felhő!","says":"Elértem a csillagot! Ragyogok!"}}
+]
