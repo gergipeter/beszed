@@ -38,6 +38,7 @@ export default {
     },
     tip: {
       nice: 'Lovely weather, go out and play!',
+      nightClear: "The sky is clear, see if you can spot a star from the window! It's evening now, so outside play can wait for another time.",
       hot: 'It is hot, drink lots of water and stay in the shade!',
       cool: 'It is cool, take a jacket!',
       cold: 'It is cold, wear a hat and gloves!',
@@ -323,6 +324,13 @@ export default {
     mirrorOff: 'Mirror off',
     mirrorLabel: 'Yourself in the camera',
     noCamera: 'The camera is not available right now. Use a real mirror!',
+    trackOffer: 'Turn on the mirror and I will count how many times you did it!',
+    trackLoading: 'Getting ready to see your face…',
+    trackCalibrating: 'Look at the camera and keep still for a moment!',
+    trackWatching: 'I am watching your mouth and counting!',
+    trackNoFace: 'I cannot see your face. Look at the camera!',
+    trackFailed: 'I cannot watch your face right now. Count with the button!',
+    trackStrength: 'Move: {percent}%',
   },
 
   voice: {

@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build && node scripts/copy-emoji.mjs && node scripts/stamp-sw.mjs",
+        "build": "vite build && node scripts/copy-emoji.mjs && node scripts/copy-face.mjs && node scripts/stamp-sw.mjs",
         "build:native": "vite build --config vite.native.config.js --mode native && node scripts/native-assets.mjs",
         "cap:sync": "cap sync",
         "dev": "vite",
@@ -15,6 +15,7 @@
         "@capacitor/android": "^8.5.2",
         "@capacitor/core": "^8.5.2",
         "@capacitor/ios": "^8.5.2",
+        "@mediapipe/tasks-vision": "^1.0.1",
         "@revenuecat/purchases-capacitor": "^13.7.0",
         "axios": "^1.11.0",
         "jspdf": "^4.2.1",

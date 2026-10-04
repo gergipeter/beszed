@@ -49,6 +49,12 @@ const defaults = {
    */
   symbols: { baseUrl: '/symbols/' },
 
+  /**
+   * Szájtorna's face tracker files (MediaPipe wasm + face_landmarker.task), copied into the build by
+   * scripts/copy-face.mjs. Loaded only when a child turns the mirror on.
+   */
+  face: { baseUrl: '/build/face/' },
+
   /** Pictures uploaded in the content editor ("upload:<id>" in the content), served by GET /api/content-images/{id}. */
   contentImages: { baseUrl: '/api/content-images/' },
 

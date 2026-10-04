@@ -37,6 +37,7 @@ export default {
     },
     tip: {
       nice: 'Szép idő van, menj ki játszani!',
+      nightClear: 'Tiszta az ég, nézd meg, látsz-e csillagot az ablakból! Most már este van, kint maradjunk máskorra.',
       hot: 'Meleg van, igyál sok vizet, és maradj az árnyékban!',
       cool: 'Hűvös van, vegyél kabátot!',
       cold: 'Hideg van, vegyél sapkát és kesztyűt!',
@@ -322,6 +323,13 @@ export default {
     mirrorOff: 'Tükör ki',
     mirrorLabel: 'Te magad a kamerában',
     noCamera: 'A kamera most nem érhető el. Nézzetek egy igazi tükörbe!',
+    trackOffer: 'Kapcsold be a tükröt, és én számolom, hányszor csináltad meg!',
+    trackLoading: 'Készülök, hogy lássam az arcodat…',
+    trackCalibrating: 'Nézz a kamerába, és maradj egy pillanatig nyugodtan!',
+    trackWatching: 'Figyelem a szádat, és számolok!',
+    trackNoFace: 'Nem látom az arcodat. Nézz a kamerába!',
+    trackFailed: 'Most nem tudom figyelni az arcodat. Számoljatok a gombbal!',
+    trackStrength: 'Mozdulat: {percent}%',
   },
 
   voice: {
@@ -534,7 +542,7 @@ export default {
     wardrobeEmpty: 'A szekrény még üres. A 2. szinten jön az első kincs: játssz, és gyűjts csillagot!',
     mirror: '{guide} a tükör előtt',
     slots: { head: 'Fejre', face: 'Szemre', neck: 'Nyakba', extra: 'Kézbe, mellé', mane: 'Sörény színe' },
-    lockedAt: 'Ezt {article} {level}. szinten kapod meg. Gyűjts még csillagot!',
+    lockedAt: 'Ennek a jutalomnak a szintje: {level}. Gyűjts még csillagot!',
     tookOff: 'Rendben, leveszem!',
     surprise: 'Meglepetés!',
     surpriseSpeech: 'Tádám! Hogy tetszik az új ruhám?',

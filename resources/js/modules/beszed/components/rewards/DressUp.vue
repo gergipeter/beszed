@@ -63,7 +63,7 @@ function perform(kind) {
 /** Wears `item` (or takes it off when she wears it already). */
 async function toggle(item, { quiet = false } = {}) {
   if (!item.unlocked) {
-    guide.speakUi([t('rewards.lockedAt', { level: item.level, article: item.level === 1 || item.level === 5 ? 'az' : 'a' })])
+    guide.speakUi([t('rewards.lockedAt', { level: item.level })])
     return false
   }
   message.value = ''

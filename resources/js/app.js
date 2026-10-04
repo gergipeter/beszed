@@ -24,6 +24,7 @@ app.use(beszed, {
     // The bundle carries the emoji and Mulberry symbols (scripts/native-assets.mjs); ARASAAC pictograms and uploaded
     // pictures are public routes of the API server.
     symbols: { baseUrl: './symbols/' },
+    face: { baseUrl: './face/' },
     pictograms: { baseUrl: apiUrl('/pictograms/') },
     contentImages: { baseUrl: apiUrl('/api/content-images/') },
     // An <audio> element cannot send the Bearer token: Csillám's voice and the recordings are fetched with it and played from memory.

@@ -13,8 +13,16 @@ Subscription prices of comparable children's learning apps (US list prices, foun
 | [Homer](https://myelearningworld.com/homer-vs-abcmouse/) | $12.99 | $79.99 | 30 days |
 | ABCmouse | $14.99 | $45 (web), $59.99 (app store) | limited free tier |
 | [AdaptedMind](https://learnspark.io/blog/adaptedmind-cost-per-month-annual-pricing/) (math) | $9.95 | – | 30 days |
+| [Vocametrix](https://www.vocametrix.com/pricing) (speech therapy, patient-facing voice games) | €20 | – | – |
 
 Pattern: about **$10–15 a month** in the US, and a yearly plan that is **50–70% cheaper per month** than paying monthly.
+Vocametrix is priced close to Beszéd's own EU monthly price (€5.99) but covers less (one API/games product, no
+guided path, no progress reports); it's not pulling the pattern above in a different direction.
+
+Checked and left out (2026-10-04): SLPFlow ($20–49/mo), SpeechPath.AI (no confirmed product/pricing found),
+LumaSpeech (pre-launch) and Nataly ($79/mo) are clinician practice-management tools (session notes, billing,
+scheduling, IEP reports) bought by speech-language pathologists running a caseload, not by parents for a child
+to use — a different product and a different buyer than Beszéd, so not comparable here.
 Most families end up on the yearly plan or never convert, so the yearly price is the one that matters.
 
 Hungary has lower incomes and fewer paid children's apps than the US, so the same value is priced lower there.

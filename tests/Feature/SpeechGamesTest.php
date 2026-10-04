@@ -35,6 +35,24 @@ it('Szájtorna asks for the repetitions of the level, with every move to copy', 
     }
 })->with([[1, 3], [2, 5], [3, 10]]);
 
+it('Szájtorna tells the face tracker which movement each move shows', function () {
+    // the keys of POSES in resources/js/modules/beszed/engines/mimic/poses.js
+    $known = ['puff', 'pucker', 'smile', 'open', 'frown', 'roll', 'rollLower', 'rollUpper', 'left', 'right'];
+    $exercises = json_decode(file_get_contents(database_path('seeders/data/beszed/szajtorna.json')), true);
+
+    foreach ($exercises as $e) {
+        $poses = array_map(fn ($m) => SzajtornaRounds::pose($m[0]), $e['payload']['moves']);
+        expect(array_filter($poses))->not->toBeEmpty("{$e['payload']['name']}: no move the mirror can count")
+            ->and(array_diff(array_filter($poses), $known))->toBe([]);
+    }
+    expect(SzajtornaRounds::pose('😗➡️'))->toBe('right')
+        ->and(SzajtornaRounds::pose('⬅️😗'))->toBe('left')
+        ->and(SzajtornaRounds::pose('😐'))->toBeNull();
+
+    $move = speechSession('szajtorna')['rounds'][0]['data']['moves'][0];
+    expect($move)->toHaveKey('pose');
+});
+
 it('Szájtorna levels name the repetitions', function () {
     expect(SzajtornaRounds::REPS)->toBe([1 => [3, 'háromszor'], 2 => [5, 'ötször'], 3 => [10, 'tízszer']]);
 });

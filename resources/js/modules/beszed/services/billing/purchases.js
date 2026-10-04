@@ -63,7 +63,9 @@ function trialDays(product) {
 
 /**
  * The plans on offer, with the store's own price text (right currency, VAT included).
- * @returns {Promise<{ id: string, period: 'month' | 'year', price: string, trialDays: number | null, pkg: object }[]>}
+ * `rawPrice` is the store's numeric amount in the same currency as `price` (RevenueCat's `product.price`), kept
+ * alongside the text so the yearly card can work out "that's only {X}/month" without parsing the formatted string.
+ * @returns {Promise<{ id: string, period: 'month' | 'year', price: string, rawPrice: number, trialDays: number | null, pkg: object }[]>}
  */
 export async function loadPlans() {
   const info = await setup()
@@ -78,7 +80,9 @@ export async function loadPlans() {
       // Google Play product ids may carry a base-plan suffix ("beszed.premium.yearly:yearly").
       const id = info.products?.[key]
       const pkg = id && ([...byProduct.keys()].find(k => k === id || k.startsWith(`${id}:`)) ?? null)
-      return pkg ? { id: key, period, price: byProduct.get(pkg).product.priceString, trialDays: trialDays(byProduct.get(pkg).product), pkg: byProduct.get(pkg) } : null
+      if (!pkg) return null
+      const product = byProduct.get(pkg).product
+      return { id: key, period, price: product.priceString, rawPrice: Number(product.price), trialDays: trialDays(product), pkg: byProduct.get(pkg) }
     })
     .filter(Boolean)
 }

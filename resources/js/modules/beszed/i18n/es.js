@@ -39,6 +39,7 @@ export default {
     },
     tip: {
       nice: '¡Qué lindo clima, sal a jugar!',
+      nightClear: 'El cielo está despejado, ¡mira si ves alguna estrella desde la ventana! Ya es de noche, así que jugar afuera puede esperar a otro momento.',
       hot: 'Hace calor, ¡toma mucha agua y quédate en la sombra!',
       cool: 'Hace fresco, ¡lleva una chaqueta!',
       cold: 'Hace frío, ¡ponte un gorro y guantes!',
@@ -324,6 +325,13 @@ export default {
     mirrorOff: 'Sin espejo',
     mirrorLabel: 'Tú en la cámara',
     noCamera: 'La cámara no está disponible ahora. ¡Usa un espejo de verdad!',
+    trackOffer: '¡Enciende el espejo y yo cuento cuántas veces lo hiciste!',
+    trackLoading: 'Me preparo para ver tu cara…',
+    trackCalibrating: '¡Mira a la cámara y quédate quieto un momento!',
+    trackWatching: '¡Estoy mirando tu boca y contando!',
+    trackNoFace: 'No veo tu cara. ¡Mira a la cámara!',
+    trackFailed: 'Ahora no puedo mirar tu cara. ¡Cuenten con el botón!',
+    trackStrength: 'Movimiento: {percent}%',
   },
 
   voice: {
