@@ -2,6 +2,7 @@
 // emit, so that the app works without the website's public/ folder:
 //   emoji/    the Twemoji pictures in use (scripts/copy-emoji.mjs, the same set as the website)
 //   symbols/  the Mulberry symbols (public/symbols, 1.9 MB), which the website serves from public/
+//   face/     Szájtorna's face tracker: MediaPipe's wasm and the Face Landmarker model (scripts/copy-face.mjs)
 // The relative URLs './emoji/' and './symbols/' are set in resources/js/app.js for the native build.
 // Another output directory: `node scripts/native-assets.mjs <dir>`.
 import { spawnSync } from 'node:child_process'
@@ -24,3 +25,7 @@ const symbols = join(root, 'public', 'symbols')
 cpSync(symbols, join(out, 'symbols'), { recursive: true })
 const size = readdirSync(symbols).reduce((sum, f) => sum + statSync(join(symbols, f)).size, 0)
 console.log(`native-assets: ${readdirSync(symbols).length} symbols (${(size / 1024).toFixed(0)} kB) → ${join(out, 'symbols')}`)
+
+// Szájtorna's face tracker works offline in the app too: MediaPipe's wasm and the model (~26 MB) go into face/
+const face = spawnSync(process.execPath, [join(root, 'scripts', 'copy-face.mjs'), join(out, 'face')], { stdio: 'inherit' })
+if (face.status !== 0) process.exit(face.status ?? 1)

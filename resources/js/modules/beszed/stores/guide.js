@@ -36,6 +36,12 @@ function cancelMood() {
   cancelAnimationFrame(moodFrame)
 }
 
+/** The URL of the server voice for `text`, tied to the parent's voice settings so a changed voice isn't served from cache. */
+function serverUrl(text) {
+  const { voice, rate, pitch } = useSettingsStore()
+  return ttsUrl(text, `${voice ?? ''}.${rate ?? 0}.${pitch ?? 0}`)
+}
+
 /** Where a SpeakItem's audio comes from: `{ url }` (recording) or `{ text }`. */
 function sourceOf(item) {
   if (typeof item === 'string') return { text: item }
@@ -119,7 +125,7 @@ export const useGuideStore = defineStore('beszed/guide', {
         const voice = lang ?? spokenLanguage(text)
         let spoken = false
         if (this.serverTts && !voice) {
-          spoken = await playAudio(ttsUrl(text), { rate: slow ? SLOW_RATE_FACTOR : 1 })
+          spoken = await playAudio(serverUrl(text), { rate: slow ? SLOW_RATE_FACTOR : 1 })
           if (isCurrent()) this.ttsFailures = spoken ? 0 : this.ttsFailures + 1
         }
         if (!spoken && isCurrent()) await speakWebSpeech(text, { ...config.voice, ...(voice ? { lang: VOICE_LANG[voice] } : {}), rate, pitch, isCurrent })
@@ -138,7 +144,7 @@ export const useGuideStore = defineStore('beszed/guide', {
     /** Fetches the audio of `items` in the background, so it plays instantly later. */
     preload(items) {
       if (!config.preloadAudio) return
-      const urls = items.map(sourceOf).map(({ url, text }) => url ?? (text && this.serverTts && !spokenLanguage(text) ? ttsUrl(text) : null))
+      const urls = items.map(sourceOf).map(({ url, text }) => url ?? (text && this.serverTts && !spokenLanguage(text) ? serverUrl(text) : null))
       preloadAudio(urls)
     },
 

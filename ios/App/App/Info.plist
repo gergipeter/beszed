@@ -27,7 +27,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>A mikrofont csak akkor használjuk, ha te, a szülő, felveszed a saját hangodat Csillám mondataihoz. Ez nem kötelező: a játékok mikrofon nélkül is működnek, és a felvételeid csak a te fiókodban vannak.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>A kamerát csak a Szájtorna „Tükör” gombja használja, hogy a gyerek lássa magát gyakorlás közben. A kép nem kerül el a telefonról, és nem is mentjük el.</string>
+	<string>A kamerát csak a Szájtorna „Tükör” gombja használja: a gyerek látja magát gyakorlás közben, és a telefon a száj mozgásából megszámolja az ismétléseket. A kép nem kerül el a telefonról, és nem is mentjük el.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

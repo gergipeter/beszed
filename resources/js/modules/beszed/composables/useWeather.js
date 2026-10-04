@@ -67,6 +67,7 @@ export function useWeather() {
       : w.temp <= 5 ? 'cold'
       : w.temp <= 14 ? 'cool'
       : w.temp >= 28 ? 'hot'
+      : w.kind === 'clear' && !w.day ? 'nightClear'
       : w.kind === 'clear' || w.kind === 'partly' ? 'nice'
       : null
     return [t('weather.line', { temp, sky }), tip && t(`weather.tip.${tip}`)].filter(Boolean).join(' ')

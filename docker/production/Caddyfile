@@ -11,8 +11,9 @@
 	header {
 		X-Content-Type-Options nosniff
 		Referrer-Policy strict-origin-when-cross-origin
-		# The recording page needs the microphone; nothing else does.
-		Permissions-Policy "camera=(), geolocation=(), microphone=(self)"
+		# The recordings and the voice games need the microphone; Szájtorna's mirror the front camera
+		# (shown and analysed on the device only, never sent).
+		Permissions-Policy "camera=(self), geolocation=(), microphone=(self)"
 		X-Frame-Options DENY
 		-Server
 		# Enable once the domain is final (browsers remember it for a year):
@@ -26,6 +27,10 @@
 	# Emoji pictures only change with a Twemoji upgrade.
 	@emoji path /build/emoji/*
 	header @emoji Cache-Control "public, max-age=2592000"
+
+	# Szájtorna's face tracker (MediaPipe wasm + model, scripts/copy-face.mjs) changes only with an upgrade.
+	@face path /build/face/*
+	header @face Cache-Control "public, max-age=2592000"
 
 	# The service worker must be re-checked on every visit, and so must what tells it a new build is out
 	# (sw-version.js, imported by sw.js) and what it precaches from (manifest.json).

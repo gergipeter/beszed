@@ -70,7 +70,7 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
         Fiókot csak szülő vagy törvényes képviselő hozhat létre; a gyerek nem ad meg adatot, és nem lép be. A gyerekről a
         legszükségesebbet tároljuk (keresztnév, opcionálisan születési dátum, a játékok eredményei). Nem készítünk a gyerekről
         reklámcélú profilt, nem adjuk el az adatait, és nem küldjük harmadik félnek marketingre. A kamerát a Szájtorna „Tükör”
-        gombja csak a képernyőn mutatja, nem rögzíti.
+        gombja csak a képernyőn mutatja és a készüléken elemzi, nem rögzíti és nem küldi el.
       </p>
 
       <h2>Ki fér hozzá?</h2>
@@ -94,7 +94,9 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
 
       <p>
         <b>Kamera:</b> a Szájtorna „Tükör” gombja a telefon előlapi kamerájával mutatja a gyereknek önmagát. A kép csak a
-        képernyőn jelenik meg: nem rögzítjük, nem mentjük el és nem küldjük el sehová.
+        képernyőn jelenik meg: nem rögzítjük, nem mentjük el és nem küldjük el sehová. Hogy az ismétléseket a játék maga
+        számolhassa, a telefon a képből a száj és az arc mozgását méri (például mennyire csücsörít vagy nyitja ki a száját);
+        ez teljesen a készüléken történik (MediaPipe), sem a kép, sem a mért értékek nem kerülnek hozzánk vagy máshová.
       </p>
 
       <h2>Adatfeldolgozók és külső szolgáltatók</h2>
@@ -163,6 +165,7 @@ const back = () => (window.history.length > 1 ? router.back() : router.push('/')
         és közreműködők,
         <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener" target="_blank">CC-BY 4.0</a>.
         Betűtípus: Baloo 2 (SIL Open Font License). Gépi hang: Piper (MIT), magyar hangok CC0 hangfelvételekből.
+        Arcmozgás-felismerés a Szájtornában: Google MediaPipe Face Landmarker (Apache License 2.0).
       </p>
 
       <p class="version">Tájékoztató változata: {{ privacy.version }}</p>

@@ -77,6 +77,19 @@ const restore = () => guarded(store.restore, t('premium.nothingToRestore'))
 const priceLine = plan => t(plan.period === 'year' ? 'premium.perYear' : 'premium.perMonth', { price: plan.price })
 const trialLine = plan => (plan.trialDays ? t('premium.trial', { days: plan.trialDays }) : '')
 
+/**
+ * How much cheaper the yearly plan is per month than paying monthly, worked out from the store's own numeric
+ * prices (never a hand-typed number, per App Store rule 3.1.1: only the store's price may be shown). Needs both
+ * plans loaded; on a single-plan offering (or if the monthly price is 0) nothing is shown.
+ */
+const yearlySaving = computed(() => {
+  const monthly = plans.value.find(p => p.period === 'month')
+  const yearly = plans.value.find(p => p.period === 'year')
+  if (!monthly?.rawPrice || !yearly?.rawPrice) return null
+  const percent = Math.round((1 - yearly.rawPrice / 12 / monthly.rawPrice) * 100)
+  return percent > 0 ? percent : null
+})
+
 onMounted(() => {
   if (native) load()
 })
@@ -101,8 +114,9 @@ onMounted(() => {
       <p v-if="loading" class="soon" role="status">{{ t('premium.loading') }}</p>
 
       <section v-if="plans.length" class="plans" :aria-label="t('premium.plansTitle')">
-        <div v-for="plan in plans" :key="plan.id" class="plan">
+        <div v-for="plan in plans" :key="plan.id" class="plan" :class="{ best: plan.period === 'year' && yearlySaving }">
           <div class="plan-text">
+            <span v-if="plan.period === 'year' && yearlySaving" class="badge">{{ t('premium.bestValue', { percent: yearlySaving }) }}</span>
             <strong class="price">{{ priceLine(plan) }}</strong>
             <span v-if="trialLine(plan)" class="trial">{{ trialLine(plan) }}</span>
           </div>
@@ -185,10 +199,23 @@ onMounted(() => {
   border-radius: var(--bz-radius);
   background: var(--bz-card);
   box-shadow: var(--bz-shadow-sm);
+  border: 2px solid transparent;
+}
+.plan.best {
+  border-color: var(--bz-accent, #f0b429);
 }
 .plan-text {
   display: grid;
   gap: 2px;
+}
+.badge {
+  justify-self: start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #7a4a00;
+  background: var(--bz-accent, #f0b429);
 }
 .price {
   font-size: var(--bz-text-md);

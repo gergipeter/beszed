@@ -207,6 +207,41 @@ onMounted(load)
   flex: 1;
   max-width: 220px;
 }
+.row input[type='checkbox'] {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  accent-color: var(--bz-leaf);
+  cursor: pointer;
+}
+.row input[type='range'] {
+  accent-color: var(--bz-leaf);
+}
+.row select {
+  flex: none;
+  min-width: 150px;
+  padding: 10px 38px 10px 14px;
+  border: 2px solid var(--bz-soft);
+  border-radius: var(--bz-radius);
+  background-color: var(--bz-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  appearance: none;
+  cursor: pointer;
+}
+.row select:focus {
+  outline: none;
+  border-color: var(--bz-leaf);
+}
+.row select option {
+  background: var(--bz-bg);
+  color: inherit;
+}
 .hint {
   margin: -6px 0 0;
   font-size: var(--bz-text-sm);
