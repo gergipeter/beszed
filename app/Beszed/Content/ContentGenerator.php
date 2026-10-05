@@ -65,6 +65,9 @@ final class ContentGenerator
     /** @var array<string, list<string>> rows skipped because ContentRules refused them */
     public array $rejected = [];
 
+    /** @var ?array<string, int> memoized categoryRanks() */
+    private ?array $categoryRanks = null;
+
     public function __construct(array $lexicon, array $current)
     {
         $this->words = $lexicon;
@@ -95,6 +98,44 @@ final class ContentGenerator
         }
 
         return $out;
+    }
+
+    /**
+     * Papagáj, Párkereső and Kirakó each draw from the whole common-word pool with
+     * no level filter (their Rounds classes never call favorLevel()), so every word
+     * is in play every session: left alone, all three would show nearly the same
+     * ~750 words and feel like reshuffles of each other, especially at a new
+     * child's very first plays. Split the pool between them instead, evenly within
+     * each lexicon category (so Kirakó's picture themes - animals, vehicles... -
+     * all stay populated) and stable across regenerations (by word, not by run).
+     */
+    private const SPLIT_POOL = ['papagaj', 'parkereso', 'kirako'];
+
+    /** @return array<string, int> word => its index among same-category words, for the round-robin split below */
+    private function categoryRanks(): array
+    {
+        if ($this->categoryRanks !== null) {
+            return $this->categoryRanks;
+        }
+        $ranks = [];
+        $seen = [];
+        foreach ($this->words as $w) {
+            if ($w['f'] > 2) {
+                continue;
+            }
+            $seen[$w['c']] ??= 0;
+            $ranks[$w['w']] = $seen[$w['c']]++;
+        }
+
+        return $this->categoryRanks = $ranks;
+    }
+
+    /** Whether $word is $game's share of the round-robin split (see SPLIT_POOL doc). */
+    private function inSplit(string $game, string $word): bool
+    {
+        $slot = array_search($game, self::SPLIT_POOL, true);
+
+        return $this->categoryRanks()[$word] % count(self::SPLIT_POOL) === $slot;
     }
 
     /** Games with one row per word: hand-written rows first, then new words (none twice, no picture twice). */
@@ -191,15 +232,21 @@ final class ContentGenerator
                     break;
 
                 case 'papagaj':
-                    yield [1, ['word' => $word, 'emoji' => $this->picture($w)]];
+                    if ($this->inSplit($game, $word)) {
+                        yield [1, ['word' => $word, 'emoji' => $this->picture($w)]];
+                    }
                     break;
 
                 case 'parkereso':
-                    yield [1, ['emoji' => $this->picture($w), 'word' => $word]];
+                    if ($this->inSplit($game, $word)) {
+                        yield [1, ['emoji' => $this->picture($w), 'word' => $word]];
+                    }
                     break;
 
                 case 'kirako':
-                    yield [1, ['emoji' => $this->picture($w), 'name' => $word]];
+                    if ($this->inSplit($game, $word)) {
+                        yield [1, ['emoji' => $this->picture($w), 'name' => $word]];
+                    }
                     break;
 
                 case 'arnyek':

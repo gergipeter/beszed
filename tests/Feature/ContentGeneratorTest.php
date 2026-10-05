@@ -52,7 +52,10 @@ it('gives every game plenty of content', function (string $game, int $min) {
     $rows = json_decode(file_get_contents(database_path("seeders/data/beszed/$game.json")), true);
     expect(count($rows))->toBeGreaterThanOrEqual($min);
 })->with([
-    ['szotag', 300], ['kezdo', 300], ['papagaj', 300], ['kirako', 300], ['parkereso', 300],
+    // Papagáj, Kirakó and Párkereső share one common-word pool, split evenly between them
+    // (ContentGenerator::SPLIT_POOL) so a new child doesn't see near-identical content
+    // in all three at once; ~230-290 each, still 30-80x what a single session draws from.
+    ['szotag', 300], ['kezdo', 300], ['papagaj', 200], ['kirako', 200], ['parkereso', 200],
     ['arnyek', 150], ['rimelo', 140], ['melyik', 140], ['hol', 90], ['szamol', 90], ['zs', 60],
 ]);
 
