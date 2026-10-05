@@ -3,6 +3,8 @@
 # Scratch source images for scripts/ai-pics-generate.mjs, before scripts/ai-pics-import.mjs copies
 # the finished ones into public/ai-pics/ (which is tracked).
 /ai-pics-drop
+/ai-pics-tales-drop
+/allatok
 .env
 .env.backup
 .env.production
