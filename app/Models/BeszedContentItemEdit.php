@@ -8,7 +8,7 @@ class BeszedContentItemEdit extends Model
 {
     protected $fillable = ['content_item_id', 'editor_email', 'action', 'before', 'after'];
 
-    protected $casts = ['before' => 'array', 'after' => 'array'];
+    protected $casts = ['before' => 'array', 'after' => 'array', 'created_at' => 'datetime'];
 
     public $timestamps = false;
 
