@@ -33,7 +33,7 @@ it('Szájtorna asks for the repetitions of the level, with every move to copy', 
             ->and(count($round['data']['moves']))->toBeGreaterThanOrEqual(2)
             ->and($round['data']['moves'][0])->toHaveKeys(['emoji', 'label']);
     }
-})->with([[1, 3], [2, 5], [3, 10]]);
+})->with([[1, 3], [50, 6], [100, 10]]);
 
 it('Szájtorna tells the face tracker which movement each move shows', function () {
     // the keys of POSES in resources/js/modules/beszed/engines/mimic/poses.js
@@ -53,8 +53,11 @@ it('Szájtorna tells the face tracker which movement each move shows', function 
     expect($move)->toHaveKey('pose');
 });
 
-it('Szájtorna levels name the repetitions', function () {
-    expect(SzajtornaRounds::REPS)->toBe([1 => [3, 'háromszor'], 2 => [5, 'ötször'], 3 => [10, 'tízszer']]);
+it('Szájtorna names every repetition count from three to ten', function () {
+    expect(SzajtornaRounds::SAY)->toBe([
+        3 => 'háromszor', 4 => 'négyszer', 5 => 'ötször', 6 => 'hatszor',
+        7 => 'hétszer', 8 => 'nyolcszor', 9 => 'kilencszer', 10 => 'tízszer',
+    ]);
 });
 
 it('Lépegető builds a path from Start to Cél with a task on every field', function (int $level, int $fields) {
@@ -73,7 +76,7 @@ it('Lépegető builds a path from Start to Cél with a task on every field', fun
     }
     // no field twice on one board
     expect(collect($tiles)->pluck('text')->duplicates()->all())->toBe([]);
-})->with([[1, 8], [2, 12], [3, 16]]);
+})->with([[1, 8], [50, 14], [100, 20]]); // level → LepegetoRounds::FIELDS[tier(level, 5)]
 
 it('Lépegető has enough tasks for every season and every level', function (string $theme) {
     $rows = json_decode(file_get_contents(database_path('seeders/data/beszed/lepegeto.json')), true, flags: JSON_THROW_ON_ERROR);

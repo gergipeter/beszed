@@ -51,11 +51,11 @@ it('levels pick the right positions and modes', function () {
         expect($p['pos'])->toBe('start')->and($round['data']['mode'])->toBe('repeat')
             ->and($round['prompt']['text'])->toContain($p['word']);
     }
-    foreach (hanggyakorloRounds(2, 'sz') as [$round, $p]) {
+    foreach (hanggyakorloRounds(50, 'sz') as [$round, $p]) { // tier 2: levels 34-66
         expect($p['pos'])->toBeIn(['middle', 'end'])->and($round['data']['mode'])->toBe('repeat');
     }
 
-    $level3 = hanggyakorloRounds(3, 'k');
+    $level3 = hanggyakorloRounds(100, 'k'); // tier 3: levels 67-100
     $phrases = collect($level3)->filter(fn ($r) => $r[1]['pos'] === 'phrase');
     $named = collect($level3)->filter(fn ($r) => $r[0]['data']['mode'] === 'name');
     expect($phrases->count())->toBeGreaterThanOrEqual(2)->and($named->count())->toBeGreaterThanOrEqual(4);

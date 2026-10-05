@@ -3,10 +3,7 @@
 use App\Beszed\CsillamGuess;
 use App\Beszed\Rounds\KirakoRounds;
 use App\Beszed\Rounds\KulonbsegRounds;
-use App\Beszed\Rounds\NagysagRounds;
-use App\Beszed\Rounds\TortenetRounds;
 use App\Beszed\Rounds\UtasitasRounds;
-use App\Beszed\Rounds\ValogatoRounds;
 use App\Models\BeszedAttempt;
 use App\Models\BeszedContentItem;
 use App\Models\BeszedSkillLevel;
@@ -64,7 +61,7 @@ it('kirakó: shuffled, never solved, grid follows the level', function (int $lev
     }
 })->with([1, 7, 20, 50, 100]);
 
-it('rímpárok: cards pair by rhyme, never by identical word, pairs = level', function (int $level) {
+it('rímpárok: cards pair by rhyme, never by identical word, pairs follow the level', function (int $level, int $pairs) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'rimparok', 'level' => $level]);
     $rhymeOf = BeszedContentItem::forGame('rimparok')->get()->mapWithKeys(fn ($i) => [$i->payload['word'] => $i->payload['rhyme']]);
 
@@ -72,8 +69,8 @@ it('rímpárok: cards pair by rhyme, never by identical word, pairs = level', fu
         $cards = collect($round['data']['cards']);
         $byPair = $cards->groupBy('pair');
 
-        expect($cards)->toHaveCount($level * 2)
-            ->and($cards->pluck('id')->unique())->toHaveCount($level * 2)
+        expect($cards)->toHaveCount($pairs * 2)
+            ->and($cards->pluck('id')->unique())->toHaveCount($pairs * 2)
             ->and($byPair->map->count()->unique()->values()->all())->toBe([2]);
 
         foreach ($byPair as $pair) {
@@ -82,15 +79,16 @@ it('rímpárok: cards pair by rhyme, never by identical word, pairs = level', fu
                 ->and($rhymeOf[$a])->toBe($rhymeOf[$b]);
         }
     }
-})->with([2, 3, 4]);
+})->with([[2, 2], [30, 4], [85, 8]]); // level → scaleInt(min(level,85), 2, 8, 85)
 
-it('párkereső: every word exactly twice, pairs = level', function () {
+it('párkereső: every word exactly twice, pairs follow the level', function () {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'parkereso', 'level' => 5]);
+    $pairs = 4; // scaleInt(min(5,40), 3, 11, 40)
 
     foreach (gameSession('parkereso')['rounds'] as $round) {
         $cards = collect($round['data']['cards']);
-        expect($cards)->toHaveCount(10)
-            ->and($cards->pluck('id')->unique())->toHaveCount(10)
+        expect($cards)->toHaveCount($pairs * 2)
+            ->and($cards->pluck('id')->unique())->toHaveCount($pairs * 2)
             ->and($cards->countBy('pair')->unique()->values()->all())->toBe([2]);
     }
 });
@@ -122,9 +120,10 @@ it('hallgasd: the spoken word names the answer, options never repeat', function 
         $options = collect($round['data']['options']);
         $answer = $options->firstWhere('id', $round['data']['answer']);
 
+        // level 1 (the default start): scaleInt(1, 2, 4) = 2 options
         expect($round['prompt']['text'])->toBe($wordOf[(int) $round['data']['answer']])
-            ->and($options)->toHaveCount(3)
-            ->and($options->pluck('id')->unique())->toHaveCount(3)
+            ->and($options)->toHaveCount(2)
+            ->and($options->pluck('id')->unique())->toHaveCount(2)
             ->and($answer['label'])->toBe($round['prompt']['text']);
     }
 });
@@ -145,24 +144,24 @@ it('ikerhangok: the two options are always the item\'s own minimal pair', functi
     }
 });
 
-it('válogató: two baskets, each picture belongs to one of them, count follows the level', function (int $level) {
+it('válogató: two baskets, each picture belongs to one of them, count follows the level', function (int $level, int $pictures) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'valogato', 'level' => $level]);
 
     foreach (gameSession('valogato')['rounds'] as $round) {
         $bins = collect($round['data']['bins'])->pluck('id');
         $items = collect($round['data']['items']);
         expect($bins)->toHaveCount(2)
-            ->and($items)->toHaveCount(ValogatoRounds::PICTURES[$level])
-            ->and($items->countBy('bin')->all())->toEqual($bins->mapWithKeys(fn ($b) => [$b => ValogatoRounds::PICTURES[$level] / 2])->all())
+            ->and($items)->toHaveCount($pictures)
+            ->and($items->countBy('bin')->all())->toEqual($bins->mapWithKeys(fn ($b) => [$b => $pictures / 2])->all())
             ->and($items->every(fn ($i) => str_contains($i['wrong'], ' nem ')))->toBeTrue();
     }
-})->with([1, 2, 3]);
+})->with([[1, 4], [50, 6], [100, 10]]); // level → 2 * intdiv(scaleInt(level,4,10),2)
 
-it('mi a különbség: the panels differ in exactly one cell, grid follows the level', function (int $level) {
+it('mi a különbség: the panels differ in exactly one cell, grid follows the level', function (int $level, int $tier) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'kulonbseg', 'level' => $level]);
     $groupOf = BeszedContentItem::forGame('kulonbseg')->get()->mapWithKeys(fn ($i) => [$i->payload['emoji'] => $i->payload['group']]);
     $bare = fn (string $picture) => str_contains($picture, '~') ? explode('~', $picture)[1] : $picture; // "arasaac:1~🐶" → "🐶"
-    [$cols, $rows] = KulonbsegRounds::GRIDS[$level];
+    [$cols, $rows] = KulonbsegRounds::GRIDS[$tier];
 
     foreach (gameSession('kulonbseg')['rounds'] as $round) {
         ['left' => $left, 'right' => $right, 'diff' => $diff] = $round['data'];
@@ -173,28 +172,25 @@ it('mi a különbség: the panels differ in exactly one cell, grid follows the l
             ->and($differs)->toBe([$diff])
             ->and(collect($left)->unique())->toHaveCount($cols * $rows)
             ->and(collect($right)->unique())->toHaveCount($cols * $rows);
-        // top level: a look-alike from the same group; below it, something clearly different
-        $same = $groupOf[$bare($left[$diff])] === $groupOf[$bare($right[$diff])];
-        expect($same)->toBe($level === 3);
     }
-})->with([1, 2, 3]);
+})->with([[1, 1], [50, 2], [100, 3]]); // level → tier (tier() bands: 1-33/34-66/67-100)
 
-it('kicsitől a nagyig: n sizes of one picture, shuffled, ordered by size', function (int $level) {
+it('kicsitől a nagyig: n sizes of one picture, shuffled, ordered by size', function (int $level, int $n) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'nagysag', 'level' => $level]);
 
     foreach (gameSession('nagysag')['rounds'] as $r => $round) {
         $items = collect($round['data']['items'])->keyBy('id');
         $scales = collect($round['data']['order'])->map(fn ($id) => $items[$id]['scale'])->all();
-        $down = $level === 3 && $r % 2 === 1;
+        $down = $level >= 67 && $r % 2 === 1; // tier 3
 
-        expect($items)->toHaveCount(NagysagRounds::SIZES[$level])
+        expect($items)->toHaveCount($n)
             ->and($items->pluck('emoji')->unique())->toHaveCount(1)
             ->and($scales)->toBe(collect($scales)->sort()->when($down, fn ($s) => $s->reverse())->values()->all())
             ->and($items->keys()->all())->not->toBe($round['data']['order']);
     }
-})->with([1, 2, 3]);
+})->with([[1, 3], [50, 4], [100, 5]]); // level → scaleInt(level, 3, 5)
 
-it('mi történt előbb: the story\'s steps in order, first and last kept, shuffled', function (int $level) {
+it('mi történt előbb: the story\'s steps in order, first and last kept, shuffled', function (int $level, int $n) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'tortenet', 'level' => $level]);
     $stories = BeszedContentItem::forGame('tortenet')->get()->keyBy('id');
 
@@ -204,29 +200,29 @@ it('mi történt előbb: the story\'s steps in order, first and last kept, shuff
         $told = collect($round['data']['order'])->map(fn ($id) => $items[$id]['label'])->all();
         $positions = collect($told)->map(fn ($label) => array_search($label, $steps, true))->all();
 
-        expect($told)->toHaveCount(TortenetRounds::STEPS[$level])
+        expect($told)->toHaveCount(min($n, count($steps)))
             ->and($positions)->toBe(collect($positions)->sort()->values()->all())
             ->and($told[0])->toBe($steps[0])
             ->and(end($told))->toBe(end($steps))
             ->and($items->keys()->all())->not->toBe($round['data']['order']);
     }
-})->with([1, 2]);
+})->with([[1, 3], [100, 6]]); // level → scaleInt(level, 3, 6)
 
-it('mi tűnt el: n pictures, the missing one among them, the other choices never shown', function (int $level) {
+it('mi tűnt el: n pictures, the missing one among them, the other choices never shown', function (int $level, int $n) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'mitunt', 'level' => $level]);
 
     foreach (gameSession('mitunt')['rounds'] as $round) {
         $shown = collect($round['data']['items'])->pluck('id');
         $options = collect($round['data']['options'])->pluck('id');
 
-        expect($shown)->toHaveCount($level)
-            ->and($shown->unique())->toHaveCount($level)
+        expect($shown)->toHaveCount($n)
+            ->and($shown->unique())->toHaveCount($n)
             ->and($shown)->toContain($round['data']['missing'])
             ->and($options)->toContain($round['data']['missing'])
             ->and($options->intersect($shown)->values()->all())->toBe([$round['data']['missing']])
             ->and((string) $round['content_item_id'])->toBe($round['data']['missing']);
     }
-})->with([3, 6]);
+})->with([[3, 3], [100, 8]]);
 
 it('hogy érzi magát: the right face belongs to the feeling, situations never offer a look-alike feeling', function () {
     $feelings = BeszedContentItem::forGame('erzelmek')->get()->keyBy('id');
@@ -249,7 +245,7 @@ it('hogy érzi magát: the right face belongs to the feeling, situations never o
     expect($feelings->flatMap($faces)->duplicates()->all())->toBe([]);
 });
 
-it('állatkórus: the same four animals all session, n notes, never one animal three times in a row', function (int $level) {
+it('állatkórus: the same four animals all session, n notes, never one animal three times in a row', function (int $level, int $n) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'korus', 'level' => $level]);
     $rounds = gameSession('korus')['rounds'];
     $pads = collect($rounds[0]['data']['pads'])->pluck('id')->all();
@@ -258,18 +254,20 @@ it('állatkórus: the same four animals all session, n notes, never one animal t
         $order = $round['data']['order'];
         expect(collect($round['data']['pads'])->pluck('id')->all())->toBe($pads)
             ->and($pads)->toHaveCount(4)
-            ->and($order)->toHaveCount($level)
+            ->and($order)->toHaveCount($n)
             ->and(array_diff($order, $pads))->toBe([]);
         for ($k = 2; $k < count($order); $k++) {
             expect($order[$k] === $order[$k - 1] && $order[$k] === $order[$k - 2])->toBeFalse();
         }
     }
-})->with([2, 7]);
+})->with([[2, 2], [60, 8], [100, 8]]); // level → scaleInt(min(level,60), 2, 8, 60), saturates at 60
 
 it('csináld, amit mondok: every direction has exactly one right way to follow it', function (int $level) {
     BeszedSkillLevel::create(['child_id' => $this->child->id, 'game' => 'utasitas', 'level' => $level]);
     $items = BeszedContentItem::forGame('utasitas')->get()->keyBy('id');
-    [$size, $kinds] = UtasitasRounds::LEVELS[$level];
+    // $level is always a tier's last level, where the within-tier grid scale reaches that tier's ceiling size
+    $tier = min(3, (int) ceil($level * 3 / 100));
+    [, $size, $kinds] = UtasitasRounds::TIERS[$tier];
 
     foreach (gameSession('utasitas')['rounds'] as $r => $round) {
         $grid = collect($round['data']['grid'])->pluck('id');
@@ -303,7 +301,7 @@ it('csináld, amit mondok: every direction has exactly one right way to follow i
             }
         }
     }
-})->with([1, 2, 3]);
+})->with([33, 66, 100]); // the last level of each tier, where the grid scale reaches that tier's ceiling size
 
 it('lets Csillám have a go in a few choice rounds: never the first, never Brumi and Nyuszi, at most max', function () {
     $choice = fn (array $extra = []) => ['engine' => 'choice', 'data' => $extra + [

@@ -60,7 +60,7 @@ it('keeps near fits real answers of the same group', function () {
     }
 });
 
-it('says the clues one by one and offers the answer among pictures of its own group', function (int $level) {
+it('says the clues one by one and offers the answer among pictures of its own group', function (int $level, int $tier) {
     $items = talalosItems();
 
     foreach (range(1, 6) as $i) {
@@ -73,8 +73,8 @@ it('says the clues one by one and offers the answer among pictures of its own gr
             $ids = array_column($data['options'], 'id');
 
             expect($round['engine'])->toBe('choice')
-                ->and($data['options'])->toHaveCount($level >= 3 ? 4 : 3)
-                ->and($data['layout'])->toBe($level >= 3 ? 'four' : 'three')
+                ->and($data['options'])->toHaveCount($tier >= 3 ? 4 : 3)
+                ->and($data['layout'])->toBe($tier >= 3 ? 'four' : 'three')
                 ->and($ids)->toContain($data['answer'])
                 ->and($data['answer'])->toBe((string) $round['content_item_id'])
                 ->and(array_unique(array_column($data['options'], 'emoji')))->toHaveCount(count($ids))
@@ -99,7 +99,7 @@ it('says the clues one by one and offers the answer among pictures of its own gr
             expect($data['onCorrect'])->toContain($riddle['answer']);
         }
     }
-})->with([1, 2, 3]);
+})->with([[1, 1], [50, 2], [100, 3]]); // level → tier(level, 3)
 
 it('plays the easier riddles at the lower levels', function () {
     $items = talalosItems();

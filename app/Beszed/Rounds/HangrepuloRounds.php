@@ -7,13 +7,15 @@ use Illuminate\Support\Collection;
 /**
  * Hangrepülő: the child's voice flies a rocket, a bee or a balloon (engine `voice`). Csillám models a sound
  * to hold ("ááá", "sssz, mint a kígyó") and the microphone hears whether it is on, how loud and how high.
- * Level 1 (`sustain`): 2 s of sound in all, pauses allowed · 2 (`sustain`, continuous): 4 s without
- * stopping, the flyer falls back when the voice stops · 3 (`pitch`): high voice up, low voice down, to
- * collect the stars (relative to the child's own voice; loudness stands in when no pitch is found).
+ * The adaptive level (1–100) splits into three equal tiers (tier()): tier 1 (`sustain`, pauses allowed):
+ * the hold time grows smoothly from 2 s up towards 4 s · tier 2 (`sustain`, continuous): the hold time
+ * keeps growing across the tier, now without stopping — the flyer falls back when the voice stops ·
+ * tier 3 (`pitch`): high voice up, low voice down, to collect the stars (relative to the child's own
+ * voice; loudness stands in when no pitch is found) — the star count grows from 2 to 3 within the tier.
  */
 class HangrepuloRounds extends RoundFactory
 {
-    /** level → [mode, ms to hold, without stopping?] */
+    /** Old tier → [mode, ms to hold, without stopping?]; kept for reference/tests. */
     public const LEVELS = [1 => ['sustain', 2000, false], 2 => ['sustain', 4000, true], 3 => ['pitch', 0, false]];
 
     /** What flies and how Csillám names it (the client's FlyScene draws each with its goal: keep the ids in sync). */
@@ -60,14 +62,21 @@ class HangrepuloRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        [$mode, $ms, $continuous] = self::LEVELS[$level];
+        $tier = $this->tier($level, 3);
+        $mode = $tier >= 3 ? 'pitch' : 'sustain';
+        $continuous = $tier >= 2;
+        // 2 s at the start of tier 1 growing to 4 s by the end of tier 2; tier 3 (pitch) doesn't use ms
+        $ms = $this->scaleInt($level, 2000, 4000, 66);
         $kind = $mode === 'pitch' ? 'pitch' : 'sustain';
         $pool = $items->filter(fn ($i) => ($i->payload['kind'] ?? 'sustain') === $kind)->values();
         if ($pool->isEmpty()) {
             $pool = $items->values();
         }
         $this->favorLevel($pool, $level);
+        // within tier 3, the default star count grows from 2 to 3 (the first round of a session always starts at 2)
+        $tierSpan = 100 / 3;
+        $intoTier = $level - ($tier - 1) * $tierSpan;
+        $defaultStars = $intoTier > $tierSpan / 2 ? 3 : 2;
 
         $rounds = [];
         $highFirst = (bool) random_int(0, 1);
@@ -104,8 +113,9 @@ class HangrepuloRounds extends RoundFactory
                 }
                 $data['onCorrect'] = $flyer['done'].' '.$this->pickNot(self::PRAISE, null);
             } else {
-                // two stars in the first round, then three; high and low in turn
-                $xs = $r === 0 ? [0.42, 0.78] : [0.34, 0.6, 0.86];
+                // two stars in the first round regardless, then the level's default count; high and low in turn
+                $n = $r === 0 ? 2 : $defaultStars;
+                $xs = $n === 2 ? [0.42, 0.78] : [0.34, 0.6, 0.86];
                 $data['stars'] = collect($xs)->map(fn ($x, $k) => ['x' => $x, 'high' => ($k % 2 === 0) === ($highFirst xor $r % 2 === 1)])->all();
                 $data['hints'] += ['high' => 'Most magasabban!', 'low' => 'Most mélyebben!'];
                 $say = [$ask];

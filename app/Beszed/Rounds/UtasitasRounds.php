@@ -7,19 +7,21 @@ use Illuminate\Support\Collection;
 /**
  * Following directions ("Csináld, amit mondok!"): Csillám says what to tap, the
  * child does it. Each content item is a picture with its group and its "-ra/-re"
- * form (kutyára). $level picks the kinds of direction:
- *   1 → one picture, or the one animal / fruit… among four
- *   2 → two pictures in order, or every picture of a group, among six
- *   3 → three in order, "before" (said in reverse), or everything that is NOT of a group
+ * form (kutyára). $level (1-100) picks the kinds of direction via three tiers:
+ *   tier 1 (1-33) → one picture, or the one animal / fruit… among four
+ *   tier 2 (34-66) → two pictures in order, or every picture of a group, among six
+ *   tier 3 (67-100) → three in order, "before" (said in reverse), or everything that is NOT of a group
+ * Within a tier, the grid size creeps up continuously towards the next tier's size, so a
+ * child doesn't sit at a flat 4- or 6-picture grid for 33 levels.
  * `steps` is what to tap, in order; the pictures inside one step in any order.
  */
 class UtasitasRounds extends RoundFactory
 {
-    /** level → [pictures on the grid, kinds of direction (taken in turn)] */
-    public const LEVELS = [
-        1 => [4, ['one', 'group']],
-        2 => [6, ['two', 'all']],
-        3 => [6, ['three', 'before', 'not']],
+    /** tier → [smallest grid of the tier, largest grid of the tier, kinds of direction (taken in turn)] */
+    public const TIERS = [
+        1 => [4, 6, ['one', 'group']],
+        2 => [6, 6, ['two', 'all']],
+        3 => [6, 8, ['three', 'before', 'not']],
     ];
 
     /** group key → [the group's word, its "-ra/-re" form, article] */
@@ -39,7 +41,11 @@ class UtasitasRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        [$size, $kinds] = self::LEVELS[$level] ?? self::LEVELS[1];
+        $tier = $this->tier($level, 3);
+        [$from, $to, $kinds] = self::TIERS[$tier];
+        $bandSize = 100 / 3;
+        $within = (int) round(max(0, min(100, $level - ($tier - 1) * $bandSize)));
+        $size = $this->scaleInt($within, $from, $to, (int) $bandSize);
         $rounds = [];
 
         foreach ($this->cycle($items, $count)->values() as $r => $item) {

@@ -4,35 +4,44 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
-/** Pattern continuation + odd one out. */
+/**
+ * Pattern continuation + odd one out. The adaptive level (1–100) splits into three equal tiers (tier()) for
+ * the pattern kinds unlocked: tier 1 only the simple two-alternating AB pattern, tier 2 adds the doubled
+ * beats AAB/ABB, tier 3 adds the three-part ABC sequence. The odd-one-out categories (favorLevel()) get
+ * harder the same way through the content's own level field. Within a tier, the sequence shown before the
+ * child must continue it occasionally runs one extra repeat, more and more often towards level 100.
+ */
 class OkoskaRounds extends RoundFactory
 {
     /** Pattern kinds by how hard they are to continue: two alternating, a doubled beat, then three-part sequences. */
-    private const PATTERNS_BY_LEVEL = [1 => ['AB'], 2 => ['AB', 'AAB', 'ABB'], 3 => ['AB', 'AAB', 'ABB', 'ABC']];
+    private const PATTERNS_BY_TIER = [1 => ['AB'], 2 => ['AB', 'AAB', 'ABB'], 3 => ['AB', 'AAB', 'ABB', 'ABC']];
 
     public function build(Collection $items, int $level, int $count): array
     {
         $symbols = $items->first(fn ($i) => $i->payload['kind'] === 'symbols')?->payload['emojis'] ?? [];
         $cats = $items->filter(fn ($i) => $i->payload['kind'] === 'category')->values();
         $this->favorLevel($cats, $level);
-        $types = self::PATTERNS_BY_LEVEL[$level] ?? self::PATTERNS_BY_LEVEL[3];
+        $tier = $this->tier($level, 3);
+        $types = self::PATTERNS_BY_TIER[$tier];
         $rounds = [];
 
         for ($r = 0; $r < $count; $r++) {
             $pattern = count($symbols) >= 3 && ($cats->count() < 2 || $r % 2 === 0);
-            $rounds[] = $pattern ? $this->pattern($symbols, $types) : $this->oddOneOut($cats);
+            $rounds[] = $pattern ? $this->pattern($symbols, $types, $level) : $this->oddOneOut($cats);
         }
 
         return $rounds;
     }
 
-    private function pattern(array $symbols, array $types): array
+    private function pattern(array $symbols, array $types, int $level): array
     {
         $type = $types[array_rand($types)];
         $syms = collect($symbols)->shuffle()->take(3)->values()->all();
         $unit = array_map(fn ($c) => $syms[ord($c) - 65], str_split($type));
         $len = count($unit);
-        $shown = $len * 2 + random_int(0, $len - 1);
+        // two full repeats plus a partial one, as before; levels higher within a tier sometimes show one more full repeat
+        $moreOften = $this->scale($level, 0.0, 1.0) > mt_rand() / mt_getrandmax();
+        $shown = $len * (2 + ($moreOften ? 1 : 0)) + random_int(0, $len - 1);
         $answer = $unit[$shown % $len];
         $sequence = array_map(fn ($i) => $unit[$i % $len], range(0, $shown - 1));
 

@@ -6,25 +6,31 @@ use Illuminate\Support\Collection;
 
 /**
  * Numbers to ten, the way school-readiness checks ask them: how many are there,
- * which number comes next (and, later, backwards), one more or one less, the
- * biggest or smallest number. $level sets the range: 1 → 1–5, 2 → 1–8, 3 → 1–10.
+ * which number comes next, one more or one less, the biggest or smallest number.
+ * $level (1–100) scales the number range continuously, from 1–5 at level 1 up
+ * to 1–10 from level 67 up (the old level-3 range, reached early enough that
+ * most of the band is spent consolidating it, not still growing). Counting
+ * backwards (in "next") and taking away (in "more") start only in the top
+ * third (67–100, the old level 3's qualitative addition), each picked at
+ * random half the time there; the "biggest/smallest" gap between the three
+ * numbers shrinks from 2 to 1 over the same span, so picking the odd one out
+ * gets harder as the range fills in.
  */
 class SzamokRounds extends RoundFactory
 {
-    private const MAX_BY_LEVEL = [1 => 5, 2 => 8, 3 => 10];
-
     private const MODES = ['count', 'next', 'more', 'biggest'];
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        $max = self::MAX_BY_LEVEL[$level];
+        $level = max(1, min(100, $level));
+        $max = $this->scaleInt($level, 5, 10, 100, 0.6);
+        $hard = $this->tier($level, 3) === 3;
 
-        return $this->cycle($items, $count)->map(function ($it, $i) use ($level, $max) {
+        return $this->cycle($items, $count)->map(function ($it, $i) use ($level, $max, $hard) {
             return match (self::MODES[$i % count(self::MODES)]) {
                 'count' => $this->count($it, $max),
-                'next' => $this->next($it, $level, $max),
-                'more' => $this->more($it, $level, $max),
+                'next' => $this->next($it, $hard, $max),
+                'more' => $this->more($it, $hard, $max),
                 default => $this->biggest($it, $level, $max),
             };
         })->values()->all();
@@ -43,10 +49,10 @@ class SzamokRounds extends RoundFactory
         ], $it->id);
     }
 
-    private function next($it, int $level, int $max): array
+    private function next($it, bool $hard, int $max): array
     {
-        // level 3 sometimes counts backwards
-        $down = $level === 3 && random_int(0, 1) === 1;
+        // top tier only, sometimes counts backwards
+        $down = $hard && random_int(0, 1) === 1;
         $len = 3;
         $start = $down ? random_int($len + 1, $max) : random_int(1, $max - $len);
         $row = array_map(fn ($k) => (string) ($down ? $start - $k : $start + $k), range(0, $len - 1));
@@ -59,10 +65,10 @@ class SzamokRounds extends RoundFactory
         ], $it->id);
     }
 
-    private function more($it, int $level, int $max): array
+    private function more($it, bool $hard, int $max): array
     {
         $f = $it->payload;
-        $d = $level === 3 && random_int(0, 1) === 1 ? -1 : 1;
+        $d = $hard && random_int(0, 1) === 1 ? -1 : 1;
         $n = $d === 1 ? random_int(1, $max - 1) : random_int(2, $max);
         $answer = $n + $d;
 
@@ -80,7 +86,7 @@ class SzamokRounds extends RoundFactory
 
     private function biggest($it, int $level, int $max): array
     {
-        $gap = $level === 1 ? 2 : 1;
+        $gap = $this->scaleInt($level, 2, 1);
         do {
             $nums = collect(range(1, $max))->shuffle()->take(3)->sort()->values()->all();
         } while ($nums[2] - $nums[1] < $gap || $nums[1] - $nums[0] < $gap);

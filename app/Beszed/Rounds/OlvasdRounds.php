@@ -6,13 +6,15 @@ use Illuminate\Support\Collection;
 
 /**
  * Reading a word: it is written in syllables ("ku-tya") and never said; the child reads it (with a parent's help at first)
- * and taps the picture that goes with it. $level = the content's level: short words, longer two-syllable ones, three syllables.
+ * and taps the picture that goes with it. $level (1–100) maps onto the content's own 1–3 level via tier():
+ * short words, then longer two-syllable ones, then three syllables, each a third of the band.
  */
 class OlvasdRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->values();
         $pool = $pool->count() >= 6 ? $pool : $items;
         $this->favorLevel($pool, $level);
         $rounds = [];

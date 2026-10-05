@@ -4,7 +4,10 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
-/** Grammaticality judgment: Hungarian vs English-shaped word order. */
+/**
+ * Grammaticality judgment: Hungarian vs English-shaped word order. The content's own 1–3 level
+ * (sentence complexity) is favoured by tier() across the full 1–100 adaptive level.
+ */
 class MelyikRounds extends RoundFactory
 {
     private const SPEAKERS = [['Brumi', '🐻'], ['Nyuszi', '🐰']];

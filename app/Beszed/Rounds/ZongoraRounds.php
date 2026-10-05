@@ -9,7 +9,12 @@ use Illuminate\Support\Collection;
  * education in three kinds of round: find the named/heard note, say which of
  * two notes is higher or lower, and play a short tune back. The content items
  * are the eight notes, so a note the child keeps missing comes back sooner.
- * $level 1: coloured, named keys · 2: named keys and the note is played · 3: by ear only, closer notes, longer tunes.
+ *
+ * $level spans 1–100: colours and labels fade out over tier 1 (RoundFactory::tier(), levels 1–33: coloured,
+ * named keys), the note is played alongside the name over tier 2 (34–66), and by tier 3 (67–100) it is by
+ * ear only; within that span compare()'s minimum gap between the two notes and echo()'s tune length both
+ * shrink/grow smoothly (scale()) rather than jumping at the tier edges, so levels close to 100 ask for
+ * closer notes and longer tunes than the old level 3 ever did.
  */
 class ZongoraRounds extends RoundFactory
 {
@@ -20,7 +25,7 @@ class ZongoraRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
+        $tier = $this->tier($level, 3);
         $notes = $this->cycle($items, $count)->values();
         $rounds = [];
 
@@ -28,11 +33,11 @@ class ZongoraRounds extends RoundFactory
             $mode = self::MODES[$r % count(self::MODES)];
             $base = [
                 'keys' => array_map(fn ($label) => ['label' => $label], self::KEYS),
-                'colors' => $level === 1,
-                'labels' => $level < 3,
+                'colors' => $tier === 1,
+                'labels' => $tier < 3,
             ];
             $rounds[] = match ($mode) {
-                'find' => $this->find($it, $level, $base),
+                'find' => $this->find($it, $level, $tier, $base),
                 'compare' => $this->compare($it, $level, $base),
                 default => $this->echo($it, $level, $base, $r === 0),
             };
@@ -41,25 +46,26 @@ class ZongoraRounds extends RoundFactory
         return $rounds;
     }
 
-    private function find($it, int $level, array $base): array
+    private function find($it, int $level, int $tier, array $base): array
     {
         $note = (int) $it->payload['note'];
         $name = $this->ucfirst($it->payload['name']);
-        $prompt = $level >= 3
+        $prompt = $tier >= 3
             ? 'Hallgasd meg a hangot, és keresd meg a zongorán!'
             : "Keresd meg a {$name} hangot! Koppints arra a billentyűre!";
 
         return $this->round('piano', $prompt, $base + [
             'mode' => 'find',
             'target' => $note,
-            'hear' => $level >= 2,
-            'onCorrect' => $level >= 3 ? 'Jó füled van! Ez volt az!' : "Igen, ez a {$name}!",
+            'hear' => $tier >= 2,
+            'onCorrect' => $tier >= 3 ? 'Jó füled van! Ez volt az!' : "Igen, ez a {$name}!",
         ], $it->id);
     }
 
     private function compare($it, int $level, array $base): array
     {
-        $minGap = [1 => 4, 2 => 2, 3 => 1][$level];
+        // 4 at level 1, down to 1 (the smallest possible step) well before level 100.
+        $minGap = $this->scaleInt($level, 4, 1, 100, 0.6);
         $a = random_int(0, 7);
         do {
             $b = random_int(0, 7);
@@ -77,8 +83,9 @@ class ZongoraRounds extends RoundFactory
 
     private function echo($it, int $level, array $base, bool $first): array
     {
-        $n = [1 => 2, 2 => 3, 3 => random_int(4, 5)][$level];
-        $top = $level === 1 ? 4 : 7; // the first five keys are enough for the smallest
+        // 2 notes at level 1, up to 7 by level 100 (the old level 3 topped out at 4–5).
+        $n = $this->scaleInt($level, 2, 7);
+        $top = $level < 17 ? 4 : 7; // the first five keys are enough for the easiest band
         $melody = [random_int(0, $top)];
         while (count($melody) < $n) {
             $next = random_int(0, $top);
@@ -89,7 +96,7 @@ class ZongoraRounds extends RoundFactory
 
         return $this->round('piano', $first
             ? 'Figyelj! Lejátszom egy kis dallamot. Utána te jössz: játszd le ugyanazt a zongorán!'
-            : 'Figyelj! Most '.self::NUM[$n].' hang jön.', $base + [
+            : 'Figyelj! Most '.(self::NUM[$n] ?? $n).' hang jön.', $base + [
             'mode' => 'echo',
             'melody' => $melody,
             'onCorrect' => 'Szuper! Pontosan ezt játszottam!',

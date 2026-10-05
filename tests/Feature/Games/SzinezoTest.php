@@ -106,7 +106,7 @@ it('rejects unknown pictures, regions and colours', function (array $payload, st
     'too few plain steps' => [['picture' => 'haz', 'name' => 'Ház', 'steps' => ['teto=piros', 'fal=sarga', 'ablak_bal=kek', 'ablak_jobb=zold']], 'steps'],
 ]);
 
-it('follows the level: sentences, parts and paint pots', function (int $level) {
+it('follows the level: sentences, parts and paint pots', function (int $level, int $tier, int $pots) {
     foreach (range(1, 4) as $repeat) {
         foreach (szinezoSession($level)['rounds'] as $round) {
             $d = $round['data'];
@@ -121,7 +121,7 @@ it('follows the level: sentences, parts and paint pots', function (int $level) {
                 ->and(array_keys($d['regions']))->toBe(array_keys($regions))
                 ->and($d['freePots'])->toBe(array_keys(S::COLORS))
                 // every pot needed is there, in paint-box order
-                ->and($d['pots'])->toHaveCount([1 => 3, 2 => 6, 3 => 8][$level])
+                ->and($d['pots'])->toHaveCount($pots)
                 ->and(array_diff($fills->pluck('color')->unique()->all(), $d['pots']))->toBe([])
                 ->and($d['pots'])->toBe(array_values(array_intersect(array_keys(S::COLORS), $d['pots'])))
                 // each part once, with the colour the content gives it
@@ -130,8 +130,8 @@ it('follows the level: sentences, parts and paint pots', function (int $level) {
                 expect($asked[$f['region']] ?? null)->toBe($f['color']);
             }
 
-            if ($level < 3) {
-                expect($d['steps'])->toHaveCount($level === 1 ? 3 : 4)
+            if ($tier < 3) {
+                expect($d['steps'])->toHaveCount($tier === 1 ? 3 : 4)
                     ->and($fills->contains(fn ($f) => S::isSide($f['region'])))->toBeFalse();
                 foreach ($d['steps'] as $s) {
                     expect($s['fills'])->toHaveCount(1)->and($s['say'])->toStartWith('Színezd ');
@@ -149,7 +149,7 @@ it('follows the level: sentences, parts and paint pots', function (int $level) {
             }
         }
     }
-})->with([1, 2, 3]);
+})->with([[1, 1, 3], [50, 2, 5], [100, 3, 8]]); // level → [tier(level,3), scaleInt(level,3,8)]
 
 it('says the steps in correct Hungarian', function () {
     $house = szinezoItem(1, 'haz', 'Ház', ['teto=piros', 'ajto=barna', 'fu=zold']);
@@ -167,7 +167,7 @@ it('says the steps in correct Hungarian', function () {
         // three pots: the colours asked and no look-alike of them at level 1
         ->and($round['data']['pots'])->toHaveCount(3)->toContain('piros', 'barna', 'zold');
 
-    $level3 = (new S)->build(collect([szinezoItem(2, 'haz', 'Ház', ['teto=piros', 'ajto=barna', 'fu=zold', 'nap=sarga', 'ablak_bal=kek', 'ablak_jobb=sarga'], 3)]), 3, 1)[0];
+    $level3 = (new S)->build(collect([szinezoItem(2, 'haz', 'Ház', ['teto=piros', 'ajto=barna', 'fu=zold', 'nap=sarga', 'ablak_bal=kek', 'ablak_jobb=sarga'], 3)]), 100, 1)[0]; // tier 3: levels 67-100
     expect(collect($level3['data']['steps'])->pluck('say')->all())->toBe([
         'Színezd a tetőt pirosra, az ajtót pedig barnára!',
         'Színezd a füvet zöldre, a napot pedig sárgára!',
@@ -175,7 +175,7 @@ it('says the steps in correct Hungarian', function () {
     ]);
 
     // the same colour twice: "is", not "pedig"
-    $snowman = (new S)->build(collect([szinezoItem(3, 'hoember', 'Hóember', ['kalap=fekete', 'sal=piros', 'orr=narancs', 'gombok=kek', 'fenyo_bal=zold', 'fenyo_jobb=zold'], 3)]), 3, 1)[0];
+    $snowman = (new S)->build(collect([szinezoItem(3, 'hoember', 'Hóember', ['kalap=fekete', 'sal=piros', 'orr=narancs', 'gombok=kek', 'fenyo_bal=zold', 'fenyo_jobb=zold'], 3)]), 100, 1)[0]; // tier 3: levels 67-100
     expect(end($snowman['data']['steps'])['say'])->toBe('Színezd a bal oldali fenyőfát zöldre, a jobb oldalit is zöldre!')
         ->and($snowman['data']['steps'][0]['say'])->toBe('Színezd a kalapot feketére, a sálat pedig pirosra!')
         ->and($snowman['data']['steps'][1]['fills'][0]['wrongPart'])->toBe('Hoppá, nem ott! Keresd meg a hóember orrát, és színezd narancssárgára!');

@@ -6,9 +6,10 @@ use Illuminate\Support\Collection;
 
 /**
  * Pontról pontra (dot to dot): a shape's outline becomes numbered dots; the
- * child joins them in order and the picture pops out at the end. The level is
- * the number of dots (6, 10, 15); at the top level every other round is the
- * Hungarian ABC instead of numbers (a two-letter letter such as "cs" is one dot).
+ * child joins them in order and the picture pops out at the end. The number of
+ * dots grows smoothly with the adaptive level, from 6 up to 15; from tier 3
+ * (level 67+) on, every other round is the Hungarian ABC instead of numbers
+ * (a two-letter letter such as "cs" is one dot).
  *
  * The board is a square, coordinates 0–1. Dots are kept at least MIN_GAP apart,
  * so on a phone (a board of about 350 px) every dot owns a tap area of 44 px
@@ -16,7 +17,7 @@ use Illuminate\Support\Collection;
  */
 class PontozoRounds extends RoundFactory
 {
-    /** level → number of dots */
+    /** Old level → number of dots; kept for DOTS[1..3] call sites elsewhere (e.g. tests). */
     public const DOTS = [1 => 6, 2 => 10, 3 => 15];
 
     /** Smallest distance between two dots, as a share of the board. */
@@ -48,15 +49,15 @@ class PontozoRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        $n = self::DOTS[$level];
-        // a shape made for more dots than the level gives would lose its look
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->whenEmpty(fn () => $items);
+        $n = $this->scaleInt($level, 6, 15);
+        $tier = $this->tier($level, 3);
+        // a shape made for more dots than the content's own level gives would lose its look
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->whenEmpty(fn () => $items);
         $this->favorLevel($pool, $level);
 
         $rounds = [];
         foreach ($this->cycle($pool, $count)->values() as $r => $item) {
-            $letters = $level >= 3 && $r % 2 === 1;
+            $letters = $tier >= 3 && $r % 2 === 1;
             $rounds[] = $this->shapeRound($item, $n, $r, $letters);
         }
 

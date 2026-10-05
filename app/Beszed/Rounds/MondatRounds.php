@@ -6,13 +6,15 @@ use Illuminate\Support\Collection;
 
 /**
  * Sentence building: Csillám says a short sentence, its words lie shuffled, and the child taps them
- * in the order they were said. Word order and listening memory in one. $level = words in the sentence: 1 → 3, 2 → 4, 3 → 5.
+ * in the order they were said. Word order and listening memory in one. The target sentence length
+ * grows smoothly from three words at level 1 to five at level 100 (scaleInt(); content tops out at
+ * five words).
  */
 class MondatRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
-        $n = $level + 2;
+        $n = $this->scaleInt($level, 3, 5);
         $pool = $items->filter(fn ($i) => count(explode(' ', $i->payload['text'])) === $n)->values();
         $pool = $pool->count() >= 3 ? $pool : $items;
         $rounds = [];

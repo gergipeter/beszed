@@ -10,13 +10,16 @@ use Illuminate\Support\Collection;
  * and lets the others go. The server sends the whole stream (order, timing, lane, which are targets) and every
  * sentence Csillám may say; the catch engine only plays it and counts mistakes.
  *
- * Content rows are rules: level 1 `visual` (one picture against one other, slowly), level 2 `category` (a whole
- * group, faster), level 3 `sound` (each picture says its word as it appears; catch the words with the sound in
- * them). At level 3 one round of the session is a category rule that turns round mid-stream ("Most fordítva!").
+ * Content rows are rules: tier 1 (levels 1-33) `visual` (one picture against one other, slowly), tier 2
+ * (34-66) `category` (a whole group, faster), tier 3 (67-100) `sound` (each picture says its word as it
+ * appears; catch the words with the sound in them). In tier 3 one round of the session is a category rule
+ * that turns round mid-stream ("Most fordítva!"). Within every tier, pace (gap between bubbles, rise time,
+ * how many targets/others stream by, lane count) creeps up continuously with $level, so a child isn't stuck
+ * on one flat speed for 33 levels.
  */
 class KapdelRounds extends RoundFactory
 {
-    /** Pace per kind: targets to catch, targets and others in the stream, ms between bubbles, ms a bubble rises, lanes. */
+    /** Pace per kind, at the EASIEST level of its tier: targets to catch, targets and others in the stream, ms between bubbles, ms a bubble rises, lanes. */
     public const PACE = [
         'visual' => ['need' => 5, 'targets' => 8, 'others' => 4, 'gap' => 1800, 'rise' => 6500, 'lanes' => [0.2, 0.5, 0.8]],
         'category' => ['need' => 6, 'targets' => 9, 'others' => 6, 'gap' => 1300, 'rise' => 5200, 'lanes' => [0.14, 0.38, 0.62, 0.86]],
@@ -26,13 +29,21 @@ class KapdelRounds extends RoundFactory
         'switch' => ['need' => 7, 'targets' => 5, 'others' => 3, 'gap' => 1400, 'rise' => 5500, 'lanes' => [0.14, 0.38, 0.62, 0.86]],
     ];
 
+    /** Pace per kind, at the HARDEST level of its tier: more to catch, faster, tighter. */
+    public const PACE_MAX = [
+        'visual' => ['need' => 6, 'targets' => 10, 'others' => 6, 'gap' => 1300, 'rise' => 5000, 'lanes' => [0.14, 0.38, 0.62, 0.86]],
+        'category' => ['need' => 8, 'targets' => 12, 'others' => 9, 'gap' => 950, 'rise' => 3900, 'lanes' => [0.1, 0.3, 0.5, 0.7, 0.9]],
+        'sound' => ['need' => 7, 'targets' => 10, 'others' => 8, 'gap' => 2200, 'rise' => 5200, 'lanes' => [0.14, 0.38, 0.62, 0.86]],
+        'switch' => ['need' => 9, 'targets' => 7, 'others' => 5, 'gap' => 1050, 'rise' => 4200, 'lanes' => [0.1, 0.3, 0.5, 0.7, 0.9]],
+    ];
+
     /** Mistakes (wrong catches + targets let go) up to [0] → graded 1, up to [1] → 2, more → 3. */
     public const GRADE = [1, 3];
 
     /** Minimum gap the listening stream keeps, whatever the jitter: the time to say one word. */
     public const SAY_GAP_MS = 2400;
 
-    private const KIND_OF_LEVEL = [1 => 'visual', 2 => 'category', 3 => 'sound'];
+    private const KIND_OF_TIER = [1 => 'visual', 2 => 'category', 3 => 'sound'];
 
     /** Sounds that are easy to mix up by ear: a listening row with one of them has none of the others. */
     private const SIBILANTS = ['s', 'sz', 'z', 'zs', 'c', 'cs', 'dz', 'dzs'];
@@ -41,8 +52,8 @@ class KapdelRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        $kind = self::KIND_OF_LEVEL[$level];
+        $tier = $this->tier($level, 3);
+        $kind = self::KIND_OF_TIER[$tier];
         $pool = $items->filter(fn ($i) => ($i->payload['kind'] ?? null) === $kind)->values();
         $pool = $pool->isNotEmpty() ? $pool : $items;
         $switchable = $items->filter(fn ($i) => ($i->payload['kind'] ?? null) === 'category' && ! empty($i->payload['reverse']))->values();
@@ -50,16 +61,39 @@ class KapdelRounds extends RoundFactory
         $rows = $this->cycle($pool, $count)->values();
         $rounds = [];
         foreach ($rows as $r => $row) {
-            // level 3: the third round is a rule that turns round
-            if ($level === 3 && $r === 2 && $count >= 3 && $switchable->isNotEmpty()) {
-                $rounds[] = $this->switchRound($this->weightedShuffle($switchable)->first());
+            // tier 3: the third round is a rule that turns round
+            if ($tier === 3 && $r === 2 && $count >= 3 && $switchable->isNotEmpty()) {
+                $rounds[] = $this->switchRound($this->weightedShuffle($switchable)->first(), $level);
 
                 continue;
             }
-            $rounds[] = $this->ruleRound($row, $r);
+            $rounds[] = $this->ruleRound($row, $r, $level);
         }
 
         return $rounds;
+    }
+
+    /**
+     * Pace for $kind at $level: PACE at the easiest level of its tier, PACE_MAX at the
+     * hardest, interpolated continuously within the tier so difficulty doesn't jump in
+     * three flat steps.
+     */
+    private function pace(string $kind, int $level): array
+    {
+        $tiers = ['visual' => 1, 'category' => 2, 'sound' => 3, 'switch' => 3][$kind];
+        $bandSize = 100 / 3;
+        $within = max(0, min(100, $level - ($tiers - 1) * $bandSize));
+        $from = self::PACE[$kind];
+        $to = self::PACE_MAX[$kind];
+
+        return [
+            'need' => $this->scaleInt((int) round($within), $from['need'], $to['need'], (int) $bandSize),
+            'targets' => $this->scaleInt((int) round($within), $from['targets'], $to['targets'], (int) $bandSize),
+            'others' => $this->scaleInt((int) round($within), $from['others'], $to['others'], (int) $bandSize),
+            'gap' => $this->scaleInt((int) round($within), $from['gap'], $to['gap'], (int) $bandSize),
+            'rise' => $this->scaleInt((int) round($within), $from['rise'], $to['rise'], (int) $bandSize),
+            'lanes' => $within >= $bandSize / 2 ? $to['lanes'] : $from['lanes'],
+        ];
     }
 
     /** True when the word has the sound (digraph-aware: "szék" has sz, not s; "asszony" has a long sz). */
@@ -149,12 +183,17 @@ class KapdelRounds extends RoundFactory
         return [];
     }
 
-    private function ruleRound(object $row, int $r): array
+    private function ruleRound(object $row, int $r, int $level): array
     {
         $p = $row->payload;
         $kind = $p['kind'];
-        $pace = self::PACE[$kind];
+        $pace = $this->pace($kind, $level);
         $hear = $kind === 'sound';
+        // a listening row says each word as its bubble appears: never ask for more than the row actually has, or a word would be said twice
+        if ($hear) {
+            $pace['targets'] = min($pace['targets'], count($p['targets']));
+            $pace['others'] = min($pace['others'], count($p['others']));
+        }
         $stream = $this->stream($this->picks($p['targets'], $pace['targets'], $kind === 'visual'), $this->picks($p['others'], $pace['others'], $kind === 'visual'), $pace, $hear, 500);
         $stream = array_map(fn ($b) => $b + ['why' => $this->why($p, $b)], $stream);
 
@@ -183,10 +222,10 @@ class KapdelRounds extends RoundFactory
     }
 
     /** A category rule that turns round halfway: first the group, then everything else. */
-    private function switchRound(object $row): array
+    private function switchRound(object $row, int $level): array
     {
         $p = $row->payload;
-        $pace = self::PACE['switch'];
+        $pace = $this->pace('switch', $level);
         $first = $this->stream($this->picks($p['targets'], $pace['targets'], false), $this->picks($p['others'], $pace['others'], false), $pace, false, 500);
         $switchAt = end($first)['at'] + (int) round($pace['rise'] * 0.6);
         // the second half: the others are the ones to catch now

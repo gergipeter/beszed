@@ -8,14 +8,18 @@ use Illuminate\Support\Collection;
  * Kis robot: first coding with the direction words fel, le, balra, jobbra (absolute moves, like Bee-Bot).
  * Every round is a grid made here: the robot, its goal and obstacles placed at random, kept only when the
  * goal can be reached and the shortest way (breadth-first search) is as long as the level asks.
- *   level 1  each arrow moves the robot at once (2–4 steps)
- *   level 2  the child lines up 2–4 moves, then "Indulj!" runs them
- *   level 3  4–7 moves, and an obstacle stands in the straight way, so the robot has to go round
- * The engine (grid, mode program) draws and runs the program; every sentence comes from here.
+ *
+ * $level spans 1–100 (RoundFactory::tier(), 3 bands), one grid "shape" per tier:
+ *   tier 1 (1–33)   each arrow moves the robot at once (2–4 steps)
+ *   tier 2 (34–66)  the child lines up 2–4 moves, then "Indulj!" runs them
+ *   tier 3 (67–100) 4–7 moves, and an obstacle stands in the straight way, so the robot has to go round
+ * Within each tier the grid, obstacle count and shortest-way band scale smoothly from that tier's old
+ * values (its first level) towards the next tier's starting point (its last level), so level 100 is
+ * harder than the old level 3 ever was. grid()/LEVELS keep taking the 1–3 tier, not the raw $level.
  */
 class RobotRounds extends RoundFactory
 {
-    /** level => [columns, rows, fewest obstacles, most obstacles, shortest way min, max, commands that fit the strip] */
+    /** tier => [columns, rows, fewest obstacles, most obstacles, shortest way min, max, commands that fit the strip] */
     public const LEVELS = [
         1 => [4, 4, 1, 2, 2, 4, 0],
         2 => [4, 4, 1, 3, 2, 4, 6],
@@ -34,12 +38,16 @@ class RobotRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        $direct = self::LEVELS[$level][6] === 0;
+        $tier = $this->tier($level, 3);
+        $direct = self::LEVELS[$tier][6] === 0;
+        // within a tier: a stricter grading band and fewer free hints as $level climbs towards the next tier.
+        $within = $this->withinTier($level, $tier);
+        $hintAfter = max(1, ($direct ? 4 : 3) - (int) round($within));
+        $grade = $direct ? [max(1, 2 - (int) round($within)), 3] : [0, max(1, 2 - (int) round($within))];
 
-        return $this->cycle($items, $count)->values()->map(function ($item, $r) use ($level, $direct) {
+        return $this->cycle($items, $count)->values()->map(function ($item, $r) use ($tier, $direct, $hintAfter, $grade) {
             $p = $item->payload;
-            $grid = self::grid($level);
+            $grid = self::grid($tier);
             $parts = [];
             if ($r === 0) {
                 $parts[] = $direct
@@ -52,15 +60,15 @@ class RobotRounds extends RoundFactory
             return $this->round('grid', implode(' ', $parts), $grid + [
                 'mode' => 'program',
                 'direct' => $direct,
-                'maxSteps' => self::LEVELS[$level][6],
+                'maxSteps' => self::LEVELS[$tier][6],
                 'hero' => self::HERO,
                 'target' => $p['goal'],
                 'obstacle' => $p['obstacle'],
                 'moves' => array_map(fn ($m) => ['id' => $m[0], 'label' => $m[1], 'say' => $m[2]], self::MOVES),
-                // direct: wasted steps + bumps; program: runs that did not reach the goal
-                'grade' => $direct ? [1, 3] : [0, 2],
-                // after this many of them, footprints show the way
-                'hintAfter' => $direct ? 3 : 2,
+                // direct: wasted steps + bumps; program: runs that did not reach the goal — stricter within the tier
+                'grade' => $grade,
+                // after this many of them, footprints show the way — fewer free hints within the tier
+                'hintAfter' => $hintAfter,
                 'onCorrect' => $p['says'],
                 'onBumpBlock' => $p['bump'].$fix,
                 'onBumpEdge' => 'Bumm! Ott a pálya széle.'.$fix,
@@ -155,6 +163,16 @@ class RobotRounds extends RoundFactory
         }
 
         return array_reverse($path);
+    }
+
+    /** 0.0 at $tier's first level, 1.0 at its last (tier(), 3 equal bands on 1–100): position inside the band. */
+    private function withinTier(int $level, int $tier): float
+    {
+        $size = 100 / 3;
+        $first = (int) round(($tier - 1) * $size) + 1;
+        $last = (int) round($tier * $size);
+
+        return $last <= $first ? 0.0 : max(0.0, min(1.0, ($level - $first) / ($last - $first)));
     }
 
     /** @return list<string> the move ids that walk along $path */

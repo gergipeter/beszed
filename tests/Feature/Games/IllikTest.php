@@ -77,23 +77,23 @@ it('never lets a wrong picture do the same job as the right one', function () {
     // "Mivel vágjuk a papírt?": the scissors, never the knife beside them
     $paper = $this->rows->first(fn ($r) => $r->payload['question'] === 'Mivel vágjuk a papírt?');
     foreach (range(1, 20) as $_) {
-        $round = (new IllikRounds)->build(collect([$paper]), 2, 1)[0];
+        $round = (new IllikRounds)->build(collect([$paper]), 50, 1)[0]; // tier 2 (34-66): kind 'function'
         $shown = collect($round['data']['options'])->pluck('emoji');
         expect($shown)->toContain('✂️')->not->toContain('🔪')->toHaveCount(4);
     }
 });
 
-it('pairs and tools: the right picture among the row\'s own wrong ones', function (int $level) {
+it('pairs and tools: the right picture among the row\'s own wrong ones', function (int $level, int $tier) {
     foreach (range(1, 5) as $_) {
         foreach (illikSession($level) as $round) {
             $p = $this->rows[$round['content_item_id']]->payload;
             $options = collect($round['data']['options']);
             $right = $options->firstWhere('id', $round['data']['answer']);
 
-            expect($p['kind'])->toBe($level === 1 ? 'pair' : 'function')
+            expect($p['kind'])->toBe($tier === 1 ? 'pair' : 'function')
                 ->and($round['prompt']['text'])->toBe($p['question'])
                 ->and(illikEmoji($right['emoji']))->toBe($p['answerEmoji'])
-                ->and($options)->toHaveCount($level === 1 ? 3 : 4)
+                ->and($options)->toHaveCount($tier === 1 ? 3 : 4)
                 ->and($round['data']['onCorrect'])->toBe($p['say']);
             foreach ($options as $o) {
                 if ($o['id'] !== $round['data']['answer']) {
@@ -103,11 +103,11 @@ it('pairs and tools: the right picture among the row\'s own wrong ones', functio
             expect(illikTwoOfOneJob($options->map(fn ($o) => illikEmoji($o['emoji']))->all()))->toBeNull();
         }
     }
-})->with([1, 2]);
+})->with([[1, 1], [50, 2]]); // level → tier(level, 3): tiers 1 (pair) and 2 (function)
 
 it('groups: the pictures shown together, three names said, only one of them right', function () {
     foreach (range(1, 5) as $_) {
-        foreach (illikSession(3) as $round) {
+        foreach (illikSession(100) as $round) { // tier 3: levels 67-100
             $p = $this->rows[$round['content_item_id']]->payload;
             $labels = collect($round['data']['options'])->pluck('label');
 

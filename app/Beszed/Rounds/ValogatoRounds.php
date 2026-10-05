@@ -7,12 +7,10 @@ use Illuminate\Support\Collection;
 /** Categorisation: put each picture in the right basket. Each content item is one category. */
 class ValogatoRounds extends RoundFactory
 {
-    /** level → pictures per round (half per basket) */
-    public const PICTURES = [1 => 4, 2 => 6, 3 => 8];
-
     public function build(Collection $items, int $level, int $count): array
     {
-        $per = intdiv(self::PICTURES[$level] ?? self::PICTURES[1], 2);
+        // pictures per round (half per basket), growing smoothly from 4 at level 1 to 10 at level 100
+        $per = intdiv($this->scaleInt($level, 4, 10), 2);
         $rounds = [];
         $lastPair = null;
 

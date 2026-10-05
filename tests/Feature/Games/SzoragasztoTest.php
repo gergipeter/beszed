@@ -63,7 +63,7 @@ it('rejects parts that do not glue into the word', function () {
 
 it('level 1: two words glued — the glued word is one of three pictures, no wrong one shows a part', function () {
     foreach (range(1, 5) as $i) {
-        foreach (ragasztoSession(1)['rounds'] as $round) {
+        foreach (ragasztoSession(10)['rounds'] as $round) {
             $d = $round['data'];
             $p = BeszedContentItem::find($round['content_item_id'])->payload;
             $options = collect($d['options']);
@@ -83,7 +83,7 @@ it('level 1: two words glued — the glued word is one of three pictures, no wro
 
 it('level 2: the compound\'s picture — only the right pair of parts glues into it', function () {
     foreach (range(1, 5) as $i) {
-        foreach (ragasztoSession(2)['rounds'] as $round) {
+        foreach (ragasztoSession(50)['rounds'] as $round) {
             $d = $round['data'];
             $p = BeszedContentItem::find($round['content_item_id'])->payload;
             $options = collect($d['options']);
@@ -105,7 +105,7 @@ it('level 2: the compound\'s picture — only the right pair of parts glues into
 it('level 3: take a part away — what is left is the other part, and the question uses the right forms', function () {
     $taken = collect();
     foreach (range(1, 5) as $i) {
-        foreach (ragasztoSession(3)['rounds'] as $round) {
+        foreach (ragasztoSession(100)['rounds'] as $round) {
             $d = $round['data'];
             $p = BeszedContentItem::find($round['content_item_id'])->payload;
             $options = collect($d['options'])->keyBy('id');

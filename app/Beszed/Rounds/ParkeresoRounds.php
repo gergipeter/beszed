@@ -5,17 +5,25 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Memory: find the pairs; every card says its word when flipped.
- * $level = number of pairs (3–6).
- * Supports difficulty levels: easy (slower flip-back), medium, hard (faster flip-back, stricter grading)
+ * Memory: find the pairs; every card says its word when flipped. The adaptive level's range is 3–100 (a
+ * memory board of 100 pairs would be unplayable), so only the lower part of it drives the pair count: it
+ * scales from 3 up to 11 pairs across levels 3–40 (scaleInt()), then holds at 11 — from there on, the rest
+ * of the climb to 100 is carried by `difficulty` alone (the client's flip-back timing and grading): easy
+ * up to level 40, medium up to level 70, hard above that.
  */
 class ParkeresoRounds extends RoundFactory
 {
+    /** Pairs stop growing once the board would be too crowded to scan; difficulty takes over from here. */
+    private const MAX_PAIRS = 11;
+
+    /** Levels (of the 3–100 adaptive range) by which the pair count has reached MAX_PAIRS. */
+    private const PAIRS_SATURATE_AT = 40;
+
     public function build(Collection $items, int $level, int $count): array
     {
-        $pairs = max(2, min($level, $items->count()));
+        $pairs = max(2, min($this->scaleInt($level, 3, self::MAX_PAIRS, self::PAIRS_SATURATE_AT), $items->count()));
         $rounds = [];
-        $difficulty = $this->getDifficultyByLevel($level);
+        $difficulty = $this->difficultyByLevel($level);
 
         for ($r = 0; $r < $count; $r++) {
             $cards = $this->weightedShuffle($items)->take($pairs)
@@ -38,12 +46,12 @@ class ParkeresoRounds extends RoundFactory
         return $rounds;
     }
 
-    /** Map player level to game difficulty: level 3–4 = easy, 5 = medium, 6+ = hard */
-    private function getDifficultyByLevel(int $level): string
+    /** Pair count saturates by level 40; difficulty then carries the rest of the 1–100 climb. */
+    private function difficultyByLevel(int $level): string
     {
         return match (true) {
-            $level <= 4 => 'easy',
-            $level === 5 => 'medium',
+            $level < self::PAIRS_SATURATE_AT => 'easy',
+            $level < 70 => 'medium',
             default => 'hard',
         };
     }

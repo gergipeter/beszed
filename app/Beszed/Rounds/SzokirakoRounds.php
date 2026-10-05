@@ -7,7 +7,8 @@ use Illuminate\Support\Collection;
 /**
  * Spelling a word with letters: the picture and the spoken word are given, the letters lie shuffled, and the child taps
  * them in order (the two-letter sounds cs, sz, gy… are one tile, as in Hungarian). Reading and writing readiness.
- * $level = the content's level: 3 letters, 4 letters, 5-6 letters.
+ * $level (1–100): maps via tier(level, 3) onto the content's own 1–3 level (3 letters, 4 letters, 5-6
+ * letters), and favorLevel() biases the pool towards words at or below that tier as the level climbs within it.
  */
 class SzokirakoRounds extends RoundFactory
 {
@@ -21,7 +22,8 @@ class SzokirakoRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->values();
         $pool = $pool->count() >= 5 ? $pool : $items;
         $this->favorLevel($pool, $level);
         $rounds = [];

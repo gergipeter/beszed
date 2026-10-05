@@ -7,7 +7,11 @@ use Illuminate\Support\Collection;
 /**
  * "Mi tűnt el?" (Kim's game): look at a row of pictures, a cloud hides them,
  * one is gone when they come back; pick it from a few choices.
- * $level = pictures to remember (3–6).
+ * $level (3–100, the game's adaptive min is 3) scales pictures to remember
+ * continuously from 3 at level 3 up to 8 at level 100 — the old 3–6 range is
+ * now the low third of the band, so the climb stays gradual well past the
+ * old "level 3". Looking time grows with the picture count, not the level
+ * directly, so it tracks whatever $n actually is.
  */
 class MituntRounds extends RoundFactory
 {
@@ -18,7 +22,7 @@ class MituntRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $n = max(3, min($level, $items->count() - 4));
+        $n = max(3, min($this->scaleInt($level, 3, 8), $items->count() - 4));
         $choices = $n <= 4 ? 3 : 4;
         $picture = fn ($i) => ['id' => (string) $i->id, 'emoji' => $i->payload['emoji'], 'label' => $i->payload['name']];
         $rounds = [];

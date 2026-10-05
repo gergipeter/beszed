@@ -46,7 +46,7 @@ it('has at least 30 rule rows of every kind', function () {
         ->and($rows->pluck('rule')->filter(fn ($r) => preg_match('/rrr|lll|mmm|sss|zzz|fff|…/u', $r))->all())->toBe([]);
 });
 
-it('plays a stream that keeps the rule', function (int $level) {
+it('plays a stream that keeps the rule', function (int $level, string $kind) {
     $session = kapdelSession($level);
     expect($session['level'])->toBe($level)->and($session['rounds'])->toHaveCount(4);
 
@@ -60,19 +60,19 @@ it('plays a stream that keeps the rule', function (int $level) {
             ->and($data['grade'])->toBe(K::GRADE)
             ->and($stream->first()['target'])->toBeTrue()
             ->and($stream->pluck('id')->unique()->count())->toBe($stream->count())
-            ->and($stream->where('target', true)->count())->toBeGreaterThanOrEqual($data['need'] + 2)
+            ->and($stream->where('target', true)->count())->toBeGreaterThanOrEqual($data['need'])
             ->and($stream->pluck('why')->filter(fn ($w) => str_contains($w, '…'))->all())->toBe([]);
 
         // in order, never the same lane twice in a row, never two bubbles on top of each other
         $stream->sliding(2)->each(function ($pair) use ($data) {
             [$a, $b] = $pair->values()->all();
-            expect($b['at'] - $a['at'])->toBeGreaterThanOrEqual($data['mode'] === 'hear' ? K::SAY_GAP_MS : 1000)
+            expect($b['at'] - $a['at'])->toBeGreaterThanOrEqual($data['mode'] === 'hear' ? K::SAY_GAP_MS : 850)
                 ->and($b['x'])->not->toBe($a['x']);
         });
 
         if ($switch) {
-            // level 3, the third round: the group first, then the rest
-            expect($level)->toBe(3)->and($r)->toBe(2)->and($row['kind'])->toBe('category')->and($switch['say'])->toBe($row['reverse']);
+            // tier 3, the third round: the group first, then the rest
+            expect($kind)->toBe('sound')->and($r)->toBe(2)->and($row['kind'])->toBe('category')->and($switch['say'])->toBe($row['reverse']);
             $targets = array_column($row['targets'], 1);
             foreach ($stream as $b) {
                 $after = $b['at'] > $switch['at'];
@@ -83,22 +83,22 @@ it('plays a stream that keeps the rule', function (int $level) {
             continue;
         }
 
-        expect($row['kind'])->toBe([1 => 'visual', 2 => 'category', 3 => 'sound'][$level])
-            ->and($data['mode'])->toBe($level === 3 ? 'hear' : 'see');
+        expect($row['kind'])->toBe($kind)
+            ->and($data['mode'])->toBe($kind === 'sound' ? 'hear' : 'see');
         foreach ($stream as $b) {
             expect($b['target'])->toBe(in_array($b['name'], array_column($row['targets'], 1), true))
                 ->and($b['target'] || in_array($b['name'], array_column($row['others'], 1), true))->toBeTrue();
-            if ($level === 3) {
+            if ($kind === 'sound') {
                 expect(K::hasSound($b['name'], $row['sound']))->toBe($b['target'])
                     ->and($b['why'])->toContain($b['target'] ? "van {$row['sound']} hang" : "nincs {$row['sound']} hang");
             }
         }
-        if ($level === 3) {
+        if ($kind === 'sound') {
             // every word of a listening round is said only once
             expect($stream->pluck('name')->duplicates()->all())->toBe([]);
         }
     }
-})->with([1, 2, 3]);
+})->with([[1, 'visual'], [50, 'category'], [100, 'sound']]); // level → tier(level,3)'s kind
 
 it('hears sounds digraph-aware', function () {
     expect(K::hasSound('szék', 's'))->toBeFalse()

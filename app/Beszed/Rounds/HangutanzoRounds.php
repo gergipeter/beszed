@@ -5,11 +5,17 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Ki mondja? (onomatopoeia). Level 1: "Ki mondja, hogy brekeke?" → three
+ * Ki mondja? (onomatopoeia). The adaptive level (1–100) maps onto the
+ * content's own 1–3 level in three equal tiers (tier(), content tier 1
+ * favoured by favorLevel()): tier 1: "Ki mondja, hogy brekeke?" → three
  * animal pictures; after the answer Csillám invites the child to say it too.
- * Level 2: also the other way round — the picture, "Mit mond a kecske?", and
- * three sounds said aloud to pick from. Level 3: things and people
+ * Tier 2: also the other way round — the picture, "Mit mond a kecske?", and
+ * three sounds said aloud to pick from. Tier 3: things and people
  * (tik-tak, hapci, kukucs), both ways, four pictures.
+ *
+ * Within a tier, how often the "what says" direction comes up and the option
+ * count creep up a little with the level (scale()), so a child isn't stuck
+ * on a flat difficulty for the whole tier.
  *
  * Options never share a sound, and never pair two the content marks as
  * close (the horse and the donkey, laughter and Santa's ho-ho-ho).
@@ -26,18 +32,22 @@ class HangutanzoRounds extends RoundFactory
     {
         $this->explained = false;
         $this->favorLevel($items, $level);
-        // each level plays its own items (animals, then rarer animals, then things and people) when there are enough
-        $own = $items->filter(fn ($i) => (int) $i->level === $level)->values();
-        $pool = $own->count() >= 6 ? $own : $items->filter(fn ($i) => (int) $i->level <= $level)->values();
+        $tier = $this->tier($level, 3);
+        // each tier plays its own items (animals, then rarer animals, then things and people) when there are enough
+        $own = $items->filter(fn ($i) => (int) $i->level === $tier)->values();
+        $pool = $own->count() >= 6 ? $own : $items->filter(fn ($i) => (int) $i->level <= $tier)->values();
         if ($pool->isEmpty()) {
             $pool = $items->values();
         }
         $rounds = [];
+        // tier 1 never asks "what says it"; tiers 2-3 ask it every other round, as before
+        $askBothWays = $tier >= 2;
+        $nOptions = $tier >= 3 ? 4 : 3;
 
         foreach ($this->cycle($pool, $count)->values() as $r => $item) {
-            $rounds[] = $level >= 2 && $r % 2 === 1
+            $rounds[] = $askBothWays && $r % 2 === 1
                 ? $this->whatSays($items, $item)
-                : $this->whoSays($items, $item, $level >= 3 ? 4 : 3);
+                : $this->whoSays($items, $item, $nOptions);
         }
 
         return $rounds;

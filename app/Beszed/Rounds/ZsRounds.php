@@ -9,6 +9,11 @@ use Illuminate\Support\Collection;
  * the whole pool would make "s" the right answer four times in five and a child who
  * always taps "s" would look good. Half of every session is zs, half is s, whatever
  * the pool sizes (the odd round of an odd count goes either way), in random order.
+ *
+ * $level spans 1–100 and only drives word difficulty here (RoundFactory::favorLevel(), tiered against the
+ * content's own 1–3 `level` field: short/common words at low levels, long/rare ones as $level climbs) —
+ * the zs/s split itself stays an even 50/50 at every level, so the sound contrast is never made easier by
+ * skewing the draw.
  */
 class ZsRounds extends RoundFactory
 {

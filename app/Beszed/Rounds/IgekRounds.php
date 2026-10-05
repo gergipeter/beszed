@@ -5,11 +5,13 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Mozgó szavak (verbs). Level 1: "Ki fut?" → three action pictures.
- * Level 2: four pictures, alternating with "Mit csinál?" where the child
- * listens to three spoken verbs and picks the right one. Level 3: verb
- * endings — "Ő úszik. Én is …" → úszom / úszol / úsznak (the forms come
- * from the content, checked by hand: ikes verbs say eszem, not eszek).
+ * Mozgó szavak (verbs). Three tiers across the 1–100 adaptive level (tier()):
+ * 1–33 "Ki fut?" → three action pictures, growing to four by the top of the band.
+ * 34–66 adds "Mit csinál?" (four pictures, alternating in, more often as the
+ * band progresses), where the child listens to spoken verbs and picks the
+ * right one. 67–100 adds verb endings — "Ő úszik. Én is …" → úszom / úszol /
+ * úsznak (the forms come from the content, checked by hand: ikes verbs say
+ * eszem, not eszek) — taking over an increasing share of rounds towards 100.
  *
  * Distractors never also fit: animal voices (ugat) only with each other,
  * never the same picture, and never a verb the content marks as close
@@ -30,20 +32,25 @@ class IgekRounds extends RoundFactory
     public function build(Collection $items, int $level, int $count): array
     {
         $this->explained = false;
-        $this->favorLevel($items, $level);
+        $this->favorLevel($items, $level, 2);
+        $tier = $this->tier($level, 3);
         $withForms = $items->filter(fn ($i) => count($i->payload['forms'] ?? []) === 4)->values();
-        $pool = $level >= 3 && $withForms->isNotEmpty() ? $withForms : $items->values();
+        $pool = $tier >= 3 && $withForms->isNotEmpty() ? $withForms : $items->values();
+        // within each tier, the newer round kind takes an increasing share as the band progresses
+        $endingEvery = $tier >= 3 ? max(2, $this->scaleInt($level, 4, 2, 100, 1.0)) : 0;
+        $whatDoesEvery = $tier === 2 ? max(2, $this->scaleInt($level, 3, 2)) : 0;
+        $whoOptions = $this->scaleInt($level, 3, 4);
         $lastPerson = null;
         $rounds = [];
 
         foreach ($this->cycle($pool, $count)->values() as $r => $item) {
-            if ($level >= 3 && $r % 4 !== 3 && count($item->payload['forms'] ?? []) === 4) {
+            if ($endingEvery && $r % $endingEvery === $endingEvery - 1 && count($item->payload['forms'] ?? []) === 4) {
                 $lastPerson = $this->pickNot(array_keys(self::PERSONS), $lastPerson);
                 $rounds[] = $this->ending($item, $lastPerson);
-            } elseif ($level === 2 && $r % 2 === 1) {
+            } elseif ($whatDoesEvery && $r % $whatDoesEvery === $whatDoesEvery - 1) {
                 $rounds[] = $this->whatDoes($items, $item);
             } else {
-                $rounds[] = $this->who($items, $item, $level === 1 ? 3 : 4);
+                $rounds[] = $this->who($items, $item, $whoOptions);
             }
         }
 

@@ -7,9 +7,11 @@ use Illuminate\Support\Collection;
 /**
  * Színező: a line picture (drawn on the client, engines/color/pictures.js) coloured part by part as Csillám
  * says. Each content item is one picture and its steps ("teto=piros", in the order they matter most).
- * $level: 1 → three of the first parts, one per sentence, three paint pots; 2 → four parts, six pots;
- * 3 → two parts in one sentence, with the left/right pair of the picture ("a bal oldali ablakot kékre, a jobb
- * oldalit pedig sárgára"), eight pots. After the steps the child colours the rest freely and says "Kész".
+ * $level (1–100, tier()): tier 1 → three of the first parts, one per sentence; tier 2 → four parts, one
+ * per sentence; tier 3 → two parts in one sentence, with the left/right pair of the picture ("a bal oldali
+ * ablakot kékre, a jobb oldalit pedig sárgára"). Within each tier the paint pots scale smoothly from 3 up
+ * to 8 (scaleInt()), so the pots keep growing even while the sentence shape stays the same. After the
+ * steps the child colours the rest freely and says "Kész".
  */
 class SzinezoRounds extends RoundFactory
 {
@@ -104,8 +106,6 @@ class SzinezoRounds extends RoundFactory
         'szurke' => ['fekete'], 'fekete' => ['szurke'],
     ];
 
-    private const POTS = [1 => 3, 2 => 6, 3 => 8];
-
     /** At least this many steps without left/right, so every level has enough to ask. */
     public const MIN_PLAIN_STEPS = 4;
 
@@ -154,9 +154,9 @@ class SzinezoRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        // level 3 is about left and right: pictures with such a pair
-        $pool = $level === 3 ? $items->filter(fn ($i) => $this->pairOf($this->steps($i)) !== null)->values() : $items->values();
+        $tier = $this->tier($level, 3);
+        // tier 3 is about left and right: pictures with such a pair
+        $pool = $tier === 3 ? $items->filter(fn ($i) => $this->pairOf($this->steps($i)) !== null)->values() : $items->values();
         if ($pool->isEmpty()) {
             $pool = $items->values();
         }
@@ -164,7 +164,7 @@ class SzinezoRounds extends RoundFactory
         $rounds = [];
 
         foreach ($this->cycle($pool, $count)->values() as $r => $item) {
-            $rounds[] = $this->buildRound($item, $level, $r);
+            $rounds[] = $this->buildRound($item, $level, $tier, $r);
         }
 
         return $rounds;
@@ -189,7 +189,7 @@ class SzinezoRounds extends RoundFactory
         return $right ? [$left, $right] : null;
     }
 
-    private function buildRound(object $item, int $level, int $r): array
+    private function buildRound(object $item, int $level, int $tier, int $r): array
     {
         $picture = $item->payload['picture'];
         $name = $item->payload['name'];
@@ -197,15 +197,16 @@ class SzinezoRounds extends RoundFactory
         $steps = $this->steps($item);
         $plain = array_values(array_filter($steps, fn ($s) => ! self::isSide($s[0])));
 
-        // one region per sentence (levels 1–2), or two per sentence (level 3)
-        $sentences = match ($level) {
+        // one region per sentence (tiers 1–2), or two per sentence (tier 3)
+        $sentences = match ($tier) {
             1 => array_map(fn ($s) => [$s], $this->pickInOrder(array_slice($plain, 0, 4), 3)),
             2 => array_map(fn ($s) => [$s], $this->pickInOrder($plain, 4)),
             default => $this->twoAtATime($plain, $this->pairOf($steps)),
         };
 
         $used = collect($sentences)->flatten(1)->pluck(1)->unique()->values()->all();
-        $pots = $this->pots($used, self::POTS[$level], $level === 1);
+        // paint pots creep from 3 up to 8 across the full range, not just by tier
+        $pots = $this->pots($used, $this->scaleInt($level, 3, 8), $tier === 1);
 
         $lower = mb_strtolower($name);
         $stepData = [];

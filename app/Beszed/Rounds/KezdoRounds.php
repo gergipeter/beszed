@@ -4,6 +4,7 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
+/** $level (1–100): word difficulty, favoured via favorLevel() against the content's own 1–3 level field. */
 class KezdoRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array

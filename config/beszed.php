@@ -88,8 +88,8 @@ return [
             'factory' => Rounds\ZsRounds::class, 'rounds' => 8,
             // level = word difficulty (short/common → long/rare), from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Most hangokat figyelünk! A zs úgy zümmög, mint a méhecske. Az s úgy susog, mint amikor csendet kérünk. Figyelj jól! Kezdjük!',
         ],
@@ -98,8 +98,8 @@ return [
             'factory' => Rounds\SzotagRounds::class, 'rounds' => 8,
             // level = syllable count, from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 50],
             ],
             'intro' => 'Dobolni fogunk! Minden szótagra üss egyet a dobra. Például: ci… ca… Ez két dobbanás! Kezdjük!',
         ],
@@ -108,8 +108,8 @@ return [
             'factory' => Rounds\KezdoRounds::class, 'rounds' => 8,
             // level = word difficulty, from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Most a szavak elejét figyeljük. Hallgasd jól, melyik szó kezdődik ugyanúgy!',
         ],
@@ -118,8 +118,8 @@ return [
             'factory' => Rounds\HolRounds::class, 'rounds' => 8,
             // level = which relations are asked: 1 → fölött/alatt only (2 options), 2 → + mögött/előtt, 3 → + jobb/bal/között (3 options, HolRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Bújócskázunk! Keresd meg, hol bújt el a kis barátunk!',
         ],
@@ -128,8 +128,8 @@ return [
             'factory' => Rounds\SzamolRounds::class, 'rounds' => 8,
             // level = number range: 1 → 1-4, 2 → 2-6, 3 → 3-9 (SzamolRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Számoljunk együtt! Egy, kettő, három… Készen állsz?',
         ],
@@ -138,8 +138,8 @@ return [
             'factory' => Rounds\OkoskaRounds::class, 'rounds' => 8,
             // level = pattern kinds unlocked (AB → +AAB/ABB → +ABC) and odd-one-out category difficulty (OkoskaRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Most okoskodunk! Nézd meg jól a képeket!',
         ],
@@ -148,8 +148,8 @@ return [
             'factory' => Rounds\HallgasdRounds::class, 'rounds' => 8,
             // level = word difficulty, from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Most figyelj jól! Kimondok egy szót, te pedig megkeresed a hozzá illő képet. Kezdjük!',
         ],
@@ -159,8 +159,8 @@ return [
             // level = options shown: 1-2 → the pair only, 3 → +1 distractor word from another pair, and the grade of the
             // pairs given (content level 1 clear sounds … 3 the fine Hungarian contrasts: s/sz/zs, c/cs, long/short vowels) (IkerhangokRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Most nagyon hasonló szavakat hallasz! Figyelj jól, melyiket mondtam, és koppints a jó képre!',
         ],
@@ -168,8 +168,8 @@ return [
             'name' => 'Papagáj', 'emoji' => '🦜', 'skill' => 'Szavak sorban visszamondva', 'color' => '#B8ECE6', 'tier' => 'advanced', 'stage' => 'forest',
             'factory' => Rounds\PapagajRounds::class, 'rounds' => 6,
             'adaptive' => [
-                'min' => 2, 'max' => 6, 'start' => 3, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 2, '5-6' => 3, '7+' => 4],
+                'min' => 2, 'max' => 100, 'start' => 26, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 2, '5-6' => 26, '7+' => 51],
             ],
             'intro' => 'Játsszunk papagájosat! Én mondok szavakat, te pedig visszamondod, pont úgy, mint egy papagáj. Utána megmutatod a képeken!',
         ],
@@ -177,8 +177,8 @@ return [
             'name' => 'Mondd utánam', 'emoji' => '🗣️', 'skill' => 'Mondatismétlés, szülővel', 'color' => '#FFC9A8', 'tier' => 'simple', 'stage' => 'storybook',
             'factory' => Rounds\MonddRounds::class, 'rounds' => 6, 'no_idle' => true,
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Most mondatokat mondok. Figyelj jól, és mondd utánam! Anya vagy apa is segít.',
         ],
@@ -187,8 +187,8 @@ return [
             'factory' => Rounds\SzajtornaRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
             // level = repetitions per exercise: 1 → 3, 2 → 5, 3 → 10 (SzajtornaRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Most a szádat edzzük! Nézz tükörbe, és csináld, amit a kép mutat. Anya vagy apa is csinálja veled!',
         ],
@@ -197,8 +197,8 @@ return [
             'factory' => Rounds\LepegetoRounds::class, 'rounds' => 1, 'no_idle' => true, 'guess' => false,
             // level = fields on the path: 1 → 8, 2 → 12, 3 → 16 (LepegetoRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             // the season of the board; without a pick it is the season it is now
             'pick_prompt' => 'Melyik évszakban lépegessünk ma? Válassz!',
@@ -215,8 +215,8 @@ return [
             'factory' => Rounds\BetukRounds::class, 'rounds' => 8,
             // level = the letters in play: 1 plain ones, 2 + long vowels (and picture-from-letter rounds), 3 + cs, sz, gy… (BetukRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Betűket keresünk! Megmutatok egy képet, te pedig megkeresed, melyik betűvel kezdődik a neve.',
         ],
@@ -225,8 +225,8 @@ return [
             'factory' => Rounds\SzinekRounds::class, 'rounds' => 8,
             // level: 1 colours, 2 shapes, 3 both (SzinekRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Színeket és formákat keresünk! Hallgasd meg, melyiket kérem, és koppints rá!',
         ],
@@ -235,8 +235,8 @@ return [
             'factory' => Rounds\EllentetRounds::class, 'rounds' => 8,
             // level = what to pick from (2 → 3 options) and the pairs' own level (EllentetRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Az ellentétek párban járnak: nagy és kicsi, meleg és hideg. Mondok egyet, te megkeresed a párját!',
         ],
@@ -245,8 +245,8 @@ return [
             'factory' => Rounds\TobbesRounds::class, 'rounds' => 8,
             // level = the plural: 1 plain -k (kutya → kutyák), 2 -ak/-ek/-ok/-ök, 3 changing stems (ló → lovak) (content level)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Egy kutya, sok kutya! Hallgasd meg, melyiket kérem, és koppints a jó képre!',
         ],
@@ -255,8 +255,8 @@ return [
             'factory' => Rounds\FoglalkozasRounds::class, 'rounds' => 8,
             // level = what to pick from: 1 → two, 2 → three, 3 → four (FoglalkozasRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Ki mit csinál? Mondok egy munkát, te pedig megkeresed, ki végzi!',
         ],
@@ -264,8 +264,8 @@ return [
             'name' => 'Napirend és idő', 'emoji' => '🌅', 'skill' => 'Napszakok, évszakok, napi teendők sorrendje', 'color' => '#FFE3A3', 'tier' => 'advanced', 'stage' => 'storybook',
             'factory' => Rounds\TortenetRounds::class, 'rounds' => 5,
             'adaptive' => [
-                'min' => 1, 'max' => 2, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 100],
             ],
             'intro' => 'Mikor mi jön? Nézd meg a képeket, és rakd őket a helyes sorrendbe!',
         ],
@@ -273,8 +273,8 @@ return [
             'name' => 'Hogyan készül?', 'emoji' => '🥞', 'skill' => 'Folyamatok: lépések sorrendje', 'color' => '#FFD6B8', 'tier' => 'advanced', 'stage' => 'workshop',
             'factory' => Rounds\TortenetRounds::class, 'rounds' => 5,
             'adaptive' => [
-                'min' => 1, 'max' => 2, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 100],
             ],
             'intro' => 'Hogyan készül a palacsinta? És a torta? Rakd sorba a lépéseket!',
         ],
@@ -283,8 +283,8 @@ return [
             'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
             // level = pictures per round: 1 → 4, 2 → 6, 3 → 8
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Ki hol lakik? A vízben, az erdőben, a tanyán vagy az égen? Koppints a jó helyre!',
         ],
@@ -292,8 +292,8 @@ return [
             'name' => 'Melyik szobába való?', 'emoji' => '🏠', 'skill' => 'Otthon: tárgyak és szobák', 'color' => '#F7D9C4', 'tier' => 'simple', 'stage' => 'table',
             'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Rendet rakunk a lakásban! Melyik tárgy melyik szobába való? Koppints a jó helyre!',
         ],
@@ -302,8 +302,8 @@ return [
             'factory' => Rounds\MondatRounds::class, 'rounds' => 6,
             // level = words in the sentence: 1 → 3, 2 → 4, 3 → 5 (MondatRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Mondatot építünk! Meghallgatod a mondatot, aztán a szavakat sorba rakod, ahogy mondtam.',
         ],
@@ -312,8 +312,8 @@ return [
             'factory' => Rounds\BetuiroRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
             // level = the letters: 1 straight capitals, 2 round capitals, 3 small letters (content level)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Betűket írunk az ujjunkkal! Kövesd a pöttyöket a számok sorrendjében, és kész a betű!',
         ],
@@ -322,8 +322,8 @@ return [
             'factory' => Rounds\IdoRounds::class, 'rounds' => 6, 'guess' => false,
             // level = the times: 1 whole hours, 2 + half hours (fél négy), 3 + quarters (negyed négy, háromnegyed négy) (IdoRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Hány óra van? A kis mutató az órát mutatja, a nagy a perceket. Nézd meg jól, és válaszd ki az időt!',
         ],
@@ -332,8 +332,8 @@ return [
             'factory' => Rounds\SzokirakoRounds::class, 'rounds' => 5, 'guess' => false,
             // level = the word's letters: 1 → 3, 2 → 4, 3 → 5-6 (the two-letter sounds cs, sz, gy… are one tile) (SzokirakoRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Szavakat rakunk ki betűkből! Nézd a képet, hallgasd a szót, és koppints a betűkre sorban!',
         ],
@@ -342,8 +342,8 @@ return [
             'factory' => Rounds\OlvasdRounds::class, 'rounds' => 6, 'guess' => false,
             // level = the word: 1 short, 2 longer two-syllable, 3 three syllables (content level)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Most te olvasol! Megjelenik egy szó szótagokra bontva. Olvasd el, és koppints a hozzá illő képre!',
         ],
@@ -352,8 +352,8 @@ return [
             'factory' => Rounds\MeseRounds::class, 'rounds' => 3, 'guess' => false,
             // level = the story: 1 shortest, 3 longest and most to work out (content level)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Mesét mesélek neked! Hallgasd figyelmesen, mert a végén kérdezek valamit a meséről!',
         ],
@@ -362,8 +362,8 @@ return [
             'factory' => Rounds\MelyikRounds::class, 'rounds' => 8,
             // level = sentence complexity, from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Brumi és Nyuszi mesél. Az egyikük szépen mondja, a másik kicsit összekeveri. Segíts eldönteni, ki mondta szépen!',
         ],
@@ -372,8 +372,8 @@ return [
             'factory' => Rounds\CeruzaRounds::class, 'rounds' => 4,
             // level = path difficulty (wave/arches/hills → zigzag/steps → loops), from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'A méhecske virágot keres. Segíts neki az ujjaddal!',
         ],
@@ -411,8 +411,8 @@ return [
             'factory' => Rounds\ParkeresoRounds::class, 'rounds' => 2,
             // level = number of pairs; can also include difficulty: easy, medium, hard
             'adaptive' => [
-                'min' => 3, 'max' => 6, 'start' => 3, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 3, '5-6' => 4, '7+' => 5],
+                'min' => 3, 'max' => 100, 'start' => 3, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 3, '5-6' => 35, '7+' => 68],
             ],
             'intro' => 'Kártyázzunk! Fordíts fel két kártyát. Ha egyformák, megtaláltad a párt. Jegyezd meg, mi hol van!',
         ],
@@ -421,8 +421,8 @@ return [
             'factory' => Rounds\RimparokRounds::class, 'rounds' => 2,
             // level = number of rhyme pairs
             'adaptive' => [
-                'min' => 2, 'max' => 4, 'start' => 2, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 2, '5-6' => 3, '7+' => 4],
+                'min' => 2, 'max' => 100, 'start' => 2, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 2, '5-6' => 51, '7+' => 100],
             ],
             'intro' => 'Kártyázzunk! De most nem ugyanaz a párja egy kártyának, hanem az, amelyik rímel rá. Fordíts fel kettőt, és figyelj a hangjukra!',
         ],
@@ -431,8 +431,8 @@ return [
             'factory' => Rounds\ArnyekRounds::class, 'rounds' => 8,
             // level = shape difficulty (distinct silhouettes → look-alikes), from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 50],
             ],
             'intro' => 'Nézd, csak az árnyékuk látszik! Találd ki, kinek az árnyéka!',
         ],
@@ -441,8 +441,8 @@ return [
             'factory' => Rounds\RimeloRounds::class, 'rounds' => 8,
             // level = rhyme difficulty, from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 2, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 100],
             ],
             'intro' => 'Rímeljünk! A ló és a hó rímel, mert ugyanúgy végződik. Figyelj a szavak végére!',
         ],
@@ -451,8 +451,8 @@ return [
             'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
             // level = pictures per round: 1 → 4, 2 → 6, 3 → 8
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Rendet rakunk! Minden kép a saját kosarába kerül. Koppints a jó kosárra!',
         ],
@@ -461,8 +461,8 @@ return [
             'factory' => Rounds\KulonbsegRounds::class, 'rounds' => 6,
             // level = grid on each panel: 1 → 2×2, 2 → 3×2, 3 → 3×3 (and a look-alike swapped in)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Nézd, két kép! Majdnem egyformák, de egy helyen más van rajtuk. Keresd meg, és koppints rá!',
         ],
@@ -471,8 +471,8 @@ return [
             'factory' => Rounds\NagysagRounds::class, 'rounds' => 6,
             // level = sizes to order: 1 → 3, 2 → 4, 3 → 5 (and every other round biggest first)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Rakjunk rendet! Koppints a képekre sorban: először a legkisebbre, a végén a legnagyobbra!',
         ],
@@ -481,8 +481,8 @@ return [
             'factory' => Rounds\ErzelmekRounds::class, 'rounds' => 8,
             // level = feeling difficulty (basic → more nuanced), from the content's own level field
             'adaptive' => [
-                'min' => 1, 'max' => 2, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 100],
             ],
             'intro' => 'Az arcunk megmutatja, hogy érezzük magunkat: vidámak vagyunk, szomorúak, vagy éppen mérgesek. Segíts kitalálni!',
         ],
@@ -491,8 +491,8 @@ return [
             'factory' => Rounds\MituntRounds::class, 'rounds' => 6,
             // level = pictures to remember (3–6)
             'adaptive' => [
-                'min' => 3, 'max' => 6, 'start' => 3, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 3, '5-6' => 4, '7+' => 5],
+                'min' => 3, 'max' => 100, 'start' => 3, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 3, '5-6' => 35, '7+' => 68],
             ],
             'intro' => 'Varázsoljunk! Jegyezd meg jól a képeket. Utána az egyik eltűnik, te pedig kitalálod, melyik volt az!',
         ],
@@ -501,8 +501,8 @@ return [
             'factory' => Rounds\TortenetRounds::class, 'rounds' => 5,
             // level = steps of a story: 1 → 3, 2 → 4
             'adaptive' => [
-                'min' => 1, 'max' => 2, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 100],
             ],
             'intro' => 'Mesélek neked! Nézd meg a képeket, és rakd őket sorba: mi történt először, és mi a végén?',
         ],
@@ -511,8 +511,8 @@ return [
             'factory' => Rounds\KorusRounds::class, 'rounds' => 5,
             // level = notes the choir sings (2–7)
             'adaptive' => [
-                'min' => 2, 'max' => 7, 'start' => 2, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 2, '5-6' => 3, '7+' => 3],
+                'min' => 2, 'max' => 100, 'start' => 2, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 2, '5-6' => 22, '7+' => 22],
             ],
             'intro' => 'Az állatok egymás után énekelnek. Figyeld, ki énekel, aztán koppints rájuk ugyanabban a sorrendben!',
         ],
@@ -521,8 +521,8 @@ return [
             'factory' => Rounds\UtasitasRounds::class, 'rounds' => 6,
             // level = kind of direction: 1 → one step, 2 → two steps / "all", 3 → three steps, "before", "not"
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Most jól figyelj! Mondok valamit, te pedig pontosan azt csinálod. Várd meg, amíg végigmondom, és csak utána koppints!',
         ],
@@ -531,8 +531,8 @@ return [
             'factory' => Rounds\BekaRounds::class, 'rounds' => 6, 'no_idle' => true,
             // level 1: pads 0–5, forward · 2: pads 0–10, forward and back · 3: also two-part hops (BekaRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Ez a békató! A béka számozott levelekről levelekre ugrál. Ugrasd te, vagy figyeld meg, hova érkezik!',
         ],
@@ -541,8 +541,8 @@ return [
             'factory' => Rounds\MerlegRounds::class, 'rounds' => 5, 'no_idle' => true, 'guess' => false,
             // level = how many items: 1 → up to 4 and an empty pan, 2 → up to 7, 3 → up to 10 (MerlegRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Ez egy mérleg! Tegyél a jobb oldalra annyit, amennyi a bal oldalon van, hogy vízszintbe álljon!',
         ],
@@ -551,8 +551,8 @@ return [
             'factory' => Rounds\OsztozasRounds::class, 'rounds' => 5, 'no_idle' => true, 'guess' => false,
             // level 1: 2 plates · 2: 2–3 plates · 3: one is left over (OsztozasRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Osszuk szét igazságosan! Koppints egy tányérra, és az asztalról odaugrik egy darab. Mindegyik tányérra ugyanannyi kerüljön!',
         ],
@@ -561,8 +561,8 @@ return [
             'factory' => Rounds\SzamokRounds::class, 'rounds' => 8,
             // level = range: 1 → 1–5, 2 → 1–8, 3 → 1–10 and counting backwards (SzamokRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Számok tízig! Számold meg a képeket, és találd ki, melyik szám jön ezután!',
         ],
@@ -571,8 +571,8 @@ return [
             'factory' => Rounds\IranyRounds::class, 'rounds' => 6,
             // level 1: arrows · 2: leftmost / rightmost / middle of three · 3: the neighbour on the left or right of one of four (IranyRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Merre van jobbra, merre balra? Nézd meg jól a képeket, és koppints a jó válaszra!',
         ],
@@ -581,8 +581,8 @@ return [
             'factory' => Rounds\RitmusRounds::class, 'rounds' => 5, 'no_idle' => true,
             // level = length of the rhythm (3 → 5 beats) and its speed (RitmusRounds)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Figyelj a dobra! Ritmust játszom, te pedig ugyanúgy megtapsolod: koppints a dobra, ugyanolyan gyorsan!',
         ],
@@ -591,8 +591,8 @@ return [
             'factory' => Rounds\ZongoraRounds::class, 'rounds' => 5,
             // level 1: coloured keys with their names · 2: names, and the note is played · 3: by ear only, smaller steps, longer tunes
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Ez egy zongora! Minden billentyű más hangot szólaltat meg: a bal oldalon vannak a mélyek, a jobb oldalon a magasak. Próbáld ki, aztán keresd meg a hangokat!',
         ],
@@ -613,8 +613,8 @@ return [
             'factory' => Rounds\HanggyakorloRounds::class, 'rounds' => 8, 'no_idle' => true, 'guess' => false,
             // level 1: the sound at the start of a word · 2: in the middle or at the end · 3: naming without a model, phrases
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             // the sound to practise, picked before playing
             'pick_prompt' => 'Melyik hangot gyakoroljuk ma? Válassz!',
@@ -634,8 +634,8 @@ return [
             'factory' => Rounds\FujokaRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
             // level 1: short puffs · 2: one long blow · 3: a gentle, steady blow
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Most fújni fogunk! Fújj bele a telefonba vagy a tabletbe, mintha gyertyát fújnál el, és figyeld, mi történik!',
         ],
@@ -644,8 +644,8 @@ return [
             'factory' => Rounds\HangrepuloRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
             // level 1: hold a sound 2 s in all · 2: 4 s without stopping · 3: fly high and low with the voice
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'A rakéta a hangodtól repül! Mondj egy hosszú hangot, és amíg szól, a rakéta száll. Ha elhallgatsz, megáll!',
         ],
@@ -654,8 +654,8 @@ return [
             'factory' => Rounds\HangvonatRounds::class, 'rounds' => 8,
             // level 1: start or end · 2: start, middle or end · 3: look-alike sounds side by side, longer words
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Ez a hangvonat! Minden szó egy vonat, három kocsival: az első kocsi a szó eleje, a középső a közepe, az utolsó a vége. A zöld kocsi mutatja, hol van a hang. Koppints arra a vonatra, amelyiken jó helyen van a zöld kocsi!',
         ],
@@ -664,8 +664,8 @@ return [
             'factory' => Rounds\CsigabeszedRounds::class, 'rounds' => 8,
             // level 1: two syllables · 2: three or more · 3: a sound and the rest (sss… ó)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'A csiga nagyon lassan beszél: darabokban mondja a szavakat. Rakd össze, mit mondott, és keresd meg a képét!',
         ],
@@ -674,8 +674,8 @@ return [
             'factory' => Rounds\SzoragasztoRounds::class, 'rounds' => 8,
             // level 1: glue two words · 2: which two words make it · 3: take one part away
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Szavakat ragasztunk össze! A hó meg az ember együtt: hóember. Találd ki, mi lesz a két szóból!',
         ],
@@ -684,8 +684,8 @@ return [
             'factory' => Rounds\TalalosRounds::class, 'rounds' => 8,
             // level 1: three easy clues · 2: two clues, what it is for · 3: trickier clues, four pictures
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Találós kérdéseket mondok! Figyeld a nyomokat, és találd ki, mire gondolok!',
         ],
@@ -694,8 +694,8 @@ return [
             'factory' => Rounds\IgekRounds::class, 'rounds' => 8,
             // level 1: who is doing it (3 pictures) · 2: four pictures, what is she doing · 3: verb endings (futok, futsz)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Ki mit csinál éppen? Fut, ugrik, alszik? Hallgasd meg, mit kérdezek, és keresd meg a jó képet!',
         ],
@@ -704,8 +704,8 @@ return [
             'factory' => Rounds\IgazvagyRounds::class, 'rounds' => 8, 'guess' => false,
             // level 1: with a picture, obvious · 2: no picture, negation · 3: all / none, order, cause and effect
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Mondok valamit. Néha igazat, néha butaságot! Ha igaz, koppints a felfelé mutató ujjra, ha butaság, a bolondos arcra!',
         ],
@@ -714,8 +714,8 @@ return [
             'factory' => Rounds\HangutanzoRounds::class, 'rounds' => 8,
             // level 1: who says it · 2: what does it say · 3: things, vehicles, the weather
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Vau-vau, miaú, brekeke! Kitaláljuk, ki mondja, és te is utánozhatod!',
         ],
@@ -724,8 +724,8 @@ return [
             'factory' => Rounds\TestreszekRounds::class, 'rounds' => 8,
             // level 1: the names · 2: what each does · 3: what goes on it, caring for it
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Fül, orr, száj, kéz és láb! Megkeressük a testünk részeit, és megtudjuk, mire valók!',
         ],
@@ -734,8 +734,8 @@ return [
             'factory' => Rounds\IllikRounds::class, 'rounds' => 8,
             // level 1: what goes with it · 2: what we use it for · 3: the name of the group
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 3,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 3,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Vannak dolgok, amelyek összetartoznak, mint a zokni és a cipő. Keresd meg, mi illik hozzá!',
         ],
@@ -744,8 +744,8 @@ return [
             'factory' => Rounds\MondokaRounds::class, 'rounds' => 5, 'guess' => false,
             // level 1: short, the word at the end · 2: longer, the word inside · 3: longer rhymes, four pictures
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Mondókázzunk! Elmondom a mondókát, aztán még egyszer, de egy szót kihagyok. Te találod ki, melyik hiányzik!',
         ],
@@ -754,8 +754,8 @@ return [
             'factory' => Rounds\ValogatoRounds::class, 'rounds' => 3,
             // level = pictures per round: 1 → 4, 2 → 6, 3 → 8
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Válogassuk szét a szemetet! A papír a kék kukába kerül, a műanyag és a fém a sárgába, az üveg a zöldbe, a biohulladék a barnába. Koppints a jó kukára!',
         ],
@@ -764,8 +764,8 @@ return [
             'factory' => Rounds\KapdelRounds::class, 'rounds' => 4, 'no_idle' => true, 'guess' => false,
             // level 1: one kind, slowly · 2: a whole group, faster · 3: by ear (the sound in the word), or the rule turns round
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 50],
             ],
             'intro' => 'Buborékok szállnak fel! Csak azokat kapd el, amiket kérek, a többit hagyd elrepülni!',
         ],
@@ -774,8 +774,8 @@ return [
             'factory' => Rounds\KeresdRounds::class, 'rounds' => 4, 'guess' => false,
             // level 1: 3 among about 12 · 2: 5 among about 25, turned · 3: found by a spoken clue (colour, sound)
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Ez a kép tele van mindenfélével! Keresd meg, amit kérek, és koppints rá!',
         ],
@@ -786,8 +786,8 @@ return [
             'review' => false,
             // level = the maze: 1 → 4×4, 2 → 6×6, 3 → 8×8 with a star on the way
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Segíts kijutni a labirintusból! Húzd az ujjadat az úton, a falakon nem lehet átmenni.',
         ],
@@ -798,8 +798,8 @@ return [
             'review' => false,
             // level 1: each arrow moves at once · 2: plan 2–4 moves, then go · 3: longer programs round obstacles
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 2],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 1, '7+' => 50],
             ],
             'intro' => 'Ez a kis robot azt csinálja, amit mondasz neki: fel, le, balra, jobbra. Vezesd el a céljához!',
         ],
@@ -808,8 +808,8 @@ return [
             'factory' => Rounds\PontozoRounds::class, 'rounds' => 4, 'guess' => false,
             // level 1: 1–6 · 2: 1–10 · 3: 1–15, or the ABC in order
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Kössük össze a pöttyöket sorban! Egy, kettő, három… a végén előbújik a kép!',
         ],
@@ -818,8 +818,8 @@ return [
             'factory' => Rounds\SzinezoRounds::class, 'rounds' => 3, 'no_idle' => true, 'guess' => false,
             // level 1: one part at a time, three colours · 2: more colours and steps · 3: two parts in one sentence, left and right
             'adaptive' => [
-                'min' => 1, 'max' => 3, 'start' => 1, 'up_after' => 2,
-                'starts_by_age' => ['3-4' => 1, '5-6' => 2, '7+' => 3],
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 2,
+                'starts_by_age' => ['3-4' => 1, '5-6' => 50, '7+' => 100],
             ],
             'intro' => 'Színezzünk! Figyeld, mit kérek: először koppints a festékre, aztán a kép részére!',
         ],

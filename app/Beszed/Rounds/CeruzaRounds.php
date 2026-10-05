@@ -4,6 +4,7 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
+/** $level (1–100): path difficulty (wave/arches/hills → zigzag/steps → loops), favoured via favorLevel() against the content's own 1–3 level field. */
 class CeruzaRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array

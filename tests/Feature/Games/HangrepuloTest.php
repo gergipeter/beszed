@@ -45,10 +45,10 @@ it('Hangrepülő levels 1–2: hold the modelled sound, in all or without stoppi
         // the first round explains what the voice does to the flyer
         expect(count($round['prompt']['parts']))->toBe(($r === 0 ? 2 : 1) + ($continuous ? 1 : 0));
     }
-})->with([[1, 2000, false], [2, 4000, true]]);
+})->with([[1, 2000, false], [66, 4000, true]]); // level → scaleInt(level,2000,4000,66), continuous once tier >= 2
 
 it('Hangrepülő level 3: high and low stars in turn, with a voiced sound', function () {
-    foreach (hangrepuloSession(3)['rounds'] as $r => $round) {
+    foreach (hangrepuloSession(100)['rounds'] as $r => $round) { // tier 3: levels 67-100
         $d = $round['data'];
         $stars = collect($d['stars']);
         expect($d['mode'])->toBe('pitch')

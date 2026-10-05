@@ -6,25 +6,31 @@ use Illuminate\Support\Collection;
 
 /**
  * Spot the difference: two panels of pictures, alike but for one cell.
- * $level = grid per panel; at the top level the odd picture is a look-alike
- * (same group: a cat for a dog) instead of something from another group.
+ * $level spans 1–100 (RoundFactory::tier(), 3 bands): the grid per panel grows tier by tier (tier 1,
+ * levels 1–33: 2×2 · tier 2, 34–66: 3×2 · tier 3, 67–100: 3×3); within tier 3 the odd picture is a
+ * look-alike (same group: a cat for a dog) instead of something from another group with a chance that
+ * climbs from occasional at level 67 to certain by level 100 (scale()), rather than switching all at once.
  */
 class KulonbsegRounds extends RoundFactory
 {
-    /** level → [cols, rows] */
+    /** tier → [cols, rows] */
     public const GRIDS = [1 => [2, 2], 2 => [3, 2], 3 => [3, 3]];
 
     public function build(Collection $items, int $level, int $count): array
     {
-        [$cols, $rows] = self::GRIDS[$level] ?? self::GRIDS[1];
+        $tier = $this->tier($level, 3);
+        [$cols, $rows] = self::GRIDS[$tier] ?? self::GRIDS[1];
         $cells = $cols * $rows;
+        // tier 3 only: grows from an occasional look-alike swap at level 67 to always by level 100.
+        $alikeChance = $tier < 3 ? 0.0 : $this->scale($level, 0.25, 1.0);
         $rounds = [];
 
         foreach ($this->cycle($items, $count)->values() as $r => $changed) {
             $group = $changed->payload['group'];
             $others = $items->reject(fn ($i) => $i->id === $changed->id);
             $alike = $others->filter(fn ($i) => $i->payload['group'] === $group);
-            $swap = ($level >= 3 && $alike->isNotEmpty() ? $alike : $others->reject(fn ($i) => $i->payload['group'] === $group))
+            $wantAlike = $alike->isNotEmpty() && (mt_rand() / mt_getrandmax()) < $alikeChance;
+            $swap = ($wantAlike ? $alike : $others->reject(fn ($i) => $i->payload['group'] === $group))
                 ->whenEmpty(fn () => $others)->random();
 
             $fill = $others->reject(fn ($i) => $i->id === $swap->id)->shuffle()->take($cells - 1);

@@ -8,6 +8,8 @@
 
 return [
     // Highest game level (the adaptive level, or Kirakó's pálya) a free account plays. null = no cap.
+    // Levels are now a smooth 1-100 scale (see RoundFactory::tier()/scale()), but the free gate stays
+    // put at the original free ceiling: level 3 (near the easy end of tier 1 for a 3-tier game).
     'free_max_level' => 3,
 
     // Games whose levels are small steps get more room: Kirakó has 200 "pálya" (each one a puzzle), so 3 of them

@@ -4,6 +4,11 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
+/**
+ * Dobolós szavak: Csillám says a word, the child drums one beat per syllable. The content's own
+ * 1–3 level (syllable count) is favoured by tier() across the full 1–100 adaptive level: low levels
+ * favour fewer syllables, high levels favour more.
+ */
 class SzotagRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array

@@ -5,9 +5,13 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Letters: which letter does the word start with, and (from level 2) which picture starts with the letter.
- * $level = the letters in play: 1 → the plain ones, 2 → + the long vowels, 3 → + the two-letter sounds (cs, sz, gy…).
- * Each content item is one picture word with its first letter.
+ * Letters: which letter does the word start with, and (from tier 2) which picture starts with the letter.
+ * $level spans 1–100 (RoundFactory::tier(), 3 bands matching the content's own 1–3 `level` field): tier 1
+ * (levels 1–33) → the plain letters, tier 2 (34–66) → + the long vowels, tier 3 (67–100) → + the two-letter
+ * sounds (cs, sz, gy…). favorLevel()/the pool filter track that tier, not a hard content level, so the mix
+ * of letters widens gradually across a tier instead of jumping only at its first level. Within tiers 2–3
+ * the picture-from-letter round (vs. letter-from-word) also grows from occasional to as common as the old
+ * "every other round". Each content item is one picture word with its first letter.
  */
 class BetukRounds extends RoundFactory
 {
@@ -16,10 +20,13 @@ class BetukRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->values();
         $pool = $pool->groupBy(fn ($i) => $i->payload['letter'])->count() >= 4 ? $pool : $items;
         $this->favorLevel($pool, $level);
         $byLetter = $pool->groupBy(fn ($i) => $i->payload['letter']);
+        // tier 1: never the picture round; tiers 2–3: a growing share of rounds pick the picture from the letter.
+        $pictureShare = $tier === 1 ? 0.0 : $this->scale($level, 0.3, 0.6);
         $rounds = [];
         $last = null;
 
@@ -28,7 +35,7 @@ class BetukRounds extends RoundFactory
             $word = $this->weightedShuffle($byLetter[$letter])->first();
             $others = $byLetter->keys()->reject(fn ($l) => $l === $letter)->shuffle()->take(2)->values();
 
-            $rounds[] = ($level >= 2 && $r % 2 === 1)
+            $rounds[] = ($tier >= 2 && (mt_rand() / mt_getrandmax()) < $pictureShare)
                 ? $this->pictureRound($byLetter, $letter, $word, $others)
                 : $this->letterRound($letter, $word, $others);
         }

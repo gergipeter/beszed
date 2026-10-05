@@ -4,7 +4,11 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
-/** Relational vocabulary. Scene layouts live in the client's SceneView.vue. */
+/**
+ * Relational vocabulary. Scene layouts live in the client's SceneView.vue.
+ * $level (1–100, tier(level, 3)): tier 1 → up/down only, 2 options · tier 2 → + front/back, 3 options ·
+ * tier 3 → + left/right and "between" (harder — no fixed visual cue), 3 options.
+ */
 class HolRounds extends RoundFactory
 {
     public const RELATIONS = [
@@ -20,8 +24,8 @@ class HolRounds extends RoundFactory
     /** Pairs that look too similar to be shown side by side. */
     private const CONFLICT = ['folott' => 'mogott', 'mogott' => 'folott', 'alatt' => 'elott', 'elott' => 'alatt'];
 
-    /** Relations unlocked by level: up/down first, then front/back, then left/right and "between" (harder — no fixed visual cue). */
-    private const RELATIONS_BY_LEVEL = [
+    /** Relations unlocked by tier: up/down first, then front/back, then left/right and "between" (harder — no fixed visual cue). */
+    private const RELATIONS_BY_TIER = [
         1 => ['folott', 'alatt'],
         2 => ['folott', 'alatt', 'mogott', 'elott'],
         3 => ['folott', 'alatt', 'mogott', 'elott', 'jobb', 'bal', 'kozott'],
@@ -29,8 +33,9 @@ class HolRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $keys = self::RELATIONS_BY_LEVEL[$level] ?? self::RELATIONS_BY_LEVEL[3];
-        $optionCount = $level === 1 ? 2 : 3;
+        $tier = $this->tier($level, 3);
+        $keys = self::RELATIONS_BY_TIER[$tier];
+        $optionCount = $tier === 1 ? 2 : 3;
         $last = null;
 
         return $this->cycle($items, $count)->map(function ($it) use ($keys, $optionCount, &$last) {

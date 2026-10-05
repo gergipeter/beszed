@@ -6,8 +6,10 @@ use Illuminate\Support\Collection;
 
 /**
  * Reading an analogue clock: "Hány óra van?" with three digital times to pick from, one of them with the same hour
- * or the same minutes, so the child has to look at both hands. Each content item is one time ("3:30").
- * $level = the content's level: whole hours → + half hours (fél négy) → + quarters (negyed négy, háromnegyed négy).
+ * or the same minutes, so the child has to look at both hands. Each content item is one time ("3:30") with its
+ * own 1–3 content level. $level (1-100) maps onto that via tier(): tier 1 (levels 1-33) whole hours only,
+ * tier 2 (34-66) + half hours (fél négy), tier 3 (67-100) + quarters (negyed négy, háromnegyed négy). Within
+ * each tier favorLevel() keeps biasing towards that tier's own newest items as $level climbs inside the band.
  */
 class IdoRounds extends RoundFactory
 {
@@ -18,10 +20,11 @@ class IdoRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->values();
         $pool = $pool->isEmpty() ? $items : $pool;
         // the newest kind of time comes most often
-        $this->weights = $pool->mapWithKeys(fn ($i) => [$i->id => (($i->level ?? 1) === $level ? 3.0 : 1.0) * ($this->weights[$i->id] ?? 1.0)])->all();
+        $this->weights = $pool->mapWithKeys(fn ($i) => [$i->id => (($i->level ?? 1) === $tier ? 3.0 : 1.0) * ($this->weights[$i->id] ?? 1.0)])->all();
         $rounds = [];
 
         foreach ($this->cycle($pool, $count)->values() as $r => $item) {

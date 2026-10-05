@@ -98,7 +98,8 @@ it('level 1: three pictures, the answer among them, no other picture also fits',
 it('level 2: four pictures, and "Mit csinál?" with three spoken verbs', function () {
     $spoken = 0;
     foreach (range(1, 4) as $_) {
-        foreach (igekSession(2) as $round) {
+        // level 66: the last level of tier 2 (34-66, "Mit csinál?" unlocked), where whoOptions = scaleInt(level,3,4) also reaches 4
+        foreach (igekSession(66) as $round) {
             if (($round['data']['variant'] ?? null) !== 'speakers') {
                 expect($round['data']['options'])->toHaveCount(4);
                 igekCheckPictures($round, $this->verbs);
@@ -124,7 +125,7 @@ it('level 2: four pictures, and "Mit csinál?" with three spoken verbs', functio
 
 it('level 3: the form that belongs to the person, among forms of the same verb', function () {
     foreach (range(1, 4) as $_) {
-        foreach (igekSession(3) as $round) {
+        foreach (igekSession(100) as $round) { // tier 3: levels 67-100
             if (($round['data']['variant'] ?? null) !== 'speakers') {
                 igekCheckPictures($round, $this->verbs);
 

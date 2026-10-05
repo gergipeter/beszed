@@ -5,9 +5,11 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Left and right, up and down. Level 1: tap the arrow that points that way.
- * Level 2: who stands leftmost, rightmost or in the middle of three animals in a row.
- * Level 3: who stands right next to an animal, on its left or right (looking at the picture).
+ * Left and right, up and down. Tier 1 (levels 1-33): tap the arrow that points that way.
+ * Tier 2 (34-66): who stands leftmost, rightmost or in the middle of three animals in a row.
+ * Tier 3 (67-100): who stands right next to an animal, on its left or right (looking at the
+ * picture). The row the child reads grows from 3 to 4 animals within tier 3 as $level climbs,
+ * so the task doesn't stay flat for the whole tier.
  */
 class IranyRounds extends RoundFactory
 {
@@ -17,14 +19,15 @@ class IranyRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
+        $tier = $this->tier($level, 3);
+        $rowSize = $this->scaleInt($level, 3, 4);
         $last = null;
 
-        return $this->cycle($items, $count)->map(function ($it) use ($level, $items, &$last) {
-            return match ($level) {
+        return $this->cycle($items, $count)->map(function ($it) use ($tier, $rowSize, $items, &$last) {
+            return match ($tier) {
                 1 => $this->arrow($it, $last = $this->pickNot(array_keys(self::ARROWS), $last)),
                 2 => $this->position($it, $items),
-                default => $this->neighbour($it, $items),
+                default => $this->neighbour($it, $items, $rowSize),
             };
         })->values()->all();
     }
@@ -69,11 +72,12 @@ class IranyRounds extends RoundFactory
         ], $it->id);
     }
 
-    private function neighbour($it, Collection $pool): array
+    private function neighbour($it, Collection $pool, int $n = 4): array
     {
-        $row = $this->row($pool, $it, 4);
-        $i = random_int(0, 3);
-        $right = $i === 0 || ($i !== 3 && random_int(0, 1) === 1);
+        $row = $this->row($pool, $it, $n);
+        $last = $n - 1;
+        $i = random_int(0, $last);
+        $right = $i === 0 || ($i !== $last && random_int(0, 1) === 1);
         $anchor = $row[$i];
         $answer = $row[$right ? $i + 1 : $i - 1];
         $side = $right ? 'jobb' : 'bal';

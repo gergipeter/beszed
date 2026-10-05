@@ -7,13 +7,15 @@ use Illuminate\Support\Collection;
 /**
  * A board game with speaking tasks (like a speech therapist's "őszi lépegető" sheet): the child rolls a die,
  * steps along a path from Start to Cél, and every field asks something to say, copy, count or do.
- * The theme is a season: the one the child picked, else the one it is now. $level = fields on the path:
- * 1 → 8, 2 → 12, 3 → 16.
+ * The theme is a season: the one the child picked, else the one it is now. $level sets the fields on the
+ * path: the client lays tiles out in a fixed 4-column grid (BoardEngine.vue), so rather than a truly
+ * continuous board size this uses tier() to pick one of five discrete sizes, each a few fields longer than
+ * the last — 8, 11, 14, 17, 20 — spread evenly across the full 1–100 range.
  */
 class LepegetoRounds extends RoundFactory
 {
-    /** level → task fields between Start and Cél */
-    public const FIELDS = [1 => 8, 2 => 12, 3 => 16];
+    /** tier (1–5, see tier()) → task fields between Start and Cél */
+    public const FIELDS = [1 => 8, 2 => 11, 3 => 14, 4 => 17, 5 => 20];
 
     /** theme → [name, emoji of Start/Cél, the token the child moves] */
     public const THEMES = [
@@ -29,7 +31,7 @@ class LepegetoRounds extends RoundFactory
         $pool = $items->filter(fn ($i) => ($i->payload['theme'] ?? null) === $theme)->values();
         $pool = $pool->isEmpty() ? $items : $pool;
         [$name, $mark, $token] = self::THEMES[$theme];
-        $fields = self::FIELDS[$level] ?? self::FIELDS[1];
+        $fields = self::FIELDS[$this->tier($level, 5)];
         $rounds = [];
 
         for ($r = 0; $r < $count; $r++) {

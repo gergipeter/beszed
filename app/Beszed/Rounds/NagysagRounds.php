@@ -6,24 +6,23 @@ use Illuminate\Support\Collection;
 
 /**
  * Seriation: the same picture in 3–5 sizes, tapped from the smallest to the
- * biggest. $level = number of sizes; at the top level every other round goes
+ * biggest. $level (1-100) scales the number of sizes continuously from 3 up to
+ * 5 across the full range; from level 67 up (tier 3) every other round goes
  * the other way (biggest first), so the child has to listen, not just repeat.
  */
 class NagysagRounds extends RoundFactory
 {
-    /** level → sizes */
-    public const SIZES = [1 => 3, 2 => 4, 3 => 5];
-
     /** Smallest picture, relative to the biggest. */
     private const MIN_SCALE = 0.35;
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $n = self::SIZES[$level] ?? self::SIZES[1];
+        $n = $this->scaleInt($level, 3, 5);
+        $tier = $this->tier($level, 3);
         $rounds = [];
 
         foreach ($this->cycle($items, $count)->values() as $r => $item) {
-            $down = $level >= 3 && $r % 2 === 1;
+            $down = $tier >= 3 && $r % 2 === 1;
             $pieces = collect(range(0, $n - 1))->map(fn ($k) => [
                 'id' => "s$k",
                 'emoji' => $item->payload['emoji'],

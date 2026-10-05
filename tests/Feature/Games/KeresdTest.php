@@ -35,7 +35,7 @@ function keresdSession(int $level): array
 }
 
 it('lays out a scene inside the board, with the level\'s targets and pictures', function (int $level) {
-    $spec = K::LEVELS[$level];
+    $spec = K::spec($level);
     foreach (range(1, 3) as $repeat) {
         $session = keresdSession($level);
         expect($session['rounds'])->toHaveCount(4);
@@ -78,9 +78,9 @@ it('lays out a scene inside the board, with the level\'s targets and pictures', 
                 ->and($items->max('y') - $items->min('y'))->toBeGreaterThan(45);
         }
     }
-})->with([1, 2, 3]);
+})->with([1, 33, 66]);
 
-it('finds one kind of picture at levels 1–2, said in the accusative', function (int $level) {
+it('finds one kind of picture below the clue tier, said in the accusative', function (int $level) {
     foreach (keresdSession($level)['rounds'] as $round) {
         $d = $round['data'];
         $targets = collect($d['items'])->where('target', true);
@@ -96,9 +96,9 @@ it('finds one kind of picture at levels 1–2, said in the accusative', function
             ->and($round['prompt']['text'])->not->toContain('…')
             ->and($d['counts'])->toHaveCount($d['count']);
     }
-})->with([1, 2]);
+})->with([1, 40]);
 
-it('covers some targets partly at level 2, none at level 1', function () {
+it('covers some targets partly at a higher level, none at level 1', function () {
     $overlaps = function (array $items) {
         $n = 0;
         foreach ($items as $i => $it) {
@@ -110,21 +110,21 @@ it('covers some targets partly at level 2, none at level 1', function () {
         return $n;
     };
     $level1 = collect(range(1, 3))->flatMap(fn () => keresdSession(1)['rounds'])->sum(fn ($r) => $overlaps($r['data']['items']));
-    $level2 = collect(range(1, 3))->flatMap(fn () => keresdSession(2)['rounds'])->sum(fn ($r) => $overlaps($r['data']['items']));
+    $level50 = collect(range(1, 3))->flatMap(fn () => keresdSession(50)['rounds'])->sum(fn ($r) => $overlaps($r['data']['items']));
 
-    expect($level1)->toBe(0)->and($level2)->toBeGreaterThan(0);
+    expect($level1)->toBe(0)->and($level50)->toBeGreaterThan(0);
 });
 
 it('lays out the same picture for the same seed', function () {
     $pieces = [...array_fill(0, 5, ['emoji' => '🐞', 'target' => true]), ...array_fill(0, 20, ['emoji' => '🌷', 'target' => false])];
 
-    expect(K::layout($pieces, 2, 12345))->toBe(K::layout($pieces, 2, 12345))
-        ->and(K::layout($pieces, 2, 12345))->not->toBe(K::layout($pieces, 2, 54321));
+    expect(K::layout($pieces, 50, 12345))->toBe(K::layout($pieces, 50, 12345))
+        ->and(K::layout($pieces, 50, 12345))->not->toBe(K::layout($pieces, 50, 54321));
 });
 
-it('gives a level-3 clue that fits every target and no other picture', function () {
+it('gives a clue-tier clue that fits every target and no other picture', function () {
     foreach (range(1, 4) as $repeat) {
-        foreach (keresdSession(3)['rounds'] as $round) {
+        foreach (keresdSession(85)['rounds'] as $round) {
             $d = $round['data'];
             $item = BeszedContentItem::find($round['content_item_id']);
             $p = $item->payload;
@@ -181,7 +181,7 @@ it('checks the first sound digraph-aware', function () {
         ->and(K::firstSound('csiga'))->toBe('cs');
 
     $row = ['name' => 'X', 'backdrop' => 'room', 'kind' => 'clue', 'clue' => 'olyan dolgot, aminek a neve s hanggal kezdődik', 'nope' => 'neve nem s hanggal kezdődik', 'sound' => 's',
-        'targets' => [['🧢', 'sapka'], ['🧀', 'sajt'], ['🦅', 'sas'], ['⛺', 'sátor']],
+        'targets' => [['🧢', 'sapka'], ['🧀', 'sajt'], ['🦅', 'sas'], ['⛺', 'sátor'], ['🧦', 'sál'], ['🥣', 'sótartó']],
         'others' => [['🐶', 'kutya'], ['🍎', 'alma'], ['🐟', 'hal'], ['🚗', 'autó'], ['🍌', 'banán'], ['🐸', 'béka'], ['🎈', 'lufi'], ['⚽', 'labda']]];
     expect(ContentRules::check('keresd', $row))->toBe([])
         // "szék" starts with sz, not s

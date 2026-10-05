@@ -9,9 +9,9 @@ use Illuminate\Support\Collection;
  * Riddles: Csillám gives a few clues one by one ("Hosszú a füle. Nagyokat ugrik. Répát rágcsál.")
  * and the child finds the picture among others of the same group (animals with animals,
  * vehicles with vehicles), so the clues, not the group, give the answer away.
- * $level: 1 → three pictures, mostly three easy clues · 2 → two clues, what it is for ·
- * 3 → trickier clues, four pictures. A riddle's `close` names answers of its group that fit some
- * of its clues too (the bus and the tram); those are never offered beside it, either way round.
+ * $level (1–100): the riddle's own content level (1–3) is favoured via favorLevel() (so easy riddles
+ * dominate early), and tier(level, 3) sets how many pictures are offered: tier 1–2 → three, tier 3
+ * (67–100) → four, the hardest spread.
  */
 class TalalosRounds extends RoundFactory
 {
@@ -19,10 +19,11 @@ class TalalosRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->values();
         $pool = $pool->count() >= $count ? $pool : $items;
         $this->favorLevel($pool, $level);
-        $choices = $level >= 3 ? 4 : 3;
+        $choices = $tier >= 3 ? 4 : 3;
         $rounds = [];
 
         foreach ($this->cycle($pool, $count)->values() as $r => $item) {

@@ -7,8 +7,11 @@ use Illuminate\Support\Collection;
 /**
  * Fújóka: breath control, the blowing exercises of speech therapy. The microphone hears the blow (engine
  * `voice`, mode `blow`) and the scene answers: candles go out, seeds fly, the boat sails, the feather floats.
- * Level 1: short separate puffs (one candle, bubble or tuft of seeds each) · 2: one long blow, 1.5 s growing
- * to 2.5 s over the session · 3: a gentle, steady blow for 3 s, in turn with soft-and-strong rounds.
+ * $level (1–100, tier()): tier 1 (1–33) → short separate puffs (one candle, bubble or tuft of seeds each) ·
+ * tier 2 (34–66) → one long blow, held from 1.5 s on the session's first round to 2.5 s on its last · tier 3
+ * (67–100) → a gentle, steady blow, in turn with soft-and-strong rounds. The puff count and the number of
+ * alternating steps come from the content item itself, so they already vary within a tier without needing
+ * the adaptive level; only which kind of blow is asked for is level-driven.
  * Without a microphone a parent's button counts each blow, so nothing is graded: every finish is tries 1.
  */
 class FujokaRounds extends RoundFactory
@@ -21,13 +24,13 @@ class FujokaRounds extends RoundFactory
         'alternate' => ['pinwheel', 'boat'],
     ];
 
-    /** level → the kinds of blowing played (level 3 takes them in turn) */
+    /** tier (1–3, see tier()) → the kinds of blowing played (tier 3 takes them in turn); content items are keyed the same 1–3 */
     public const KINDS = [1 => ['puffs'], 2 => ['long'], 3 => ['gentle', 'alternate']];
 
-    /** Level 2: the long blow, from the first round to the last. */
+    /** Tier 2: the long blow, from the first round to the last. */
     public const HOLD_MS = [1500, 2500];
 
-    /** Level 3: how long the gentle blow lasts, and each soft or strong step. */
+    /** Tier 3: how long the gentle blow lasts, and each soft or strong step. */
     public const SOFT_MS = 3000;
 
     public const STEP_MS = 900;
@@ -44,10 +47,10 @@ class FujokaRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        $kinds = self::KINDS[$level];
+        $tier = $this->tier($level, 3);
+        $kinds = self::KINDS[$tier];
 
-        // level 3: gentle and soft-and-strong rounds take turns
+        // tier 3: gentle and soft-and-strong rounds take turns
         $pools = collect($kinds)->map(fn ($kind) => $items->filter(fn ($i) => $i->payload['kind'] === $kind)->values())
             ->filter(fn ($pool) => $pool->isNotEmpty())->values();
         if ($pools->isEmpty()) {

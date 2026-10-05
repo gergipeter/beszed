@@ -57,7 +57,7 @@ it('has 40+ items with standard sounds, every sound once, every close name real'
     expect($this->items->where('level', 3)->every(fn ($i) => $i->payload['kind'] !== 'animal'))->toBeTrue();
 });
 
-it('asks who says it, and invites the child to say it too', function (int $level) {
+it('asks who says it, and invites the child to say it too', function (int $level, int $tier) {
     $spoken = 0;
     foreach (range(1, 5) as $_) {
         foreach (hangutanzoSession($level) as $round) {
@@ -73,32 +73,32 @@ it('asks who says it, and invites the child to say it too', function (int $level
 
             if (($round['data']['variant'] ?? null) === 'speakers') {
                 $spoken++;
-                expect($level)->toBeGreaterThanOrEqual(2)
+                expect($tier)->toBeGreaterThanOrEqual(2)
                     ->and(hangutanzoEmoji($round['data']['stimulus']['emoji']))->toBe($answer['emoji'])
                     ->and($options->firstWhere('id', $round['data']['answer'])['label'])->toBe($answer['sound'])
                     ->and($options)->toHaveCount(3)
                     ->and($round['data']['onCorrect'])->toContain($answer['sound']);
             } else {
                 expect($round['prompt']['text'])->toEndWith("hogy {$answer['sound']}?")
-                    ->and($options)->toHaveCount($level >= 3 ? 4 : 3)
+                    ->and($options)->toHaveCount($tier >= 3 ? 4 : 3)
                     ->and($round['data']['onCorrect'])->toEndWith("Mondd te is: {$answer['sound']}!");
                 foreach ($options as $o) {
                     expect(hangutanzoEmoji($o['emoji']))->toBe($this->items[(int) $o['id']]->payload['emoji']);
                 }
             }
-            if ($level === 1) {
+            if ($tier === 1) {
                 expect($answer['kind'])->toBe('animal');
             }
-            if ($level === 3) {
+            if ($tier === 3) {
                 expect($answer['kind'])->not->toBe('animal');
             }
         }
     }
-    expect($spoken > 0)->toBe($level >= 2);
-})->with([1, 2, 3]);
+    expect($spoken > 0)->toBe($tier >= 2);
+})->with([[1, 1], [50, 2], [100, 3]]); // level → tier(level, 3)
 
 it('says the questions in good Hungarian', function () {
-    $prompts = collect(range(1, 4))->flatMap(fn () => hangutanzoSession(3))->pluck('prompt.text')->implode(' | ');
+    $prompts = collect(range(1, 4))->flatMap(fn () => hangutanzoSession(100))->pluck('prompt.text')->implode(' | ');
 
     expect($prompts)->not->toContain('az aki')->not->toContain('a aki')->not->toMatch('/\ba [aáeéiíoóöőuúüű]/u');
 });

@@ -4,16 +4,18 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
+/**
+ * $level (1–100): the number range compared/counted grows smoothly from 1–4 at level 1 to 3–9 at level 100
+ * (scaleInt()), and the minimum gap allowed between the two plates' counts (so "which is more?" isn't a
+ * coin flip at the very start) eases from 2 down to 1 over the first third of the range.
+ */
 class SzamolRounds extends RoundFactory
 {
-    /** [min, max] range for the numbers compared/counted, and how close the two plates' counts may be. */
-    private const RANGE_BY_LEVEL = [1 => [1, 4], 2 => [2, 6], 3 => [3, 9]];
-    private const MIN_GAP_BY_LEVEL = [1 => 2, 2 => 1, 3 => 1];
-
     public function build(Collection $items, int $level, int $count): array
     {
-        [$min, $max] = self::RANGE_BY_LEVEL[$level] ?? self::RANGE_BY_LEVEL[3];
-        $minGap = self::MIN_GAP_BY_LEVEL[$level] ?? 1;
+        $min = $this->scaleInt($level, 1, 3);
+        $max = $this->scaleInt($level, 4, 9);
+        $minGap = $level <= 33 ? 2 : 1;
 
         return $this->cycle($items, $count)->map(function ($it, $i) use ($min, $max, $minGap) {
             $f = $it->payload;

@@ -52,7 +52,7 @@ it('rejects pieces that are not the syllables', function (array $pieces) {
     expect(ContentRules::check('csigabeszed', ['word' => 'cica', 'emoji' => '🐱', 'pieces' => $pieces]))->toHaveKey('pieces');
 })->with([[['ci', 'ka']], [['c', 'ica']], [['cic', 'a']]]);
 
-it('says the pieces one by one, then asks; the level sets the length and the number of pictures', function (int $level) {
+it('says the pieces one by one, then asks; the level sets the length and the number of pictures', function (int $level, int $tier) {
     foreach (range(1, 5) as $i) {
         foreach (csigaSession($level)['rounds'] as $k => $round) {
             $d = $round['data'];
@@ -61,11 +61,11 @@ it('says the pieces one by one, then asks; the level sets the length and the num
             $parts = $round['prompt']['parts'];
             $options = collect($d['options']);
 
-            expect(match ($level) { 1 => count($pieces) === 2, 2 => count($pieces) === 3, 3 => count($pieces) >= 4 })->toBeTrue($item->payload['word'])
+            expect(match ($tier) { 1 => count($pieces) === 2, 2 => count($pieces) === 3, 3 => count($pieces) >= 4 })->toBeTrue($item->payload['word'])
                 // each piece is its own utterance, in order, with nothing glued to it
                 ->and(array_slice($parts, $k === 0 ? 1 : 0, count($pieces)))->toBe($pieces)
-                ->and($options)->toHaveCount($level === 3 ? 4 : 3)
-                ->and($d['layout'])->toBe($level === 3 ? 'four' : 'three')
+                ->and($options)->toHaveCount($tier === 3 ? 4 : 3)
+                ->and($d['layout'])->toBe($tier === 3 ? 'four' : 'three')
                 ->and($d['answer'])->toBe((string) $item->id)
                 ->and($options->pluck('id'))->toContain($d['answer'])
                 ->and($options->pluck('emoji')->unique())->toHaveCount($options->count());
@@ -81,4 +81,4 @@ it('says the pieces one by one, then asks; the level sets the length and the num
             }
         }
     }
-})->with([1, 2, 3]);
+})->with([[1, 1], [50, 2], [100, 3]]); // level → tier(level, 3)

@@ -5,19 +5,21 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Colours and shapes: "Melyik a piros?" with three to pick from, all of one kind.
- * $level: 1 → colours, 2 → shapes, 3 → both, in turn.
+ * Colours and shapes: "Melyik a piros?" with three to pick from, all of one kind. The adaptive level
+ * (1–100) splits into three equal tiers (tier()): tier 1 colours only, tier 2 shapes only, tier 3 both,
+ * alternating.
  */
 class SzinekRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
         $kinds = $items->groupBy(fn ($i) => $i->payload['kind']);
+        $tier = $this->tier($level, 3);
         $rounds = [];
         $last = null;
 
         for ($r = 0; $r < $count; $r++) {
-            $kind = match ($level) {
+            $kind = match ($tier) {
                 1 => 'color',
                 2 => 'shape',
                 default => $r % 2 ? 'shape' : 'color',

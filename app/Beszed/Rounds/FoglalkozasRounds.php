@@ -4,12 +4,12 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
-/** Jobs: "Ki oltja a tüzet?" and the child taps the firefighter. $level = what to pick from: 1 → two, 2 → three, 3 → four. */
+/** Jobs: "Ki oltja a tüzet?" and the child taps the firefighter. $level (1–100): what to pick from, growing smoothly from two options to four (scaleInt()). */
 class FoglalkozasRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
-        $n = min(4, max(2, $level + 1));
+        $n = $this->scaleInt($level, 2, 4);
         $rounds = [];
 
         foreach ($this->cycle($items->values(), $count)->values() as $job) {

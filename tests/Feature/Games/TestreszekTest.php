@@ -53,7 +53,7 @@ it('has 40+ rows of every kind, one name per picture', function () {
     }
 });
 
-it('offers the right picture and nothing that would also be right', function (int $level) {
+it('offers the right picture and nothing that would also be right', function (int $level, int $tier) {
     [$body, $things] = TestreszekRounds::pictures($this->rows->values());
     foreach (range(1, 5) as $_) {
         foreach (testreszekSession($level) as $round) {
@@ -63,10 +63,10 @@ it('offers the right picture and nothing that would also be right', function (in
             $right = collect($round['data']['options'])->firstWhere('id', $round['data']['answer']);
             $names = isset($body[$p['emoji']]) ? $body : $things;
 
-            expect($row->level)->toBe($level)
+            expect($row->level)->toBe($tier)
                 ->and($round['prompt']['text'])->toBe($p['question'])
                 ->and(testreszekEmoji($right['emoji']))->toBe($p['emoji'])
-                ->and($shown)->toHaveCount($level === 2 ? 4 : 3)
+                ->and($shown)->toHaveCount($tier === 2 ? 4 : 3)
                 ->and($shown->unique())->toHaveCount($shown->count())
                 ->and($round['data']['onCorrect'])->toBe($p['say']);
             foreach ($shown as $e) {
@@ -80,11 +80,11 @@ it('offers the right picture and nothing that would also be right', function (in
             if (isset($p['part'])) {
                 expect(testreszekEmoji($round['data']['stimulus']['emoji']))->toBe($p['part']);
             }
-            match ($level) {
+            match ($tier) {
                 1 => expect($p['kind'])->toBe('name'),
                 3 => expect($p['kind'])->not->toBe('name'),
                 default => null,
             };
         }
     }
-})->with([1, 2, 3]);
+})->with([[1, 1], [50, 2], [100, 3]]);

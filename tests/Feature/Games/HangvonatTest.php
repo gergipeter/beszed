@@ -81,7 +81,7 @@ it('has deep, valid content for every sound', function () {
 
 it('level 1: start or end only, two trains', function () {
     foreach (range(1, 5) as $i) {
-        foreach (hangvonatSession(1)['rounds'] as $round) {
+        foreach (hangvonatSession(1)['rounds'] as $round) { // tier 1: levels 1-33
             $d = $round['data'];
             $item = BeszedContentItem::find($round['content_item_id']);
             expect($d['layout'])->toBe('two')
@@ -96,7 +96,7 @@ it('level 1: start or end only, two trains', function () {
 it('level 2: start, middle or end; the trains show the place', function () {
     $answers = collect();
     foreach (range(1, 5) as $i) {
-        foreach (hangvonatSession(2)['rounds'] as $round) {
+        foreach (hangvonatSession(50)['rounds'] as $round) { // tier 2: levels 34-66
             $d = $round['data'];
             $item = BeszedContentItem::find($round['content_item_id']);
             expect($d['layout'])->toBe('two')
@@ -114,7 +114,7 @@ it('level 2: start, middle or end; the trains show the place', function () {
 
 it('level 3: two look-alike sounds take turns, and the answer is where the one asked is', function () {
     foreach (range(1, 5) as $i) {
-        $rounds = hangvonatSession(3)['rounds'];
+        $rounds = hangvonatSession(100)['rounds']; // tier 3: levels 67-100
         $sounds = collect($rounds)->map(fn ($r) => BeszedContentItem::find($r['content_item_id'])->payload['sound']);
 
         expect($sounds->unique()->sort()->values()->all())->toBeIn([['s', 'sz'], ['z', 'zs']]);
@@ -130,7 +130,7 @@ it('level 3: two look-alike sounds take turns, and the answer is where the one a
 });
 
 it('names sounds the way the voice can say them', function () {
-    foreach ([1, 2, 3] as $level) {
+    foreach ([1, 50, 100] as $level) {
         foreach (hangvonatSession($level)['rounds'] as $round) {
             foreach ([...$round['prompt']['parts'], $round['data']['onCorrect'], $round['data']['onWrong']] as $said) {
                 // a sound written on its own ("sss", "mmm") is spelled out letter by letter; "…" is read as "pont pont pont"

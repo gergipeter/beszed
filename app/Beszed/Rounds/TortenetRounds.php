@@ -7,17 +7,15 @@ use Illuminate\Support\Collection;
 /**
  * Story order: the pictures of a little story, shuffled; the child taps them
  * from what happened first to what happened last, and Csillám names each step.
- * $level = steps: 1 → three (a longer story keeps its first, last and one middle
- * step, still in order), 2 → four.
+ * Steps grow smoothly from three at level 1 to six at level 100 (scaleInt()):
+ * a longer story keeps its first, last and some middle steps picked at random,
+ * still in order, so a story with fewer steps than the target still works.
  */
 class TortenetRounds extends RoundFactory
 {
-    /** level → steps */
-    public const STEPS = [1 => 3, 2 => 4];
-
     public function build(Collection $items, int $level, int $count): array
     {
-        $n = self::STEPS[$level] ?? self::STEPS[1];
+        $n = $this->scaleInt($level, 3, 6);
         $stories = $items->filter(fn ($i) => count($i->payload['steps']) >= $n)->values();
         $stories = $stories->isEmpty() ? $items : $stories;
         $rounds = [];

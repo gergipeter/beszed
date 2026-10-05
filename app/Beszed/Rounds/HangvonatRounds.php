@@ -8,8 +8,10 @@ use Illuminate\Support\Collection;
 /**
  * Hangvonat: where is the sound in the word — at the start, in the middle or at the end?
  * The word is a train of three cars; the child taps the car where the sound is.
- * Level 1: start or end (two trains) · 2: start, middle or end · 3: a session of two look-alike
- * sounds (s and sz, or z and zs) side by side, longer words, words with the look-alike in them too.
+ * Tier 1 (levels 1-33): start or end only (two trains). Tier 2 (34-66): start, middle or end
+ * (three trains). Tier 3 (67-100): a session of two look-alike sounds (s and sz, or z and zs)
+ * side by side, so the child must listen for the one asked, not just recognise it. Within every
+ * tier the content pool is biased towards harder (content-level) items the higher $level climbs.
  *
  * The voices (Azure and Piper) spell out a sound written on its own ("sss" → "es es es"), so a sound
  * is named the way the voice can say it: by its letter ("az sz hangot" → "az esz hangot"), with a
@@ -105,13 +107,14 @@ class HangvonatRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $fits = fn ($i) => $level > 1 || $i->payload['pos'] !== 'middle';
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level && $fits($i))->values();
+        $tier = $this->tier($level, 3);
+        $fits = fn ($i) => $tier > 1 || $i->payload['pos'] !== 'middle';
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier && $fits($i))->values();
         if ($pool->count() < $count) {
             $pool = $items->filter($fits)->values();
         }
         $this->favorLevel($pool, $level);
-        $picked = $level >= 3 ? $this->lookalikes($pool, $count) : $this->cycle($pool, $count);
+        $picked = $tier >= 3 ? $this->lookalikes($pool, $count) : $this->cycle($pool, $count);
 
         $rounds = [];
         $seen = [];
@@ -125,13 +128,13 @@ class HangvonatRounds extends RoundFactory
             $helper = ! isset($seen[$sound]) && isset(self::HELPER[$sound]) ? ', '.self::HELPER[$sound] : '';
             $question = match (true) {
                 $r === 0 => "Figyeld meg, hol hallod {$name}{$helper}!",
-                $level >= 3 && $last !== null && $last !== $sound => 'Most '.Hungarian::letterArticle($sound)." {$sound} hangot keresd{$helper}! Hol hallod?",
+                $tier >= 3 && $last !== null && $last !== $sound => 'Most '.Hungarian::letterArticle($sound)." {$sound} hangot keresd{$helper}! Hol hallod?",
                 default => "Hol hallod {$name}{$helper}?",
             };
             $seen[$sound] = true;
             $last = $sound;
-            $places = $level === 1 ? ['start', 'end'] : ['start', 'middle', 'end'];
-            $ask = $r === 0 ? ($level === 1 ? 'Az elején vagy a végén?' : 'Az elején, a közepén vagy a végén?') : null;
+            $places = $tier === 1 ? ['start', 'end'] : ['start', 'middle', 'end'];
+            $ask = $r === 0 ? ($tier === 1 ? 'Az elején vagy a végén?' : 'Az elején, a közepén vagy a végén?') : null;
             $praise = $this->pickNot(self::PRAISE, $praise);
             $spoken = $this->ucfirst($word).'.';
 

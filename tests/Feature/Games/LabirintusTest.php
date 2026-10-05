@@ -117,7 +117,8 @@ it('puts the star on the way, never on the start or the goal', function () {
 
 it('serves rounds of the right size, a star only on level 3, and every sentence', function (int $level) {
     $session = labirintusSession($level);
-    [$cols, $rows] = L::SIZES[$level];
+    $cols = $rows = min(13, max(4, (int) round(4 + (13 - 4) * ($level - 1) / 99)));
+    $star = $level >= 34; // tier(level, 3) >= 2
 
     expect($session['rounds'])->toHaveCount(3);
     foreach ($session['rounds'] as $r => $round) {
@@ -136,7 +137,7 @@ it('serves rounds of the right size, a star only on level 3, and every sentence'
             ->and($d['onBump'])->not->toBeEmpty()
             ->and($d['onDeadEnd'])->not->toBeEmpty()
             ->and($round['prompt']['text'])->not->toBeEmpty();
-        if ($level === 3) {
+        if ($star) {
             expect($d['star'])->toBeIn(array_slice($d['path'], 1, -1))
                 ->and($round['prompt']['text'])->toContain('csillagot');
         } else {
@@ -145,7 +146,7 @@ it('serves rounds of the right size, a star only on level 3, and every sentence'
         // only the first round explains how to move
         expect(str_contains($round['prompt']['text'], 'Húzd az ujjadat'))->toBe($r === 0);
     }
-})->with([1, 2, 3]);
+})->with([1, 50, 100]); // tier 1 (no star), tier 2 (star), tier 3 (star)
 
 it('has at least ten themes, each with its own hero and goal', function () {
     $items = BeszedContentItem::forGame('labirintus')->get();

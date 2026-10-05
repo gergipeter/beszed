@@ -7,9 +7,11 @@ use Illuminate\Support\Collection;
 /**
  * Labirintus: a maze made on the server for every round (a "perfect" maze: randomised depth-first search, the
  * recursive backtracker, so every cell can be reached and there is exactly one way from the start to the goal).
- * The child drags the hero along the corridors (or taps the next cell) to the goal: 4×4 on level 1, 6×6 on
- * level 2, 8×8 with a star to pick up on the way on level 3. The engine (grid, mode maze) only draws and moves;
- * the walls, the solution path and every sentence come from here. The win is graded by wrong turns and bumps.
+ * The child drags the hero along the corridors (or taps the next cell) to the goal. The grid grows smoothly
+ * from 4×4 at level 1 to 13×13 at level 100 (scaleInt(), capped well short of a 100×100 grid — unplayable on a
+ * phone screen); a star to pick up on the way unlocks at level 34 and on. Forks (real choices on the one way
+ * through) and the wrong-turns/bumps allowed for a smooth or an OK win grow with it, continuously. The engine
+ * (grid, mode maze) only draws and moves; the walls, the solution path and every sentence come from here.
  */
 class LabirintusRounds extends RoundFactory
 {
@@ -22,25 +24,19 @@ class LabirintusRounds extends RoundFactory
 
     public const W = 8;
 
-    /** level => [columns, rows] */
-    public const SIZES = [1 => [4, 4], 2 => [6, 6], 3 => [8, 8]];
-
-    /** Forks (cells with a side way) the way to the goal passes at least, so there is something to choose. */
-    private const FORKS = [1 => 1, 2 => 2, 3 => 3];
-
-    /** Wrong turns allowed for a smooth (tries 1) and an OK (tries 2) win; bumps count half. */
-    private const GRADE = [1 => [1, 3], 2 => [2, 5], 3 => [3, 7]];
-
     private const STAR = ['Megvan a csillag! Menjünk tovább!', 'Ügyes, felvetted a csillagot!', 'Csillag a zsebben! Tovább!'];
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        [$cols, $rows] = self::SIZES[$level];
+        $cols = $rows = $this->scaleInt($level, 4, 13);
+        $star = $this->tier($level, 3) >= 2;
+        $forks = $this->scaleInt($level, 1, 5);
+        $grade = [$this->scaleInt($level, 1, 4), $this->scaleInt($level, 3, 9)];
+        $hintAfter = $this->scaleInt($level, 3, 6);
 
-        return $this->cycle($items, $count)->values()->map(function ($item, $r) use ($level, $cols, $rows) {
+        return $this->cycle($items, $count)->values()->map(function ($item, $r) use ($cols, $rows, $star, $forks, $grade, $hintAfter) {
             $p = $item->payload;
-            $maze = self::maze($cols, $rows, $level === 3, self::FORKS[$level]);
+            $maze = self::maze($cols, $rows, $star, $forks);
             $parts = [$p['task']];
             if ($maze['star'] !== null) {
                 $parts[] = 'Útközben vedd fel a csillagot is!';
@@ -60,9 +56,9 @@ class LabirintusRounds extends RoundFactory
                 'star' => $maze['star'],
                 'hero' => $p['hero'],
                 'target' => $p['goal'],
-                'grade' => self::GRADE[$level],
+                'grade' => $grade,
                 // after this many wrong turns, footprints show the next few steps
-                'hintAfter' => $level + 2,
+                'hintAfter' => $hintAfter,
                 'onCorrect' => $p['says'],
                 'onStar' => self::STAR[array_rand(self::STAR)],
                 'onBump' => 'Arra fal van. Keress másik utat!',

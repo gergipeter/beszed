@@ -6,8 +6,9 @@ use Illuminate\Support\Collection;
 
 /**
  * One or many: "Hol vannak a kutyák?" / "Melyik a kutya?" with one picture against three. Hearing and
- * saying the plural right is Hungarian grammar (kutya → kutyák, ló → lovak). $level 1–3 = the content's level:
- * plain -k, then -ak/-ek/-ok/-ök, then the stems that change.
+ * saying the plural right is Hungarian grammar (kutya → kutyák, ló → lovak). $level (1–100) maps onto the
+ * content's own 1–3 level via favorLevel()/tier(): plain -k, then -ak/-ek/-ok/-ök, then the stems that
+ * change, each a third of the band (1–33, 34–66, 67–100) rather than a single level each.
  */
 class TobbesRounds extends RoundFactory
 {

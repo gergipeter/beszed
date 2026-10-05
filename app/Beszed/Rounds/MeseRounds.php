@@ -6,13 +6,15 @@ use Illuminate\Support\Collection;
 
 /**
  * Story listening: Csillám tells a short story, then asks three questions about it, each with three pictures to pick from.
- * One story per session. $level = the content's level (the story's length and how much it asks you to work out).
+ * One story per session. The content's own 1–3 level (the story's length and how much it asks you to work
+ * out) is favoured by tier() across the full 1–100 adaptive level.
  */
 class MeseRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->values();
         $pool = $pool->isEmpty() ? $items : $pool;
         // the hardest level the child has reached comes up most, but an easier story is welcome too
         $this->favorLevel($pool, $level);

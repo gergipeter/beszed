@@ -7,8 +7,12 @@ use Illuminate\Support\Collection;
 /**
  * Number-line hopping: an animal hops along numbered pads. Rounds alternate:
  * the child hops it themself ("ugorj 3-at előre") or watches it hop and taps the
- * pad it lands on. Level 1: pads 0–5, forward only · 2: pads 0–10, forward and
- * back · 3: pads 0–10, and two-part hops ("3-at előre, aztán 1-et vissza").
+ * pad it lands on. The adaptive level (1–100) splits into three equal tiers
+ * (tier()): tier 1: forward only, pads 0–5 growing to 0–10 and the hop size
+ * growing from 3 to 4 across the tier · tier 2: forward and back, pads 0–10 ·
+ * tier 3: also two-part hops ("3-at előre, aztán 1-et vissza"). The top of
+ * the pad range (and so the hop size) is reached by the end of tier 1 and
+ * stays there for tiers 2–3.
  */
 class BekaRounds extends RoundFactory
 {
@@ -17,32 +21,36 @@ class BekaRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        $max = $level === 1 ? 5 : 10;
+        $tier = $this->tier($level, 3);
+        // pads and hop size both reach their ceiling by the end of tier 1 (level ~33), tiers 2-3 stay maxed
+        $max = $this->scaleInt($level, 5, 10, 33);
+        $hopMax = $this->scaleInt($level, 3, 4, 33);
+        $backward = $tier >= 2;
+        $twoPart = $tier >= 3;
 
-        return $this->cycle($items, $count)->map(function ($it, $i) use ($level, $max) {
+        return $this->cycle($items, $count)->map(function ($it, $i) use ($backward, $twoPart, $max, $hopMax) {
             // the first round of a session is always a hop the child does; then in turn
-            return $i % 2 === 0 ? $this->hop($it, $level, $max) : $this->land($it, $level, $max);
+            return $i % 2 === 0 ? $this->hop($it, $backward, $twoPart, $max, $hopMax) : $this->land($it, $backward, $twoPart, $max, $hopMax);
         })->values()->all();
     }
 
     /** @return array{0: int, 1: list<int>} start pad and the signed moves, all staying on the pads */
-    private function moves(int $level, int $max, int $parts): array
+    private function moves(bool $backward, bool $twoPart, int $max, int $hopMax, int $parts): array
     {
-        $pos = random_int(0, $level === 1 ? 2 : $max - 3);
+        $pos = random_int(0, $backward ? $max - 3 : 2);
         $start = $pos;
         $moves = [];
         for ($k = 0; $k < $parts; $k++) {
             $options = [];
-            foreach (range(1, $level === 1 ? 3 : 4) as $n) {
+            foreach (range(1, $hopMax) as $n) {
                 if ($pos + $n <= $max) {
                     $options[] = $n;
                 }
-                if ($level > 1 && $pos - $n >= 0) {
+                if ($backward && $pos - $n >= 0) {
                     $options[] = -$n;
                 }
             }
-            // the second part of a level-3 hop goes the other way: forward, then back
+            // the second part of a two-part hop goes the other way: forward, then back
             if ($k === 1) {
                 $options = array_values(array_filter($options, fn ($n) => $n < 0)) ?: $options;
             }
@@ -54,9 +62,9 @@ class BekaRounds extends RoundFactory
         return [$start, $moves];
     }
 
-    private function hop($it, int $level, int $max): array
+    private function hop($it, bool $backward, bool $twoPart, int $max, int $hopMax): array
     {
-        [$start, $moves] = $this->moves($level, $max, 1);
+        [$start, $moves] = $this->moves($backward, $twoPart, $max, $hopMax, 1);
         $n = $moves[0];
         $p = $it->payload;
 
@@ -70,9 +78,9 @@ class BekaRounds extends RoundFactory
         ], $it->id);
     }
 
-    private function land($it, int $level, int $max): array
+    private function land($it, bool $backward, bool $twoPart, int $max, int $hopMax): array
     {
-        [$start, $moves] = $this->moves($level, $max, $level === 3 ? 2 : 1);
+        [$start, $moves] = $this->moves($backward, $twoPart, $max, $hopMax, $twoPart ? 2 : 1);
         $end = $start + array_sum($moves);
         $p = $it->payload;
         $say = collect($moves)->map(fn ($n) => self::ACC[abs($n)].($n > 0 ? ' előre' : ' hátra'))->implode(', aztán ');

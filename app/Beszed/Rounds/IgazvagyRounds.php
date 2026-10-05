@@ -8,8 +8,9 @@ use Illuminate\Support\Collection;
  * True or silly: Csillám says a sentence ("A hal a fán fészkel.") and the child taps 👍 Igaz or
  * 🤪 Butaság. After a silly one she says it right ("A hal a vízben úszik."). A session is about
  * half true, half silly, never more than three of one kind in a row, so guessing doesn't pay.
- * $level: 1 → obvious facts with a picture · 2 → everyday logic and "nem" · 3 → all/none, order,
- * seasons, cause and effect.
+ * The content's own 1–3 level is favoured by tier() across the full 1–100 adaptive level:
+ * levels 1–33 favour obvious facts with a picture, 34–66 everyday logic and "nem", 67–100
+ * all/none, order, seasons, cause and effect.
  */
 class IgazvagyRounds extends RoundFactory
 {
@@ -27,7 +28,8 @@ class IgazvagyRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->values();
         $pool = $pool->count() >= $count ? $pool : $items;
         $this->favorLevel($pool, $level);
 

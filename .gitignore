@@ -27,3 +27,4 @@ Thumbs.db
 # Native app (Capacitor): the web build that goes into the iOS / Android projects, and its settings
 /dist-native
 .env.native
+.claude/settings.local.json

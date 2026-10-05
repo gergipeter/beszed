@@ -11,10 +11,15 @@ use Illuminate\Support\Collection;
  * here — positions and sizes in % of a square board, rotations in degrees —
  * from a seed, so the same round always looks the same.
  *
- * Level 1: 3 big targets among about 12 pictures, nothing turned or covered.
- * Level 2: 5 targets among about 25, turned, some of them partly covered.
- * Level 3: a spoken clue instead of a picture: a colour ("négy piros dolgot")
- * or a first sound ("aminek a neve sz hanggal kezdődik").
+ * Levels 1–66 ("find" kind): targets, pictures in all, picture size, turn and
+ * how many targets are partly covered all scale continuously from level 1
+ * (3 big targets among about 12, nothing turned or covered) to level 66
+ * (5 targets among about 25, turned, some partly covered) — the old levels 1
+ * and 2 are now the two ends of the same band, not a jump.
+ * Levels 67–100 (tier 3): a spoken clue instead of a picture — a colour
+ * ("négy piros dolgot") or a first sound ("aminek a neve sz hanggal
+ * kezdődik") — with target/total/size/turn/cover still creeping up across
+ * the band (level 67 close to the old level 3, level 100 the hardest).
  *
  * Targets are never more than COVER_MAX covered, and every picture is at
  * least MIN_SIZE wide: on a phone (a board of about 340 px) that is a tap area
@@ -22,12 +27,8 @@ use Illuminate\Support\Collection;
  */
 class KeresdRounds extends RoundFactory
 {
-    /** level → targets, pictures in all, size range (% of the board), turn (±deg), targets partly covered */
-    public const LEVELS = [
-        1 => ['targets' => 3, 'total' => 12, 'size' => [19, 22], 'turn' => 0, 'cover' => 0],
-        2 => ['targets' => 5, 'total' => 25, 'size' => [13, 16], 'turn' => 35, 'cover' => 2],
-        3 => ['targets' => 4, 'total' => 20, 'size' => [14, 17], 'turn' => 15, 'cover' => 1],
-    ];
+    /** Clue rounds (tier 3) unlock from this level up. */
+    private const CLUE_FROM = 67;
 
     public const MIN_SIZE = 13;
 
@@ -48,9 +49,9 @@ class KeresdRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $level = max(1, min(3, $level));
-        // a clue needs reading the picture by meaning: only the top level; below it, one kind of picture
-        $kind = $level >= 3 ? 'clue' : 'find';
+        $level = max(1, min(100, $level));
+        // a clue needs reading the picture by meaning: only the top tier; below it, one kind of picture
+        $kind = $level >= self::CLUE_FROM ? 'clue' : 'find';
         $pool = $items->filter(fn ($i) => ($i->payload['kind'] ?? 'find') === $kind)->whenEmpty(fn () => $items);
         $this->favorLevel($pool, $level);
 
@@ -68,21 +69,41 @@ class KeresdRounds extends RoundFactory
         return $rounds;
     }
 
+    /**
+     * level → targets, pictures in all, size range (% of the board), turn (±deg), targets partly covered.
+     * Continuous across the full 1–100 range; the clue tier (67–100) keeps climbing from where "find" left off.
+     * Static (not just an instance helper) because layout() — called from outside build() too — needs it.
+     */
+    public static function spec(int $level): array
+    {
+        $level = max(1, min(100, $level));
+        $t = ($level - 1) / 99;
+
+        return [
+            'targets' => (int) round(3 + 3 * $t),
+            'total' => (int) round(12 + 16 * $t),
+            'size' => [19 + (12 - 19) * $t, 22 + (15 - 22) * $t],
+            'turn' => (int) round(40 * $t),
+            'cover' => (int) round(3 * $t),
+        ];
+    }
+
     /** "Keress meg három katicát!": one kind of picture, the theme's other kinds as decoys. */
     private function findRound(object $item, int $level, int $r, int $seed, ?string $last): array
     {
         $p = $item->payload;
-        $spec = self::LEVELS[$level];
+        $spec = self::spec($level);
         $n = $spec['targets'];
         $groups = $p['targets'];
         $choices = array_values(array_filter($groups, fn ($g) => $g[0] !== $last)) ?: $groups;
         [$emoji, $acc] = $choices[array_rand($choices)];
 
-        // decoys: the theme's other kinds (once each at level 1, twice at 2), then the scenery
+        // decoys: the theme's other kinds (once each at low levels, twice from the middle of the band up), then the scenery
+        $repeat = $this->scaleInt($level, 1, 2);
         $decoys = [];
         foreach ($groups as $g) {
             if ($g[0] !== $emoji) {
-                array_push($decoys, ...array_fill(0, $level >= 2 ? 2 : 1, $g[0]));
+                array_push($decoys, ...array_fill(0, $repeat, $g[0]));
             }
         }
         shuffle($decoys);
@@ -119,7 +140,7 @@ class KeresdRounds extends RoundFactory
     private function clueRound(object $item, int $level, int $r, int $seed): array
     {
         $p = $item->payload;
-        $spec = self::LEVELS[3];
+        $spec = self::spec($level);
         $targets = $p['targets'];
         shuffle($targets);
         $targets = array_slice($targets, 0, min($spec['targets'], count($targets)));
@@ -158,8 +179,9 @@ class KeresdRounds extends RoundFactory
     /**
      * Places the pictures on a square board (deterministic for a seed):
      * targets first, each where it is farthest from the others (best of many
-     * tries), then the rest. At level 2 a few pictures are then laid partly
-     * over targets. Returned in drawing order, with x/y = centre, size = width
+     * tries), then the rest. From the low-to-mid levels up, a few pictures are
+     * then laid partly over targets (spec()'s cover, which grows with level).
+     * Returned in drawing order, with x/y = centre, size = width
      * (all in % of the board), rotate in degrees.
      *
      * @param  list<array{emoji: string, target: bool, say?: string}>  $pieces
@@ -167,7 +189,7 @@ class KeresdRounds extends RoundFactory
      */
     public static function layout(array $pieces, int $level, int $seed): array
     {
-        $spec = self::LEVELS[$level] ?? self::LEVELS[1];
+        $spec = self::spec($level);
         $state = $seed & 0x7fffffff;
         $rand = function () use (&$state): float {
             $state = ($state * 1103515245 + 12345) & 0x7fffffff;
@@ -297,8 +319,9 @@ class KeresdRounds extends RoundFactory
         }
 
         $others = $p['others'] ?? [];
-        if (count($targets) < self::LEVELS[3]['targets']) {
-            return ['targets' => 'Legalább '.self::LEVELS[3]['targets'].' kép kell, ami illik a szabályra.'];
+        $maxTargets = self::spec(100)['targets'];
+        if (count($targets) < $maxTargets) {
+            return ['targets' => "Legalább $maxTargets kép kell, ami illik a szabályra."];
         }
         if (array_intersect(array_column($others, 0), $emojis)) {
             return ['others' => 'Egy kép nem lehet egyszerre jó is és rossz is.'];

@@ -5,10 +5,12 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Mi illik hozzá? Level 1: go-togethers — "Mi illik a zoknihoz?" 🧦 → the shoe
- * among three pictures. Level 2: what a thing is for — "Mivel vágjuk a papírt?"
- * → the scissors among four. Level 3: group names — 🍎🍌🍐 "Hogy hívjuk őket
- * együtt?" with three names said aloud.
+ * Mi illik hozzá? $level spans 1–100 (RoundFactory::tier(), 3 bands matching the content's own 1–3
+ * `level` field): tier 1 (levels 1–33): go-togethers — "Mi illik a zoknihoz?" 🧦 → the shoe among three
+ * pictures. Tier 2 (34–66): what a thing is for — "Mivel vágjuk a papírt?" → the scissors among four.
+ * Tier 3 (67–100): group names — 🍎🍌🍐 "Hogy hívjuk őket együtt?" with three names said aloud. favorLevel()
+ * biases the review pool towards the matching content tier throughout, so the mix of pairs/tools/groups
+ * drifts gradually across a tier's levels rather than switching sharply only at its first one.
  *
  * The wrong pictures of a pair or a tool come only from the row's own hand-picked
  * `wrong` list (so a knife is never offered next to the scissors); a group's wrong
@@ -23,8 +25,9 @@ class IllikRounds extends RoundFactory
     public function build(Collection $items, int $level, int $count): array
     {
         $this->favorLevel($items, $level);
-        $own = $items->filter(fn ($i) => (int) $i->level === $level)->values();
-        $pool = $own->count() >= 6 ? $own : $items->filter(fn ($i) => (int) $i->level <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $own = $items->filter(fn ($i) => (int) $i->level === $tier)->values();
+        $pool = $own->count() >= 6 ? $own : $items->filter(fn ($i) => (int) $i->level <= $tier)->values();
         if ($pool->isEmpty()) {
             $pool = $items->values();
         }

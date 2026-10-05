@@ -39,7 +39,7 @@ it('Fújóka plays blowing rounds of the level\'s kind, in a scene that can show
             ->and($round['prompt']['parts'])->toHaveCount(2)
             ->and($round['prompt']['text'])->toStartWith(BeszedContentItem::find($round['content_item_id'])->payload['story']);
     }
-})->with([[1, ['puffs']], [2, ['long']], [3, ['gentle', 'alternate']]]);
+})->with([[1, ['puffs']], [50, ['long']], [100, ['gentle', 'alternate']]]); // level → tier(level,3)'s kind(s)
 
 it('Fújóka level 1: short puffs, as many as the content says', function () {
     foreach (fujokaSession(1)['rounds'] as $round) {
@@ -50,14 +50,14 @@ it('Fújóka level 1: short puffs, as many as the content says', function () {
 });
 
 it('Fújóka level 2: one long blow growing from 1.5 s to 2.5 s', function () {
-    $ms = collect(fujokaSession(2)['rounds'])->pluck('data.target.holdMs')->all();
+    $ms = collect(fujokaSession(50)['rounds'])->pluck('data.target.holdMs')->all(); // tier 2: levels 34-66
 
     expect($ms)->toBe([1500, 1800, 2200, 2500])
-        ->and(collect(fujokaSession(2)['rounds'])->pluck('data.hints.fell')->filter()->count())->toBe(4);
+        ->and(collect(fujokaSession(50)['rounds'])->pluck('data.hints.fell')->filter()->count())->toBe(4);
 });
 
 it('Fújóka level 3: gentle and soft-and-strong rounds take turns', function () {
-    $rounds = fujokaSession(3)['rounds'];
+    $rounds = fujokaSession(100)['rounds']; // tier 3: levels 67-100
 
     expect(collect($rounds)->pluck('data.kind')->all())->toBe(['gentle', 'alternate', 'gentle', 'alternate']);
     foreach ($rounds as $round) {

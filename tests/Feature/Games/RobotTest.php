@@ -107,7 +107,7 @@ it('keeps the fallback grids solvable too', function (int $level) {
         ->and($g['best'])->toBeGreaterThanOrEqual(R::LEVELS[$level][4])->toBeLessThanOrEqual(R::LEVELS[$level][5]);
 })->with([1, 2, 3]);
 
-it('serves direct control on level 1 and programs on levels 2–3, with every sentence', function (int $level) {
+it('serves direct control on level 1 and programs on levels 2–3, with every sentence', function (int $level, int $tier) {
     $session = robotSession($level);
 
     expect($session['rounds'])->toHaveCount(4);
@@ -115,8 +115,8 @@ it('serves direct control on level 1 and programs on levels 2–3, with every se
         $d = $round['data'];
         expect($round['engine'])->toBe('grid')
             ->and($d['mode'])->toBe('program')
-            ->and($d['direct'])->toBe($level === 1)
-            ->and($d['maxSteps'])->toBe($level === 1 ? 0 : R::LEVELS[$level][6])
+            ->and($d['direct'])->toBe($tier === 1)
+            ->and($d['maxSteps'])->toBe($tier === 1 ? 0 : R::LEVELS[$tier][6])
             ->and(robotDistance($d))->toBe($d['best'])
             ->and(collect($d['moves'])->pluck('say')->all())->toBe(['Fel!', 'Le!', 'Balra!', 'Jobbra!'])
             ->and($d['target'])->not->toBeEmpty()
@@ -125,13 +125,13 @@ it('serves direct control on level 1 and programs on levels 2–3, with every se
             ->and($d['onBumpBlock'])->not->toBeEmpty()
             ->and($d['onBumpEdge'])->not->toBeEmpty()
             ->and($d['onShort'])->not->toBeEmpty();
-        if ($level > 1) {
+        if ($tier > 1) {
             expect($d['maxSteps'])->toBeGreaterThan($d['best']);
         }
         // the first round explains the buttons
         expect(count($round['prompt']['parts']))->toBe($r === 0 ? 2 : 1);
     }
-})->with([1, 2, 3]);
+})->with([[1, 1], [50, 2], [100, 3]]); // level → tier(level, 3)
 
 it('has at least ten themes with a goal and an obstacle that look different', function () {
     $items = BeszedContentItem::forGame('robot')->get();

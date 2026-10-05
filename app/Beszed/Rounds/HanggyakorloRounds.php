@@ -10,10 +10,12 @@ use Illuminate\Support\Collection;
  * (or "vegyesen": all of them mixed), sees a picture and says its name; they may record themselves and hear
  * their own voice back (only on the device), then judge with a parent: "Jól mondtam!" or "Még gyakorlom".
  *
- * $level 1 → the sound at the start of a word, Csillám says it first;
- *        2 → in the middle or at the end;
- *        3 → naming without a model ("Mi ez? Mondd ki!", Csillám says the word only after the judging),
- *            every third round a short sentence full of the sound.
+ * $level spans 1–100 (RoundFactory::tier(), 3 bands): tier 1 (levels 1–33) → the sound at the start of a
+ * word, Csillám says it first; tier 2 (34–66) → in the middle or at the end; tier 3 (67–100) → naming
+ * without a model ("Mi ez? Mondd ki!", Csillám says the word only after the judging), a short sentence
+ * full of the sound every few rounds. Within tier 3 a phrase comes a little less often and only half the
+ * non-phrase rounds are naming near level 67; by level 100 a phrase returns every third round and every
+ * other round is naming, as the old level 3 always did.
  */
 class HanggyakorloRounds extends RoundFactory
 {
@@ -142,19 +144,28 @@ class HanggyakorloRounds extends RoundFactory
         $where = fn (array $pos) => $words->filter(fn ($i) => in_array($i->payload['pos'], $pos, true))->values();
 
         // what each round is: [item, mode]
-        if ($level >= 3) {
-            $phraseCount = intdiv($count + 1, self::PHRASE_EVERY);
+        $tier = $this->tier($level, 3);
+        if ($tier >= 3) {
+            // within tier 3 (levels 67–100): how often a phrase comes up (one every PHRASE_EVERY+1 rounds
+            // near the tier's start, down to the old PHRASE_EVERY by level 100) and how much of the rest
+            // is named instead of modelled (half near the tier's start, all of it — as the old level 3
+            // always did — by level 100).
+            $within = $this->withinTier($level, 3);
+            $phraseEvery = max(2, (int) round((self::PHRASE_EVERY + 1) - $within));
+            $phraseCount = intdiv($count + 1, $phraseEvery);
             $phrases = $this->pick($pool->filter(fn ($i) => $i->payload['pos'] === 'phrase')->values(), $phraseCount);
             $named = $words->filter(fn ($i) => ($i->payload['naming'] ?? 'no') === 'yes')->values();
+            $namingShare = 0.5 + $within * 0.5;
             $names = $this->pick($named->isEmpty() ? $words : $named, $count - $phrases->count());
             $plan = [];
             for ($r = 0; $r < $count; $r++) {
-                $phrase = $r % self::PHRASE_EVERY === 1 && $phrases->isNotEmpty();
+                $phrase = $r % $phraseEvery === 1 && $phrases->isNotEmpty();
                 $item = $phrase ? $phrases->shift() : ($names->shift() ?? $phrases->shift());
-                $plan[] = [$item, $phrase || $item->payload['pos'] === 'phrase' || $named->isEmpty() ? 'repeat' : 'name'];
+                $name = ! $phrase && $item->payload['pos'] !== 'phrase' && ! $named->isEmpty() && (mt_rand() / mt_getrandmax()) < $namingShare;
+                $plan[] = [$item, $phrase || $item->payload['pos'] === 'phrase' || $named->isEmpty() ? 'repeat' : ($name ? 'name' : 'repeat')];
             }
         } else {
-            $band = $where($level === 1 ? ['start'] : ['middle', 'end']);
+            $band = $where($tier === 1 ? ['start'] : ['middle', 'end']);
             $plan = $this->pick($band->isEmpty() ? $words : $band, $count)->map(fn ($i) => [$i, 'repeat'])->all();
         }
 
@@ -166,6 +177,16 @@ class HanggyakorloRounds extends RoundFactory
         }
 
         return $rounds;
+    }
+
+    /** 0.0 at $tier's first level, 1.0 at its last (tier(), 3 equal bands on 1–100): position inside the band. */
+    private function withinTier(int $level, int $tier): float
+    {
+        $size = 100 / 3;
+        $first = (int) round(($tier - 1) * $size) + 1;
+        $last = (int) round($tier * $size);
+
+        return $last <= $first ? 0.0 : max(0.0, min(1.0, ($level - $first) / ($last - $first)));
     }
 
     /**

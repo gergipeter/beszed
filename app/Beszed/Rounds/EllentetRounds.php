@@ -6,14 +6,15 @@ use Illuminate\Support\Collection;
 
 /**
  * Opposites: "Ez nagy. Melyik a kicsi?" The pairs go both ways, so the child hears each word as the question.
- * $level = how many to pick from: 1 → two, 2+ → three; the pairs come from the content's own level.
+ * The adaptive level (1–100) splits into three equal tiers (tier()): tier 1 picks from two options, tiers
+ * 2–3 from three; the pairs themselves come from the content's own level (favorLevel()).
  */
 class EllentetRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array
     {
         $this->favorLevel($items, $level);
-        $n = $level >= 2 ? 3 : 2;
+        $n = $this->tier($level, 3) >= 2 ? 3 : 2;
         $rounds = [];
 
         foreach ($this->cycle($items->values(), $count)->values() as $pair) {

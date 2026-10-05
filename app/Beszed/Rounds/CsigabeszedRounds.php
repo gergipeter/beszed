@@ -7,10 +7,11 @@ use Illuminate\Support\Collection;
 
 /**
  * Csigabeszéd: the slow snail says a word in pieces (ci… ca), the child puts it together and taps its picture.
- * Level 1: two syllables, three pictures · 2: three syllables · 3: four or more syllables, four pictures.
- * Each piece is its own utterance, so the voice leaves a real pause between them (an ellipsis would be read
- * out as "pont pont pont" by Piper). A sound on its own ("sss… ó") can't be said by either voice, so the
- * pieces are always syllables.
+ * tier() maps the full 1–100 adaptive level onto the content's own piece-count bands: 1–33 favours two
+ * syllables, 34–66 three, 67–100 four or more. The number of picture choices grows smoothly from three to
+ * four across the whole range (scaleInt()). Each piece is its own utterance, so the voice leaves a real
+ * pause between them (an ellipsis would be read out as "pont pont pont" by Piper). A sound on its own
+ * ("sss… ó") can't be said by either voice, so the pieces are always syllables.
  */
 class CsigabeszedRounds extends RoundFactory
 {
@@ -20,9 +21,10 @@ class CsigabeszedRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $fits = fn ($i) => match (true) {
-            $level <= 1 => count($i->payload['pieces']) <= 2,
-            $level === 2 => count($i->payload['pieces']) === 3,
+        $tier = $this->tier($level, 3);
+        $fits = fn ($i) => match ($tier) {
+            1 => count($i->payload['pieces']) <= 2,
+            2 => count($i->payload['pieces']) === 3,
             default => count($i->payload['pieces']) >= 4,
         };
         $pool = $items->filter($fits)->values();
@@ -30,7 +32,7 @@ class CsigabeszedRounds extends RoundFactory
             $pool = $items;
         }
         $this->favorLevel($pool, $level);
-        $choices = $level >= 3 ? 4 : 3;
+        $choices = $this->scaleInt($level, 3, 4);
 
         $rounds = [];
         $ask = $praise = null;

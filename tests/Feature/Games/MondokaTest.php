@@ -45,7 +45,7 @@ it('has at least 24 rhymes at every level, with each gap word in its rhyme', fun
     }
 });
 
-it('says the rhyme, stops before the missing word and offers its picture', function (int $level) {
+it('says the rhyme, stops before the missing word and offers its picture', function (int $level, int $tier) {
     $items = BeszedContentItem::forGame('mondoka')->get()->keyBy('id');
 
     foreach (range(1, 8) as $i) {
@@ -61,7 +61,7 @@ it('says the rhyme, stops before the missing word and offers its picture', funct
             [$line, $before] = MondokaRounds::locate($p['lines'], $gap);
             $answer = collect($data['options'])->firstWhere('id', $data['answer']);
 
-            expect($data['options'])->toHaveCount($level >= 3 ? 4 : 3)
+            expect($data['options'])->toHaveCount($tier >= 3 ? 4 : 3)
                 ->and(preg_replace('/^arasaac:\d+~/', '', $answer['emoji']))->toBe($emoji)
                 ->and(array_unique(array_column($data['options'], 'emoji')))->toHaveCount(count($data['options']))
                 // the full line after a right answer
@@ -81,17 +81,17 @@ it('says the rhyme, stops before the missing word and offers its picture', funct
                     expect(str_contains($text, Hungarian::fold($option['label'])))->toBeFalse("{$p['title']}: {$option['label']}");
                 }
             }
-            if ($level < 3) {
+            if ($tier < 3) {
                 expect($again)->toBeFalse();
             }
         }
     }
-})->with([1, 2, 3]);
+})->with([[1, 1], [50, 2], [100, 3]]); // level → tier(level, 3)
 
 it('asks a level-3 rhyme twice, the second time with its other gap', function () {
     $seen = 0;
     foreach (range(1, 12) as $i) {
-        $rounds = mondokaSession(3)['rounds'];
+        $rounds = mondokaSession(100)['rounds']; // tier 3: levels 67-100
         foreach ($rounds as $r => $round) {
             if ($r > 0 && $rounds[$r - 1]['content_item_id'] === $round['content_item_id']) {
                 $seen++;

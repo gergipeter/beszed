@@ -7,14 +7,16 @@ use Illuminate\Support\Collection;
 /**
  * Mouth-muscle exercises (orofacial gymnastics), done in front of a mirror with a parent: the picture
  * alternates between the exercise's moves and the child taps once per repetition done.
- * $level = repetitions: 1 → three, 2 → five, 3 → ten (what a speech therapist's sheet asks for).
+ * $level (1–100) scales repetitions continuously from three at level 1 to ten at level 100 (what a
+ * speech therapist's sheet asks for, at the old levels 1 and 3) — every count from 3 to 10 is reachable,
+ * said with its own Hungarian multiplier word (SAY).
  * With the mirror on, the device's face tracker can count the repetitions itself: each move carries the
  * `pose` its picture shows (POSES), and the client (engines/mimic/poses.js) watches for it.
  */
 class SzajtornaRounds extends RoundFactory
 {
-    /** level → [repetitions, how to say it ("háromszor")] */
-    public const REPS = [1 => [3, 'háromszor'], 2 => [5, 'ötször'], 3 => [10, 'tízszer']];
+    /** Repetitions, said ("háromszor", "négyszer"…). */
+    public const SAY = [3 => 'háromszor', 4 => 'négyszer', 5 => 'ötször', 6 => 'hatszor', 7 => 'hétszer', 8 => 'nyolcszor', 9 => 'kilencszer', 10 => 'tízszer'];
 
     /**
      * A move's picture → the face movement the tracker watches for (the keys of POSES in
@@ -43,7 +45,8 @@ class SzajtornaRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        [$reps, $times] = self::REPS[$level] ?? self::REPS[1];
+        $reps = $this->scaleInt($level, 3, 10);
+        $times = self::SAY[$reps];
         $rounds = [];
 
         foreach ($this->cycle($items->values(), $count)->values() as $r => $exercise) {

@@ -4,7 +4,12 @@ namespace App\Beszed\Rounds;
 
 use Illuminate\Support\Collection;
 
-/** Phonological awareness: which word rhymes with this one? Content items share a `rhyme` key. */
+/**
+ * Phonological awareness: which word rhymes with this one? Content items share a `rhyme` key. The adaptive
+ * level (1–100) only drives which rhyme pairs come up, via favorLevel()'s bias towards the content's own
+ * 1–3 level (easy, clear rhymes first; the finer, closer-sounding ones favoured as the level climbs):
+ * everything else (three options, two distractors from other rhymes) stays the same at every level.
+ */
 class RimeloRounds extends RoundFactory
 {
     public function build(Collection $items, int $level, int $count): array

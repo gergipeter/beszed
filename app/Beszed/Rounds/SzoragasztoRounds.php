@@ -6,10 +6,13 @@ use App\Beszed\Content\Hungarian;
 use Illuminate\Support\Collection;
 
 /**
- * Szóragasztó: compound words. Level 1: hó + ember → which picture is the glued word? ·
- * 2: the compound's picture → which two pictures make it? · 3: take one part away —
- * "Mi marad a hóemberből, ha elvesszük a havat?" The inflected forms (hóemberből, havat)
- * come from the content: hó → havat can't be made by a rule.
+ * Szóragasztó: compound words. The round kind is a tier of the 1–100 level,
+ * evenly split in three: 1–33 → hó + ember → which picture is the glued
+ * word? · 34–66 → the compound's picture → which two pictures make it? ·
+ * 67–100 → take one part away — "Mi marad a hóemberből, ha elvesszük a
+ * havat?" The inflected forms (hóemberből, havat) come from the content:
+ * hó → havat can't be made by a rule. favorLevel() biases content choice
+ * within the same three tiers.
  */
 class SzoragasztoRounds extends RoundFactory
 {
@@ -18,13 +21,14 @@ class SzoragasztoRounds extends RoundFactory
     public function build(Collection $items, int $level, int $count): array
     {
         $this->favorLevel($items, $level);
+        $tier = $this->tier($level, 3);
         $rounds = [];
         $praise = null;
         foreach ($this->cycle($items, $count)->values() as $r => $item) {
             $praise = $this->pickNot(self::PRAISE, $praise);
-            $rounds[] = match (true) {
-                $level <= 1 => $this->glue($item, $items, $r === 0, $praise),
-                $level === 2 => $this->split($item, $items, $r === 0, $praise),
+            $rounds[] = match ($tier) {
+                1 => $this->glue($item, $items, $r === 0, $praise),
+                2 => $this->split($item, $items, $r === 0, $praise),
                 default => $this->delete($item, $items, $r === 0, $praise),
             };
         }

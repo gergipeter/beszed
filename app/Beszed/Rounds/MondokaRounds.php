@@ -8,9 +8,11 @@ use Illuminate\Support\Collection;
 /**
  * Nursery rhymes with a missing word: Csillám says a traditional mondóka line by line, then again,
  * stopping right before a word ("Kapsz tejet,"), and the child taps that word's picture.
- * Afterwards she says the whole line. $level: 1 → short rhymes, three pictures ·
- * 2 → longer rhymes · 3 → the longest, four pictures, and a rhyme with a second gap (`gap2`)
- * gives two rounds in a row (the second one without saying the whole rhyme again).
+ * Afterwards she says the whole line. The content's own 1–3 level (rhyme length/difficulty) is
+ * favoured by tier() across the full 1–100 adaptive level: low levels favour short rhymes, the
+ * middle favours longer ones, the top the longest. The number of picture choices grows smoothly
+ * from three to four (scaleInt()), and from level 67 on, a rhyme with a second gap (`gap2`) gives
+ * two rounds in a row (the second one without saying the whole rhyme again).
  * The wrong pictures are other rhymes' gap words (and the item's own `distractors`), never a word
  * that is in this rhyme too, so only one picture can fill the gap.
  */
@@ -20,10 +22,12 @@ class MondokaRounds extends RoundFactory
 
     public function build(Collection $items, int $level, int $count): array
     {
-        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $pool = $items->filter(fn ($i) => ($i->level ?? 1) <= $tier)->values();
         $pool = $pool->isEmpty() ? $items : $pool;
         $this->favorLevel($pool, $level);
-        $choices = $level >= 3 ? 4 : 3;
+        $choices = $this->scaleInt($level, 3, 4);
+        $withGap2 = $tier >= 3;
         $pictures = self::pictures($items);
         $rounds = [];
 
@@ -33,8 +37,8 @@ class MondokaRounds extends RoundFactory
             }
             $p = $item->payload;
             $rounds[] = $this->gapRound($p, $item->id, $p['gap'], $p['name'], $p['emoji'], $pictures, $choices, count($rounds) === 0, false);
-            // level 3: the same rhyme once more with its other gap, straight after
-            if ($level >= 3 && ! empty($p['gap2']) && count($rounds) < $count) {
+            // top tier: the same rhyme once more with its other gap, straight after
+            if ($withGap2 && ! empty($p['gap2']) && count($rounds) < $count) {
                 $rounds[] = $this->gapRound($p, $item->id, $p['gap2'], $p['name2'], $p['emoji2'], $pictures, $choices, false, true);
             }
         }

@@ -29,7 +29,7 @@ function pontozoSession(int $level): array
         ->json();
 }
 
-it('gives the level\'s number of dots, on the board and apart', function (int $level) {
+it('gives the level\'s number of dots, on the board and apart', function (int $level, int $n, int $tier) {
     foreach (range(1, 3) as $repeat) {
         foreach (pontozoSession($level)['rounds'] as $r => $round) {
             $d = $round['data'];
@@ -37,8 +37,8 @@ it('gives the level\'s number of dots, on the board and apart', function (int $l
             $item = BeszedContentItem::find($round['content_item_id']);
 
             expect($round['engine'])->toBe('dots')
-                ->and($dots)->toHaveCount(P::DOTS[$level])
-                ->and($item->level)->toBeLessThanOrEqual($level)
+                ->and($dots)->toHaveCount($n)
+                ->and($item->level)->toBeLessThanOrEqual($tier)
                 // the emoji itself (the outline was drawn after it), never a pictogram
                 ->and(str_replace("\u{FE0F}", '', $d['emoji']))->toBe(str_replace("\u{FE0F}", '', $item->payload['emoji']))
                 ->and($d['name'])->toBe($item->payload['name'])
@@ -52,11 +52,11 @@ it('gives the level\'s number of dots, on the board and apart', function (int $l
             }
             expect(P::minGap($dots->map(fn ($p) => [$p['x'], $p['y']])->all()))->toBeGreaterThanOrEqual(P::MIN_GAP - 0.001);
 
-            $letters = $level === 3 && $r % 2 === 1;
-            expect($dots->pluck('label')->all())->toBe($letters ? P::abc(15) : array_map('strval', range(1, P::DOTS[$level])));
+            $letters = $tier >= 3 && $r % 2 === 1;
+            expect($dots->pluck('label')->all())->toBe($letters ? P::abc($n) : array_map('strval', range(1, $n)));
         }
     }
-})->with([1, 2, 3]);
+})->with([[1, 6, 1], [50, 10, 2], [100, 15, 3]]); // level → [scaleInt(level,6,15), tier(level,3)]
 
 it('counts in words and hints at the dot that comes next', function () {
     $dots = pontozoSession(1)['rounds'][0]['data']['dots'];
@@ -68,7 +68,7 @@ it('counts in words and hints at the dot that comes next', function () {
 });
 
 it('alternates numbers and the ABC at level 3, two-letter letters as one dot', function () {
-    $rounds = pontozoSession(3)['rounds'];
+    $rounds = pontozoSession(100)['rounds']; // tier 3: levels 67-100, scaleInt(100,6,15)=15 dots
     $abc = $rounds[1]['data']['dots'];
 
     expect(array_column($abc, 'label'))->toBe(['a', 'á', 'b', 'c', 'cs', 'd', 'dz', 'dzs', 'e', 'é', 'f', 'g', 'gy', 'h', 'i'])

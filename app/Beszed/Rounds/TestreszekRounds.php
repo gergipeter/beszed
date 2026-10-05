@@ -5,11 +5,13 @@ namespace App\Beszed\Rounds;
 use Illuminate\Support\Collection;
 
 /**
- * Testrészek (body parts). Level 1: "Melyik a fül?" → three body parts, then
- * "Mutasd meg a füledet!". Level 2: the inner parts and what each part does
- * ("Mivel hallunk?", four pictures). Level 3: caring for the body — "Mit
- * húzunk a lábunkra…?" (zokni among other things) and "Hova húzzuk a
+ * Testrészek (body parts). The content's own 1–3 level is a tier of the
+ * 1–100 adaptive level (tier()): 1–33 → "Melyik a fül?" → three body parts,
+ * then "Mutasd meg a füledet!". 34–66 → the inner parts and what each part
+ * does ("Mivel hallunk?", four pictures). 67–100 → caring for the body —
+ * "Mit húzunk a lábunkra…?" (zokni among other things) and "Hova húzzuk a
  * gyűrűt?" (the finger among body parts) — with the body part shown above.
+ * favorLevel() biases content choice within the same three tiers.
  *
  * Wrong pictures come from the same kind (body parts or things); a row's
  * `close` lists pictures that would also be right, and they are never offered.
@@ -19,13 +21,14 @@ class TestreszekRounds extends RoundFactory
     public function build(Collection $items, int $level, int $count): array
     {
         $this->favorLevel($items, $level);
-        $own = $items->filter(fn ($i) => (int) $i->level === $level)->values();
-        $pool = $own->count() >= 6 ? $own : $items->filter(fn ($i) => (int) $i->level <= $level)->values();
+        $tier = $this->tier($level, 3);
+        $own = $items->filter(fn ($i) => (int) $i->level === $tier)->values();
+        $pool = $own->count() >= 6 ? $own : $items->filter(fn ($i) => (int) $i->level <= $tier)->values();
         if ($pool->isEmpty()) {
             $pool = $items->values();
         }
         [$body, $things] = self::pictures($items);
-        $n = $level === 2 ? 4 : 3;
+        $n = $tier === 2 ? 4 : 3;
         $rounds = [];
 
         foreach ($this->cycle($pool, $count)->values() as $item) {
