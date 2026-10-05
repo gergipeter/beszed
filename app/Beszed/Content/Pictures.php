@@ -9,10 +9,13 @@ namespace App\Beszed\Content;
  * bank has a pictogram for, keeping the emoji as the fallback after "~"
  * ("arasaac:2462~🍎"), so the app still shows something offline.
  *
- * With pictograms off (ARASAAC is licensed for non-commercial use only) a pictogram is replaced by what
- * database/lexicon/substitutes.json names for it: a Mulberry symbol (mulberrysymbols.org, CC BY-SA 4.0,
- * "mulberry:badger"), an in-house AI-generated picture (ours outright, "ai:apple", public/ai-pics/),
- * or a plain emoji ("emoji:🏛️" in the file).
+ * An in-house AI-generated picture (ours outright, "ai:apple" in
+ * database/lexicon/substitutes.json, public/ai-pics/) wins over ARASAAC whenever a word has one —
+ * it is deliberately better art, not merely the non-commercial fallback, so pictograms being on
+ * doesn't hide it. With pictograms off (ARASAAC is licensed for non-commercial use only) a pictogram
+ * that has no AI picture is replaced instead by a Mulberry symbol (mulberrysymbols.org, CC BY-SA 4.0,
+ * "mulberry:badger") or a plain emoji ("emoji:🏛️" in the file) — those two stay off-only, since
+ * they exist purely to stand in for ARASAAC, not to be preferred over it.
  */
 final class Pictures
 {
@@ -49,48 +52,47 @@ final class Pictures
     }
 
     /**
-     * Every string in the rounds that is exactly a mapped emoji becomes its pictogram (content stores
-     * the plain emoji, "arasaac:<id>" only ever appears live, from here); with pictograms off, that
-     * same mapped emoji becomes its substitute instead (a Mulberry symbol unless the entry already
-     * names its own kind, "ai:" or "emoji:"). A value already written as "arasaac:<id>" by hand (rare,
-     * content-editor-entered) is matched the same way either branch would via its id.
+     * Every string in the rounds that is exactly a mapped emoji becomes its picture (content stores
+     * the plain emoji, "arasaac:<id>" only ever appears live, from here): an AI picture first if the
+     * word has one, regardless of the pictograms setting; otherwise its ARASAAC pictogram when
+     * pictograms are on, or (pictograms off) a Mulberry symbol / plain emoji substitute. A value
+     * already written as "arasaac:<id>" by hand (rare, content-editor-entered) is matched the same
+     * way via its id.
      */
     public static function apply(array $rounds): array
     {
-        if (! config('beszed_content.pictograms')) {
-            $byEmoji = self::map(); // emoji => "arasaac:<id>~<emoji>"
-            $substitutes = self::substitutes();
-            array_walk_recursive($rounds, function (&$value) use ($byEmoji, $substitutes) {
-                if (! is_string($value)) {
-                    return;
-                }
-                $id = null;
-                $fallback = '';
-                if (preg_match('/^arasaac:(\d+)(~(.*))?$/su', $value, $m)) {
-                    $id = (int) $m[1];
-                    $fallback = $m[3] ?? '';
-                } elseif (isset($byEmoji[$value])) {
-                    $id = (int) explode(':', $byEmoji[$value])[1];
-                    $fallback = $value;
-                }
-                if ($id === null || ! isset($substitutes[$id])) {
-                    return;
-                }
-                $sub = $substitutes[$id];
+        $byEmoji = self::map(); // emoji => "arasaac:<id>~<emoji>"
+        $substitutes = self::substitutes();
+        $pictogramsOn = (bool) config('beszed_content.pictograms');
+        array_walk_recursive($rounds, function (&$value) use ($byEmoji, $substitutes, $pictogramsOn) {
+            if (! is_string($value)) {
+                return;
+            }
+            $id = null;
+            $fallback = '';
+            if (preg_match('/^arasaac:(\d+)(~(.*))?$/su', $value, $m)) {
+                $id = (int) $m[1];
+                $fallback = $m[3] ?? '';
+            } elseif (isset($byEmoji[$value])) {
+                $id = (int) explode(':', $byEmoji[$value])[1];
+                $fallback = $value;
+            } else {
+                return;
+            }
+            $sub = $substitutes[$id] ?? null;
+            if ($sub !== null && str_starts_with($sub, 'ai:')) {
+                // wins over ARASAAC too: deliberately better art, not merely the non-commercial fallback
+                $value = $sub.($fallback !== '' ? "~$fallback" : '');
+            } elseif ($pictogramsOn) {
+                $value = "arasaac:$id".($fallback !== '' ? "~$fallback" : '');
+            } elseif ($sub !== null) {
                 $value = match (true) {
                     str_starts_with($sub, 'emoji:') => substr($sub, 6),
-                    str_starts_with($sub, 'ai:'), str_starts_with($sub, 'mulberry:') => $sub.($fallback !== '' ? "~$fallback" : ''),
+                    str_starts_with($sub, 'mulberry:') => $sub.($fallback !== '' ? "~$fallback" : ''),
                     default => "mulberry:$sub".($fallback !== '' ? "~$fallback" : ''),
                 };
-            });
-
-            return $rounds;
-        }
-        $map = self::map();
-        array_walk_recursive($rounds, function (&$value) use ($map) {
-            if (is_string($value) && isset($map[$value])) {
-                $value = $map[$value];
             }
+            // pictograms off and no substitute at all: leave the plain emoji as is
         });
 
         return $rounds;
