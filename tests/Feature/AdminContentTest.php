@@ -75,3 +75,35 @@ it('deletes unused items but only switches off played ones', function () {
     expect($played->fresh()->active)->toBeFalse()
         ->and(BeszedAttempt::sole()->content_item_id)->toBe($played->id);
 });
+
+it('shows who changed an item and what, newest first', function () {
+    $item = actingAs($this->editor)->postJson('/api/admin/content/papagaj', [
+        'level' => 1, 'payload' => ['word' => 'kockacukor', 'emoji' => '🧊'],
+    ])->assertCreated()->json('item');
+
+    $this->travel(1)->minutes();
+    actingAs($this->editor)->putJson("/api/admin/content/papagaj/{$item['id']}", [
+        'level' => 2, 'payload' => ['word' => 'pemzli', 'emoji' => '🧊'],
+    ])->assertOk();
+
+    $history = actingAs($this->editor)->getJson("/api/admin/content/papagaj/{$item['id']}/history")
+        ->assertOk()->json('history');
+
+    expect($history)->toHaveCount(2)
+        ->and($history[0]['action'])->toBe('updated')
+        ->and($history[0]['editor_email'])->toBe('editor@example.test')
+        ->and($history[0]['changes'])->toBe([
+            ['field' => 'level', 'before' => 1, 'after' => 2],
+            ['field' => 'payload.word', 'before' => 'kockacukor', 'after' => 'pemzli'],
+        ])
+        ->and($history[1]['action'])->toBe('created');
+});
+
+it('keeps the history to editors and to the item\'s own game', function () {
+    $item = BeszedContentItem::where('game', 'zs')->first();
+
+    actingAs($this->parent)->getJson("/api/admin/content/zs/{$item->id}/history")->assertForbidden();
+    actingAs($this->editor)->getJson("/api/admin/content/papagaj/{$item->id}/history")->assertNotFound();
+    actingAs($this->editor)->getJson("/api/admin/content/zs/{$item->id}/history")
+        ->assertOk()->assertExactJson(['history' => []]);
+});

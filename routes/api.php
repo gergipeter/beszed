@@ -95,6 +95,7 @@ Route::middleware(['auth:sanctum', 'can:edit-content'])->prefix('admin/content')
     Route::post('{game}/bulk', [ContentController::class, 'bulk'])->name('bulk');
     Route::get('{game}', [ContentController::class, 'index'])->name('index');
     Route::post('{game}', [ContentController::class, 'store'])->name('store');
+    Route::get('{game}/{item}/history', [ContentController::class, 'history'])->name('history');
     Route::put('{game}/{item}', [ContentController::class, 'update'])->name('update');
     Route::delete('{game}/{item}', [ContentController::class, 'destroy'])->name('destroy');
 });

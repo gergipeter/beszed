@@ -42,6 +42,7 @@ const showImportResults = ref(false)
 const showHistory = ref(null) // item id whose history is shown
 const history = ref({}) // item id => list of edits
 const loadingHistory = ref({}) // item id => is loading
+const historyError = ref({}) // item id => error message
 const exportLoading = ref(false)
 const uploadingField = ref(null) // field key being uploaded
 
@@ -106,6 +107,10 @@ async function loadItems() {
   try {
     const { data } = await http.get(`/api/admin/content/${gameId.value}`)
     items.value = data.items
+    // an edit adds to the history: the open panel reloads, the others on their next open
+    history.value = {}
+    if (!items.value.some(i => i.id === showHistory.value)) showHistory.value = null
+    else loadHistory(showHistory.value)
   } catch (e) {
     error.value = e.response?.data?.message || 'Nem sikerült betölteni.'
   } finally {
@@ -249,15 +254,37 @@ const uploadImage = async (event, fieldKey) => {
   }
 }
 
+const ACTIONS = {
+  created: 'Létrehozva',
+  updated: 'Módosítva',
+  deactivated: 'Kikapcsolva',
+  deleted: 'Törölve',
+  restored: 'Visszaállítva',
+}
+const FIELD_LABELS = { level: 'Szint', active: 'Aktív', status: 'Állapot' }
+
+const fieldLabel = (field) => field.startsWith('payload.')
+  ? (game.value?.schema.fields[field.slice(8)]?.label ?? field.slice(8))
+  : (FIELD_LABELS[field] ?? field)
+
+const showValue = (value) => {
+  if (value === null || value === undefined || value === '') return '–'
+  if (value === true) return 'igen'
+  if (value === false) return 'nem'
+  if (Array.isArray(value)) return value.map(v => (Array.isArray(v) ? v.join(':') : v)).join(', ')
+  return typeof value === 'object' ? JSON.stringify(value) : String(value)
+}
+
 const loadHistory = async (itemId) => {
   if (history.value[itemId]) return
+  historyError.value[itemId] = null
   loadingHistory.value[itemId] = true
   try {
-    // TODO: implement GET /api/admin/content/{game}/{item}/history endpoint
-    // For now, placeholder that shows the feature is ready
-    history.value[itemId] = []
+    const { data } = await http.get(`/api/admin/content/${gameId.value}/${itemId}/history`)
+    history.value[itemId] = data.history
   } catch (e) {
-    history.value[itemId] = []
+    history.value[itemId] = null
+    historyError.value[itemId] = 'Nem sikerült betölteni az előzményeket.'
   } finally {
     loadingHistory.value[itemId] = false
   }
@@ -461,15 +488,18 @@ watch(() => showHistory.value, async (itemId) => {
             </div>
             <div v-else-if="history[item.id] && history[item.id].length > 0" class="history-list">
               <div v-for="(edit, i) in history[item.id]" :key="i" class="history-entry">
-                <strong>{{ edit.action }}</strong>
+                <strong>{{ ACTIONS[edit.action] ?? edit.action }}</strong>
                 <span class="muted">{{ edit.editor_email }}</span>
                 <span class="muted">{{ new Date(edit.created_at).toLocaleString('hu-HU') }}</span>
-                <div v-if="edit.before || edit.after" class="history-diff">
-                  <small v-if="edit.before" class="muted">volt: {{ JSON.stringify(edit.before).slice(0, 60) }}…</small>
-                  <small v-if="edit.after" class="muted">lett: {{ JSON.stringify(edit.after).slice(0, 60) }}…</small>
+                <div v-if="edit.action !== 'created' && edit.changes.length" class="history-diff">
+                  <small v-for="c in edit.changes" :key="c.field">
+                    <span class="muted">{{ fieldLabel(c.field) }}:</span>
+                    <s>{{ showValue(c.before) }}</s> → {{ showValue(c.after) }}
+                  </small>
                 </div>
               </div>
             </div>
+            <div v-else-if="historyError[item.id]" class="error">{{ historyError[item.id] }}</div>
             <div v-else class="muted">
               Nincs szerkesztési előzmény
             </div>

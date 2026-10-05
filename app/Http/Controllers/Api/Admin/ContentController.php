@@ -88,6 +88,36 @@ class ContentController extends Controller
         return response()->json(['deleted' => false, 'item' => $this->present($item, $this->uses($item))]);
     }
 
+    /** Who changed the item and what, newest first. */
+    public function history(string $game, BeszedContentItem $item): JsonResponse
+    {
+        $this->ownItem($game, $item);
+
+        $edits = BeszedContentItemEdit::where('content_item_id', $item->id)
+            ->orderByDesc('created_at')->orderByDesc('id')->limit(100)->get()
+            ->map(fn ($e) => [
+                'action' => $e->action,
+                'editor_email' => $e->editor_email,
+                'created_at' => $e->created_at,
+                'changes' => $this->changes($e->before ?? [], $e->after ?? []),
+            ]);
+
+        return response()->json(['history' => $edits]);
+    }
+
+    /** The fields an edit changed, payload fields flattened, each with its old and new value. */
+    private function changes(array $before, array $after): array
+    {
+        $flat = fn (array $s) => collect($s)->except('payload')->all()
+            + collect($s['payload'] ?? [])->mapWithKeys(fn ($v, $k) => ["payload.$k" => $v])->all();
+        [$before, $after] = [$flat($before), $flat($after)];
+
+        return collect(array_keys($before + $after))
+            ->reject(fn ($f) => ($before[$f] ?? null) === ($after[$f] ?? null))
+            ->map(fn ($f) => ['field' => $f, 'before' => $before[$f] ?? null, 'after' => $after[$f] ?? null])
+            ->values()->all();
+    }
+
     private function validated(Request $request, string $game, ?int $except = null): array
     {
         $data = $request->validate([
