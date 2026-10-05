@@ -2,6 +2,7 @@
 
 use App\Models\BeszedAttempt;
 use App\Models\BeszedContentItem;
+use App\Models\BeszedContentItemEdit;
 use App\Models\Child;
 use App\Models\User;
 use Database\Seeders\BeszedContentSeeder;
@@ -106,4 +107,48 @@ it('keeps the history to editors and to the item\'s own game', function () {
     actingAs($this->editor)->getJson("/api/admin/content/papagaj/{$item->id}/history")->assertNotFound();
     actingAs($this->editor)->getJson("/api/admin/content/zs/{$item->id}/history")
         ->assertOk()->assertExactJson(['history' => []]);
+});
+
+it('restores an item to the way an earlier edit left it', function () {
+    $item = actingAs($this->editor)->postJson('/api/admin/content/papagaj', [
+        'level' => 1, 'payload' => ['word' => 'kockacukor', 'emoji' => '🧊'],
+    ])->assertCreated()->json('item');
+
+    $this->travel(1)->minutes();
+    actingAs($this->editor)->putJson("/api/admin/content/papagaj/{$item['id']}", [
+        'level' => 2, 'payload' => ['word' => 'pemzli', 'emoji' => '🖌️'],
+    ])->assertOk();
+
+    $history = actingAs($this->editor)->getJson("/api/admin/content/papagaj/{$item['id']}/history")->json('history');
+    $created = $history[1];
+    expect($created['restorable'])->toBeTrue();
+
+    $this->travel(1)->minutes();
+    actingAs($this->editor)->postJson("/api/admin/content/papagaj/{$item['id']}/history/{$created['id']}/restore")
+        ->assertOk()->assertJsonPath('item.level', 1)->assertJsonPath('item.payload.word', 'kockacukor');
+
+    $history = actingAs($this->editor)->getJson("/api/admin/content/papagaj/{$item['id']}/history")->json('history');
+    expect($history[0]['action'])->toBe('restored')
+        ->and($history[0]['changes'])->toContain(['field' => 'payload.word', 'before' => 'pemzli', 'after' => 'kockacukor']);
+});
+
+it('only restores an item from its own history, and checks the result like a save', function () {
+    $item = actingAs($this->editor)->postJson('/api/admin/content/papagaj', [
+        'level' => 1, 'payload' => ['word' => 'kockacukor', 'emoji' => '🧊'],
+    ])->json('item');
+    actingAs($this->editor)->putJson("/api/admin/content/papagaj/{$item['id']}", [
+        'level' => 1, 'payload' => ['word' => 'pemzli', 'emoji' => '🧊'],
+    ])->assertOk();
+    $created = BeszedContentItemEdit::where('content_item_id', $item['id'])->where('action', 'created')->sole();
+
+    // the old word has been taken by another item since
+    actingAs($this->editor)->postJson('/api/admin/content/papagaj', [
+        'level' => 1, 'payload' => ['word' => 'kockacukor', 'emoji' => '🍬'],
+    ])->assertCreated();
+    actingAs($this->editor)->postJson("/api/admin/content/papagaj/{$item['id']}/history/{$created->id}/restore")
+        ->assertUnprocessable()->assertJsonValidationErrors('payload.word');
+
+    $other = BeszedContentItem::where('game', 'papagaj')->whereKeyNot($item['id'])->first();
+    actingAs($this->editor)->postJson("/api/admin/content/papagaj/{$other->id}/history/{$created->id}/restore")->assertNotFound();
+    actingAs($this->parent)->postJson("/api/admin/content/papagaj/{$item['id']}/history/{$created->id}/restore")->assertForbidden();
 });
