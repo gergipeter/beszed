@@ -96,13 +96,39 @@ class ContentController extends Controller
         $edits = BeszedContentItemEdit::where('content_item_id', $item->id)
             ->orderByDesc('created_at')->orderByDesc('id')->limit(100)->get()
             ->map(fn ($e) => [
+                'id' => $e->id,
                 'action' => $e->action,
                 'editor_email' => $e->editor_email,
                 'created_at' => $e->created_at,
                 'changes' => $this->changes($e->before ?? [], $e->after ?? []),
+                'restorable' => (bool) $e->after,
             ]);
 
         return response()->json(['history' => $edits]);
+    }
+
+    /**
+     * Puts the item back the way an earlier edit left it. Only the values that edit
+     * recorded are taken (a bulk switch records just "active"); the result is checked
+     * against today's rules like any save, and the restore itself goes in the history.
+     */
+    public function restore(Request $request, string $game, BeszedContentItem $item, BeszedContentItemEdit $edit): JsonResponse
+    {
+        $this->ownItem($game, $item);
+        abort_unless($edit->content_item_id === $item->id && $edit->after, 404);
+
+        $before = $item->only('level', 'payload', 'active', 'status');
+        // a new item's record can hold nulls where the database filled in the default
+        $data = array_filter(array_intersect_key($edit->after, $before), fn ($v) => $v !== null);
+
+        if (isset($data['payload']) && $errors = $this->validateAndDuplicate($game, $data['payload'], $item->id)) {
+            throw ValidationException::withMessages(collect($errors)->mapWithKeys(fn ($m, $f) => ["payload.$f" => $m])->all());
+        }
+
+        $item->update($data + ['edited_at' => now()]);
+        $this->audit($item, 'restored', $before, $item->only('level', 'payload', 'active', 'status'), $request);
+
+        return response()->json(['item' => $this->present($item, $this->uses($item))]);
     }
 
     /** The fields an edit changed, payload fields flattened, each with its old and new value. */

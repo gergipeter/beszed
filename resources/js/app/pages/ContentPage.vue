@@ -275,6 +275,13 @@ const showValue = (value) => {
   return typeof value === 'object' ? JSON.stringify(value) : String(value)
 }
 
+function restore(item, edit) {
+  const when = new Date(edit.created_at).toLocaleString('hu-HU')
+  if (window.confirm(`Visszaállítod „${title(item)}” állapotát erre: ${when}?`)) {
+    act(http.post(`/api/admin/content/${gameId.value}/${item.id}/history/${edit.id}/restore`))
+  }
+}
+
 const loadHistory = async (itemId) => {
   if (history.value[itemId]) return
   historyError.value[itemId] = null
@@ -491,6 +498,7 @@ watch(() => showHistory.value, async (itemId) => {
                 <strong>{{ ACTIONS[edit.action] ?? edit.action }}</strong>
                 <span class="muted">{{ edit.editor_email }}</span>
                 <span class="muted">{{ new Date(edit.created_at).toLocaleString('hu-HU') }}</span>
+                <BzButton v-if="i > 0 && edit.restorable" size="sm" variant="soft" class="history-restore" @click="restore(item, edit)">Visszaállítás erre</BzButton>
                 <div v-if="edit.action !== 'created' && edit.changes.length" class="history-diff">
                   <small v-for="c in edit.changes" :key="c.field">
                     <span class="muted">{{ fieldLabel(c.field) }}:</span>
@@ -751,6 +759,9 @@ h2 {
   background: var(--bz-soft);
   border-radius: 4px;
   font-size: 12px;
+}
+.history-restore {
+  align-self: flex-start;
 }
 .history-entry strong {
   color: var(--bz-ink);
