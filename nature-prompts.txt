@@ -1,0 +1,85 @@
+ko.png: A simple flat vector icon of a stone, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+level.png: A simple flat vector icon of a leaf, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+napraforgo.png: A simple flat vector icon of a sunflower, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+ocean.png: A simple flat vector icon of an ocean, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+rozsa.png: A simple flat vector icon of a rose flower, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+szivarvany.png: A simple flat vector icon of a rainbow, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tenger.png: A simple flat vector icon of a sea, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tulipan.png: A simple flat vector icon of a tulip, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tuz.png: A simple flat vector icon of a fire, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+villam.png: A simple flat vector icon of a lightning bolt, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+virag.png: A simple flat vector icon of a flower, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+barlang.png: A simple flat vector icon of a cave, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+bokor.png: A simple flat vector icon of a bush, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+bolygo.png: A simple flat vector icon of a planet, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+der.png: A simple flat vector icon of a frost, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+domb.png: A simple flat vector icon of a hill, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+dzsungel.png: A simple flat vector icon of a jungle, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+fenyofa.png: A simple flat vector icon of a pine tree, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+gesztenye.png: A simple flat vector icon of a chestnut, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+homok.png: A simple flat vector icon of a sand, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+hullam.png: A simple flat vector icon of a wave, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+ibolya.png: A simple flat vector icon of a violet flower, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+jegeso.png: A simple flat vector icon of a hail, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+kagylo.png: A simple flat vector icon of a seashell, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+kereg.png: A simple flat vector icon of a tree bark, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+kod.png: A simple flat vector icon of a fog, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+lohere.png: A simple flat vector icon of a clover, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+margareta.png: A simple flat vector icon of a daisy flower, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+moha.png: A simple flat vector icon of a moss, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+napsutes.png: A simple flat vector icon of a sunshine, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+patak.png: A simple flat vector icon of a stream, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+pipacs.png: A simple flat vector icon of a poppy flower, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+pocsolya.png: A simple flat vector icon of a puddle, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+szalma.png: A simple flat vector icon of a straw hay, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+szel.png: A simple flat vector icon of a wind, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+sziget.png: A simple flat vector icon of an island, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+to.png: A simple flat vector icon of a lake, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+vizeses.png: A simple flat vector icon of a waterfall, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+volgy.png: A simple flat vector icon of a valley, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+vulkan.png: A simple flat vector icon of a volcano, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+lotusz.png: A simple flat vector icon of a lotus flower, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tornado.png: A simple flat vector icon of a tornado, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+ustokos.png: A simple flat vector icon of a comet, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.

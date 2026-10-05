@@ -62,8 +62,27 @@ const slugify = word =>
 const lexicon = JSON.parse(readFileSync(join(root, 'database/lexicon/hu.json'), 'utf8'))
 const substitutes = JSON.parse(readFileSync(join(root, 'database/lexicon/substitutes.json'), 'utf8'))
 
+// Kirakó's theme picker (config/beszed.php games.kirako.categories) filters the same lexicon by these
+// lexicon "c" categories — not a separate word list, just a different slice of the one worklist. So
+// --category lets a run target "finish every animal word" instead of going strictly by frequency.
+const KIRAKO_THEMES = {
+  animals: ['animal'],
+  vehicles: ['vehicle'],
+  food: ['fruit', 'vegetable', 'food'],
+  toys: ['toy', 'instrument'],
+  nature: ['nature', 'weather', 'flower'],
+  home: ['house', 'kitchen', 'thing', 'tool', 'clothing', 'school', 'building'],
+}
+const category = flag('--category', null)
+const categoryFilter = category && (KIRAKO_THEMES[category] ?? [category])
+if (category && !categoryFilter) {
+  console.error(`Unknown --category "${category}". Known: ${Object.keys(KIRAKO_THEMES).join(', ')} (or any lexicon "c" value).`)
+  process.exit(1)
+}
+
 const missing = lexicon
   .filter(w => w.p && substitutes[String(w.p)] === undefined)
+  .filter(w => !categoryFilter || categoryFilter.includes(w.c))
   .sort((a, b) => (a.f ?? 9) - (b.f ?? 9) || a.w.localeCompare(b.w, 'hu'))
 
 const batch = missing.slice(start, start + limit)

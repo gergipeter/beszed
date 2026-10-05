@@ -15,6 +15,10 @@ services:
       # Not persisted anywhere else (the container's own filesystem is thrown away on every recreate),
       # so it must come from here or sessions/cookies/encrypted data break on every restart. Set in .env.
       APP_KEY: ${APP_KEY}
+      # false: ARASAAC pictograms (CC BY-NC-SA, non-commercial only) are replaced everywhere by their
+      # substitute (database/lexicon/substitutes.json: a Mulberry symbol, our own AI picture, or plain
+      # emoji). Default true (pictograms on) for local/dev convenience; set false in .env to go live with it.
+      BESZED_PICTOGRAMS: ${BESZED_PICTOGRAMS:-true}
       LOG_CHANNEL: stderr
       # MySQL on the shared dev server (horizon-mysql, on the global-network), in its own database with
       # its own user that can touch nothing else there. Fixed here on purpose: .env's DB_* are for the

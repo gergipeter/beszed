@@ -1,0 +1,71 @@
+jojo.png: A simple flat vector icon of a yo-yo, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+labda.png: A simple flat vector icon of a ball, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+lufi.png: A simple flat vector icon of a balloon, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+maci.png: A simple flat vector icon of a teddy bear, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+robot.png: A simple flat vector icon of a toy robot, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+trombita.png: A simple flat vector icon of a trumpet, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+zongora.png: A simple flat vector icon of a piano, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+buborek.png: A simple flat vector icon of a soap bubble, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+csello.png: A simple flat vector icon of a cello, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+csorgo.png: A simple flat vector icon of a baby rattle, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+frizbi.png: A simple flat vector icon of a flying disc, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+furulya.png: A simple flat vector icon of a recorder flute, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+gordeszka.png: A simple flat vector icon of a skateboard, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+harfa.png: A simple flat vector icon of a harp, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+hintalo.png: A simple flat vector icon of a rocking horse, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+karika.png: A simple flat vector icon of a hoop, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+klarinet.png: A simple flat vector icon of a clarinet, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+korcsolya.png: A simple flat vector icon of an ice skate, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+kosarlabda.png: A simple flat vector icon of a basketball, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+kurt.png: A simple flat vector icon of a french horn, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+nagybogo.png: A simple flat vector icon of a double bass, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+orgona.png: A simple flat vector icon of an organ instrument, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+porgettyu.png: A simple flat vector icon of a spinning top toy, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+sip.png: A simple flat vector icon of a whistle, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+szaxofon.png: A simple flat vector icon of a saxophone, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tamburin.png: A simple flat vector icon of a tambourine, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tarsasjatek.png: A simple flat vector icon of a board game, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+teniszlabda.png: A simple flat vector icon of a tennis ball, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+triangulum.png: A simple flat vector icon of a triangle instrument, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tuba.png: A simple flat vector icon of a tuba instrument, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+ugrokotel.png: A simple flat vector icon of a jump rope, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+uto.png: A simple flat vector icon of a racket, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+bendzso.png: A simple flat vector icon of a banjo, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+bumerang.png: A simple flat vector icon of a boomerang, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+rogbilabda.png: A simple flat vector icon of a rugby ball, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+roplabda.png: A simple flat vector icon of a volleyball, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.

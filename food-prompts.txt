@@ -1,0 +1,105 @@
+korte.png: A simple flat vector icon of a pear, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+krumpli.png: A simple flat vector icon of a potato, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+leves.png: A simple flat vector icon of a soup, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+mez.png: A simple flat vector icon of a honey, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+muffin.png: A simple flat vector icon of a muffin, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+narancs.png: A simple flat vector icon of an orange fruit, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+nyaloka.png: A simple flat vector icon of a lollipop, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+palacsinta.png: A simple flat vector icon of a pancake, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+paprika.png: A simple flat vector icon of a bell pepper, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+paradicsom.png: A simple flat vector icon of a tomato, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+pizza.png: A simple flat vector icon of a pizza, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+repa.png: A simple flat vector icon of a carrot, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+rizs.png: A simple flat vector icon of a rice, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+sajt.png: A simple flat vector icon of a cheese, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+salata.png: A simple flat vector icon of a lettuce, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+so.png: A simple flat vector icon of a salt, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+szendvics.png: A simple flat vector icon of a sandwich, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+szolo.png: A simple flat vector icon of a grapes, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tej.png: A simple flat vector icon of a milk, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+teszta.png: A simple flat vector icon of a pasta, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tojas.png: A simple flat vector icon of an egg, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+torta.png: A simple flat vector icon of a cake, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+uborka.png: A simple flat vector icon of a cucumber, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+zsemle.png: A simple flat vector icon of a bread roll, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+afonya.png: A simple flat vector icon of a blueberry, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+bab.png: A simple flat vector icon of a bab, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+borso.png: A simple flat vector icon of a borsó, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+brokkoli.png: A simple flat vector icon of a broccoli, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+fokhagyma.png: A simple flat vector icon of a garlic, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+granatalma.png: A simple flat vector icon of a pomegranate, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+kalacs.png: A simple flat vector icon of a sweet bread, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+karalabe.png: A simple flat vector icon of a kohlrabi, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+ketchup.png: A simple flat vector icon of a ketchup, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+malna.png: A simple flat vector icon of a raspberry, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+mandarin.png: A simple flat vector icon of a mandarin orange, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+mango.png: A simple flat vector icon of a mango, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+mogyoro.png: A simple flat vector icon of a hazelnut, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+mustar.png: A simple flat vector icon of a mustard, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+nektarin.png: A simple flat vector icon of a nectarine, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+padlizsan.png: A simple flat vector icon of an eggplant, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+perec.png: A simple flat vector icon of a pretzel, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+petrezselyem.png: A simple flat vector icon of a parsley, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+piskota.png: A simple flat vector icon of a sponge cake, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+pite.png: A simple flat vector icon of a pie, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+puding.png: A simple flat vector icon of a pudding, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+szeder.png: A simple flat vector icon of a blackberry, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+tejfol.png: A simple flat vector icon of a sour cream, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+vaj.png: A simple flat vector icon of a butter, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+virsli.png: A simple flat vector icon of a sausage, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+avokado.png: A simple flat vector icon of an avocado, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+csili.png: A simple flat vector icon of a chili pepper, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+gyomber.png: A simple flat vector icon of a ginger root, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
+
+olajbogyo.png: A simple flat vector icon of an olive, centered, thick clean outline, soft pastel colors, plain white background, no text, no shadow, child-friendly illustration style, like a speech therapy flashcard.
