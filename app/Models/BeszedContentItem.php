@@ -17,12 +17,31 @@ class BeszedContentItem extends Model
         return $q->where('game', $game)->where('active', true)->where('status', 'live');
     }
 
-    /** The ARASAAC pictograms (ids) the item shows with no emoji to fall back on. @return list<int> */
+    /**
+     * The ARASAAC pictograms (ids) the item shows: every string in its payload that is either
+     * already written as "arasaac:<id>" (rare, content-editor-entered) or is an emoji the word bank
+     * maps to one (the normal case — content stores the plain emoji, "arasaac:<id>" only ever appears
+     * live, from Pictures::apply()). Used to decide, with pictograms off, whether every picture the
+     * item would show has a substitute to fall back on.
+     * @return list<int>
+     */
     public function arasaacIds(): array
     {
-        preg_match_all('/arasaac:(\d+)/', json_encode($this->payload), $m);
+        $byEmoji = \App\Beszed\Content\Pictures::map();
+        $ids = [];
+        $payload = $this->payload; // array_walk_recursive needs a real variable, not the cast accessor
+        array_walk_recursive($payload, function ($value) use (&$ids, $byEmoji) {
+            if (! is_string($value)) {
+                return;
+            }
+            if (preg_match('/^arasaac:(\d+)/', $value, $m)) {
+                $ids[] = (int) $m[1];
+            } elseif (isset($byEmoji[$value])) {
+                $ids[] = (int) explode(':', $byEmoji[$value])[1];
+            }
+        });
 
-        return array_map('intval', array_unique($m[1]));
+        return array_values(array_unique($ids));
     }
 
     /** Stable id of a seed payload (same encoding as the array cast, so stored rows hash the same). */

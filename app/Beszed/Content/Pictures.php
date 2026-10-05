@@ -49,23 +49,39 @@ final class Pictures
     }
 
     /**
-     * Every string in the rounds that is exactly a mapped emoji becomes its pictogram; with pictograms
-     * off, every pictogram becomes its substitute instead (a Mulberry symbol unless the entry already
-     * names its own kind, "ai:" or "emoji:").
+     * Every string in the rounds that is exactly a mapped emoji becomes its pictogram (content stores
+     * the plain emoji, "arasaac:<id>" only ever appears live, from here); with pictograms off, that
+     * same mapped emoji becomes its substitute instead (a Mulberry symbol unless the entry already
+     * names its own kind, "ai:" or "emoji:"). A value already written as "arasaac:<id>" by hand (rare,
+     * content-editor-entered) is matched the same way either branch would via its id.
      */
     public static function apply(array $rounds): array
     {
         if (! config('beszed_content.pictograms')) {
+            $byEmoji = self::map(); // emoji => "arasaac:<id>~<emoji>"
             $substitutes = self::substitutes();
-            array_walk_recursive($rounds, function (&$value) use ($substitutes) {
-                if (is_string($value) && preg_match('/^arasaac:(\d+)(~.*)?$/su', $value, $m) && isset($substitutes[(int) $m[1]])) {
-                    $sub = $substitutes[(int) $m[1]];
-                    $value = match (true) {
-                        str_starts_with($sub, 'emoji:') => substr($sub, 6),
-                        str_starts_with($sub, 'ai:') => $sub.($m[2] ?? ''),
-                        default => "mulberry:$sub".($m[2] ?? ''),
-                    };
+            array_walk_recursive($rounds, function (&$value) use ($byEmoji, $substitutes) {
+                if (! is_string($value)) {
+                    return;
                 }
+                $id = null;
+                $fallback = '';
+                if (preg_match('/^arasaac:(\d+)(~(.*))?$/su', $value, $m)) {
+                    $id = (int) $m[1];
+                    $fallback = $m[3] ?? '';
+                } elseif (isset($byEmoji[$value])) {
+                    $id = (int) explode(':', $byEmoji[$value])[1];
+                    $fallback = $value;
+                }
+                if ($id === null || ! isset($substitutes[$id])) {
+                    return;
+                }
+                $sub = $substitutes[$id];
+                $value = match (true) {
+                    str_starts_with($sub, 'emoji:') => substr($sub, 6),
+                    str_starts_with($sub, 'ai:'), str_starts_with($sub, 'mulberry:') => $sub.($fallback !== '' ? "~$fallback" : ''),
+                    default => "mulberry:$sub".($fallback !== '' ? "~$fallback" : ''),
+                };
             });
 
             return $rounds;
