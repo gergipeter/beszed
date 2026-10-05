@@ -73,6 +73,9 @@ onMounted(load)
               })
             }}
           </span>
+          <span v-if="rewards.summary.lifetime_days" class="fact">
+            <EmojiArt :char="ICONS.flower" /> {{ t('rewards.lifetimeDays', { count: rewards.summary.lifetime_days }) }}
+          </span>
         </p>
       </div>
     </section>

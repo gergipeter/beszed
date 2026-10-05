@@ -10,8 +10,9 @@ namespace App\Beszed\Content;
  * ("arasaac:2462~🍎"), so the app still shows something offline.
  *
  * With pictograms off (ARASAAC is licensed for non-commercial use only) a pictogram is replaced by what
- * database/lexicon/substitutes.json names for it: a Mulberry symbol (mulberrysymbols.org, CC BY-SA 4.0),
- * shown as "mulberry:badger", or a plain emoji ("emoji:🏛️" in the file).
+ * database/lexicon/substitutes.json names for it: a Mulberry symbol (mulberrysymbols.org, CC BY-SA 4.0,
+ * "mulberry:badger"), an in-house AI-generated picture (ours outright, "ai:apple", public/ai-pics/),
+ * or a plain emoji ("emoji:🏛️" in the file).
  */
 final class Pictures
 {
@@ -49,7 +50,8 @@ final class Pictures
 
     /**
      * Every string in the rounds that is exactly a mapped emoji becomes its pictogram; with pictograms
-     * off, every pictogram becomes its Mulberry symbol instead.
+     * off, every pictogram becomes its substitute instead (a Mulberry symbol unless the entry already
+     * names its own kind, "ai:" or "emoji:").
      */
     public static function apply(array $rounds): array
     {
@@ -58,7 +60,11 @@ final class Pictures
             array_walk_recursive($rounds, function (&$value) use ($substitutes) {
                 if (is_string($value) && preg_match('/^arasaac:(\d+)(~.*)?$/su', $value, $m) && isset($substitutes[(int) $m[1]])) {
                     $sub = $substitutes[(int) $m[1]];
-                    $value = str_starts_with($sub, 'emoji:') ? substr($sub, 6) : "mulberry:$sub".($m[2] ?? '');
+                    $value = match (true) {
+                        str_starts_with($sub, 'emoji:') => substr($sub, 6),
+                        str_starts_with($sub, 'ai:') => $sub.($m[2] ?? ''),
+                        default => "mulberry:$sub".($m[2] ?? ''),
+                    };
                 }
             });
 

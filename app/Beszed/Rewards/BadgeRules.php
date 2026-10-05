@@ -5,7 +5,7 @@ namespace App\Beszed\Rewards;
 /** Decides whether a sticker's rule (config/beszed.php → rewards.badges.*.rule) is met. */
 final class BadgeRules
 {
-    public const TYPES = ['sessions', 'stars', 'streak', 'perfect', 'all_games', 'game', 'daily_goal', 'daily_path', 'weekly', 'zone'];
+    public const TYPES = ['sessions', 'stars', 'streak', 'perfect', 'all_games', 'game', 'daily_goal', 'daily_path', 'weekly', 'zone', 'manual'];
 
     /** @param  string[]  $games  ids of every game in the module */
     public static function passes(array $rule, Stats $stats, int $dailyGoal, array $games): bool

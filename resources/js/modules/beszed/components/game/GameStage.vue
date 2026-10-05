@@ -41,7 +41,9 @@ const PROPS = {}
 .scene {
   position: relative;
   isolation: isolate;
-  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  min-height: max(calc(100dvh - var(--bz-stage-room, 330px)), 360px);
   padding: 26px clamp(10px, 3vw, 22px) 34px;
   overflow: hidden;
   border-radius: var(--bz-radius-lg);
@@ -54,9 +56,12 @@ const PROPS = {}
   z-index: -1;
   pointer-events: none;
 }
-/* a plain block: the round (SessionRunner .round) spans the whole stage and centres its own parts */
+/* the round (SessionRunner .round) spans the whole stage and centres its own parts */
 .content {
   position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
 }
 .prop {
   position: absolute;

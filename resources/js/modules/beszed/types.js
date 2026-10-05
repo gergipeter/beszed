@@ -113,7 +113,7 @@
  * @property {number} [pool]
  * @property {string} [onCorrect]
  *
- * @typedef {{ path: 'wave' | 'loops' | 'zigzag' | 'arches' | 'steps' | 'hills', onCorrect?: string }} TraceData
+ * @typedef {{ path: 'wave' | 'loops' | 'zigzag' | 'arches' | 'steps' | 'hills', difficulty?: number, onCorrect?: string }} TraceData
  *
  * @typedef {{ text: string, chunks: string[], emoji: string, levelLabel: string }} JudgedData
  *

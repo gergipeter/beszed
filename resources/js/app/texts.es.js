@@ -52,7 +52,6 @@ export default {
   birthDate: 'Fecha de nacimiento (opcional)',
   birthDateHint: 'Así sabemos qué tan difíciles deben ser las primeras tareas.',
   sign: 'Símbolo del jardín de niños',
-  signHint: '¡Elige tu símbolo, como el que tienes en tu toalla o en tu casillero del jardín de niños! Así también te reconoces aquí.',
   pickSign: 'Elige un símbolo',
   signOf: 'Símbolo de {name} del jardín de niños',
   birthDateOf: 'Fecha de nacimiento de {name}',

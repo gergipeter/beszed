@@ -50,6 +50,13 @@ const defaults = {
   symbols: { baseUrl: '/symbols/' },
 
   /**
+   * In-house AI-generated pictures ("ai:apple"), served from public/ai-pics/. Ours outright (whatever
+   * generator made them), so no licence note is needed: the replacement for ARASAAC words that don't
+   * have a Mulberry substitute either (database/lexicon/substitutes.json).
+   */
+  aiPics: { baseUrl: '/ai-pics/' },
+
+  /**
    * Szájtorna's face tracker files (MediaPipe wasm + face_landmarker.task), copied into the build by
    * scripts/copy-face.mjs. Loaded only when a child turns the mirror on.
    */

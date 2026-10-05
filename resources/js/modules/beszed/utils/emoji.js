@@ -32,6 +32,16 @@ export function symbol(text) {
 }
 
 /**
+ * An in-house AI-generated picture: "ai:apple", or "ai:apple~🍎" with the emoji to show if the
+ * picture can't load. Null for anything else.
+ * @returns {{ name: string, fallback: string } | null}
+ */
+export function aiPic(text) {
+  const m = /^ai:([a-z0-9_]+)(?:~(.+))?$/.exec(text ?? '')
+  return m ? { name: m[1], fallback: m[2] ?? '' } : null
+}
+
+/**
  * An uploaded image reference: "upload:123". Null for anything else.
  * @returns {{ id: string } | null}
  */

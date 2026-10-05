@@ -5,7 +5,9 @@ import { ICONS } from '../../config/icons'
 import { config } from '../../config/options'
 import { t } from '../../i18n'
 import { buzz } from '../../services/touch/feel'
+import { confetti } from '../../services/effects/confetti'
 import { useRecordingsStore } from '../../stores/recordings'
+import { useRewardsStore } from '../../stores/rewards'
 import BzButton from '../ui/BzButton.vue'
 import EmojiArt from '../ui/EmojiArt.vue'
 import InstallApp from './InstallApp.vue'
@@ -21,11 +23,14 @@ import ParentGate from './ParentGate.vue'
  * A modal <dialog> (top layer): it covers the whole screen whatever the page is scrolled to, closes
  * with Escape or a tap outside, and keeps keyboard focus inside while it is open.
  */
-const { childId, premium } = useModuleContext()
+const { childId, childName, premium } = useModuleContext()
 
 const recordings = useRecordingsStore()
+const rewards = useRewardsStore()
 const dialog = ref(null)
 const trigger = ref(null)
+const giftMessage = ref('')
+const gifting = ref(false)
 
 const gate = ref(null)
 
@@ -40,6 +45,21 @@ function open() {
 function close() {
   dialog.value?.close()
   trigger.value?.focus()
+}
+
+/** The parent hands over the "ügyes voltál" sticker by hand: always available, never scored. */
+async function giveSticker() {
+  if (gifting.value) return
+  gifting.value = true
+  try {
+    const wasNew = await rewards.giftProud(childId.value)
+    giftMessage.value = t(wasNew ? 'hub.giveStickerGiven' : 'hub.giveStickerAgain', { child: childName.value })
+    confetti({ pieces: 50 })
+  } catch {
+    giftMessage.value = ''
+  } finally {
+    gifting.value = false
+  }
 }
 </script>
 
@@ -71,6 +91,10 @@ function close() {
       <BzButton class="item" variant="soft" :to="{ name: 'beszed.settings', params: { childId } }" :icon="ICONS.settings">
         {{ t('settings.title') }}
       </BzButton>
+      <BzButton class="item" variant="soft" :icon="ICONS.heart" :disabled="gifting" @click="giveSticker">
+        {{ t('hub.giveSticker') }}
+      </BzButton>
+      <p v-if="giftMessage" class="gift-message" role="status">{{ giftMessage }}</p>
       <BzButton
         v-if="!premium"
         class="item"
@@ -178,6 +202,14 @@ function close() {
   background: var(--bz-soft);
   font-size: 22px;
   line-height: 1;
+}
+.gift-message {
+  margin: -4px 0 0;
+  padding: 8px 14px;
+  border-radius: var(--bz-radius-lg);
+  background: var(--bz-soft);
+  font-size: 14px;
+  font-weight: 700;
 }
 .items {
   display: flex;

@@ -20,8 +20,9 @@ function greetGuest() {
 
 /**
  * Life in the garden, which changes with the day and the season: butterflies and a bee by day,
- * and petals (spring), leaves (autumn) or snowflakes (winter) drifting down. Pure decoration
- * (pointer-events off); the evening fireflies live in GardenMap.
+ * and petals (spring), leaves (autumn) or snowflakes (winter) drifting down. Around Christmas and
+ * Easter the falling set swaps for a holiday one, same mechanism, just for a few days a year.
+ * Pure decoration (pointer-events off); the evening fireflies live in GardenMap.
  */
 const SEASONS = {
   spring: ['🌸', '🌸', '🌼', '🌸', '🌸'],
@@ -29,12 +30,48 @@ const SEASONS = {
   winter: ['❄️', '❄️', '❄️', '❄️', '❄️'],
   summer: [],
 }
+const HOLIDAYS = {
+  christmas: ['❄️', '✨', '🎄', '✨', '❄️'],
+  easter: ['🌼', '🐣', '🌸', '🥚', '🌼'],
+}
+
+/** Easter Sunday (Gregorian), by the anonymous/Gauss algorithm. Returns a Date at local midnight. */
+function easterSunday(year) {
+  const a = year % 19
+  const b = Math.floor(year / 100)
+  const c = year % 100
+  const d = Math.floor(b / 4)
+  const e = b % 4
+  const f = Math.floor((b + 8) / 25)
+  const g = Math.floor((b - f + 1) / 3)
+  const h = (19 * a + b - d - g + 15) % 30
+  const i = Math.floor(c / 4)
+  const k = c % 4
+  const l = (32 + 2 * e + 2 * i - h - k) % 7
+  const m = Math.floor((a + 11 * h + 22 * l) / 451)
+  const month = Math.floor((h + l - 7 * m + 114) / 31) // 3 = March, 4 = April
+  const day = ((h + l - 7 * m + 114) % 31) + 1
+  return new Date(year, month - 1, day)
+}
+
+/** The day itself, plus a day either side so the decor eases in and out. */
+function withinDays(date, target, days) {
+  return Math.abs(date.setHours(12, 0, 0, 0) - target.setHours(12, 0, 0, 0)) <= days * 86400000
+}
+
+function currentHoliday(now) {
+  if (withinDays(new Date(now), new Date(now.getFullYear(), 11, 25), 1)) return 'christmas'
+  if (withinDays(new Date(now), easterSunday(now.getFullYear()), 1)) return 'easter'
+  return null
+}
+
 const month = new Date().getMonth()
 const season = month >= 2 && month <= 4 ? 'spring' : month >= 5 && month <= 7 ? 'summer' : month >= 8 && month <= 10 ? 'autumn' : 'winter'
+const holiday = currentHoliday(new Date())
 
 /** Where they start (% from the left); each has its own pace. */
 const FALLING = [12, 30, 52, 71, 90]
-const falling = SEASONS[season].map((char, i) => ({ char, left: FALLING[i], i }))
+const falling = (holiday ? HOLIDAYS[holiday] : SEASONS[season]).map((char, i) => ({ char, left: FALLING[i], i }))
 const FLYERS = [
   { top: 18, delay: 0, char: '🦋' },
   { top: 52, delay: -9, char: '🦋' },

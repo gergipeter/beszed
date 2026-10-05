@@ -6,6 +6,8 @@ import { playAudio, stopAudio, unlockAudio } from '../services/audio/player'
 import { unlockSfx } from '../services/audio/sfx'
 import { preloadAudio } from '../services/audio/preload'
 import { cancelWebSpeech, primeWebSpeech, speakWebSpeech } from '../services/audio/webSpeech'
+import { confetti } from '../services/effects/confetti'
+import { rollSurprise } from '../services/care/surprise'
 import { useMetaStore } from './meta'
 import { useRecordingsStore } from './recordings'
 import { useSettingsStore } from './settings'
@@ -116,6 +118,8 @@ export const useGuideStore = defineStore('beszed/guide', {
         if (!isCurrent()) return false
         const { url, text } = sourceOf(item)
         if (url) {
+          // hearing a parent's own voice is already a warm moment: now and then a little extra sparkle on top
+          if (rollSurprise(0.2)) confetti({ pieces: 40 })
           await playAudio(url, { rate: slow ? SLOW_RATE_FACTOR : 1 })
           continue
         }

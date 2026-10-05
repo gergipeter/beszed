@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { completeSession, fetchRewards, saveScene, wearAccessory } from '../api'
+import { completeSession, fetchRewards, giftBadge, saveScene, wearAccessory } from '../api'
 import { catalog, currentLanguage } from '../i18n'
 
 /** Sticker, accessory and background names in the active language (the server sends Hungarian). */
@@ -76,6 +76,14 @@ export const useRewardsStore = defineStore('beszed/rewards', {
     async saveScene(childId, scene) {
       const saved = await saveScene(childId, scene)
       if (childId === this.childId) this.summary = { ...this.summary, scene: saved }
+    },
+
+    /** A parent hands over the "ügyes voltál" sticker by hand. Resolves true if it was new. */
+    async giftProud(childId) {
+      const was = this.summary?.badges?.find(b => b.id === 'parent_proud')?.earned_at
+      const summary = await giftBadge(childId, 'parent_proud')
+      if (childId === this.childId) this.summary = summary
+      return !was
     },
   },
 })

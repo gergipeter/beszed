@@ -63,16 +63,17 @@ defineProps({
 .option--scene {
   padding: 6px;
 }
-/* Up to 8 items, 3 per row, inside the circle's inscribed square (~70% of it). */
+/* a tray, not a plate: rectangular with just a soft rounded corner, sized to fill the stage */
 .option--plate {
   flex-direction: row;
   flex-wrap: wrap;
   align-content: center;
-  gap: 2px 4px;
-  aspect-ratio: 1;
-  padding: 15%;
-  border-radius: 50%;
-  font-size: clamp(20px, 6.2vw, 38px);
+  gap: 4px 6px;
+  width: 100%;
+  height: min(70vw, 42vh, 320px);
+  padding: 10%;
+  border-radius: var(--bz-radius-lg);
+  font-size: clamp(26px, 9vw, 54px);
 }
 .art {
   font-size: clamp(48px, 11vw, 72px);

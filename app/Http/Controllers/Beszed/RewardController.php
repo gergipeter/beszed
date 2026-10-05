@@ -40,6 +40,17 @@ class RewardController extends Controller
         return response()->json($rewards->complete($child, $data), 201);
     }
 
+    /** A parent hands over one of the "manual" stickers from the parents' menu. */
+    public function gift(Request $request, Child $child, Rewards $rewards): JsonResponse
+    {
+        $this->authorizeChild($request, $child);
+
+        $manual = collect(config('beszed.rewards.badges'))->filter(fn ($b) => ($b['rule'][0] ?? null) === 'manual')->keys()->all();
+        $data = $request->validate(['badge' => ['required', Rule::in($manual)]]);
+
+        return response()->json($rewards->giftBadge($child, $data['badge']));
+    }
+
     public function wear(Request $request, Child $child, Rewards $rewards): JsonResponse
     {
         $this->authorizeChild($request, $child);

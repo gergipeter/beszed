@@ -380,10 +380,10 @@ return [
         'kirako' => [
             'name' => 'Kirakó', 'emoji' => '🧩', 'skill' => 'Képkirakó, formaérzék', 'color' => '#FFDAC1', 'tier' => 'simple', 'stage' => 'workshop',
             'factory' => Rounds\KirakoRounds::class, 'rounds' => 3,
-            // level = "pálya" 1–200: the grid grows 2×2 → 8×7, scenes and princesses come, the example fades (KirakoRounds)
+            // level = "pálya" 1–100: the grid grows 2×2 → 5×5, scenes and princesses come, the example fades (KirakoRounds)
             'adaptive' => [
                 // clean_tries 2: a puzzle graded 1 or 2 (few wasted swaps) moves on to the next pálya; only a messy one (3) steps back
-                'min' => 1, 'max' => 200, 'start' => 1, 'up_after' => 1, 'clean_tries' => 2,
+                'min' => 1, 'max' => 100, 'start' => 1, 'up_after' => 1, 'clean_tries' => 2,
                 'starts_by_age' => ['3-4' => 1, '5-6' => 8, '7+' => 16],
             ],
             // A puzzle's grade is not a wrong answer: no "practise what was missed" repeats, and a picture is not shown
@@ -849,6 +849,19 @@ return [
         'auto' => ['name' => 'Autó', 'emoji' => '🚗'], 'vonat' => ['name' => 'Vonat', 'emoji' => '🚂'],
         'hajo' => ['name' => 'Hajó', 'emoji' => '⛵'], 'csillag' => ['name' => 'Csillag', 'emoji' => '⭐'],
         'hold' => ['name' => 'Hold', 'emoji' => '🌙'], 'esernyo' => ['name' => 'Esernyő', 'emoji' => '☂️'],
+        'narancs' => ['name' => 'Narancs', 'emoji' => '🍊'], 'citrom' => ['name' => 'Citrom', 'emoji' => '🍋'],
+        'paradicsom' => ['name' => 'Paradicsom', 'emoji' => '🍅'], 'paprika' => ['name' => 'Paprika', 'emoji' => '🫑'],
+        'margareta' => ['name' => 'Margaréta', 'emoji' => '🌼'], 'nefelejcs' => ['name' => 'Nefelejcs', 'emoji' => '💐'],
+        'kukac' => ['name' => 'Hernyó', 'emoji' => '🐛'], 'egerke' => ['name' => 'Egérke', 'emoji' => '🐭'],
+        'malac' => ['name' => 'Malac', 'emoji' => '🐷'], 'tyuk' => ['name' => 'Tyúk', 'emoji' => '🐔'],
+        'kacsa' => ['name' => 'Kacsa', 'emoji' => '🦆'], 'teknos' => ['name' => 'Teknős', 'emoji' => '🐢'],
+        'pillangohal' => ['name' => 'Pingvin', 'emoji' => '🐧'], 'majom' => ['name' => 'Majom', 'emoji' => '🐵'],
+        'oroszlan' => ['name' => 'Oroszlán', 'emoji' => '🦁'], 'elefant' => ['name' => 'Elefánt', 'emoji' => '🐘'],
+        'baba' => ['name' => 'Babafej', 'emoji' => '👶'], 'kulcs' => ['name' => 'Kulcs', 'emoji' => '🔑'],
+        'ora' => ['name' => 'Óra', 'emoji' => '⏰'], 'sapka' => ['name' => 'Sapka', 'emoji' => '🧢'],
+        'cipo' => ['name' => 'Cipő', 'emoji' => '👟'], 'bicikli' => ['name' => 'Bicikli', 'emoji' => '🚲'],
+        'repulo' => ['name' => 'Repülő', 'emoji' => '✈️'], 'haz' => ['name' => 'Házikó', 'emoji' => '🏠'],
+        'szivecske' => ['name' => 'Szívecske', 'emoji' => '💛'], 'szivarvany' => ['name' => 'Szivárvány', 'emoji' => '🌈'],
     ],
 
     /*
@@ -958,6 +971,8 @@ return [
             'catcher' => ['name' => 'Fogócska bajnok', 'emoji' => '🦋', 'hint' => 'Játssz ötször a „Kapd el!” játékkal!', 'rule' => ['game', 'kapdel', 5]],
             'pathfinder' => ['name' => 'Útkereső', 'emoji' => '🐭', 'hint' => 'Játssz ötször a Labirintussal!', 'rule' => ['game', 'labirintus', 5]],
             'painter' => ['name' => 'Kis festő', 'emoji' => '🖍️', 'hint' => 'Játssz ötször a Színezővel!', 'rule' => ['game', 'szinezo', 5]],
+            // Never auto-granted: a parent hands this one over by hand, from the parents' menu.
+            'parent_proud' => ['name' => 'Ügyes voltál', 'emoji' => '💛', 'hint' => 'Ezt a szülőd adta neked.', 'rule' => ['manual']],
             ...generateCollectorStickers(),
         ],
 

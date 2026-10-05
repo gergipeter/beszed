@@ -212,7 +212,6 @@ async function toggleMilestoneEmails(event) {
             <EmojiArt :char="x.emoji" />
           </button>
         </div>
-        <small class="hint">{{ texts.signHint }}</small>
       </fieldset>
       <div class="bz-row">
         <BzButton type="submit" variant="primary" :disabled="saving || !name.trim()">{{ texts.save }}</BzButton>
@@ -252,16 +251,18 @@ async function toggleMilestoneEmails(event) {
       <input type="checkbox" :checked="session.user?.play_reminder_enabled" @change="togglePlayReminder" />
       <span>{{ texts.playReminder }}</span>
     </label>
-    <p class="weekly-sample">
-      <BzButton size="sm" variant="soft" @click="sendSample">{{ texts.weeklySample }}</BzButton>
+    <p v-if="session.children.length && session.user?.weekly_report_enabled" class="weekly-sample">
+      <button type="button" class="weekly-sample-link" @click="sendSample">{{ texts.weeklySample }}</button>
       <small v-if="sample" role="status">{{ sample }}</small>
     </p>
 
     <footer class="account">
       <LegalLinks />
-      <RouterLink v-if="session.user?.can_edit_content" :to="{ name: 'content' }">{{ texts.contentEditor }}</RouterLink>
-      <a href="/api/me/export" download @click="exportData">{{ texts.exportData }}</a>
-      <button type="button" class="danger" @click="deleteAccount">{{ texts.deleteAccount }}</button>
+      <div class="account-links">
+        <RouterLink v-if="session.user?.can_edit_content" :to="{ name: 'content' }">{{ texts.contentEditor }}</RouterLink>
+        <a href="/api/me/export" download @click="exportData">{{ texts.exportData }}</a>
+      </div>
+      <BzButton size="sm" variant="danger" @click="deleteAccount">{{ texts.deleteAccount }}</BzButton>
     </footer>
 
     <!-- changing a child's óvodai jel -->
@@ -319,9 +320,18 @@ async function toggleMilestoneEmails(event) {
 .weekly-sample {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 8px 12px;
-  margin: 4px 0 0;
+  gap: 4px 12px;
+  margin: 2px 0 0;
+  font-size: 14px;
+}
+.weekly-sample-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--bz-muted);
+  font-weight: 700;
+  font-size: 14px;
 }
 .weekly-sample small {
   color: var(--bz-muted);
@@ -330,29 +340,53 @@ async function toggleMilestoneEmails(event) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 28px;
+  gap: 10px;
+  margin-top: 16px;
   font-size: 15px;
   font-weight: 700;
   color: var(--bz-muted);
+  cursor: pointer;
+}
+.milestone-toggle:first-of-type {
+  margin-top: 28px;
+}
+.milestone-toggle input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  flex: none;
+  appearance: none;
+  border: 2px solid var(--bz-soft);
+  border-radius: 6px;
+  background: var(--bz-card);
+  cursor: pointer;
+}
+.milestone-toggle input:checked {
+  border-color: var(--bz-leaf);
+  background-color: var(--bz-leaf);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='11' viewBox='0 0 14 11'%3E%3Cpath d='M1 5.5l4 4 8-8' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+}
+.account-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px 22px;
-  margin-top: 12px;
   font-size: 15px;
   font-weight: 700;
   color: var(--bz-muted);
 }
-.account a,
-.account button {
+.account-links a {
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-.account .danger {
-  color: var(--bz-coral-deep);
 }
 .top {
   display: flex;

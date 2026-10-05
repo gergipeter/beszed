@@ -44,6 +44,7 @@ const history = ref({}) // item id => list of edits
 const loadingHistory = ref({}) // item id => is loading
 const exportLoading = ref(false)
 const uploadingField = ref(null) // field key being uploaded
+const openMenu = ref(null) // item id whose overflow menu (⋯) is open
 
 const game = computed(() => games.value.find(g => g.id === gameId.value) ?? null)
 const fields = computed(() => Object.entries(game.value?.schema.fields ?? {}))
@@ -163,8 +164,13 @@ const toggle = item =>
   act(http.put(`/api/admin/content/${gameId.value}/${item.id}`, { level: item.level, active: !item.active, payload: item.payload }))
 
 function remove(item) {
+  openMenu.value = null
   const note = item.uses ? ' Már játszottak vele, ezért csak kikapcsoljuk (az eredmények megmaradnak).' : ''
   if (window.confirm(`Biztosan törlöd: „${title(item)}”?${note}`)) act(http.delete(`/api/admin/content/${gameId.value}/${item.id}`))
+}
+
+function toggleMenu(item) {
+  openMenu.value = openMenu.value === item.id ? null : item.id
 }
 
 /** Hear it in Csillám's server voice (checks the pronunciation of a new word). */
@@ -295,10 +301,15 @@ watch(gameId, () => {
   selected.value.clear()
   loadItems()
 })
+const closeMenuOnOutsideClick = e => {
+  if (openMenu.value !== null && !e.target.closest('.item-menu')) openMenu.value = null
+}
+
 onMounted(async () => {
   try {
     await loadGames()
     window.addEventListener('keydown', handleKeyboard)
+    window.addEventListener('click', closeMenuOnOutsideClick)
   } catch (e) {
     error.value = e.response?.status === 403 ? 'Ehhez nincs jogosultságod.' : 'Nem sikerült betölteni.'
   }
@@ -397,62 +408,86 @@ watch(() => showHistory.value, async (itemId) => {
         </div>
       </form>
 
-      <div class="tools">
-        <BzButton v-if="!form" variant="primary" @click="edit(null)">+ Új elem</BzButton>
-        <input v-model="query" class="search" type="search" placeholder="Keresés…" aria-label="Keresés" />
-        <label class="check"><input v-model="showInactive" type="checkbox" /> kikapcsoltak is</label>
-        <BzButton size="sm" variant="soft" :disabled="exportLoading" @click="doExportWithLoader">
-          <span v-if="exportLoading" class="spinner"></span>
-          {{ exportLoading ? 'Letöltés…' : 'Exportálás CSV' }}
-        </BzButton>
-        <label class="file-input">
-          <input type="file" accept=".csv,.txt" @change="e => importFile = e.target.files?.[0]" />
-          Importálás CSV
-        </label>
-      </div>
-
-      <div v-if="selected.size > 0" class="bulk-toolbar">
-        <label class="check"><input type="checkbox" :checked="selected.size === visible.length" @change="toggleAll" /> Mind kijelölve</label>
-        <span class="selected-count">{{ selected.size }} kijelölve</span>
-        <select v-model="bulkAction">
-          <option value="">-- Művelet --</option>
-          <option value="activate">Aktiválás</option>
-          <option value="deactivate">Deaktiválás</option>
-          <option value="delete">Törlés</option>
-        </select>
-        <BzButton :disabled="!bulkAction || bulkLoading" @click="doBulkAction">Alkalmaz</BzButton>
-      </div>
-
-      <p class="muted">
-        {{ game.active }} elem van játékban ({{ game.total }} összesen).
-        {{ game.adaptive ? 'A szint itt a nehézség.' : 'A szint itt a korcsoport: a kisebbek ritkábban kapnak nehéz elemet.' }}
-      </p>
-
-      <ul class="list" :aria-busy="loading">
-        <li v-for="item in visible" :key="item.id" class="item" :class="{ 'item--off': !item.active }">
-          <label class="item-select">
-            <input type="checkbox" :checked="selected.has(item.id)" @change="() => toggleSelection(item)" />
+      <div class="toolbar">
+        <div class="tools">
+          <BzButton v-if="!form" variant="primary" @click="edit(null)">+ Új elem</BzButton>
+          <input v-model="query" class="search" type="search" placeholder="Keresés…" aria-label="Keresés" />
+          <label class="check"><input v-model="showInactive" type="checkbox" /> kikapcsoltak is</label>
+          <BzButton size="sm" variant="soft" :disabled="exportLoading" @click="doExportWithLoader">
+            <span v-if="exportLoading" class="spinner"></span>
+            {{ exportLoading ? 'Letöltés…' : 'Exportálás CSV' }}
+          </BzButton>
+          <label class="file-input">
+            <input type="file" accept=".csv,.txt" @change="e => importFile = e.target.files?.[0]" />
+            Importálás CSV
           </label>
-          <EmojiArt class="item-art" :char="picture(item) || '·'" />
-          <div class="item-main">
-            <div>
-              <b>{{ title(item) }}</b>
-              <span v-if="item.status" :class="['status-badge', `status--${item.status}`]">
-                {{ item.status === 'draft' ? 'Piszkozat' : 'Élő' }}
-              </span>
+        </div>
+
+        <div class="bulk-toolbar" :class="{ 'bulk-toolbar--active': selected.size > 0 }">
+          <label class="check"><input type="checkbox" :checked="visible.length > 0 && selected.size === visible.length" @change="toggleAll" /> Mind</label>
+          <span class="selected-count">{{ selected.size ? `${selected.size} kijelölve` : 'Nincs kijelölés' }}</span>
+          <select v-model="bulkAction" :disabled="selected.size === 0">
+            <option value="">-- Művelet --</option>
+            <option value="activate">Aktiválás</option>
+            <option value="deactivate">Deaktiválás</option>
+            <option value="delete">Törlés</option>
+          </select>
+          <BzButton size="sm" :disabled="!bulkAction || selected.size === 0 || bulkLoading" @click="doBulkAction">Alkalmaz</BzButton>
+        </div>
+
+        <p class="muted count-line">
+          {{ game.active }} elem van játékban ({{ game.total }} összesen).
+          {{ game.adaptive ? 'A szint itt a nehézség.' : 'A szint itt a korcsoport: a kisebbek ritkábban kapnak nehéz elemet.' }}
+        </p>
+      </div>
+
+      <div class="list" :aria-busy="loading">
+        <div class="list-head">
+          <span class="col-select"></span>
+          <span class="col-art"></span>
+          <span class="col-main">Elem</span>
+          <span class="col-meta">Szint · eredet</span>
+          <span class="col-actions"></span>
+        </div>
+        <div v-for="item in visible" :key="item.id" class="item" :class="{ 'item--off': !item.active }">
+          <div class="item-row">
+            <label class="item-select">
+              <input type="checkbox" :checked="selected.has(item.id)" @change="() => toggleSelection(item)" />
+            </label>
+            <EmojiArt class="item-art" :char="picture(item) || '·'" />
+            <div class="item-main">
+              <div class="item-title">
+                <b>{{ title(item) }}</b>
+                <span v-if="item.status" :class="['status-badge', `status--${item.status}`]">
+                  {{ item.status === 'draft' ? 'Piszkozat' : 'Élő' }}
+                </span>
+                <span v-if="!item.active" class="status-badge status--off">Kikapcsolva</span>
+              </div>
             </div>
-            <span class="muted">
+            <span class="item-meta muted">
               {{ item.level }}. szint ·
               {{ item.source === 'admin' ? 'saját' : item.edited ? 'alap, átírva' : 'alap' }}
               <template v-if="item.uses"> · {{ item.uses }}× játszva</template>
-              <template v-if="!item.active"> · kikapcsolva</template>
             </span>
-          </div>
-          <div class="item-actions">
-            <BzButton size="sm" @click="edit(item)">Szerkesztés</BzButton>
-            <BzButton size="sm" variant="soft" @click="toggle(item)">{{ item.active ? 'Kikapcsolás' : 'Bekapcsolás' }}</BzButton>
-            <BzButton size="sm" variant="danger" @click="remove(item)">Törlés</BzButton>
-            <BzButton size="sm" variant="soft" @click="showHistory = showHistory === item.id ? null : item.id">Előzmények</BzButton>
+            <div class="item-actions">
+              <BzButton size="sm" variant="primary" @click="edit(item)">Szerkesztés</BzButton>
+              <button
+                type="button"
+                class="icon-btn"
+                :title="item.active ? 'Kikapcsolás' : 'Bekapcsolás'"
+                :aria-label="item.active ? 'Kikapcsolás' : 'Bekapcsolás'"
+                @click="toggle(item)"
+              >
+                <EmojiArt :char="item.active ? '👁️' : '🚫'" />
+              </button>
+              <div class="item-menu">
+                <button type="button" class="icon-btn" title="Még több" aria-label="Még több" @click="toggleMenu(item)">⋯</button>
+                <div v-if="openMenu === item.id" class="menu-popover">
+                  <button type="button" @click="showHistory = showHistory === item.id ? null : item.id; openMenu = null">Előzmények</button>
+                  <button type="button" class="danger" @click="remove(item)">Törlés</button>
+                </div>
+              </div>
+            </div>
           </div>
           <div v-if="showHistory === item.id" class="item-history">
             <div v-if="loadingHistory[item.id]" class="history-loading">
@@ -474,8 +509,8 @@ watch(() => showHistory.value, async (itemId) => {
               Nincs szerkesztési előzmény
             </div>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
       <div v-if="matching.length > visible.length" class="more">
         <BzButton @click="limit += PAGE">Még {{ Math.min(PAGE, matching.length - visible.length) }} ({{ visible.length }} / {{ matching.length }})</BzButton>
       </div>
@@ -625,14 +660,25 @@ h2 {
   align-items: flex-end;
   gap: 12px;
 }
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 10px 16px 8px;
+  margin: 0 -16px;
+  background: var(--bz-card);
+  border-bottom: 1px solid var(--bz-guide);
+}
 .tools {
   align-items: center;
-  margin-bottom: 6px;
 }
 .search {
   flex: 1;
   min-width: 160px;
   width: auto;
+}
+.count-line {
+  margin: 8px 0 0;
 }
 .check {
   display: inline-flex;
@@ -640,23 +686,55 @@ h2 {
   gap: 6px;
   font-weight: 700;
 }
+.check input[type='checkbox'],
+.item-select input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  appearance: none;
+  border: 2px solid var(--bz-soft);
+  border-radius: 5px;
+  background-color: var(--bz-card);
+  cursor: pointer;
+}
+.check input[type='checkbox']:checked,
+.item-select input[type='checkbox']:checked {
+  border-color: var(--bz-leaf);
+  background-color: var(--bz-leaf);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='9' viewBox='0 0 12 9'%3E%3Cpath d='M1 4.5l3.5 3.5L11 1' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .list {
   margin: 8px 0 0;
   padding: 0;
-  list-style: none;
   transition: opacity 0.15s;
 }
 .list[aria-busy='true'] {
   opacity: 0.6;
 }
-.item {
-  display: flex;
+.list-head {
+  display: grid;
+  grid-template-columns: 28px 30px 1fr 220px auto;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 0 12px 6px;
+  color: var(--bz-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.item {
   border-radius: var(--bz-radius-sm);
   background: var(--bz-card);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+}
+.item-row {
+  display: grid;
+  grid-template-columns: 28px 30px 1fr 220px auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
 }
 .more {
   display: flex;
@@ -668,22 +746,32 @@ h2 {
 }
 .item-art {
   flex: none;
-  font-size: 30px;
+  font-size: 26px;
 }
 .item-main {
   display: flex;
-  flex: 1;
-  flex-direction: column;
   min-width: 0;
 }
-.item-main b {
+.item-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.item-title b {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.item-meta {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .item-actions {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-end;
   gap: 6px;
 }
@@ -694,6 +782,58 @@ h2 {
 }
 .item-select input {
   margin: 0;
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: none;
+  border-radius: var(--bz-radius-pill);
+  background: var(--bz-soft);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background: var(--bz-guide);
+}
+.item-menu {
+  position: relative;
+  flex: none;
+}
+.menu-popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  padding: 4px;
+  background: var(--bz-card);
+  border: 1px solid var(--bz-guide);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.menu-popover button {
+  padding: 8px 10px;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+  color: var(--bz-ink);
+  cursor: pointer;
+}
+.menu-popover button:hover {
+  background: var(--bz-soft);
+}
+.menu-popover button.danger {
+  color: var(--bz-coral-deep);
 }
 .item-history {
   width: 100%;
@@ -755,14 +895,19 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  margin: 12px 0;
+  gap: 10px;
+  padding: 8px 12px;
+  margin-top: 8px;
   background: var(--bz-soft);
   border-radius: var(--bz-radius-sm);
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.bulk-toolbar--active {
+  opacity: 1;
 }
 .bulk-toolbar select {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid var(--bz-guide);
   border-radius: 6px;
   background: var(--bz-card);
@@ -770,6 +915,7 @@ h2 {
 .selected-count {
   font-weight: 600;
   color: var(--bz-ink);
+  font-size: 14px;
 }
 .status-badge {
   display: inline-block;
@@ -786,6 +932,10 @@ h2 {
 .status--live {
   background: #d4edda;
   color: #155724;
+}
+.status--off {
+  background: var(--bz-soft);
+  color: var(--bz-muted);
 }
 .upload-btn {
   display: flex;
@@ -859,13 +1009,20 @@ h2 {
   font-size: 13px;
   color: #666;
 }
+@media (max-width: 720px) {
+  .list-head {
+    display: none;
+  }
+  .item-row {
+    grid-template-columns: 24px 26px 1fr auto;
+    row-gap: 6px;
+  }
+  .item-meta {
+    grid-column: 3 / -1;
+    white-space: normal;
+  }
+}
 @media (max-width: 600px) {
-  .item {
-    flex-wrap: wrap;
-  }
-  .item-actions {
-    width: 100%;
-  }
   .results-modal {
     max-width: 90vw;
   }

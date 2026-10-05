@@ -29,6 +29,8 @@ final class Stats
         public readonly array $recentDays = [],
         public readonly int $weekGames = 0,
         public readonly int $weeksWon = 0,
+        // distinct calendar days with a finished session, over the whole lookback (never lowered by a missed day)
+        public readonly int $lifetimeDays = 0,
     ) {}
 
     public static function for(Child $child, string $timezone): self
@@ -97,6 +99,7 @@ final class Stats
             recentDays: $recentDays,
             weekGames: (int) ($weeks[$now->format('o-W')] ?? 0),
             weeksWon: $weeks->filter(fn ($n) => $n >= $goal)->count(),
+            lifetimeDays: $days->unique()->count(),
         );
     }
 }

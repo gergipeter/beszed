@@ -24,14 +24,19 @@ function lastVisit(childId) {
  * away (happy to see them, never sad they left), and every now and then a caring word,
  * so it feels like someone who cares. Warm only: no guilt, no pressure to come back.
  *
- * @param {{ childId: number, child: string, goalDone: () => boolean, intro: string }} options  `intro`: the first visit's plain hello
+ * @param {{ childId: number, child: string, goalDone: () => boolean, intro: string, memories?: () => string[] }} options
+ *   `intro`: the first visit's plain hello. `memories`: extra lines (a favourite game, a favourite mane colour),
+ *   read fresh each time so they can depend on data that arrives after the hub opens.
  */
-export function useWelcome({ childId, child, goalDone, intro }) {
+export function useWelcome({ childId, child, goalDone, intro, memories = () => [] }) {
   const before = lastVisit(childId)
   const now = Date.now()
   let lastCare = -1
 
   function care() {
+    const extra = memories()
+    // one line in four is a memory, when there is one to tell; otherwise the usual rotation
+    if (extra.length && Math.random() < 0.25) return extra[Math.floor(Math.random() * extra.length)]
     let n
     do n = 1 + Math.floor(Math.random() * CARE_LINES)
     while (n === lastCare && CARE_LINES > 1)

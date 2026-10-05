@@ -6,18 +6,18 @@ use Illuminate\Support\Collection;
 
 /**
  * Picture puzzle: swap pieces until the picture is whole. A session is three puzzles, each one pálya harder than the
- * one before (as the intro says: after every picture comes the next pálya), and never the same picture twice. 200 levels ("pályák"):
- * the grid grows from 2×2 to 5×5, from level 4 on the picture stands in one of
+ * one before (as the intro says: after every picture comes the next pálya), and never the same picture twice. 100 levels ("pályák"):
+ * the grid grows from 2×2 to 5×5 (level 100's cap, the hardest it gets), from level 4 on the picture stands in one of
  * the drawn scenes (so every piece shows something), every other level has a
  * fairy-tale princess among its pictures, and on the high levels the example
  * picture fades after a while (tap it to see it again).
  */
 class KirakoRounds extends RoundFactory
 {
-    public const LEVELS = 200;
+    public const LEVELS = 100;
 
     /** [from level, columns, rows] */
-    private const BANDS = [[1, 2, 2], [7, 3, 2], [16, 3, 3], [31, 4, 3], [46, 4, 4], [66, 5, 4], [86, 5, 5], [101, 6, 5], [121, 6, 6], [141, 7, 6], [166, 7, 7], [186, 8, 7]];
+    private const BANDS = [[1, 2, 2], [4, 3, 2], [8, 3, 3], [16, 4, 3], [23, 4, 4], [33, 5, 4], [43, 5, 5]];
 
     /** The drawn scenes (SceneBackdrop.vue), taken in turn from level to level. */
     private const SCENES = ['meadow', 'beach', 'castle', 'underwater', 'snow', 'forest', 'sky'];
@@ -35,14 +35,13 @@ class KirakoRounds extends RoundFactory
         return $grid;
     }
 
-    /** How long the example picture stays: always (null) up to level 35, then 5 s, 2.5 s from level 71, 1.5 s from 121, 0.8 s from 161. */
+    /** How long the example picture stays: always (null) up to level 18, then 2.5 s, 1.2 s from level 50, 0.8 s from 80. */
     public static function previewMs(int $level): ?int
     {
         return match (true) {
-            $level <= 35 => null,
-            $level <= 70 => 5000,
-            $level <= 120 => 2500,
-            $level <= 160 => 1500,
+            $level <= 18 => null,
+            $level <= 49 => 2500,
+            $level <= 79 => 1200,
             default => 800,
         };
     }
@@ -92,10 +91,17 @@ class KirakoRounds extends RoundFactory
         })->values()->all();
     }
 
-    /** One item per picture (princesses and others come in many scene variants), the best-weighted of each: so a session never repeats a picture. */
+    /**
+     * One item per picture, the best-weighted of each: so a session never repeats a picture. Most
+     * pictures come in several scene variants and are grouped by emoji (same picture, different
+     * backdrop). Fairy tales are different: several *stories* share one character emoji (👸 is
+     * Hófehérke, Hamupipőke, Csipkerózsika…), so those group by name instead, or they'd collapse
+     * into one entry per character and lose most of the tales.
+     */
     private function onePerPicture(Collection $items): Collection
     {
-        return $items->groupBy(fn ($i) => $i->payload['emoji'] ?? $i->id)->map(fn ($group) => $this->weightedShuffle($group)->first())->values();
+        return $items->groupBy(fn ($i) => ($i->payload['kind'] ?? null) === 'tale' ? $i->payload['name'] : ($i->payload['emoji'] ?? $i->id))
+            ->map(fn ($group) => $this->weightedShuffle($group)->first())->values();
     }
 
     /** The pictures of the theme the child picked (config kirako.categories), or null for all of them. */

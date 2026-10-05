@@ -127,6 +127,7 @@ function done() {
     .map(toPx)
     .filter(([x, y]) => drawn.some(([a, b]) => (a - x) ** 2 + (b - y) ** 2 < r2)).length
   const passed = covered / guidePoints.length >= PASS_RATIO
+  if (!passed) clear()
   emit('answer', passed ? { correct: true, say: props.data.onCorrect } : { correct: false, say: t('trace.almost') })
 }
 
@@ -136,7 +137,7 @@ onMounted(() => {
     guide: css.getPropertyValue('--bz-guide').trim() || colors.guide,
     pen: css.getPropertyValue('--bz-coral').trim() || colors.pen,
   }
-  guidePoints = samplePath(props.data.path)
+  guidePoints = samplePath(props.data.path, props.data.difficulty)
   layout()
   if ('ResizeObserver' in window) {
     observer = new ResizeObserver(layout)

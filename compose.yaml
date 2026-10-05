@@ -12,6 +12,9 @@ services:
       # Off: the app is also public through the Cloudflare quick tunnel, where error pages must not show details.
       APP_DEBUG: "false"
       APP_URL: http://192.168.0.100:8000
+      # Not persisted anywhere else (the container's own filesystem is thrown away on every recreate),
+      # so it must come from here or sessions/cookies/encrypted data break on every restart. Set in .env.
+      APP_KEY: ${APP_KEY}
       LOG_CHANNEL: stderr
       # MySQL on the shared dev server (horizon-mysql, on the global-network), in its own database with
       # its own user that can touch nothing else there. Fixed here on purpose: .env's DB_* are for the

@@ -34,6 +34,7 @@ Route::name('beszed.')->group(function () {
     Route::post('children/{child}/sessions', [RewardController::class, 'store'])->middleware(['idempotent', 'throttle:60,1,sessions'])->name('sessions.store');
     Route::put('children/{child}/profile', [RewardController::class, 'wear'])->name('profile');
     Route::put('children/{child}/scene', [RewardController::class, 'scene'])->name('scene');
+    Route::post('children/{child}/rewards/gift', [RewardController::class, 'gift'])->middleware('throttle:20,1,gift')->name('rewards.gift');
 
     Route::get('tts', TtsController::class)->middleware('throttle:120,1,tts')->name('tts');
     Route::post('pronunciation', PronunciationController::class)->middleware('throttle:30,1,pronunciation')->name('pronunciation');

@@ -10,7 +10,7 @@ import { LANGUAGES as OFFERED, currentLanguage, setLanguage } from '../modules/b
  * side currently does (checked app/ and resources/ for readers of it), so that
  * call is fire-and-forget and never blocks the UI switch.
  */
-const LANGUAGES = Object.fromEntries(OFFERED.map(l => [l.code, { native_name: l.name, flag: l.flag }]))
+const LANGUAGES = Object.fromEntries(OFFERED.map(l => [l.code, { native_name: l.name }]))
 
 const isOpen = ref(false)
 const current = computed(() => LANGUAGES[currentLanguage.value] ?? LANGUAGES.hu)
@@ -43,8 +43,7 @@ onUnmounted(() => document.removeEventListener('click', closeDropdown))
 <template>
   <div class="language-switcher">
     <button type="button" class="btn-language" @click="isOpen = !isOpen">
-      <span class="flag">{{ current.flag }}</span>
-      <span class="name">{{ currentLanguage.toUpperCase() }}</span>
+      <span class="code">{{ currentLanguage.toUpperCase() }}</span>
       <span class="icon">▼</span>
     </button>
 
@@ -57,7 +56,7 @@ onUnmounted(() => document.removeEventListener('click', closeDropdown))
         :class="{ active: code === currentLanguage }"
         @click="pick(code)"
       >
-        <span class="flag">{{ lang.flag }}</span>
+        <span class="code">{{ code.toUpperCase() }}</span>
         <span class="name">{{ lang.native_name }}</span>
         <span v-if="code === currentLanguage" class="checkmark">✓</span>
       </button>
@@ -84,9 +83,9 @@ onUnmounted(() => document.removeEventListener('click', closeDropdown))
   color: inherit;
   cursor: pointer;
 }
-.flag {
-  font-size: 1.1rem;
-  line-height: 1;
+.code {
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
 }
 .icon {
   font-size: 0.6rem;

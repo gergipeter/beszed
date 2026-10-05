@@ -35,12 +35,27 @@ const router = useRouter()
 
 const goalDone = () => Boolean(rewards.summary && rewards.summary.daily.done >= rewards.summary.daily.goal)
 const nameOrPet = () => childName.value || t('hub.pet')
+/**
+ * Little things Csillám remembers: the game played most, and the mane colour worn now.
+ * Both read live data (rewards.summary, meta.games), so they only appear once that has loaded.
+ */
+function memories() {
+  const lines = []
+  const favId = rewards.summary?.favorite_game
+  const favGame = favId && meta.game(favId)
+  if (favGame) lines.push(t('hub.memory.favGame', { game: favGame.name }))
+  const maneId = rewards.worn?.mane
+  const maneName = maneId && rewards.accessories.find(a => a.id === maneId)?.name
+  if (maneName) lines.push(t('hub.memory.favColor', { color: maneName.toLowerCase() }))
+  return lines
+}
 /** What Csillám says now: a welcome that fits the visit, then a caring word every so often. */
 const welcome = useWelcome({
   childId: childId.value,
   child: nameOrPet(),
   goalDone,
   intro: t('hub.intro', { guide: guideName.value }),
+  memories,
 })
 let settled = false
 watch(

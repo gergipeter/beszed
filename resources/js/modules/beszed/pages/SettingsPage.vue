@@ -212,8 +212,18 @@ onMounted(load)
   width: 30px;
   height: 30px;
   margin: 0;
-  accent-color: var(--bz-leaf);
+  appearance: none;
+  border: 2px solid var(--bz-soft);
+  border-radius: 7px;
+  background-color: var(--bz-bg);
   cursor: pointer;
+}
+.row input[type='checkbox']:checked {
+  border-color: var(--bz-leaf);
+  background-color: var(--bz-leaf);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='14' viewBox='0 0 18 14'%3E%3Cpath d='M1 7l5.5 5.5L17 1' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .row input[type='range'] {
   accent-color: var(--bz-leaf);

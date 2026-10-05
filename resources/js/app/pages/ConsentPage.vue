@@ -44,10 +44,6 @@ async function logout() {
         <li v-for="item in texts.consent.storedItems" :key="item">{{ item }}</li>
       </ul>
       <p>{{ texts.consent.rights }}</p>
-      <p>
-        <RouterLink class="link" :to="{ name: 'privacy' }">{{ texts.privacyLink }} →</RouterLink><br />
-        <RouterLink class="link" :to="{ name: 'terms' }">{{ texts.auth.terms }} →</RouterLink>
-      </p>
       <LegalLinks />
 
       <label class="check">
@@ -95,10 +91,6 @@ ul {
   margin: 0;
   padding-left: 22px;
 }
-.link {
-  font-weight: 700;
-  text-decoration: underline;
-}
 .check {
   display: flex;
   align-items: flex-start;
@@ -115,7 +107,18 @@ ul {
   width: 26px;
   height: 26px;
   margin-top: 2px;
-  accent-color: var(--bz-leaf);
+  appearance: none;
+  border: 2px solid var(--bz-card);
+  border-radius: 6px;
+  background-color: var(--bz-card);
+  cursor: pointer;
+}
+.check input:checked {
+  border-color: var(--bz-leaf);
+  background-color: var(--bz-leaf);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M1 6l5 5 9-10' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .actions {
   margin-top: 16px;

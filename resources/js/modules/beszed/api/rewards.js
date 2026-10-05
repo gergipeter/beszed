@@ -16,3 +16,6 @@ export const wearAccessory = (childId, slot, accessory) => http.put(`/children/$
 
 /** @returns {Promise<import('../types').Scene>} */
 export const saveScene = (childId, scene) => http.put(`/children/${childId}/scene`, scene)
+
+/** A parent hands over one of the "manual" stickers from the parents' menu. @returns {Promise<import('../types').RewardSummary>} */
+export const giftBadge = (childId, badge) => http.post(`/children/${childId}/rewards/gift`, { badge })

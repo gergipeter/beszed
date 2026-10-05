@@ -19,6 +19,12 @@ defineProps({
   grid-template-columns: 1fr 1fr;
   max-width: 520px;
 }
+/* plates (Számolós): grow to fill the stage instead of sitting small at the top */
+.grid--2:has(.option--plate) {
+  flex: 1;
+  align-items: stretch;
+  max-width: 640px;
+}
 .grid--3 {
   grid-template-columns: repeat(3, 1fr);
   max-width: 640px;

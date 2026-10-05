@@ -258,6 +258,7 @@ onMounted(() => {
 .round {
   display: flex;
   flex-direction: column;
+  flex: 1;
   align-items: center;
   gap: 18px;
 }

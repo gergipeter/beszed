@@ -41,6 +41,10 @@ class Rewards
                 'days_left' => 8 - (int) now($cfg['timezone'])->isoWeekday(),
             ],
             'sessions' => $stats->sessions,
+            // the game played most, by finished sessions (null until anything is played) — Csillám uses this to remember a favourite
+            'favorite_game' => collect($stats->gameSessions)->sortDesc()->keys()->first(),
+            // distinct days played, ever: only ever grows, never punishes a missed day (unlike the 7-day streak)
+            'lifetime_days' => $stats->lifetimeDays,
             'medals' => collect(config('beszed.games'))
                 ->mapWithKeys(fn ($g, $id) => [$id => $this->medal($stats->gameBest[$id] ?? null)]),
             'badges' => collect($cfg['badges'])->map(fn ($b, $id) => [
@@ -163,6 +167,17 @@ class Rewards
         $child->unsetRelation('beszedProfile');
 
         return $scene;
+    }
+
+    /**
+     * A parent hands over a sticker by hand, from the parents' menu: never ruled out by play,
+     * never repeatable (giving it twice changes nothing). Returns the new summary.
+     */
+    public function giftBadge(Child $child, string $badge): array
+    {
+        BeszedBadge::firstOrCreate(['child_id' => $child->id, 'badge' => $badge]);
+
+        return $this->summary($child);
     }
 
     /** 1–3 medals for a first-try share: every finished game earns at least one (null = never played: 0). */

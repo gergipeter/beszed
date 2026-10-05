@@ -104,10 +104,10 @@ async function demo() {
           {{ mode === 'register' ? texts.auth.registerSubmit : mode === 'forgot' ? texts.auth.forgotSubmit : texts.auth.loginSubmit }}
         </BzButton>
 
-        <div class="switch">
+        <div v-if="mode !== 'login' || error" class="switch">
           <button v-if="mode !== 'login'" type="button" @click="setMode('login')">{{ texts.auth.login }}</button>
-          <button v-if="mode !== 'register'" type="button" @click="setMode('register')">{{ texts.auth.register }}</button>
-          <button v-if="mode === 'login'" type="button" @click="setMode('forgot')">{{ texts.auth.forgot }}</button>
+          <!-- Only offered once a login attempt has actually failed, not pre-emptively. -->
+          <button v-if="mode === 'login' && error" type="button" @click="setMode('forgot')">{{ texts.auth.forgot }}</button>
         </div>
         <p v-if="mode === 'register'" class="fine">
           {{ texts.auth.agree }}
@@ -131,14 +131,13 @@ async function demo() {
         </a>
 
         <BzButton v-if="appConfig.auth.demo" variant="soft" :disabled="busy" @click="demo">{{ texts.demo }}</BzButton>
+
+        <BzButton v-if="mode === 'login'" variant="soft" @click="setMode('register')">{{ texts.auth.register }}</BzButton>
       </div>
 
       <p v-if="appConfig.auth.demo && !appConfig.auth.google" class="dev">{{ texts.googleSetup }}</p>
       <p v-if="!native && !appConfig.auth.google && !appConfig.auth.demo" class="dev">{{ texts.noLogin }}</p>
-      <p class="fine">
-        {{ texts.parentsOnly }}
-        <RouterLink class="privacy-link" :to="{ name: 'privacy' }">{{ texts.privacyLink }}</RouterLink>
-      </p>
+      <p class="fine">{{ texts.parentsOnly }}</p>
       <LegalLinks />
     </div>
   </main>
