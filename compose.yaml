@@ -1,6 +1,10 @@
 services:
   app:
     build: .
+    # The image's default CMD is docker/render/entrypoint.sh (Render-only: creates/migrates a local
+    # SQLite file, then supervisord). Dev compose has its own DB (below) and no supervisor config
+    # beyond the nginx+php-fpm fragment the Dockerfile writes, so run those two directly instead.
+    command: sh -c "php-fpm -D && nginx -g 'daemon off;'"
     ports:
       - "8000:8000"
     environment:
